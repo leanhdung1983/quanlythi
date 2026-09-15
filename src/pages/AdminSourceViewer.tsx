@@ -27,6 +27,17 @@ interface TikzAuditRow {
     images: { hash: string; exists: boolean; needsAction: boolean; error: string | null }[];
 }
 
+interface TikzJob {
+    id: number;
+    status: 'QUEUED' | 'RUNNING' | 'CANCEL_REQUESTED' | 'CANCELLED' | 'COMPLETED' | 'FAILED';
+    afterId: number;
+    scanned: number;
+    synced: number;
+    failed: number;
+    heartbeatAt: string | null;
+    errorMessage: string | null;
+}
+
 const SvgViewer = ({ hash }: { hash: string }) => {
     const [svg, setSvg] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -62,6 +73,43 @@ export const AdminSourceViewer: React.FC = () => {
     const [auditCounts, setAuditCounts] = useState<Record<string, number> | null>(null);
     const [auditSamples, setAuditSamples] = useState<TikzAuditRow[]>([]);
     const [auditError, setAuditError] = useState<string | null>(null);
+    const [job, setJob] = useState<TikzJob | null>(null);
+    const [workerOnline, setWorkerOnline] = useState(false);
+    const [jobBusy, setJobBusy] = useState(false);
+    const [jobError, setJobError] = useState<string | null>(null);
+
+    const refreshJob = async () => {
+        const result = await apiService.fetchTikzJobStatus();
+        setJob(result.job || null);
+        setWorkerOnline(Boolean(result.worker));
+    };
+
+    useEffect(() => {
+        refreshJob().catch(error => setJobError(error.message));
+        const timer = window.setInterval(() => refreshJob().catch(error => setJobError(error.message)), 10_000);
+        return () => window.clearInterval(timer);
+    }, []);
+
+    const startJob = async () => {
+        if (!window.confirm('Lô này sẽ biên dịch và cập nhật SVG/câu hỏi trong database. Bạn đã sao lưu database và bật worker local chưa?')) return;
+        setJobBusy(true);
+        setJobError(null);
+        try {
+            const result = await apiService.startTikzJob();
+            setJob(result.job);
+            await refreshJob();
+        } catch (error: any) { setJobError(error.message || 'Không thể tạo công việc.'); }
+        finally { setJobBusy(false); }
+    };
+
+    const cancelJob = async () => {
+        if (!job) return;
+        setJobBusy(true);
+        setJobError(null);
+        try { setJob((await apiService.cancelTikzJob(job.id)).job); }
+        catch (error: any) { setJobError(error.message || 'Không thể dừng công việc.'); }
+        finally { setJobBusy(false); }
+    };
 
     const scanAllTikz = async () => {
         setAuditRunning(true);
@@ -262,6 +310,43 @@ export const AdminSourceViewer: React.FC = () => {
                     </div>
                 )}
                 <p className="mt-4 text-xs text-slate-500">Biên dịch trên máy local bằng <code>scripts/tikz_local_worker.py</code>; chỉ cập nhật câu hỏi sau khi SVG lưu thành công.</p>
+            </section>
+
+            <section className="mb-8 rounded-3xl border border-emerald-100 bg-white p-6 shadow-sm">
+                <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+                    <div>
+                        <h2 className="text-lg font-black text-slate-800">Quét và biên dịch SVG bằng máy local</h2>
+                        <p className="text-sm text-slate-500">Nút này tạo công việc trên Render. Worker local nhận việc, biên dịch LaTeX và đồng bộ từng hình.</p>
+                        <p className={`mt-2 text-xs font-bold ${workerOnline ? 'text-emerald-700' : 'text-amber-700'}`}>
+                            Worker: {workerOnline ? 'Đang kết nối' : 'Chưa kết nối — công việc sẽ chờ máy local'}
+                        </p>
+                    </div>
+                    <div className="flex flex-wrap gap-2">
+                        <button type="button" onClick={startJob} disabled={jobBusy || Boolean(job && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(job.status))}
+                            className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-50">
+                            Quét và biên dịch
+                        </button>
+                        {job && ['QUEUED', 'RUNNING'].includes(job.status) && (
+                            <button type="button" onClick={cancelJob} disabled={jobBusy}
+                                className="rounded-xl border border-slate-300 px-5 py-3 text-sm font-bold text-slate-700 disabled:opacity-50">
+                                Dừng công việc
+                            </button>
+                        )}
+                    </div>
+                </div>
+                {job && (
+                    <div className="mt-4 flex flex-wrap gap-3 text-sm" aria-live="polite">
+                        <span className="rounded-xl bg-slate-100 px-3 py-2">Lô #{job.id}: {job.status}</span>
+                        <span className="rounded-xl bg-slate-100 px-3 py-2">Đã quét: {job.scanned}</span>
+                        <span className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-700">Đã đồng bộ: {job.synced} hình</span>
+                        <span className="rounded-xl bg-red-50 px-3 py-2 text-red-700">Lỗi: {job.failed}</span>
+                        <span className="rounded-xl bg-slate-100 px-3 py-2">ID cuối: {job.afterId}</span>
+                    </div>
+                )}
+                {job?.status === 'CANCEL_REQUESTED' && <p className="mt-3 text-xs text-amber-700">Worker sẽ dừng sau hình đang biên dịch.</p>}
+                {job?.errorMessage && <p className="mt-3 text-xs text-red-700">{job.errorMessage}</p>}
+                {jobError && <p className="mt-3 text-xs text-red-700">{jobError}</p>}
+                <p className="mt-4 text-xs text-slate-500">Khởi động một lần <code>python scripts/tikz_local_worker.py --url URL_RENDER --daemon</code> trên máy có TeX. Để máy bật khi xử lý.</p>
             </section>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">

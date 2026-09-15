@@ -755,6 +755,38 @@ export async function seedDatabase() {
         `).catch(e => console.log("Migration notice (tikz_render_failures):", e.message));
 
         await pool.query(`
+            CREATE TABLE IF NOT EXISTS tikz_render_jobs (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                status VARCHAR(24) NOT NULL DEFAULT 'QUEUED',
+                requested_by INT NOT NULL,
+                after_id INT NOT NULL DEFAULT 0,
+                scanned INT NOT NULL DEFAULT 0,
+                synced INT NOT NULL DEFAULT 0,
+                failed INT NOT NULL DEFAULT 0,
+                worker_id VARCHAR(64) NULL,
+                lease_token CHAR(64) NULL,
+                heartbeat_at DATETIME NULL,
+                error_message VARCHAR(1000) NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `).catch(e => console.log("Migration notice (tikz_render_jobs):", e.message));
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS tikz_render_control (
+                id TINYINT PRIMARY KEY,
+                active_job_id BIGINT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `).catch(e => console.log("Migration notice (tikz_render_control):", e.message));
+        await pool.query('INSERT IGNORE INTO tikz_render_control (id, active_job_id) VALUES (1, NULL)')
+            .catch(e => console.log("Migration notice (tikz_render_control row):", e.message));
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS tikz_worker_presence (
+                worker_id VARCHAR(64) PRIMARY KEY,
+                last_seen DATETIME NOT NULL
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `).catch(e => console.log("Migration notice (tikz_worker_presence):", e.message));
+
+        await pool.query(`
             CREATE TABLE IF NOT EXISTS lesson_sections (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 unit_id INT NOT NULL,

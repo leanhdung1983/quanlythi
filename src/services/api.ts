@@ -566,6 +566,18 @@ export const apiService = {
         const res = await fetch(`${API_URL}/admin/tikz-audit?afterId=${afterId}&limit=${limit}`);
         return await handleResponse(res, '/admin/tikz-audit');
     },
+    async fetchTikzJobStatus() {
+        const res = await fetch(`${API_URL}/admin/tikz-jobs/status`);
+        return await handleResponse(res, '/admin/tikz-jobs/status');
+    },
+    async startTikzJob() {
+        const res = await fetch(`${API_URL}/admin/tikz-jobs`, { method: 'POST' });
+        return await handleResponse(res, '/admin/tikz-jobs');
+    },
+    async cancelTikzJob(id: number) {
+        const res = await fetch(`${API_URL}/admin/tikz-jobs/${id}/cancel`, { method: 'POST' });
+        return await handleResponse(res, `/admin/tikz-jobs/${id}/cancel`);
+    },
 
     // --- CLASS MANAGEMENT ---
     async fetchClasses(teacherId: number) {

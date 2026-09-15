@@ -15,6 +15,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import uuid
 from http.cookiejar import CookieJar
 from urllib.error import HTTPError, URLError
 from urllib.parse import urlencode, urlparse
@@ -154,18 +155,44 @@ def compile_svg(source, timeout):
         return result
 
 
-def run_worker(args):
-    api = AdminApi(args.url)
-    api.login()
-    cursor = 0
+def run_worker(args, api=None, job=None):
+    if api is None:
+        api = AdminApi(args.url)
+        api.login()
+    cursor = job["afterId"] if job else 0
     scanned = synced = failed = 0
     outcomes = []
     compiled = {}
+
+    def save_report():
+        if outcomes:
+            report = Path(args.report)
+            report.parent.mkdir(parents=True, exist_ok=True)
+            report.write_text(json.dumps(outcomes, ensure_ascii=False, indent=2), encoding="utf-8")
+            print(f"Báo cáo lỗi: {report}")
+
+    def job_heartbeat():
+        if not job:
+            return True
+        response = api.request("POST", f"/api/admin/tikz-jobs/{job['id']}/heartbeat", {"token": job["token"]})
+        return response["status"] != "CANCEL_REQUESTED"
+
+    def job_progress(question_id, synced_before, failed_before):
+        if job:
+            api.request("POST", f"/api/admin/tikz-jobs/{job['id']}/progress", {
+                "token": job["token"], "afterId": question_id,
+                "synced": synced - synced_before, "failed": failed - failed_before,
+            })
+
     while True:
         page = api.request("GET", "/api/admin/tikz-audit?" + urlencode({"afterId": cursor, "limit": args.limit}))
         for question in page["data"]:
             if args.max_questions and scanned >= args.max_questions:
                 break
+            if not job_heartbeat():
+                save_report()
+                return "CANCELLED"
+            synced_before, failed_before = synced, failed
             scanned += 1
             if question["status"] in ("MALFORMED_SOURCE", "SOURCE_MISMATCH", "OTHER_IMAGE"):
                 reason = {
@@ -178,10 +205,14 @@ def run_worker(args):
                 if question["status"] != "OTHER_IMAGE":
                     failed += 1
                 if question["status"] == "MALFORMED_SOURCE":
+                    job_progress(question["id"], synced_before, failed_before)
                     continue
             for image in question["images"]:
                 if not image["needsAction"]:
                     continue
+                if not job_heartbeat():
+                    save_report()
+                    return "CANCELLED"
                 hash_value = image["hash"]
                 label = f"#{question['id']} / {hash_value[:10]}"
                 if not image["source"] and not image["exists"]:
@@ -219,6 +250,7 @@ def run_worker(args):
                         })
                     except RuntimeError as report_error:
                         print(f"[KHÔNG LƯU ĐƯỢC BÁO CÁO] {report_error}")
+            job_progress(question["id"], synced_before, failed_before)
         if args.max_questions and scanned >= args.max_questions:
             break
         if not page["hasMore"]:
@@ -228,19 +260,59 @@ def run_worker(args):
         cursor = page["afterId"]
         print(f"Đã quét {scanned} câu, đồng bộ {synced} hình, lỗi {failed}.")
     print(f"HOÀN TẤT: quét {scanned} câu, đồng bộ {synced} hình, lỗi {failed}.")
-    if outcomes:
-        report = Path(args.report)
-        report.parent.mkdir(parents=True, exist_ok=True)
-        report.write_text(json.dumps(outcomes, ensure_ascii=False, indent=2), encoding="utf-8")
-        print(f"Báo cáo lỗi: {report}")
+    save_report()
+    return "COMPLETED"
+
+
+def run_daemon(args):
+    api = AdminApi(args.url)
+    api.login()
+    worker_id = str(uuid.uuid4())
+    args.apply = True  # A queued job is created only by an ADMIN clicking the web button.
+    args.max_questions = 0
+    print(f"Worker local đang chờ lệnh từ Render ({worker_id}). Nhấn Ctrl+C để dừng.")
+    while True:
+        try:
+            api.request("POST", "/api/admin/tikz-worker/heartbeat", {"workerId": worker_id})
+            claimed = api.request("POST", "/api/admin/tikz-worker/claim", {"workerId": worker_id})["job"]
+            if claimed:
+                print(f"[LÔ #{claimed['id']}] Bắt đầu từ ID câu hỏi {claimed['afterId']}.")
+                try:
+                    status = run_worker(args, api=api, job=claimed)
+                    api.request("POST", f"/api/admin/tikz-jobs/{claimed['id']}/finish", {
+                        "token": claimed["token"], "status": status,
+                    })
+                except Exception as error:
+                    print(f"[LÔ #{claimed['id']}] Lỗi: {error}")
+                    try:
+                        api.request("POST", f"/api/admin/tikz-jobs/{claimed['id']}/finish", {
+                            "token": claimed["token"], "status": "FAILED", "error": str(error)[:1000],
+                        })
+                    except RuntimeError as finish_error:
+                        print(f"Không cập nhật được trạng thái lô: {finish_error}")
+            else:
+                time.sleep(10)
+        except RuntimeError as error:
+            print(f"Worker không kết nối được: {error}")
+            if "HTTP 401" in str(error):
+                api.login()
+            time.sleep(10)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Quét và biên dịch TikZ từ Render bằng TeX local.")
     parser.add_argument("--url", required=True, help="URL dịch vụ Render, ví dụ https://quanlythi.onrender.com")
     parser.add_argument("--apply", action="store_true", help="Cho phép lưu SVG và cập nhật database; mặc định chỉ kiểm kê.")
+    parser.add_argument("--daemon", action="store_true", help="Chờ nút trên web và tự xử lý lô công việc bằng TeX local.")
     parser.add_argument("--limit", type=int, default=50, choices=range(1, 101), metavar="1..100")
     parser.add_argument("--timeout", type=int, default=90, help="Thời gian tối đa cho mỗi bước biên dịch (giây).")
     parser.add_argument("--max-questions", type=int, default=0, help="Dừng sau N câu để chạy thử.")
     parser.add_argument("--report", default=str(PROJECT_ROOT / "output" / "tikz_worker_errors.json"))
-    run_worker(parser.parse_args())
+    arguments = parser.parse_args()
+    try:
+        if arguments.daemon:
+            run_daemon(arguments)
+        else:
+            run_worker(arguments)
+    except KeyboardInterrupt:
+        print("Worker đã dừng theo yêu cầu.")
