@@ -8,4 +8,6 @@ tmp/
 _sync_bank_id6/
 _deploy_quanlythi/
 *.log
+__pycache__/
+*.pyc
 .DS_Store

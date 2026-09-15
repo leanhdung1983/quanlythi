@@ -744,6 +744,17 @@ export async function seedDatabase() {
         `).catch(e => console.log("Migration notice (question_images):", e.message));
 
         await pool.query(`
+            CREATE TABLE IF NOT EXISTS tikz_render_failures (
+                question_id INT NOT NULL,
+                tikz_hash VARCHAR(64) NOT NULL,
+                error_message VARCHAR(1000) NOT NULL,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                PRIMARY KEY (question_id, tikz_hash),
+                CONSTRAINT fk_tikz_failure_question FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `).catch(e => console.log("Migration notice (tikz_render_failures):", e.message));
+
+        await pool.query(`
             CREATE TABLE IF NOT EXISTS lesson_sections (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 unit_id INT NOT NULL,

@@ -9,6 +9,7 @@ import examsRouter from './routes/exams.routes.js';
 import questionsRouter from './routes/questions.routes.js';
 import learningRouter from './routes/learning.routes.js';
 import adminRouter from './routes/admin.routes.js';
+import tikzRouter from './routes/tikz.routes.js';
 
 const app = express.Router();
 
@@ -66,6 +67,7 @@ app.use('/api', examsRouter);
 app.use('/api', questionsRouter);
 app.use('/api', learningRouter);
 app.use('/api', adminRouter);
+app.use('/api', tikzRouter);
 
 app.get('/api/ping', (req, res) => {
     res.json({ status: 'ok', time: new Date() });

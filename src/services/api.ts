@@ -562,6 +562,10 @@ export const apiService = {
         const r = await handleResponse(res, '/admin/questions/full');
         return r.data;
     },
+    async fetchTikzAuditPage(afterId: number, limit: number = 100) {
+        const res = await fetch(`${API_URL}/admin/tikz-audit?afterId=${afterId}&limit=${limit}`);
+        return await handleResponse(res, '/admin/tikz-audit');
+    },
 
     // --- CLASS MANAGEMENT ---
     async fetchClasses(teacherId: number) {

@@ -20,6 +20,13 @@ interface QuestionImage {
     created_at: string;
 }
 
+interface TikzAuditRow {
+    id: number;
+    id_full: string | null;
+    status: 'NO_TIKZ' | 'SOURCE_MISMATCH' | 'MISSING_SOURCE' | 'MALFORMED_SOURCE' | 'OTHER_IMAGE' | 'PENDING' | 'READY';
+    images: { hash: string; exists: boolean; needsAction: boolean; error: string | null }[];
+}
+
 const SvgViewer = ({ hash }: { hash: string }) => {
     const [svg, setSvg] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -50,6 +57,42 @@ export const AdminSourceViewer: React.FC = () => {
     const [isEditing, setIsEditing] = useState(false);
     const [editContent, setEditContent] = useState('');
     const [isSaving, setIsSaving] = useState(false);
+    const [auditRunning, setAuditRunning] = useState(false);
+    const [auditScanned, setAuditScanned] = useState(0);
+    const [auditCounts, setAuditCounts] = useState<Record<string, number> | null>(null);
+    const [auditSamples, setAuditSamples] = useState<TikzAuditRow[]>([]);
+    const [auditError, setAuditError] = useState<string | null>(null);
+
+    const scanAllTikz = async () => {
+        setAuditRunning(true);
+        setAuditError(null);
+        setAuditScanned(0);
+        setAuditSamples([]);
+        const counts: Record<string, number> = {};
+        let cursor = 0;
+        let scanned = 0;
+        try {
+            while (true) {
+                const page = await apiService.fetchTikzAuditPage(cursor, 100);
+                const rows = page.data as TikzAuditRow[];
+                for (const row of rows) counts[row.status] = (counts[row.status] || 0) + 1;
+                scanned += rows.length;
+                setAuditScanned(scanned);
+                setAuditCounts({ ...counts });
+                setAuditSamples(previous => [
+                    ...previous,
+                    ...rows.filter(row => !['READY', 'NO_TIKZ'].includes(row.status)),
+                ].slice(0, 100));
+                if (!page.hasMore) break;
+                if (page.afterId <= cursor) throw new Error('Quét bị dừng do con trỏ không tiến.');
+                cursor = page.afterId;
+            }
+        } catch (error: any) {
+            setAuditError(error.message || 'Không thể quét TikZ.');
+        } finally {
+            setAuditRunning(false);
+        }
+    };
 
     const handleSelectQuestion = (q: QuestionSource) => {
         setSelectedQuestion(q);
@@ -61,12 +104,7 @@ export const AdminSourceViewer: React.FC = () => {
         if (!selectedQuestion) return;
         setIsSaving(true);
         try {
-            // Delete associated images
-            const hashes = getImagesInQuestion(selectedQuestion.content_latex);
-            for (const h of hashes) {
-                await apiService.deleteAdminQuestionImage(h.tikz_hash);
-            }
-            
+            // SVG hashes are shared by other questions; editing one source must not delete global images.
             // Update question with new raw latex, this will reset is_tikz_rendered to 0
             await apiService.updateQuestion(selectedQuestion.id, { 
                 id_full: selectedQuestion.legacy_full_id,
@@ -185,6 +223,46 @@ export const AdminSourceViewer: React.FC = () => {
                     </div>
                 </div>
             </header>
+
+            <section className="mb-8 rounded-3xl border border-indigo-100 bg-white p-6 shadow-sm">
+                <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+                    <div>
+                        <h2 className="text-lg font-black text-slate-800">Kiểm kê TikZ → SVG toàn database</h2>
+                        <p className="text-sm text-slate-500">Đối chiếu mã TikZ, placeholder và SVG thực tế; không sửa database khi quét.</p>
+                    </div>
+                    <button type="button" onClick={scanAllTikz} disabled={auditRunning}
+                        className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">
+                        {auditRunning ? 'Đang quét...' : 'Quét toàn bộ câu hỏi'}
+                    </button>
+                </div>
+                {auditCounts && (
+                    <div className="mt-5 flex flex-wrap gap-3 text-sm">
+                        <span className="rounded-xl bg-slate-100 px-3 py-2">Đã quét: {auditScanned}</span>
+                        <span className="rounded-xl bg-emerald-50 px-3 py-2 text-emerald-700">Đủ SVG: {auditCounts.READY || 0}</span>
+                        <span className="rounded-xl bg-amber-50 px-3 py-2 text-amber-700">Cần xử lý: {auditCounts.PENDING || 0}</span>
+                        <span className="rounded-xl bg-red-50 px-3 py-2 text-red-700">Thiếu mã gốc: {auditCounts.MISSING_SOURCE || 0}</span>
+                        <span className="rounded-xl bg-orange-50 px-3 py-2 text-orange-700">Nguồn lệch: {auditCounts.SOURCE_MISMATCH || 0}</span>
+                        <span className="rounded-xl bg-rose-50 px-3 py-2 text-rose-700">Nguồn lỗi: {auditCounts.MALFORMED_SOURCE || 0}</span>
+                        <span className="rounded-xl bg-sky-50 px-3 py-2 text-sky-700">Hình khác TikZ: {auditCounts.OTHER_IMAGE || 0}</span>
+                    </div>
+                )}
+                {auditError && <p className="mt-3 text-sm text-red-600">{auditError}</p>}
+                {auditSamples.length > 0 && (
+                    <div className="mt-4 max-h-64 overflow-auto rounded-xl border border-slate-100">
+                        {auditSamples.map(row => (
+                            <div key={row.id} className="flex flex-wrap gap-3 border-b border-slate-100 px-4 py-2 text-xs">
+                                <span className="font-bold">#{row.id} {row.id_full || ''}</span>
+                                <span>{row.status}</span>
+                                <span>{row.images.filter(image => image.needsAction).length} hình cần xử lý</span>
+                                {row.images.find(image => image.error)?.error && (
+                                    <span className="text-red-600">{row.images.find(image => image.error)?.error}</span>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+                <p className="mt-4 text-xs text-slate-500">Biên dịch trên máy local bằng <code>scripts/tikz_local_worker.py</code>; chỉ cập nhật câu hỏi sau khi SVG lưu thành công.</p>
+            </section>
 
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Questions List */}
