@@ -61,7 +61,10 @@ app.use('/api/login', authLimiter);
 app.use('/api/register', authLimiter);
 app.use('/api/forgot-password', authLimiter);
 app.use('/api', authRouter);
-app.use('/api', aiLimiter, aiRouter);
+// Only AI endpoints consume the AI quota; background job polling must not.
+app.use('/api/ai', aiLimiter);
+app.use('/api/adaptive/generate', aiLimiter);
+app.use('/api', aiRouter);
 app.use('/api/images', imageUploadLimiter);
 app.use('/api', classesRouter);
 app.use('/api', examsRouter);
