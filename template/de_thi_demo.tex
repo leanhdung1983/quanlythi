@@ -1,0 +1,229 @@
+% ==============================================================================
+% ĐỀ THI ĐƯỢC XUẤT TỰ ĐỘNG TỪ NGÂN HÀNG CÂU HỎI ID6
+% TƯƠNG THÍCH 100% VỚI template/Main-Soan-2025.tex VÀ GÓI LỆNH ex_test.sty
+% Thời gian tạo: 20:13:40 14/9/2026
+% ------------------------------------------------------------------------------
+% HƯỚNG DẪN KIỂM TRA & BIÊN DỊCH:
+% Cách 1 (Khuyên dùng): Mở file 'template/Main-Soan-2025.tex', thêm dòng:
+%       \input{<tên_file_này>}
+%       rồi biên dịch (F5) trong TeXstudio / TeXmaker.
+% Cách 2: Biên dịch độc lập trực tiếp file này (đặt cùng thư mục với ex_test.sty).
+% ==============================================================================
+
+\ifdefined\cautn\else
+\documentclass[10pt,a4paper,oneside]{book}
+\usepackage{amsmath,amssymb,mathrsfs,fancyhdr,enumerate,multirow,makecell,currfile,twemojis,yhmath}
+\usepackage{tikz,tkz-tab,tabvar,tikz-3dplot}
+\usetikzlibrary{arrows,calc,intersections,angles,snakes,quotes,backgrounds,shapes.geometric,patterns,shadings,positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepgfplotslibrary{fillbetween}
+\usepackage[tikz]{bclogo}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1.5cm, right=1.5cm]{geometry}
+\usepackage[hidelinks,unicode]{hyperref}
+
+% Gói ex_test
+\usepackage[loigiai]{ex_test}
+\def\colorEX{\color{blue}}
+
+\newcommand{\hoac}[1]{\left[\begin{aligned}#1\end{aligned}\right.}
+\newcommand{\heva}[1]{\left\{\begin{aligned}#1\end{aligned}\right.}
+\newcounter{demsode}[chapter]
+
+\newenvironment{name}[2]{
+	\noindent
+	\tikz \draw[double,blue] (0,0)--(\textwidth,0);
+	\begin{minipage}{0.44\textwidth}
+		\centering
+		{\large\color{red}\bfseries\fontfamily{anttlc}\selectfont LUYỆN THI THPT QUỐC GIA}\\	
+		{\Large\color{red}\bfseries\fontfamily{anttlc}\selectfont ĐỀ SỐ \circEX{\thedemsode}}\\			
+		\color{blue}{\bfseries\fontfamily{anttlc}\selectfont #1}\\
+		\rule{3cm}{1pt}
+	\end{minipage}
+	\begin{minipage}{0.54\textwidth}
+		\color{blue}\centering
+		{\bfseries\fontfamily{qag}\selectfont \MakeUppercase{#2}}\\
+		\textit{Đề thi trắc nghiệm theo chuẩn ma trận BGD}\\
+		\textit{Thời gian: 90 phút (không kể phát đề)}\\
+	\end{minipage}
+	\\[0.5cm]\color{blue}\hspace*{1cm}\textit{Họ và tên thí sinh:} \tikz \draw[dotted,thick] (0,0)--(\textwidth/3,0); 
+	\textit{Số báo danh:} \EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\\
+	\tikz \draw[double,blue] (0,0)--(\textwidth,0);
+	\stepcounter{demsode}
+}
+
+\newcommand{\cautn}{
+	\begin{flushleft}
+		\color{blue!50!green}	\fbox{\fontfamily{qag}\bfseries\selectfont PHẦN 1. Câu trắc nghiệm 4 phương án}
+	\end{flushleft}
+	\setcounter{ex}{0}
+}
+\newcommand{\cauds}{
+	\begin{flushleft}
+		\color{blue!50!green}	\fbox{\fontfamily{qag}\bfseries\selectfont PHẦN 2. Câu trắc nghiệm đúng sai}
+	\end{flushleft}
+	\setcounter{ex}{0}
+}
+\newcommand{\caukq}{
+	\begin{flushleft}
+		\color{blue!50!green}	\fbox{\fontfamily{qag}\bfseries\selectfont PHẦN 3. Câu trắc nghiệm trả lời ngắn.}
+	\end{flushleft}
+	\setcounter{ex}{0}
+}
+\newcommand{\cautl}{
+	\begin{flushleft}
+		\color{blue!50!green}	\fbox{\fontfamily{qag}\bfseries\selectfont PHẦN 4. Câu tự luận}
+	\end{flushleft}
+	\setcounter{ex}{0}
+}
+
+\begin{document}
+\fi
+
+\begin{name}{MÔN TOÁN HỌC - LỚP 12}{ĐỀ MINH HỌA KIỂM TRA}
+\end{name}
+
+% ==============================================================================
+% PHẦN 1: TRẮC NGHIỆM 4 PHƯƠNG ÁN
+% ==============================================================================
+\cautn
+\begin{ex}%[2D1N1-1]
+Hàm số $y = -2x^3 + 9x^2 + 24x - 114$ đồng biến trên khoảng nào dưới đây?
+	\choice
+	{\True $(-1; 4)$}
+	{$(-4; -1)$}
+	{$(-\infty; -1)$}
+	{$(4; +\infty)$}
+	\loigiai{
+		Ta có $y' = -6x^2 + 18x + 24$ và
+		$y'=0\Leftrightarrow\hoac{&x=-1\\&x=4.}$\\
+		Bảng biến thiên
+		\begin{center}
+			\begin{tikzpicture}
+				\tkzTabInit[nocadre=false, lgt=1, espcl=2.5]
+				{$x$/0.6, $y'$/0.6, $y$/2}
+				{$-\infty$, $-1$, $4$, $+\infty$}
+				\tkzTabLine{, -, 0, +, 0, -, }
+				\tkzTabVar{+/ $+\infty$, -/ $-114$, +/ $-83$, -/ $-\infty$}
+			\end{tikzpicture}
+		\end{center}
+		Vậy hàm số đồng biến trên khoảng $(-1; 4)$.
+	}
+\end{ex}
+\begin{ex}%[2D1H1-1]
+%[Dat Tien Pham, 12EX1]
+	Cho hàm số $ y=\sqrt{1-x^2} $. Khẳng định nào sau đây là \textbf{đúng}?
+	\choice
+	{Hàm số đã cho đồng biến trên $ [0;1] $}
+	{Hàm số đã cho đồng biến trên $ (0;1) $}
+	{\True Hàm số đã cho nghịch biến trên $ (0;1) $}
+	{Hàm số đã cho nghịch biến trên $ (-1;0) $}
+	\loigiai{
+		Tập xác định $ \mathscr{D}=[-1;1] $.\\
+		Ta có $ y'=\dfrac{-x}{\sqrt{1-x^2}} <0,\, \forall x \in (0;1) $.\\
+		Vậy hàm số đã cho nghịch biến trên $ (0;1) $.
+	}
+\end{ex}
+
+% ==============================================================================
+% PHẦN 2: TRẮC NGHIỆM ĐÚNG SAI
+% ==============================================================================
+\cauds
+\begin{ex}%[Dự án Tex Đề thi thử THPTQG 2526]
+%[Võ Hoàng Nghĩa]%[2D1N1-1]%[2D1N5-1]
+	Cho hàm số $f(x)=x^3+3x^2-4$.
+	\def\dotEX{}
+	\choiceTF
+	{\True Hàm số đã cho có đạo hàm là $f'(x)=3x^2+6x$.}
+	{Hàm số đã cho đồng biến trên khoảng $(-1;+\infty)$.}
+	{\True Hàm số đã cho đạt cực đại tại $x=-2$.}
+	{\True Đồ thị của hàm số đã cho có dạng như hình vẽ sau\\
+		\centerline{\begin{tikzpicture}[line cap=round,line join=round,font=\footnotesize,>=stealth,x=0.7cm,y=0.7cm]
+				\def\xmin{-3}\def\xmax{1.5}\def\ymin{-4.5}\def\ymax{2}
+				\draw[->](\xmin,0)--(\xmax,0)node[below]{$x$};
+				\draw[->](0,\ymin)--(0,\ymax)node[left]{$y$};
+				\begin{scope}
+					\clip (\xmin,\ymin)rectangle(\xmax,\ymax);
+					\draw[samples=100,domain=\xmin:\xmax]plot(\x,{(\x)^3+3*(\x)^2-4});
+				\end{scope}
+				\foreach \x/\y in {-2/above,1/above left}{
+					\draw[fill=black](\x,0) circle(1pt)node[\y]{$\x$};
+				}
+				\foreach \x/\y in {-4/below left}{
+					\draw[fill=black](0,\x) circle(1pt)node[\y]{$\x$};
+				}
+				\draw[fill=black](0,0)circle(1pt)node[below left]{$O$};
+		\end{tikzpicture}}
+	}
+	\loigiai{
+		Tập xác định $\mathscr{D}=\mathbb{R}$.
+		\begin{itemchoice}
+			\itemch Ta có $y'=3x^2+6x$; $y'=0\Leftrightarrow 3x^2+6x=0\Leftrightarrow\hoac{&x=0\\&x=-2.}$\\
+			\itemch Bảng biến thiên
+			\begin{center}
+				\begin{tikzpicture}
+					\tkzTabInit[lgt=1.2,espcl=2.5]{$x$/0.6,$f'(x)$/0.6,$f(x)$/2.5}{$-\infty$,$-2$,$0$,$+\infty$}
+					\tkzTabLine{,+,0,-,0,+,}
+					\tkzTabVar{-/$-\infty$,+/$0$,-/$-4$,+/$+\infty$}
+				\end{tikzpicture}
+			\end{center}
+			Hàm số đồng biến trên các khoảng $(-\infty;-2)$ và $(0;+\infty)$.
+			\itemch Hàm số đã cho đạt cực đại tại $x=-2$.
+			\itemch Đồ thị hàm số là
+			\begin{center}
+				\begin{tikzpicture}[line cap=round,line join=round,font=\footnotesize,>=stealth,x=0.7cm,y=0.7cm]
+					\def\xmin{-3}\def\xmax{1.5}\def\ymin{-4.5}\def\ymax{2}
+					\draw[->](\xmin,0)--(\xmax,0)node[below]{$x$};
+					\draw[->](0,\ymin)--(0,\ymax)node[left]{$y$};
+					\begin{scope}
+						\clip (\xmin,\ymin)rectangle(\xmax,\ymax);
+						\draw[samples=100,domain=\xmin:\xmax]plot(\x,{(\x)^3+3*(\x)^2-4});
+					\end{scope}
+					\foreach \x/\y in {-2/above,1/above left}{
+						\draw[fill=black](\x,0) circle(1pt)node[\y]{$\x$};
+					}
+					\foreach \x/\y in {-4/below left}{
+						\draw[fill=black](0,\x) circle(1pt)node[\y]{$\x$};
+					}
+					\draw[fill=black](0,0)circle(1pt)node[below left]{$O$};
+				\end{tikzpicture}
+			\end{center}
+		\end{itemchoice}
+		
+	}
+\end{ex}
+
+% ==============================================================================
+% PHẦN 3: TRẢ LỜI NGẮN
+% ==============================================================================
+\caukq
+\begin{ex}%[2D1N1-2]
+\immini
+		{Cho đồ thị hàm số $y=f(x)$ có đồ thị như hình vẽ bên.
+			Hàm số $y=f(x)$ nghịch biến trên khoảng $(a;b)$. Tính $a+2b$.}
+		{\begin{tikzpicture}[line join=round, line cap=round,>=stealth,scale=0.8,font=\footnotesize]
+				\draw[->] (-2,0)--(4,0)node[right]{$x$};
+				\draw[->] (0,-2.5)--(0,3)node[above]{$y$};
+				\draw[samples=200,domain=-1:3,smooth] plot (\x,{(\x)^3-3*(\x)^2+2});
+				\foreach \i in {-1,1,2} 
+				\draw[fill=black] (\i,0) circle (1pt) node[above]{$\i$};
+				\draw[fill=black] (0,0) circle (1pt) node[above left]{$O$};
+				\draw[dashed] (-1,0)--(-1,-2)--(0,-2)--(2,-2)--(2,0);
+				\foreach \i in {-2,2}
+				\draw[fill=black] (0,\i) circle (1pt) (0,\i)node[above left]{$\i$};
+		\end{tikzpicture}}
+		\shortans{4}
+		\loigiai{
+			Dựa vào đồ thị hàm số, ta thấy hàm số $y=f(x)$ nghịch biến trên khoảng $(0;2)$.
+			Suy ra $a=0$ và $b=2$.\\
+			Vậy $a+2b = 4$.
+		}
+\end{ex}
+
+\begin{center}
+    \textbf{--------- HẾT ---------}
+\end{center}
+
+\ifdefined\cautn\else
+\end{document}
+\fi

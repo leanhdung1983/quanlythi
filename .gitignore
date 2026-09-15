@@ -1,0 +1,11 @@
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+output/
+tmp/
+_sync_bank_id6/
+_deploy_quanlythi/
+*.log
+.DS_Store

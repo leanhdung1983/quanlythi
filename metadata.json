@@ -1,0 +1,5 @@
+{
+  "name": "ID6 Question Bank Manager",
+  "description": "A comprehensive system for managing educational questions using the ID6 coding structure, featuring LaTeX support, exam generation, and metadata parsing.",
+  "requestFramePermissions": []
+}

@@ -1,0 +1,30 @@
+
+services:
+  - type: web
+    name: quanlythi
+    runtime: node
+    plan: free
+    # Lệnh này sẽ chạy mỗi khi bạn push code lên GitHub
+    buildCommand: npm ci && npm run build
+    # Lệnh này chạy sau khi build xong để khởi động server
+    startCommand: npm start
+    healthCheckPath: /api/ping
+    envVars:
+      - key: NODE_VERSION
+        value: 24.14.1
+      - key: DB_HOST
+        sync: false
+      - key: DB_USER
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: DB_NAME
+        value: id6_question_bank
+      - key: DB_PORT
+        value: 3306
+      - key: GEMINI_API_KEY
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
+      - key: AUTH_SECRET
+        generateValue: true

@@ -1,0 +1,163 @@
+\documentclass[10pt,a4paper,oneside]{book}
+%ver-texlive2021
+\usepackage{amsmath,amssymb,mathrsfs,fancyhdr,enumerate,multirow,makecell,currfile,fontawesome5,twemojis,yhmath}
+\usepackage{tikz,tkz-tab,tabvar,tikz-3dplot}
+\usetikzlibrary{arrows,calc,intersections,angles,snakes,quotes,backgrounds,shapes.geometric,patterns,shadings,positioning}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.9}
+\usepgfplotslibrary{fillbetween}
+\usepackage[tikz]{bclogo}
+\usepackage[top=1.5cm, bottom=1.5cm, left=1.5cm, right=1.5cm] {geometry}
+\usepackage[hidelinks,unicode]{hyperref}
+
+%gói ex_test
+%\usepackage[dethi]{ex_test}
+\usepackage[loigiai]{ex_test}
+%\usepackage[book]{ex_test}
+\def\colorEX{\color{blue}}
+
+\newtheorem{bt}{Bài}
+\newtheorem{dl}{Đinh lí}
+\usepackage{esvect}
+\def\vec{\vv}
+\def\overrightarrow{\vv}
+
+%Tạo background
+\usepackage{background}
+\usepackage{ifoddpage}
+\backgroundsetup{%
+	scale=1,       %% change accordingly
+	angle=0,       %% change accordingly
+	opacity=.6,    %% change accordingly
+	color =black,  %% change accordingly
+	contents={
+		\checkoddpage
+		\ifoddpage
+		{\begin{tikzpicture}[remember picture,overlay,scale=.75]
+				\node[rotate=90] at ($(current page.east)+(-1.26cm,0)$) {\fontsize{20pt}{15pt}\fontfamily{qag}\selectfont LUYỆN THI THPT QUỐC GIA};    ***How can I put my image to upper right corner of each image.***
+		\end{tikzpicture}}
+		\else
+		{\begin{tikzpicture}[remember picture,overlay,scale=.5]
+				\node[rotate=90] at ($(current page.west)+(1.26cm,0)$) {\fontsize{20pt}{15pt}\fontfamily{qag}\selectfont Học toán cùng thầy Dũng};    ***How can I put my image to upper right corner of each image.***
+		\end{tikzpicture}}
+		\fi
+	}
+}
+
+%Lệnh của gói mathrsfs
+%\DeclareSymbolFont{rsfs}{U}{rsfs}{m}{n}
+%\DeclareSymbolFontAlphabet{\mathscr}{rsfs}
+%Lệnh cung
+%\DeclareSymbolFont{largesymbols}{OMX}{yhex}{m}{n}
+%\DeclareMathAccent{\wideparen}{\mathord}{largesymbols}{"F3}
+%Lệnh song song
+%\DeclareSymbolFont{symbolsC}{U}{txsyc}{m}{n}
+%\DeclareMathSymbol{\varparallel}{\mathrel}{symbolsC}{9}
+%\DeclareMathSymbol{\parallel}{\mathrel}{symbolsC}{9}
+%Hệ hoặc, hệ và
+\newcommand{\hoac}[1]{
+	\left[\begin{aligned}#1\end{aligned}\right.}
+\newcommand{\heva}[1]{
+	\left\{\begin{aligned}#1\end{aligned}\right.}
+\renewcommand{\baselinestretch}{1.4}
+
+%Tạo biến đếm số đề
+\newcounter{demsode}[chapter]
+
+\makeatletter
+\renewcommand{\labelenumi}{\alph{enumi})}
+\makeatother
+\newenvironment{name}[2]{
+	\noindent
+	\tikz \draw[double,blue] (0,0)--(\textwidth,0);
+	\begin{minipage}{0.44\textwidth}
+		\centering
+		{\large\color{red}\bfseries\fontfamily{anttlc}\selectfont LUYỆN THI THPT QUỐC GIA 2024}\\	
+		{\Large\color{red}	\bfseries\fontfamily{anttlc}\selectfont ĐỀ SỐ \circEX{\thedemsode}}\\			
+		\color{blue}	{\bfseries\fontfamily{anttlc}\selectfont #1}\\
+		\rule{3cm}{1pt}
+	\end{minipage}
+	\begin{minipage}{0.54\textwidth}
+		\color{blue}	\centering
+		%{\Large	\bfseries\fontfamily{anttlc}\selectfont\MakeUppercase{#2}}\\
+		{\bfseries\fontfamily{qag}\selectfont \MakeUppercase{#2} }\\
+		\textit{Đề thi có 50 câu trắc nghiệm}\\
+		\textit{Thời gian: 90 phút (không kể phát đề)}\\
+		\addcontentsline{toc}{section}{Đề số \thedemsode.\, #2}
+	\end{minipage}
+	\\[0.5cm]\color{blue}\hspace*{1cm}	\textit{Họ và tên thí sinh:} \tikz \draw[dotted,thick] (0,0)--(\textwidth/3,0); 
+	\textit{Số báo danh:} \EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\EXboxTF{}\\
+	\tikz \draw[double,blue] (0,0)--(\textwidth,0);
+	\stepcounter{demsode}
+}
+
+%indapan
+\newcommand{\indapan}[2]{
+	\begin{center}
+	\color{blue!50!green}	\fbox{\fontfamily{qag}\bfseries\selectfont BẢNG ĐÁP ÁN}
+	\end{center}
+	\fontfamily{lmtt}\bfseries\selectfont	\inputansbox{#1}{#2}
+}
+\pagestyle{fancy}
+\lhead{Giáo viên: Lê Anh Dũng - 0905.128.771}
+%\newpage
+\chead{\empty}
+\rhead{\currfilename}
+\lfoot{\empty}
+
+%\renewcommand\choiceTF\choiceTFt
+%\newcommand{\kindSA}{0}
+\newcommand{\cautn}{
+	\begin{flushleft}
+		\color{blue!50!green}	\fbox{ \fontfamily{qag}\bfseries\selectfont PHẦN 1. Câu trắc nghiệm 4 phương án}
+	\end{flushleft}
+\setcounter{ex}{0}
+}
+
+\newcommand{\cauds}{
+	\begin{flushleft}
+	\color{blue!50!green}	\fbox{ \fontfamily{qag}\bfseries\selectfont PHẦN 2. Câu trắc nghiệm đúng sai}
+\end{flushleft}
+\setcounter{ex}{0}
+}
+\newcommand{\caukq}{
+	\begin{flushleft}
+		\color{blue!50!green}	\fbox{ \fontfamily{qag}\bfseries\selectfont PHẦN 3. Câu trắc nghiệm trả lời ngắn.}
+	\end{flushleft}
+\setcounter{ex}{0}
+}
+
+\newcommand{\cautl}{
+	\begin{flushleft}
+		\color{blue!50!green}	\fbox{ \fontfamily{qag}\bfseries\selectfont PHẦN 4. Câu tự luận}
+	\end{flushleft}
+	\setcounter{ex}{0}
+}
+
+%\hideSA{}
+% ẩn bảng đáp án.
+%\renewcommand{\indapan}[2]{}
+\usepackage{chessboard}
+\begin{document}
+\setcounter{demsode}{1}
+\everymath{\color{blue}}
+%\input{Chuong1/2-TT-1-DoVanDuc-26}
+%\input{Chuong1/KT_GHK2_PhanChuTrinh}
+%\input{Chuong1/2-TT-Cum12-DakLak-26}
+\input{Chương1/2-02-HSG-2526-SGD-DaNang}
+%\input{Chuong1/2-TT-SoNgheAn-Lan1-26}
+%\input{Chuong1/dego\mathrm{C}_toan11}
+%\input{Chuong1/De1_HK2_Toan11}
+%\newpage
+%\input{Chuong1/De2_HK2_Toan11}
+%\input{Chuong1/Giai_De_THT_Bang_M1}
+%\input{Chuong1/2-TT-SoDaNang-2026}
+%\input{Chuong1/2-TT-SoQuangTri-2526}
+%\input{Chuong1/74-26-2-PhuTho-YenLac-L5}
+%\input{CHuong1/2-TT-BacNinh-L2-25-26}
+%\input{Chuong1/De-THPTQG-2026}
+%\input{Chuong1/De_Tong_Hop}
+%\input{Chuong1/9TS26C-1-SGD-DaNang}
+%\input{Chuong1/CD8-Cau31-41}
+%\input{Chuong1/de_thi}
+\end{document}

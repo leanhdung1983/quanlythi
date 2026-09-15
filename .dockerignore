@@ -1,0 +1,12 @@
+
+node_modules
+build
+dist
+.git
+.env
+Dockerfile
+docker-compose.yml
+*.log
+.DS_Store
+tik_service.py
+requirements.txt
