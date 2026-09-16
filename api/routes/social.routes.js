@@ -55,8 +55,8 @@ router.get('/admin/social/check', async (req, res) => {
 router.get('/admin/social/queue', async (req, res) => {
     if (!requireAdmin(req, res)) return;
     try {
-        const rows = await query(`SELECT s.id,s.question_id,s.caption,s.scheduled_at,s.status,s.attempt_count,
-            s.last_error,s.fb_photo_id,s.fb_post_id,s.posted_at,s.created_at,s.updated_at,
+        const rows = await query(`SELECT s.id,s.question_id,s.caption,s.scheduled_at,s.status,
+            s.last_error,s.posted_at,s.created_at,s.updated_at,
             (s.image_blob IS NOT NULL) AS has_image,
             q.legacy_full_id AS id_full,q.content_latex AS raw_latex
             FROM social_post_queue s LEFT JOIN questions q ON q.id=s.question_id

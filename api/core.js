@@ -766,6 +766,23 @@ export async function seedDatabase() {
             UNIQUE KEY uq_social_claim(claim_token),
             INDEX idx_social_question(question_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
+        // CREATE TABLE IF NOT EXISTS does not upgrade an older table. Keep every
+        // column used by both manual planning and the optional publisher in sync.
+        await pool.query(`ALTER TABLE social_post_queue
+            ADD COLUMN IF NOT EXISTS image_mime VARCHAR(20) NULL,
+            ADD COLUMN IF NOT EXISTS image_blob LONGBLOB NULL,
+            ADD COLUMN IF NOT EXISTS approved_by INT NULL,
+            ADD COLUMN IF NOT EXISTS attempt_count INT NOT NULL DEFAULT 0,
+            ADD COLUMN IF NOT EXISTS claim_token CHAR(36) NULL,
+            ADD COLUMN IF NOT EXISTS publish_started_at DATETIME NULL,
+            ADD COLUMN IF NOT EXISTS posted_at DATETIME NULL,
+            ADD COLUMN IF NOT EXISTS fb_photo_id VARCHAR(100) NULL,
+            ADD COLUMN IF NOT EXISTS fb_post_id VARCHAR(100) NULL,
+            ADD COLUMN IF NOT EXISTS last_error VARCHAR(1000) NULL,
+            ADD COLUMN IF NOT EXISTS created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            ADD COLUMN IF NOT EXISTS updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`);
+        await pool.query(`ALTER TABLE social_post_queue
+            MODIFY COLUMN status ENUM('DRAFT','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT'`);
         const [socialImageColumns] = await pool.query("SHOW COLUMNS FROM social_post_queue WHERE Field IN ('image_mime','image_blob')");
         if (socialImageColumns.some(column => column.Null === 'NO')) {
             await pool.query('ALTER TABLE social_post_queue MODIFY COLUMN image_mime VARCHAR(20) NULL, MODIFY COLUMN image_blob LONGBLOB NULL');
