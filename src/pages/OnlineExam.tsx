@@ -10,6 +10,7 @@ import { clearSvgCache } from '../components/TikZRenderer';
 import { extractMatrixHierarchy, prepareMatrixPayload } from '../utils/matrixUtils';
 import { checkKQAnswer, calculateExamScore } from '../utils/gradeHelper';
 import { parseQuestionContent, shuffleArray } from '../utils/latexParser';
+import { ensureExamSessionId } from '../utils/examSession';
 import { 
     Clock, PlayCircle, ChevronRight, BookOpen, 
     Loader2, BarChart3, 
@@ -444,9 +445,17 @@ export const OnlineExam: React.FC = () => {
         if (submittingRef.current) return;
         submittingRef.current = true;
         try {
-            if (!user || !currentExamSessionId) throw new Error('Không tìm thấy phiên thi. Bài làm vẫn được giữ trên máy; vui lòng thử lại.');
+            if (!user) throw new Error('Vui lòng đăng nhập lại. Bài làm vẫn được giữ trên máy.');
+            let sessionId = currentExamSessionId;
+            // Legacy local progress may predate server sessions. Recover it via
+            // the normal start endpoint (including all LMS/attempt restrictions).
+            if (!sessionId) {
+                sessionId = await ensureExamSessionId(sessionId, () => apiService.startExamSession({ matrix_id: currentMatrixId,
+                    exam_title: currentExamTitle, questions, duration_seconds: totalTime, scoring_settings: examSettings || {} }));
+                setCurrentExamSessionId(sessionId);
+            }
             const result = await apiService.saveExamResult({
-                id: currentExamSessionId,
+                id: sessionId,
                 duration_seconds: totalTime - timeLeft,
                 answers
             }, isAuto);
@@ -468,7 +477,7 @@ export const OnlineExam: React.FC = () => {
         } catch (e: any) {
             showAlert('Chưa nộp được bài', e.message || 'Bài làm chưa được xác nhận. Vui lòng thử nộp lại.');
         } finally { submittingRef.current = false; }
-    }, [answers, user, currentExamSessionId, totalTime, timeLeft, loadDashboardData, showAlert]);
+    }, [answers, questions, examSettings, currentMatrixId, currentExamTitle, user, currentExamSessionId, totalTime, timeLeft, loadDashboardData, showAlert]);
 
     const groupedExams = useMemo(() => {
         const tree: Record<string, Record<string, Record<string, Record<string, SavedMatrix[]>>>> = {};
@@ -768,7 +777,7 @@ export const OnlineExam: React.FC = () => {
                     });
                     if (sessionRes && sessionRes.id) {
                         setCurrentExamSessionId(sessionRes.id);
-                    }
+                    } else throw new Error('Máy chủ chưa xác nhận phiên thi. Vui lòng thử lại.');
                 } catch(e: any) {
                     console.error("Failed to start session on server", e);
                     showAlert("Không thể vào thi", e.message || "Bạn không thể vào thi bài tập này.");
