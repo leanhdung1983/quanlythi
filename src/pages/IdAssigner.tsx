@@ -8,7 +8,7 @@ import { isValidID6, normalizeID } from '../utils/id6Helper';
 import { detectQuestionTypeFromLatex } from '../services/parser';
 import { useLanguageStore } from '../services/languageStore';
 import { useAuthStore } from '../services/authStore';
-import { validateAndTagQuestion } from '../services/aiService';
+import { validateAndTagQuestion, batchSuggestIds } from '../services/aiService';
 
 // --- TYPES ---
 interface WorkItem {
@@ -24,6 +24,9 @@ interface WorkItem {
     issueCodes?: string[];
     suggestedId?: string;
     updatedAt?: string;
+    aiSuggested?: boolean;
+    aiConfidence?: number;
+    aiReason?: string;
 }
 
 interface LoadedFile {
@@ -63,6 +66,12 @@ export const IdAssigner: React.FC = () => {
     const [showDbLoadModal, setShowDbLoadModal] = useState(false);
     const [dbLoadType, setDbLoadType] = useState<'UNASSIGNED' | 'REVIEW' | 'SEARCH'>('UNASSIGNED');
     const [dbSearchTerm, setDbSearchTerm] = useState('');
+    const [autoSuggestAiOnLoad, setAutoSuggestAiOnLoad] = useState(true);
+
+    // --- STATE: AI BATCH SUGGEST ---
+    const [isAiBatchRunning, setIsAiBatchRunning] = useState(false);
+    const [aiBatchProgress, setAiBatchProgress] = useState({ current: 0, total: 0, message: '' });
+    const cancelAiBatchRef = useRef(false);
     
     // --- STATE: ID BUILDER FORM ---
     const [selClass, setSelClass] = useState(2);
@@ -379,6 +388,96 @@ export const IdAssigner: React.FC = () => {
         };
     };
 
+    const handleBatchAiSuggest = async (targetFileId?: string, specificItems?: WorkItem[]) => {
+        const fileId = targetFileId || activeFileId;
+        if (!fileId) return;
+        const file = files.find(f => f.uniqueId === fileId);
+        const currentItems = specificItems || file?.workItems;
+        if (!currentItems || currentItems.length === 0) return;
+
+        const validIdSet = new Set(metadata.map(m => m.id_full));
+        const itemsToProcess = currentItems.filter(item => {
+            return !isValidID6(item.assignedId) || !validIdSet.has(item.assignedId) || item.assignedId.includes('?');
+        });
+
+        if (itemsToProcess.length === 0) {
+            alert("Tất cả các câu hỏi trong tệp này đều đã có mã ID6 hợp lệ trong danh mục.");
+            return;
+        }
+
+        setIsAiBatchRunning(true);
+        cancelAiBatchRef.current = false;
+        setAiBatchProgress({ current: 0, total: itemsToProcess.length, message: `Bắt đầu phân tích ${itemsToProcess.length} câu hỏi...` });
+
+        try {
+            const questionsPayload = itemsToProcess.map(item => ({
+                id: item.id,
+                latex: item.content,
+                current_id: item.assignedId
+            }));
+
+            const results = await batchSuggestIds(questionsPayload, (processed, total) => {
+                setAiBatchProgress({
+                    current: processed,
+                    total: total,
+                    message: `Đang phân tích & đề xuất: ${processed}/${total} câu...`
+                });
+            });
+
+            if (cancelAiBatchRef.current) {
+                alert("Đã tạm dừng quá trình AI đề xuất theo yêu cầu.");
+                return;
+            }
+
+            const resultMap = new Map<number, { suggestedId: string; confidence: number; reason: string }>();
+            results.forEach(r => {
+                if (r.suggestedId) resultMap.set(r.id, r);
+            });
+
+            let updatedCount = 0;
+            setFiles(prev => prev.map(f => {
+                if (f.uniqueId !== fileId) return f;
+                const updatedItems = f.workItems.map(item => {
+                    const ai = resultMap.get(item.id);
+                    if (ai && ai.suggestedId) {
+                        updatedCount++;
+                        return {
+                            ...item,
+                            assignedId: ai.suggestedId,
+                            suggestedId: ai.suggestedId,
+                            hasChanged: true,
+                            aiSuggested: true,
+                            aiConfidence: ai.confidence,
+                            aiReason: ai.reason
+                        };
+                    }
+                    return item;
+                });
+                return { ...f, workItems: updatedItems, isDirty: true };
+            }));
+
+            if (selectedQuestionId !== null) {
+                const currentAi = resultMap.get(selectedQuestionId);
+                if (currentAi) {
+                    setAiResult({
+                        isValid: true,
+                        reason: currentAi.reason,
+                        suggestedId: currentAi.suggestedId,
+                        confidence: currentAi.confidence
+                    });
+                }
+            }
+
+            alert(`✨ Hoàn tất! AI đã đề xuất mã ID cho ${updatedCount}/${itemsToProcess.length} câu hỏi.\n\nThầy/cô vui lòng kiểm tra lại danh sách bên trái rồi nhấn "Xác nhận lưu CSDL".`);
+        } catch (e: any) {
+            console.error("AI Batch suggest error:", e);
+            alert("Lỗi đề xuất AI: " + (e.message || "Vui lòng thử lại"));
+        } finally {
+            setIsAiBatchRunning(false);
+            setAiBatchProgress({ current: 0, total: 0, message: '' });
+        }
+    };
+
     const handleLoadFromDB = async () => {
         setIsProcessing(true);
         setShowDbLoadModal(false);
@@ -428,6 +527,13 @@ export const IdAssigner: React.FC = () => {
             setActiveFileId(newFile.uniqueId);
             setSidebarMode('QUESTIONS');
             if (items.length > 0) setSelectedQuestionId(items[0].id);
+
+            // Tự động kích hoạt đề xuất ID bằng AI nếu bật lựa chọn
+            if (autoSuggestAiOnLoad && (dbLoadType === 'UNASSIGNED' || dbLoadType === 'REVIEW')) {
+                setTimeout(() => {
+                    handleBatchAiSuggest(newFile.uniqueId, items);
+                }, 300);
+            }
 
         } catch (e: any) {
             alert("Lỗi tải từ DB: " + e.message);
@@ -916,6 +1022,12 @@ export const IdAssigner: React.FC = () => {
         return activeFile.workItems.filter(i => i.originalId === currentItem.originalId && i.id !== currentItem.id).length;
     }, [activeFile, currentItem]);
 
+    const unassignedCount = useMemo(() => {
+        if (!activeFile) return 0;
+        const validIdSet = new Set(metadata.map(m => m.id_full));
+        return activeFile.workItems.filter(i => !isValidID6(i.assignedId) || !validIdSet.has(i.assignedId) || i.assignedId.includes('?')).length;
+    }, [activeFile, metadata]);
+
     // --- RENDER ---
     return (
         <div className="h-full flex flex-col space-y-3 min-h-[600px] overflow-auto lg:overflow-hidden">
@@ -927,7 +1039,7 @@ export const IdAssigner: React.FC = () => {
                     </h1>
                     <p className="text-xs text-slate-500 hidden md:block">Công cụ gán mã ID tự động cho tài liệu LaTeX & CSDL.</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex items-center gap-2">
                     <button onClick={() => setShowManualModal(true)} className="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-slate-50 shadow-sm flex items-center gap-2">
                         <ClipboardPaste size={16}/> Dán Text
                     </button>
@@ -938,19 +1050,48 @@ export const IdAssigner: React.FC = () => {
                         <FolderOpen size={16}/> Mở File
                     </button>
                     <input type="file" ref={fileInputRef} className="hidden" accept=".tex,.txt" multiple onChange={handleFileUpload}/>
+
+                    {activeFile && (
+                        <button 
+                            onClick={() => handleBatchAiSuggest()} 
+                            disabled={isAiBatchRunning || isProcessing || isSavingDb} 
+                            className="bg-purple-50 border border-purple-200 text-purple-700 hover:bg-purple-100 px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
+                            title="Sử dụng AI tự động phân tích và gán mã ID cho tất cả câu chưa có ID"
+                        >
+                            {isAiBatchRunning ? <Loader2 size={15} className="animate-spin text-purple-600"/> : <Sparkles size={15} className="text-purple-600"/>}
+                            <span>AI Đề xuất ID {unassignedCount > 0 ? `(${unassignedCount})` : ''}</span>
+                        </button>
+                    )}
                     
                     {files.length > 0 && activeFile && !activeFile.isDbSource && (
                         <>
-                            <div className="h-8 w-px bg-slate-200 mx-1"></div>
+                            <div className="h-6 w-px bg-slate-200 mx-0.5"></div>
                             <button onClick={handleSaveToBank} disabled={isSavingDb} className="px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-all">
                                 {isSavingDb ? <Loader2 size={16} className="animate-spin"/> : <Database size={16}/>} Lưu DB
                             </button>
                         </>
                     )}
                     {activeFile?.isDbSource && (
-                        <button onClick={handleNormalizeDbSource} disabled={isProcessing || isSavingDb} className="px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm bg-emerald-600 text-white hover:bg-emerald-700 disabled:opacity-50 transition-all">
-                            <Sparkles size={16}/> Chuẩn hóa mã nguồn
-                        </button>
+                        <>
+                            <div className="h-6 w-px bg-slate-200 mx-0.5"></div>
+                            <button 
+                                onClick={() => handleSaveDbChanges(activeFile.uniqueId)} 
+                                disabled={isSavingDb || isProcessing || isAiBatchRunning} 
+                                className="px-3.5 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 shadow-sm bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95"
+                                title="Xác nhận lưu toàn bộ thay đổi vào CSDL"
+                            >
+                                {isSavingDb ? <Loader2 size={15} className="animate-spin"/> : <Save size={15}/>}
+                                <span>Xác nhận lưu CSDL</span>
+                                {activeFile.workItems.filter(i => i.hasChanged).length > 0 && (
+                                    <span className="bg-white/25 text-white text-[10px] font-extrabold px-1.5 py-0.2 rounded-full">
+                                        {activeFile.workItems.filter(i => i.hasChanged).length}
+                                    </span>
+                                )}
+                            </button>
+                            <button onClick={handleNormalizeDbSource} disabled={isProcessing || isSavingDb || isAiBatchRunning} className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-all">
+                                <Sparkles size={13}/> Chuẩn hóa
+                            </button>
+                        </>
                     )}
                 </div>
             </div>
@@ -1031,28 +1172,70 @@ export const IdAssigner: React.FC = () => {
                                     ))}
                                 </div>
                             ) : (
-                                <div className="divide-y divide-slate-100">
-                                    {sortedSidebarItems.map(item => {
-                                        const isPending = !isValidID6(item.assignedId) || !metadata.some(m => m.id_full === item.assignedId);
-                                        const isSelected = selectedQuestionId === item.id;
-                                        return (
-                                            <div key={item.id} 
-                                                onClick={() => setSelectedQuestionId(item.id)}
-                                                className={`p-3 cursor-pointer transition-colors hover:bg-slate-50 ${isSelected ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'border-l-4 border-l-transparent'}`}
-                                            >
-                                                <div className="flex justify-between items-center mb-1">
-                                                    <span className={`font-bold text-xs flex items-center gap-1.5 ${isPending ? 'text-amber-600' : 'text-green-600'}`}>
-                                                        #{item.id + 1} {isPending ? <AlertTriangle size={10}/> : <CheckCircle2 size={10}/>}
-                                                    </span>
-                                                    <span className={`font-mono text-[10px] px-1.5 py-0.5 rounded border ${isPending ? 'bg-amber-50 border-amber-100 text-amber-700' : 'bg-green-50 border-green-100 text-green-700'}`}>
-                                                        {item.assignedId}
-                                                    </span>
-                                                </div>
-                                                <p className="text-[10px] text-slate-500 line-clamp-1 italic opacity-80">{item.content.substring(0, 50)}...</p>
+                                <div className="flex flex-col h-full">
+                                    {unassignedCount > 0 && (
+                                        <div className="p-2.5 bg-amber-50/90 border-b border-amber-200 flex items-center justify-between gap-2 shrink-0">
+                                            <div className="text-[11px] text-amber-900 font-semibold flex items-center gap-1.5">
+                                                <AlertTriangle size={13} className="text-amber-600 shrink-0"/>
+                                                <span><strong>{unassignedCount}</strong> câu chưa có ID</span>
                                             </div>
-                                        );
-                                    })}
-                                    {sortedSidebarItems.length === 0 && <div className="p-8 text-center text-slate-400 text-xs italic">Không có câu hỏi nào.</div>}
+                                            <button
+                                                onClick={() => handleBatchAiSuggest()}
+                                                disabled={isAiBatchRunning}
+                                                className="bg-purple-600 hover:bg-purple-700 text-white text-[11px] font-bold px-2.5 py-1 rounded-lg flex items-center gap-1 shadow-2xs transition-all active:scale-95 disabled:opacity-50"
+                                                title="Đề xuất mã ID tự động bằng AI cho tất cả các câu chưa có ID"
+                                            >
+                                                {isAiBatchRunning ? <Loader2 size={12} className="animate-spin"/> : <Sparkles size={12}/>}
+                                                AI Đề xuất
+                                            </button>
+                                        </div>
+                                    )}
+                                    <div className="divide-y divide-slate-100 flex-1 overflow-y-auto custom-scrollbar">
+                                        {sortedSidebarItems.map(item => {
+                                            const isPending = !isValidID6(item.assignedId) || !metadata.some(m => m.id_full === item.assignedId);
+                                            const isSelected = selectedQuestionId === item.id;
+                                            return (
+                                                <div key={item.id} 
+                                                    onClick={() => setSelectedQuestionId(item.id)}
+                                                    className={`p-3 cursor-pointer transition-colors hover:bg-slate-50 ${isSelected ? 'bg-blue-50 border-l-4 border-l-blue-500' : 'border-l-4 border-l-transparent'}`}
+                                                >
+                                                    <div className="flex justify-between items-center mb-1">
+                                                        <span className={`font-bold text-xs flex items-center gap-1.5 ${isPending ? 'text-amber-600' : 'text-green-600'}`}>
+                                                            #{item.id + 1} {isPending ? <AlertTriangle size={10}/> : <CheckCircle2 size={10}/>}
+                                                        </span>
+                                                        <div className="flex items-center gap-1">
+                                                            {item.aiSuggested && (
+                                                                <span className="flex items-center gap-0.5 text-[9px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded border border-purple-200" title="Mã ID do AI đề xuất">
+                                                                    <Sparkles size={9} className="text-purple-600"/> AI
+                                                                </span>
+                                                            )}
+                                                            <span className={`font-mono text-[10px] px-1.5 py-0.5 rounded border ${isPending ? 'bg-amber-50 border-amber-100 text-amber-700' : 'bg-green-50 border-green-100 text-green-700'}`}>
+                                                                {item.assignedId}
+                                                            </span>
+                                                        </div>
+                                                    </div>
+                                                    <p className="text-[10px] text-slate-500 line-clamp-1 italic opacity-80">{item.content.substring(0, 50)}...</p>
+                                                </div>
+                                            );
+                                        })}
+                                        {sortedSidebarItems.length === 0 && <div className="p-8 text-center text-slate-400 text-xs italic">Không có câu hỏi nào.</div>}
+                                    </div>
+
+                                    {activeFile?.isDbSource && activeFile.workItems.some(i => i.hasChanged) && (
+                                        <div className="p-2.5 bg-indigo-50/90 border-t border-indigo-200 flex items-center justify-between gap-2 shrink-0">
+                                            <div className="text-[11px] text-indigo-900 font-bold">
+                                                Đã sửa: {activeFile.workItems.filter(i => i.hasChanged).length} câu
+                                            </div>
+                                            <button
+                                                onClick={() => handleSaveDbChanges(activeFile.uniqueId)}
+                                                disabled={isSavingDb}
+                                                className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold rounded-lg flex items-center gap-1.5 shadow-sm transition-all active:scale-95 disabled:opacity-50"
+                                            >
+                                                {isSavingDb ? <Loader2 size={13} className="animate-spin"/> : <Save size={13}/>}
+                                                Lưu vào CSDL
+                                            </button>
+                                        </div>
+                                    )}
                                 </div>
                             )}
                         </div>
@@ -1102,6 +1285,26 @@ export const IdAssigner: React.FC = () => {
                                                     } as Record<string, string>)[code] || code}
                                                 </span>
                                             ))}
+                                        </div>
+                                    )}
+
+                                    {currentItem.aiSuggested && (
+                                        <div className="flex items-center justify-between p-2 bg-purple-50/90 border border-purple-200 rounded-lg text-xs">
+                                            <div className="flex items-center gap-2">
+                                                <Sparkles size={14} className="text-purple-600 shrink-0"/>
+                                                <span className="text-purple-900">
+                                                    AI đề xuất: <code className="font-bold text-indigo-700 bg-white px-1.5 py-0.5 rounded border border-purple-200">{currentItem.assignedId}</code>
+                                                    {currentItem.aiConfidence !== undefined && (
+                                                        <span className="text-purple-700 font-normal ml-1.5">({Math.round(currentItem.aiConfidence * 100)}% tin cậy)</span>
+                                                    )}
+                                                    {currentItem.aiReason && <span className="text-slate-500 font-normal ml-2 italic">- {currentItem.aiReason}</span>}
+                                                </span>
+                                            </div>
+                                            {currentItem.hasChanged && activeFile?.isDbSource && (
+                                                <span className="text-[10px] font-bold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-200">
+                                                    Chờ lưu CSDL
+                                                </span>
+                                            )}
                                         </div>
                                     )}
                                     
@@ -1378,6 +1581,28 @@ export const IdAssigner: React.FC = () => {
                             </div>
                         </div>
 
+                        {/* Tùy chọn đề xuất AI hàng loạt */}
+                        <div className="mt-4 pt-4 border-t border-slate-100">
+                            <label className="flex items-start gap-3 p-3 bg-gradient-to-r from-indigo-50/80 to-purple-50/80 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-50/90 transition-colors select-none">
+                                <input 
+                                    type="checkbox" 
+                                    checked={autoSuggestAiOnLoad}
+                                    onChange={e => setAutoSuggestAiOnLoad(e.target.checked)}
+                                    className="mt-0.5 rounded border-indigo-300 text-indigo-600 focus:ring-indigo-500 w-4 h-4 cursor-pointer"
+                                />
+                                <div className="flex-1">
+                                    <div className="flex items-center gap-1.5 font-bold text-xs text-indigo-950">
+                                        <Sparkles size={14} className="text-indigo-600 animate-pulse" />
+                                        <span>Tự động đề xuất mã ID bằng AI sau khi tải</span>
+                                        <span className="bg-indigo-600 text-white text-[9px] px-1.5 py-0.5 rounded font-black tracking-wide">MỚI</span>
+                                    </div>
+                                    <p className="text-[11px] text-slate-600 mt-0.5 leading-snug">
+                                        AI sẽ tự động phân tích nội dung câu hỏi, đối chiếu mục lục ID6 và điền sẵn mã đề xuất để bạn rà soát lại trước khi lưu CSDL.
+                                    </p>
+                                </div>
+                            </label>
+                        </div>
+
                         <div className="mt-6 flex justify-end gap-2">
                             <button onClick={() => setShowDbLoadModal(false)} className="px-4 py-2 text-slate-500 font-bold hover:bg-slate-100 rounded-lg">Huỷ</button>
                             <button onClick={handleLoadFromDB} disabled={isProcessing} className="px-6 py-2 bg-indigo-600 text-white font-bold rounded-lg hover:bg-indigo-700 flex items-center gap-2">
@@ -1408,6 +1633,63 @@ export const IdAssigner: React.FC = () => {
                                 className="h-full bg-indigo-500 transition-all duration-300 ease-out"
                                 style={{ width: `${processingProgress}%` }}
                             ></div>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* AI Batch Processing Overlay Modal */}
+            {isAiBatchRunning && (
+                <div className="fixed inset-0 z-[210] bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-6 animate-in fade-in">
+                    <div className="bg-white rounded-3xl shadow-2xl p-7 max-w-md w-full text-center space-y-5 animate-in zoom-in-95 border border-indigo-100">
+                        <div className="relative w-20 h-20 mx-auto">
+                            <div className="absolute inset-0 border-4 border-indigo-100 rounded-full"></div>
+                            <div className="absolute inset-0 border-4 border-indigo-600 rounded-full border-t-transparent animate-spin"></div>
+                            <div className="absolute inset-0 flex items-center justify-center">
+                                <Sparkles className="text-indigo-600 animate-pulse" size={28} />
+                            </div>
+                        </div>
+                        <div>
+                            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-50 text-indigo-700 text-xs font-bold mb-2">
+                                <Sparkles size={13} />
+                                <span>AI Đề Xuất Mã ID6 Hàng Loạt</span>
+                            </div>
+                            <h3 className="text-lg font-black text-slate-800">Đang phân tích & đề xuất ID...</h3>
+                            <p className="text-xs text-slate-500 mt-1 max-w-sm mx-auto">
+                                AI đang đọc nội dung câu hỏi, đối chiếu cây mục lục ID6 chuẩn để chọn mã phù hợp nhất.
+                            </p>
+                        </div>
+
+                        {/* Progress bar */}
+                        <div className="space-y-2">
+                            <div className="flex justify-between text-xs font-bold text-slate-600 px-1">
+                                <span>Tiến độ</span>
+                                <span className="text-indigo-600">
+                                    {aiBatchProgress.total > 0 ? `${aiBatchProgress.current}/${aiBatchProgress.total} câu (${Math.round((aiBatchProgress.current / aiBatchProgress.total) * 100)}%)` : 'Đang chuẩn bị...'}
+                                </span>
+                            </div>
+                            <div className="w-full bg-slate-100 h-2.5 rounded-full overflow-hidden p-0.5 border border-slate-200">
+                                <div 
+                                    className="h-full bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full transition-all duration-300 ease-out"
+                                    style={{ width: `${aiBatchProgress.total > 0 ? Math.min(100, Math.round((aiBatchProgress.current / aiBatchProgress.total) * 100)) : 5}%` }}
+                                ></div>
+                            </div>
+                            <p className="text-[11px] text-slate-400 italic">
+                                {aiBatchProgress.message || 'Hệ thống gửi từng gói câu hỏi đến AI để tối ưu tốc độ...'}
+                            </p>
+                        </div>
+
+                        {/* Stop Button */}
+                        <div className="pt-2">
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    cancelAiBatchRef.current = true;
+                                }}
+                                className="px-5 py-2 text-xs font-bold text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all border border-slate-200 hover:border-red-200"
+                            >
+                                Dừng lại (Giữ các câu đã đề xuất)
+                            </button>
                         </div>
                     </div>
                 </div>

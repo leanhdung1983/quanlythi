@@ -358,7 +358,7 @@ export const generateDocxBlob = async (treeData: MatrixTreeNode[], matrix: any, 
             return new TableRow({
                 children: [
                     cellCenter(i + 1), cellLeft(r.chapterName, true), cellLeft(r.unitName), cellLeft(r.description),
-                    cellLeft(r.competencies.join(', ')),
+                    cellLeft((r.competencies || []).join(', ')),
                     cellCenter(c(r.TN.N)), cellCenter(c(r.TN.H)), cellCenter(c(r.TN.V)), cellCenter(c(r.TN.C)),
                     cellCenter(c(r.TF.N)), cellCenter(c(r.TF.H)), cellCenter(c(r.TF.V)), cellCenter(c(r.TF.C)),
                     cellCenter(c(r.KQ.N)), cellCenter(c(r.KQ.H)), cellCenter(c(r.KQ.V)), cellCenter(c(r.KQ.C)),
@@ -387,10 +387,10 @@ export const generateDocxBlob = async (treeData: MatrixTreeNode[], matrix: any, 
 };
 
 export const generateMatrixLatex = (rows: MatrixRow[], title = "KHUNG MA TRẬN ĐỀ KIỂM TRA ĐỊNH KỲ (CHUẨN BỘ GD&ĐT TỪ NĂM 2025)"): string => {
-    let totalAll = { N: 0, H: 0, V: 0 };
+    const totalAll = { N: 0, H: 0, V: 0 };
     const c = (v: number) => v > 0 ? String(v) : '';
 
-    let body = rows.map((r, i) => {
+    const body = rows.map((r, i) => {
         totalAll.N += r.total.N; totalAll.H += r.total.H; totalAll.V += r.total.V;
         const chap = r.chapterName ? r.chapterName.replace(/[&_%$#]/g, '\\$&') : '';
         const unit = r.unitName ? r.unitName.replace(/[&_%$#]/g, '\\$&') : '';
@@ -419,13 +419,14 @@ ${body}
 export const generateSpecMatrixLatex = (rows: SpecRow[], title = "BẢNG ĐẶC TẢ KỸ THUẬT ĐỀ KIỂM TRA (CHUẨN BỘ GD&ĐT)"): string => {
     const c = (v: number) => v > 0 ? String(v) : '';
 
-    let body = rows.map((r, i) => {
+    const body = rows.map((r, i) => {
         const chap = r.chapterName ? r.chapterName.replace(/[&_%$#]/g, '\\$&') : '';
         const unit = r.unitName ? r.unitName.replace(/[&_%$#]/g, '\\$&') : '';
         const desc = r.description ? r.description.replace(/[&_%$#]/g, '\\$&') : '';
         const comp = (r.competencies || []).join(', ').replace(/[&_%$#]/g, '\\$&');
+        const compText = comp ? ` \\newline \\textit{(${comp})}` : '';
 
-        return `    ${i + 1} & ${chap} & ${unit} & ${desc} \\newline \\textit{(${comp})} & ${c(r.TN.N)} & ${c(r.TN.H)} & ${c(r.TN.V)} & ${c(r.TN.C)} & ${c(r.TF.N)} & ${c(r.TF.H)} & ${c(r.TF.V)} & ${c(r.TF.C)} & ${c(r.KQ.N)} & ${c(r.KQ.H)} & ${c(r.KQ.V)} & ${c(r.KQ.C)} & ${c(r.TL.N)} & ${c(r.TL.H)} & ${c(r.TL.V)} & ${c(r.TL.C)} \\\\ \\hline`;
+        return `    ${i + 1} & ${chap} & ${unit} & ${desc}${compText} & ${c(r.TN.N)} & ${c(r.TN.H)} & ${c(r.TN.V)} & ${c(r.TN.C)} & ${c(r.TF.N)} & ${c(r.TF.H)} & ${c(r.TF.V)} & ${c(r.TF.C)} & ${c(r.KQ.N)} & ${c(r.KQ.H)} & ${c(r.KQ.V)} & ${c(r.KQ.C)} & ${c(r.TL.N)} & ${c(r.TL.H)} & ${c(r.TL.V)} & ${c(r.TL.C)} \\\\ \\hline`;
     }).join('\n');
 
     return `

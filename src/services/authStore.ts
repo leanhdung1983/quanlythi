@@ -37,7 +37,6 @@ export const useAuthStore = create<AuthState>()(
             logout: () => {
                 fetch('/api/logout', { method: 'POST', keepalive: true }).catch(() => undefined);
                 set({ user: null, token: null, lastActive: 0 });
-                // Có thể thêm xóa các dữ liệu tạm thời khác ở đây nếu cần
             },
             updateUser: (updates) => set((state) => ({ 
                 user: state.user ? { ...state.user, ...updates } : null 
@@ -50,3 +49,33 @@ export const useAuthStore = create<AuthState>()(
         }
     )
 );
+
+let isHandlingSessionExpiry = false;
+
+/**
+ * Xử lý khi phiên làm việc hết hạn (do 401 hoặc do không tương tác).
+ * Tự động xóa trạng thái phiên đăng nhập và điều hướng ngay về trang đăng nhập.
+ */
+export const handleSessionExpired = (message?: string) => {
+    if (isHandlingSessionExpiry) return;
+    isHandlingSessionExpiry = true;
+    setTimeout(() => {
+        isHandlingSessionExpiry = false;
+    }, 2500);
+
+    // 1. Xoá phiên trong authStore
+    useAuthStore.getState().logout();
+
+    // 2. Xóa các cờ tạm thời trong sessionStorage
+    sessionStorage.removeItem('admin_feedback_notified');
+
+    // 3. Lưu thông báo hiển thị tại màn hình đăng nhập
+    const notice = message || 'Phiên làm việc đã hết hạn. Vui lòng đăng nhập lại.';
+    sessionStorage.setItem('session_expired_msg', notice);
+
+    // 4. Lập tức chuyển về trang đăng nhập
+    if (window.location.hash !== '#/login') {
+        window.location.hash = '#/login';
+    }
+};
+

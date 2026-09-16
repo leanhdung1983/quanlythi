@@ -89,6 +89,82 @@ router.post('/ai/validate-question', async (req, res) => {
     }
 });
 
+router.post('/ai/batch-suggest-ids', async (req, res) => {
+    try {
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const { questions } = req.body;
+        if (!Array.isArray(questions) || questions.length === 0) {
+            return res.status(400).json({ error: 'Danh sách câu hỏi không hợp lệ.' });
+        }
+        const batch = questions.slice(0, 15);
+        const apiKey = await getGeminiApiKey(req.user.id);
+        if (!apiKey) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
+        const ai = new GoogleGenAI({ apiKey });
+
+        const metadata = await query(`SELECT m.id_full, m.description, g.code AS grade, s.code AS subject,
+            c.chapter_number AS chapter, u.unit_number AS unit, l.code AS level
+            FROM id6_metadata m LEFT JOIN grades g ON m.grade_id=g.id LEFT JOIN subjects s ON m.subject_id=s.id
+            LEFT JOIN chapters c ON m.chapter_id=c.id LEFT JOIN units u ON m.unit_id=u.id LEFT JOIN levels l ON m.level_id=l.id
+            ORDER BY m.id LIMIT 3000`);
+
+        const catalog = metadata.map(item => `${item.id_full}: ${item.description || ''}`).join('\n');
+        const validIds = new Set(metadata.map(item => normalizeId6(item.id_full)).filter(Boolean));
+
+        const questionsText = batch.map((q, idx) => {
+            const raw = typeof q.latex === 'string' ? q.latex.substring(0, 1200) : '';
+            return `--- CÂU ${idx + 1} (REF_ID: ${q.id}) ---\n${raw}`;
+        }).join('\n\n');
+
+        const prompt = `Dưới đây là danh sách ${batch.length} câu hỏi Toán dạng LaTeX cần đề xuất mã ID6 chuẩn:
+${questionsText}
+
+Danh mục mã ID6 hợp lệ:
+${catalog}
+
+YÊU CẦU:
+1. Phân tích nội dung và mức độ (N: Nhận biết, H: Thông hiểu, V: Vận dụng, C: Vận dụng cao) của từng câu.
+2. Đề xuất đúng 1 mã ID6 chính xác nhất từ Danh mục mã ID6 hợp lệ cho từng câu.
+3. Trả về đúng JSON Array theo mẫu (không thêm văn bản ngoài JSON):
+[
+  {
+    "id": <REF_ID tương ứng>,
+    "suggestedId": "<mã ID6 chuẩn>",
+    "confidence": <số từ 0 đến 1>,
+    "reason": "<mô tả ngắn dạng toán và mức độ>"
+  }
+]`;
+
+        const response = await generateWithFallback(ai, prompt, {
+            systemInstruction: 'Bạn là chuyên gia phân loại câu hỏi Toán theo chuẩn ID6. Trả về đúng JSON Array, không thêm markdown hay giải thích ngoài JSON. Chỉ chọn suggestedId có trong danh mục ID hợp lệ.',
+            responseMimeType: 'application/json'
+        });
+
+        let parsedResults = [];
+        try {
+            parsedResults = JSON.parse((response.text || '[]').replace(/^```json\s*|\s*```$/g, ''));
+        } catch {
+            parsedResults = [];
+        }
+
+        if (!Array.isArray(parsedResults)) parsedResults = [];
+
+        const results = parsedResults.map(item => {
+            const normId = normalizeId6(item.suggestedId || '');
+            const isValid = validIds.has(normId);
+            return {
+                id: item.id,
+                suggestedId: isValid ? normId : '',
+                confidence: Math.max(0, Math.min(1, Number(item.confidence) || 0)),
+                reason: item.reason || (isValid ? 'Đề xuất bởi AI' : 'Không khớp danh mục ID6')
+            };
+        });
+
+        res.json({ success: true, results });
+    } catch (e) {
+        res.status(500).json({ error: parseGeminiError(e) });
+    }
+});
+
 router.post('/ai/explain', async (req, res) => {
     try {
         const { question_latex, user_answer_latex, correct_answer_latex } = req.body;

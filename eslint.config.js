@@ -53,5 +53,5 @@ export default [
       "prefer-const": "error",
     },
   },
-  { ignores: ["dist", "node_modules", "eslint.config.js", "coverage"] },
+  { ignores: ["dist/**", "node_modules/**", "eslint.config.js", "coverage/**", "_deploy_quanlythi/**", "_sync_bank_id6/**"] },
 ];

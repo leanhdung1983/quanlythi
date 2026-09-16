@@ -22,8 +22,24 @@ export const Login: React.FC = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     
-    const { login } = useAuthStore();
+    const { user, login } = useAuthStore();
     const navigate = useNavigate();
+
+    // Hiển thị thông báo nếu phiên làm việc vừa hết hạn
+    React.useEffect(() => {
+        const expiredNotice = sessionStorage.getItem('session_expired_msg');
+        if (expiredNotice) {
+            setError(expiredNotice);
+            sessionStorage.removeItem('session_expired_msg');
+        }
+    }, []);
+
+    // Nếu người dùng đã đăng nhập hợp lệ và không có thông báo hết hạn, chuyển về trang chủ
+    React.useEffect(() => {
+        if (user && !sessionStorage.getItem('session_expired_msg')) {
+            navigate('/', { replace: true });
+        }
+    }, [user, navigate]);
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -32,6 +48,7 @@ export const Login: React.FC = () => {
         try {
             const res = await apiService.login(loginData.username, loginData.password);
             if (res.success && res.user) {
+                sessionStorage.removeItem('session_expired_msg');
                 login(res.user, 'secure-cookie-session');
                 navigate('/');
             } else {

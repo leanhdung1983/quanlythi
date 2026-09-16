@@ -1,8 +1,14 @@
 import { UploadedFile } from '../types';
+import { handleSessionExpired } from './authStore';
 
 async function readApiResponse(response: Response) {
     const payload = await response.json().catch(() => ({}));
-    if (!response.ok) throw new Error(payload.error || payload.message || `Lỗi AI (${response.status})`);
+    if (!response.ok) {
+        if (response.status === 401) {
+            handleSessionExpired(payload.error || payload.message);
+        }
+        throw new Error(payload.error || payload.message || `Lỗi AI (${response.status})`);
+    }
     return payload;
 }
 
@@ -71,3 +77,53 @@ export const validateAndTagQuestion = async (latex: string, currentId: string) =
     const payload = await readApiResponse(response);
     return payload.data || null;
 };
+
+export interface BatchSuggestResult {
+    id: number;
+    suggestedId: string;
+    confidence: number;
+    reason: string;
+}
+
+export const batchSuggestIds = async (
+    questions: Array<{ id: number; latex: string; current_id?: string }>,
+    onProgress?: (processed: number, total: number) => void
+): Promise<BatchSuggestResult[]> => {
+    const CHUNK_SIZE = 10;
+    const allResults: BatchSuggestResult[] = [];
+
+    for (let i = 0; i < questions.length; i += CHUNK_SIZE) {
+        const chunk = questions.slice(i, i + CHUNK_SIZE);
+        try {
+            const response = await fetch('/api/ai/batch-suggest-ids', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ questions: chunk })
+            });
+            const payload = await readApiResponse(response);
+            if (payload.results && Array.isArray(payload.results)) {
+                allResults.push(...payload.results);
+            }
+        } catch (e) {
+            console.error('Batch suggest chunk failed, falling back to individual', e);
+            for (const q of chunk) {
+                try {
+                    const single = await validateAndTagQuestion(q.latex, q.current_id || '');
+                    if (single && single.suggestedId) {
+                        allResults.push({
+                            id: q.id,
+                            suggestedId: single.suggestedId,
+                            confidence: single.confidence || 0.8,
+                            reason: single.reason || 'Đề xuất bởi AI'
+                        });
+                    }
+                } catch (singleErr) {
+                    console.error('Single validation error', singleErr);
+                }
+            }
+        }
+        onProgress?.(Math.min(i + CHUNK_SIZE, questions.length), questions.length);
+    }
+    return allResults;
+};
+

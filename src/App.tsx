@@ -2,7 +2,8 @@
 import React, { useEffect, useRef, lazy, Suspense } from 'react';
 import { HashRouter, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { Layout } from './components/Layout';
-import { useAuthStore } from './services/authStore';
+import { useAuthStore, handleSessionExpired } from './services/authStore';
+import { apiService } from './services/api';
 import { Loader2 } from 'lucide-react';
 
 // Lazy load pages
@@ -43,18 +44,20 @@ const AuthGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 const AdminGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user } = useAuthStore();
-    if (!user || user.role !== 'ADMIN') return <Navigate to="/" replace />;
+    if (!user) return <Navigate to="/login" replace />;
+    if (user.role !== 'ADMIN') return <Navigate to="/" replace />;
     return <>{children}</>;
 };
 
 const TeacherGuard: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     const { user } = useAuthStore();
-    if (!user || (user.role !== 'ADMIN' && user.role !== 'TEACHER')) return <Navigate to="/" replace />;
+    if (!user) return <Navigate to="/login" replace />;
+    if (user.role !== 'ADMIN' && user.role !== 'TEACHER') return <Navigate to="/" replace />;
     return <>{children}</>;
 };
 
 const App: React.FC = () => {
-  const { user, logout, touchSession } = useAuthStore(); // Removed lastActive form hook subscription to avoid re-renders
+  const { user, touchSession } = useAuthStore();
   
   // Dùng ref để kiểm soát việc ghi vào storage không quá thường xuyên
   const lastUpdateRef = useRef<number>(0);
@@ -62,6 +65,7 @@ const App: React.FC = () => {
   useEffect(() => {
     lastUpdateRef.current = Date.now();
   }, []);
+
   useEffect(() => {
     if (!user) return;
 
@@ -78,8 +82,8 @@ const App: React.FC = () => {
 
         const currentLastActive = useAuthStore.getState().lastActive;
         if (currentLastActive && (Date.now() - currentLastActive > TIMEOUT_MS)) {
-            console.log("Phiên đăng nhập đã hết hạn.");
-            logout();
+            console.warn("Phiên đăng nhập đã hết hạn do không tương tác.");
+            handleSessionExpired("Phiên làm việc đã hết hạn do không tương tác trong 30 phút. Vui lòng đăng nhập lại.");
             return true;
         }
         return false;
@@ -88,11 +92,19 @@ const App: React.FC = () => {
     // 1. KIỂM TRA NGAY KHI VÀO TRANG (Mount)
     if (checkExpiry()) return;
 
+    // Xác thực phiên với backend ngay khi khởi động trang
+    apiService.checkSession().catch(() => {
+        // Nếu API trả về 401, handleResponse trong apiService sẽ tự gọi handleSessionExpired
+    });
+
     // Cập nhật session ngay khi mount (User active)
     touchSession();
 
     // 2. HÀM XỬ LÝ KHI NGƯỜI DÙNG TƯƠNG TÁC
     const handleUserActivity = () => {
+        // Quan trọng: Kiểm tra xem phiên đã hết hạn trước đó chưa TRƯỚC KHI cập nhật lastActive
+        if (checkExpiry()) return;
+
         const now = Date.now();
         // Chỉ cập nhật vào store mỗi 10 giây một lần để tránh spam storage/re-render
         if (now - lastUpdateRef.current > 10000) {
@@ -101,32 +113,45 @@ const App: React.FC = () => {
         }
     };
 
+    // Khi người dùng chuyển tab quay lại hoặc mở lại trình duyệt
+    const handleVisibilityOrFocus = () => {
+        if (document.visibilityState === 'visible') {
+            if (checkExpiry()) return;
+            // Kiểm tra tính hợp lệ của cookie phiên với máy chủ
+            apiService.checkSession().catch(() => {});
+        }
+    };
+
     // Các sự kiện đánh dấu người dùng còn đang hoạt động
     const activityEvents = [
       'mousedown', 
-      'mousemove', 
-      'keypress', 
+      'keydown', 
       'scroll', 
       'touchstart',
       'click'
     ];
 
     activityEvents.forEach(event => {
-        window.addEventListener(event, handleUserActivity);
+        window.addEventListener(event, handleUserActivity, { passive: true });
     });
+
+    document.addEventListener('visibilitychange', handleVisibilityOrFocus);
+    window.addEventListener('focus', handleVisibilityOrFocus);
 
     // 3. INTERVAL KIỂM TRA ĐỊNH KỲ (Cho trường hợp treo tab)
     const intervalId = setInterval(() => {
         checkExpiry();
-    }, 60 * 1000); // Kiểm tra mỗi 1 phút
+    }, 30 * 1000); // Kiểm tra mỗi 30 giây
 
     return () => {
       clearInterval(intervalId);
       activityEvents.forEach(event => {
         window.removeEventListener(event, handleUserActivity);
       });
+      document.removeEventListener('visibilitychange', handleVisibilityOrFocus);
+      window.removeEventListener('focus', handleVisibilityOrFocus);
     };
-  }, [user, logout, touchSession]); // REMOVED: lastActive
+  }, [user, touchSession]);
 
   return (
     <HashRouter>

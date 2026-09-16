@@ -40,6 +40,21 @@ router.post('/logout', (req, res) => {
     res.json({ success: true });
 });
 
+router.get('/me', async (req, res) => {
+    try {
+        if (!req.user || !req.user.id) {
+            return res.status(401).json({ success: false, error: 'Phiên đăng nhập không hợp lệ hoặc đã hết hạn.' });
+        }
+        const users = await query("SELECT id, username, full_name, email, school, role, is_pro, expiry_date, grade_id, api_key FROM users WHERE id = ?", [req.user.id]);
+        if (!users || users.length === 0) {
+            return res.status(401).json({ success: false, error: 'Tài khoản không tồn tại hoặc đã bị xoá.' });
+        }
+        res.json({ success: true, user: users[0] });
+    } catch (e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 router.post('/register', async (req, res) => {
     try {
         const { username, password, full_name, email, school } = req.body;

@@ -1,5 +1,6 @@
 
 import { ParsedData, Question, ID6Metadata, Chapter, Unit, SavedMatrix, OnlineQuestion, UserFeedback, QuestionReport } from '../types';
+import { handleSessionExpired } from './authStore';
 
 // Trên Vercel, '/api' sẽ được proxy. Localhost sẽ dùng cấu hình proxy trong vite.config.
 const API_URL = '/api';
@@ -20,6 +21,13 @@ const handleResponse = async (response: Response, endpoint: string) => {
             }
         } catch { }
         console.error(`API Error at ${endpoint}:`, errorMessage);
+
+        // Khi gặp mã 401 từ bất kỳ endpoint nào (ngoại trừ /login khi sai mật khẩu)
+        // -> Phiên làm việc đã hết hạn hoặc cookie không còn hợp lệ. Tự động chuyển về màn hình đăng nhập!
+        if (response.status === 401 && endpoint !== '/login' && endpoint !== '/api/login') {
+            handleSessionExpired(errorMessage);
+        }
+
         throw new Error(errorMessage);
     }
     if (contentType && contentType.includes("application/json")) return response.json();
@@ -216,6 +224,11 @@ export const apiService = {
     async importMetadata(data: ParsedData) {
         const response = await fetch(`${API_URL}/import-metadata`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) });
         return await handleResponse(response, '/import-metadata');
+    },
+    async checkSession() {
+        const response = await fetch(`${API_URL}/me`);
+        const result = await handleResponse(response, '/me');
+        return result.user || result.data;
     },
     async login(username: string, password: string) {
         const response = await fetch(`${API_URL}/login`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ username, password }) }); 

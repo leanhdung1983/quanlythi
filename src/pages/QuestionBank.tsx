@@ -652,7 +652,7 @@ export const QuestionBank: React.FC = () => {
             latex = latex.replace(/%<MyLT>/g, '').trim();
 
             // Extract ID6 tag if present
-            let idTag = q.normalized_id || q.id_full || '';
+            const idTag = q.normalized_id || q.id_full || '';
             const tagMatch = latex.match(/^\\begin\{(?:ex|bt)\}\s*(%\[.*?\])/);
             if (tagMatch) {
                 // already has %[...]
@@ -707,7 +707,7 @@ export const QuestionBank: React.FC = () => {
             allQ.forEach((q: any, idx: number) => {
                 let latex = (q.content_latex_original || q.content_latex || q.original_latex || q.raw_latex || '').trim();
                 latex = latex.replace(/%<MyLT>/g, '').trim();
-                let idTag = q.normalized_id || q.id_full || '';
+                const idTag = q.normalized_id || q.id_full || '';
                 const tagMatch = latex.match(/^\\begin\{(?:ex|bt)\}\s*(%\[.*?\])/);
                 if (tagMatch) {
                     // already has %[...]
