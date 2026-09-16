@@ -55,7 +55,7 @@ export async function initializeDatabase() {
         const conn = await pool.getConnection();
         console.log("✅ [DB] Database connected successfully!");
         conn.release();
-        await seedDatabase();
+        if (process.env.SOCIAL_CRON_ONLY !== '1') await seedDatabase();
     } catch (err) {
         console.error("❌ [DB] Connection Failed:", err.message);
         if (err.message.includes('ECONNREFUSED')) {
@@ -742,6 +742,30 @@ export async function seedDatabase() {
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `).catch(e => console.log("Migration notice (question_images):", e.message));
+
+        await pool.query(`CREATE TABLE IF NOT EXISTS social_post_queue (
+            id BIGINT AUTO_INCREMENT PRIMARY KEY,
+            question_id INT NOT NULL,
+            caption TEXT NOT NULL,
+            scheduled_at DATETIME NOT NULL,
+            image_mime VARCHAR(20) NOT NULL,
+            image_blob LONGBLOB NOT NULL,
+            status ENUM('DRAFT','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT',
+            created_by INT NOT NULL,
+            approved_by INT NULL,
+            attempt_count INT NOT NULL DEFAULT 0,
+            claim_token CHAR(36) NULL,
+            publish_started_at DATETIME NULL,
+            posted_at DATETIME NULL,
+            fb_photo_id VARCHAR(100) NULL,
+            fb_post_id VARCHAR(100) NULL,
+            last_error VARCHAR(1000) NULL,
+            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+            INDEX idx_social_due(status,scheduled_at,id),
+            UNIQUE KEY uq_social_claim(claim_token),
+            INDEX idx_social_question(question_id)
+        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS tikz_render_failures (

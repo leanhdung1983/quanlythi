@@ -23,6 +23,7 @@ const IRTAnalysis = lazy(() => import('./pages/IRTAnalysis').then(module => ({ d
 const AdaptiveTest = lazy(() => import('./pages/AdaptiveTest').then(module => ({ default: module.AdaptiveTest })));
 const Learning = lazy(() => import('./pages/Learning').then(module => ({ default: module.Learning })));
 const ClassManagement = lazy(() => import('./pages/ClassManagement').then(module => ({ default: module.ClassManagement })));
+const SocialPublisher = lazy(() => import('./pages/SocialPublisher').then(module => ({ default: module.SocialPublisher })));
 
 const PageLoader = () => (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -153,6 +154,7 @@ const App: React.FC = () => {
             
             <Route path="/admin" element={<AdminGuard><AdminUsers /></AdminGuard>} />
             <Route path="/admin/source" element={<AdminGuard><AdminSourceViewer /></AdminGuard>} />
+            <Route path="/admin/social" element={<AdminGuard><SocialPublisher /></AdminGuard>} />
             
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

@@ -11,6 +11,7 @@ import learningRouter from './routes/learning.routes.js';
 import adminRouter from './routes/admin.routes.js';
 import tikzRouter from './routes/tikz.routes.js';
 import tikzJobsRouter from './routes/tikzJobs.routes.js';
+import socialRouter from './routes/social.routes.js';
 
 const app = express.Router();
 
@@ -73,6 +74,7 @@ app.use('/api', learningRouter);
 app.use('/api', adminRouter);
 app.use('/api', tikzRouter);
 app.use('/api', tikzJobsRouter);
+app.use('/api', socialRouter);
 
 app.get('/api/ping', (req, res) => {
     res.json({ status: 'ok', time: new Date() });
