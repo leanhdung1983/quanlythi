@@ -1,6 +1,7 @@
 import express from 'express';
 import { 
     query, 
+    pool,
     isAdmin, 
     isSelfOrAdmin, 
     requireAdmin, 
@@ -11,6 +12,7 @@ import {
 import { calculateServerScore } from '../scoring.js';
 import { sanitizeQuestionForStudent, rehydrateTrustedQuestions } from '../examSecurity.js';
 import { buildLatexDocument } from '../texExamGenerator.js';
+import { parseMatrixData, describeMatrix, normalizeGrade, validateCatalog } from '../../shared/matrixCatalog.js';
 
 const router = express.Router();
 // Results and live sessions must never be served from a browser/proxy cache.
@@ -23,20 +25,22 @@ router.use((req, res, next) => {
 router.get('/saved-matrices', async (req, res) => { 
     try { 
         const { grade_id } = req.query;
-        let sql = "SELECT * FROM matrix_templates";
+        let sql = "SELECT m.*,u.full_name AS creator_name FROM matrix_templates m LEFT JOIN users u ON u.id=m.created_by";
         const params = [];
         const where = [];
         if (!isAdmin(req)) {
-            where.push('(is_public = 1 OR created_by IS NULL OR created_by = ?)');
+            where.push('(m.is_public = 1 OR m.created_by IS NULL OR m.created_by = ?)');
             params.push(req.user.id);
         }
-        if (grade_id) {
-            where.push('grade_id = ?');
-            params.push(grade_id);
-        }
         if (where.length) sql += ` WHERE ${where.join(' AND ')}`;
-        sql += " ORDER BY created_at DESC";
-        const rows = await query(sql, params); 
+        sql += " ORDER BY m.created_at DESC";
+        let rows = await query(sql, params);
+        rows = rows.map(row => { try { return { ...row, matrix_data: parseMatrixData(row.matrix_data) }; } catch { return row; } });
+        if (grade_id !== undefined && grade_id !== '') {
+            const grade = normalizeGrade(grade_id);
+            if (grade === null) return res.status(400).json({ error: 'Khối lớp không hợp lệ.' });
+            rows = rows.filter(row => { const info = describeMatrix(row); return info.grade === String(grade) || (info.grade === 'MULTI' && info.grades.includes(grade)); });
+        }
         res.json({ success: true, data: rows }); 
     } catch(e) { res.status(500).json({ error: e.message }); } 
 });
@@ -45,26 +49,58 @@ router.post('/saved-matrices', async (req, res) => {
     try { 
         if (!requireTeacherOrAdmin(req, res)) return;
         const { name, matrix_data, grade_id, is_public } = req.body; 
+        if (!String(name || '').trim()) return res.status(400).json({ error: 'Nhập tên ma trận.' });
+        const data = parseMatrixData(matrix_data);
+        if (data.catalog) data.catalog = validateCatalog(data.catalog);
+        const info = describeMatrix({ matrix_data: data, grade_id });
         const created_by = req.user?.id || null;
         const result = await query(
             "INSERT INTO matrix_templates (name, matrix_data, grade_id, is_public, created_by) VALUES (?, ?, ?, ?, ?)", 
-            [name, JSON.stringify(matrix_data), grade_id, is_public || 0, created_by]
+            [String(name).trim(), JSON.stringify(data), info.grade === 'MULTI' || info.grade === 'UNKNOWN' ? null : Number(info.grade), is_public ? 1 : 0, created_by]
         ); 
         res.json({ success: true, id: result.insertId }); 
     } catch(e) { res.status(500).json({ error: e.message }); } 
 });
 
+router.post('/saved-matrices/catalog/bulk', async (req, res) => {
+    if (!requireTeacherOrAdmin(req, res)) return;
+    let conn;
+    try {
+        const ids = Array.isArray(req.body.ids) ? [...new Set(req.body.ids.map(Number))].sort((a, b) => a - b) : [];
+        if (!ids.length || ids.length > 100 || ids.some(id => !Number.isSafeInteger(id) || id < 1)) return res.status(400).json({ error: 'Chọn từ 1 đến 100 ma trận hợp lệ.' });
+        const catalog = validateCatalog(req.body.catalog);
+        if (!Object.keys(catalog).length) return res.status(400).json({ error: 'Chọn ít nhất một thuộc tính phân loại.' });
+        conn = await pool.getConnection(); await conn.beginTransaction();
+        const [rows] = await conn.query('SELECT id,created_by,matrix_data,grade_id FROM matrix_templates WHERE id IN (?) ORDER BY id FOR UPDATE', [ids]);
+        if (rows.length !== ids.length) throw new Error('Có ma trận không còn tồn tại.');
+        if (!isAdmin(req) && rows.some(row => Number(row.created_by) !== Number(req.user.id))) { await conn.rollback(); return res.status(403).json({ error: 'Bạn chỉ được phân loại ma trận của mình.' }); }
+        for (const row of rows) {
+            const data = parseMatrixData(row.matrix_data);
+            data.catalog = { ...data.catalog, ...catalog };
+            const info = describeMatrix({ ...row, matrix_data: data });
+            await conn.query('UPDATE matrix_templates SET matrix_data=?,grade_id=? WHERE id=?', [JSON.stringify(data), ['MULTI','UNKNOWN'].includes(info.grade) ? null : Number(info.grade), row.id]);
+        }
+        await conn.commit(); res.json({ success: true, updated: rows.length });
+    } catch (e) { if (conn) await conn.rollback(); res.status(400).json({ error: e.message }); }
+    finally { conn?.release(); }
+});
+
 router.put('/saved-matrices/:id', async (req, res) => { 
     try { 
         const { name, matrix_data, grade_id, is_public } = req.body; 
-        const [existing] = await query("SELECT created_by FROM matrix_templates WHERE id = ?", [req.params.id]);
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const [existing] = await query("SELECT created_by,is_public,grade_id FROM matrix_templates WHERE id = ?", [req.params.id]);
         if (!existing) return res.status(404).json({ error: "Ma trận không tồn tại" });
         if (!isAdmin(req) && Number(existing.created_by) !== Number(req.user?.id)) {
             return res.status(403).json({ error: "Bạn không có quyền chỉnh sửa ma trận của người khác." });
         }
+        if (!String(name || '').trim()) return res.status(400).json({ error: 'Nhập tên ma trận.' });
+        const data = parseMatrixData(matrix_data);
+        if (data.catalog) data.catalog = validateCatalog(data.catalog);
+        const info = describeMatrix({ matrix_data: data, grade_id: grade_id ?? existing.grade_id });
         await query(
             "UPDATE matrix_templates SET name = ?, matrix_data = ?, grade_id = ?, is_public = ? WHERE id = ?", 
-            [name, JSON.stringify(matrix_data), grade_id, is_public || 0, req.params.id]
+            [String(name).trim(), JSON.stringify(data), ['MULTI','UNKNOWN'].includes(info.grade) ? null : Number(info.grade), is_public === undefined ? (existing.is_public || 0) : (is_public ? 1 : 0), req.params.id]
         ); 
         res.json({ success: true }); 
     } catch(e) { res.status(500).json({ error: e.message }); } 

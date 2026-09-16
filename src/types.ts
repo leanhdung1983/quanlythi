@@ -163,6 +163,8 @@ export interface Question {
 // --- ONLINE EXAM TYPES ---
 
 export interface SavedMatrix {
+    created_by?: number | null;
+    creator_name?: string | null;
     id: number;
     name: string;
     grade_id?: number;

@@ -330,6 +330,10 @@ export const apiService = {
         const response = await fetch(`${API_URL}/saved-matrices`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ name, matrix_data }) }); 
         return await handleResponse(response, '/saved-matrices');
     },
+    async classifyMatrices(ids: number[], catalog: object) {
+        const response = await fetch(`${API_URL}/saved-matrices/catalog/bulk`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids, catalog }) });
+        return await handleResponse(response, '/saved-matrices/catalog/bulk');
+    },
     async updateSavedMatrix(id: number, name: string, matrix_data: unknown) {
         const response = await fetch(`${API_URL}/saved-matrices/${id}`, { method: 'PUT', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ name, matrix_data }) }); 
         return await handleResponse(response, `/saved-matrices/${id}`);

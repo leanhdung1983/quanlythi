@@ -1,4 +1,5 @@
 import { SavedMatrix } from '../types';
+import { describeMatrix, parseMatrixData } from '../../shared/matrixCatalog';
 
 export const extractMatrixHierarchy = (m: SavedMatrix, t?: any, treeData?: any[]) => {
     let grade = 'OT';
@@ -7,7 +8,8 @@ export const extractMatrixHierarchy = (m: SavedMatrix, t?: any, treeData?: any[]
     let lesson = 'Chung';
 
     try {
-        const fullData = typeof m.matrix_data === 'string' ? JSON.parse(m.matrix_data) : m.matrix_data;
+        const fullData = parseMatrixData(m.matrix_data);
+        const catalog = describeMatrix(m);
         
         if (fullData.settings?.grade_id !== undefined) {
             grade = String(fullData.settings.grade_id);
@@ -71,6 +73,9 @@ export const extractMatrixHierarchy = (m: SavedMatrix, t?: any, treeData?: any[]
                 lesson = unitNameStr;
             }
         }
+        grade = ['10','11','12'].includes(catalog.grade) ? String(Number(catalog.grade) - 10) : catalog.grade === 'UNKNOWN' ? 'OT' : catalog.grade;
+        if (catalog.subjects.length > 1) subject = 'Toán tổng hợp';
+        if (catalog.grade === 'MULTI') { chapter = 'Liên khối'; lesson = 'Tổng hợp'; }
     } catch {}
     
     return { grade, subject, chapter, lesson };

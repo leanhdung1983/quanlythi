@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { apiService } from '../services/api';
 import { Question, MatrixTreeNode, SavedMatrix } from '../types';
 import { 
@@ -11,7 +11,8 @@ import {
 } from 'lucide-react';
 import { useLanguageStore } from '../services/languageStore';
 import { useAuthStore } from '../services/authStore';
-import { extractMatrixHierarchy } from '../utils/matrixUtils';
+import { MatrixLibrary } from '../components/MatrixLibrary';
+import { describeMatrix, parseMatrixData, normalizeGrade, editableMatrixSections, MATRIX_PURPOSES, MATRIX_STATUSES } from '../../shared/matrixCatalog';
 import { generateDocxBlob, generateCombinedLatex } from '../utils/matrixExportUtils';
 
 interface LevelCounts {
@@ -57,6 +58,9 @@ export const ExamGenerator: React.FC = () => {
     const [showSaveModal, setShowSaveModal] = useState(false);
     const [matrixName, setMatrixName] = useState('');
     const [matrixGrade, setMatrixGrade] = useState<number>(selectedGrade);
+    const [matrixMultiGrade, setMatrixMultiGrade] = useState(false);
+    const [matrixCatalog, setMatrixCatalog] = useState({ purpose: 'PRACTICE', term: '', year: '', status: 'DRAFT' });
+    const [matrixBaseline, setMatrixBaseline] = useState<any>({});
     const [examDuration, setExamDuration] = useState(90);
     const [editingMatrixId, setEditingMatrixId] = useState<number | null>(null);
     const [teacherClasses, setTeacherClasses] = useState<any[]>([]);
@@ -159,16 +163,23 @@ export const ExamGenerator: React.FC = () => {
     };
 
     const handleSelectMatrix = (m: any) => {
+        const info = describeMatrix(m);
+        setMatrixMultiGrade(info.grade === 'MULTI');
+        setMatrixCatalog({ purpose: info.purpose, term: info.term, year: info.year, status: info.status });
         setEditingMatrixId(m.id);
         setMatrixName(m.name);
         let parsed: any = {};
         try {
-            parsed = typeof m.matrix_data === 'string' ? JSON.parse(m.matrix_data) : m.matrix_data;
+            parsed = parseMatrixData(m.matrix_data);
         } catch (e) {
             console.error(e);
+            alert('Không đọc được ma trận cũ. Chưa thay đổi dữ liệu.');
+            return;
         }
 
-        const rawMatrix = parsed.matrix || parsed;
+        let rawMatrix;
+        try { rawMatrix = editableMatrixSections(parsed); } catch (e: any) { alert(e.message); return; }
+        setMatrixBaseline(parsed);
         const loadedMatrix: Record<QuestionType, Record<string, LevelCounts>> = {
             TN: rawMatrix.TN || {},
             TF: rawMatrix.TF || {},
@@ -177,16 +188,21 @@ export const ExamGenerator: React.FC = () => {
         };
         setMatrix(loadedMatrix);
 
-        const settings = parsed?.settings;
+        const settings = parsed?.settings || {};
         if (settings) {
-            const g = settings.grade_id ?? selectedGrade;
+            const normalized = normalizeGrade(settings.grade_id ?? info.grade);
+            const g = normalized !== null && normalized >= 10 ? normalized - 10 : selectedGrade;
             setMatrixGrade(g);
             setSelectedGrade(g);
             setExamDuration(settings.duration ?? 90);
             setExamMode(settings.mode ?? 'PRACTICE');
-            if (settings.points_tn) setPointsTN(settings.points_tn);
-            if (settings.points_tf) setPointsTF(settings.points_tf);
-            if (settings.points_kq) setPointsKQ(settings.points_kq);
+            setPointsTN(settings.points_tn ?? 0.25);
+            setPointsTF(settings.points_tf ?? 1);
+            setPointsKQ(settings.points_kq ?? 0.5);
+            setTotalPointsTN(Number(settings.total_points_tn) || 0);
+            setTotalPointsTF(Number(settings.total_points_tf) || 0);
+            setTotalPointsKQ(Number(settings.total_points_kq) || 0);
+            setTfScoringMode(settings.tf_scoring_mode || '10-25-50-100');
         }
 
         // Auto navigate to the first subject / tab that has configured questions
@@ -238,30 +254,16 @@ export const ExamGenerator: React.FC = () => {
         }
     };
 
-    const handleOpenSaveModal = (m?: any) => {
-        if (m) {
-            setEditingMatrixId(m.id);
-            setMatrixName(m.name);
-            let parsed: any = {};
-            try { parsed = typeof m.matrix_data === 'string' ? JSON.parse(m.matrix_data) : m.matrix_data; } catch {}
-            const settings = parsed?.settings;
-            if (settings) {
-                setMatrixGrade(settings.grade_id ?? selectedGrade);
-                setExamDuration(settings.duration ?? 90);
-                setExamMode(settings.mode ?? 'PRACTICE');
-            }
-        } else {
-            setEditingMatrixId(null);
-            setMatrixName('');
-            setAssignClassId('');
-            setMatrixGrade(selectedGrade);
-            setExamDuration(90);
-            setExamMode('PRACTICE');
-        }
+    const handleOpenSaveModal = (m?: SavedMatrix) => {
+        if (m) handleSelectMatrix(m);
         setShowSaveModal(true);
     };
 
     const handleNewMatrix = () => {
+        setMatrixBaseline({}); setMatrixMultiGrade(false);
+        setMatrixCatalog({ purpose: 'PRACTICE', term: '', year: '', status: 'DRAFT' });
+        setTotalPointsTN(0); setTotalPointsTF(0); setTotalPointsKQ(0);
+        setPointsTN(0.25); setPointsTF(1); setPointsKQ(0.5); setTfScoringMode('10-25-50-100');
         setMatrix({ TN: {}, TF: {}, KQ: {}, TL: {} });
         setMatrixName('');
         setEditingMatrixId(null);
@@ -431,10 +433,15 @@ export const ExamGenerator: React.FC = () => {
 
     const handleSaveMatrix = async () => {
         if (!matrixName.trim()) return alert("Nhập tên ma trận");
+        if (!Number.isFinite(examDuration) || examDuration <= 0 || examDuration > 1440) return alert('Thời gian thi phải từ 1 đến 1440 phút.');
         try {
             const data = {
                 name: matrixName,
-                matrix_data: JSON.stringify({ matrix, settings: { duration: examDuration, mode: examMode, grade_id: matrixGrade } })
+                matrix_data: { ...matrixBaseline, matrix,
+                    catalog: { ...matrixCatalog, target_grade: matrixMultiGrade ? 'MULTI' : normalizeGrade(matrixGrade) },
+                    settings: { ...matrixBaseline.settings, duration: examDuration, mode: examMode,
+                        grade_id: matrixMultiGrade ? undefined : matrixGrade, points_tn: pointsTN, points_tf: pointsTF, points_kq: pointsKQ,
+                        total_points_tn: totalPointsTN, total_points_tf: totalPointsTF, total_points_kq: totalPointsKQ, tf_scoring_mode: tfScoringMode } }
             };
             if (editingMatrixId) {
                 await apiService.updateSavedMatrix(editingMatrixId as number, matrixName, data.matrix_data);
@@ -452,200 +459,21 @@ export const ExamGenerator: React.FC = () => {
             
             // Reset matrix
             setMatrix({ TN: {}, TF: {}, KQ: {}, TL: {} });
-            setMatrixName('');
-            setEditingMatrixId(null);
+            handleNewMatrix();
             setAssignClassId('');
             setTabTotals({ TN: 0, TF: 0, KQ: 0, TL: 0 });
             setTotalQuestions(0);
         } catch (e) {
             console.error(e);
-            alert("Lỗi lưu");
+            alert((e as Error).message || 'Lỗi lưu ma trận.');
         }
     };
 
-    const groupedMatrices = useMemo(() => {
-        const tree: Record<string, Record<string, Record<string, Record<string, SavedMatrix[]>>>> = {};
-        
-        savedMatrices.forEach(m => {
-            const { grade, subject, chapter, lesson } = extractMatrixHierarchy(m, t, treeData);
-            
-            if (!tree[grade]) tree[grade] = {};
-            if (!tree[grade][subject]) tree[grade][subject] = {};
-            if (!tree[grade][subject][chapter]) tree[grade][subject][chapter] = {};
-            if (!tree[grade][subject][chapter][lesson]) tree[grade][subject][chapter][lesson] = [];
-            
-            tree[grade][subject][chapter][lesson].push(m);
-        });
-        
-        return tree;
-    }, [savedMatrices, t, treeData]);
 
     const dbGradeId = selectedGrade === 10 ? 0 : selectedGrade === 11 ? 1 : selectedGrade === 12 ? 2 : selectedGrade;
     const currentGradeNode = treeData.find(g => g.grade === dbGradeId);
     const currentSubjectNode = currentGradeNode?.subjects.find(s => s.subject === selectedSubject);
 
-    // Render helper for Saved Matrices list
-    const renderMatrixList = () => {
-        const gradeOrder = ['2', '1', '0', '9', '8', '7', '6', 'OT'];
-        const sortedGrades = Object.entries(groupedMatrices).sort((a, b) => {
-            return gradeOrder.indexOf(a[0]) - gradeOrder.indexOf(b[0]);
-        });
-
-        return (
-            <div className="space-y-1">
-                {sortedGrades.map(([grade, subjects]) => {
-                    const isGradeExpanded = expandedGrades[grade];
-                    return (
-                        <div key={grade} className="mb-1">
-                            <button 
-                                onClick={() => toggleGradeExpand(grade)}
-                                className="w-full flex items-center justify-between px-3 py-2 text-xs font-bold uppercase text-slate-500 hover:bg-slate-50 rounded-lg transition-colors"
-                            >
-                                <span className="flex items-center gap-2">
-                                    {isGradeExpanded ? <FolderOpen size={14} className="text-indigo-500"/> : <Folder size={14}/>} 
-                                    {grade === '0' ? 'Lớp 10' : grade === '1' ? 'Lớp 11' : grade === '2' ? 'Lớp 12' : grade === 'OT' ? 'Khác' : `Lớp ${grade}`}
-                                </span>
-                                <span className="bg-slate-100 text-slate-600 px-1.5 py-0.5 rounded-md">
-                                    {/* calculate total in grade */}
-                                    {Object.values(subjects).reduce((sum, chaps) => sum + Object.values(chaps).reduce((s, les) => s + Object.values(les).reduce((s2, list) => s2 + list.length, 0), 0), 0)}
-                                </span>
-                            </button>
-                            
-                            {isGradeExpanded && (
-                                <div className="ml-2 pl-2 border-l border-slate-200 mt-1 space-y-1">
-                                    {Object.entries(subjects).map(([subject, chapters]) => {
-                                        const subKey = `${grade}-${subject}`;
-                                        const isSubExpanded = expandedGrades[subKey] !== false;
-                                        const subTotal = Object.values(chapters).reduce((s, les) => s + Object.values(les).reduce((s2, list) => s2 + list.length, 0), 0);
-                                        return (
-                                            <div key={subject}>
-                                                <button 
-                                                    onClick={() => toggleGradeExpand(subKey)}
-                                                    className="w-full flex items-center gap-2 px-2 py-1.5 text-[11px] font-bold text-slate-500 hover:text-indigo-600 transition-colors"
-                                                >
-                                                    {isSubExpanded ? <ChevronDown size={12}/> : <ChevronRight size={12}/>}
-                                                    <span>{subject}</span>
-                                                    <span className="ml-auto bg-slate-100 text-slate-400 px-1 rounded-full text-[9px]">{subTotal}</span>
-                                                </button>
-                                                
-                                                {isSubExpanded && (
-                                                    <div className="ml-2 pl-2 border-l border-slate-100 mt-1 space-y-1">
-                                                        {Object.entries(chapters).map(([chapter, lessons]) => {
-                                                            const chapKey = `${subKey}-${chapter}`;
-                                                            const isChapExpanded = expandedGrades[chapKey];
-                                                            const chapTotal = Object.values(lessons).reduce((s, list) => s + list.length, 0);
-                                                            return (
-                                                                <div key={chapter}>
-                                                                    <button 
-                                                                        onClick={() => toggleGradeExpand(chapKey)}
-                                                                        className="w-full flex items-center gap-2 px-2 py-1.5 text-[11px] font-bold text-slate-500 hover:text-indigo-600 transition-colors"
-                                                                    >
-                                                                        {isChapExpanded ? <ChevronDown size={12}/> : <ChevronRight size={12}/>}
-                                                                        <span className="truncate">{chapter}</span>
-                                                                    </button>
-                                                                    
-                                                                    {isChapExpanded && (
-                                                                        <div className="ml-2 pl-2 border-l border-slate-100 mt-1 space-y-1">
-                                                                            {Object.entries(lessons).map(([lesson, list]) => {
-                                                                                const lessonKey = `${chapKey}-${lesson}`;
-                                                                                const isLessonExpanded = expandedGrades[lessonKey] !== false;
-                                                                                return (
-                                                                                    <div key={lesson}>
-                                                                                        <button 
-                                                                                            onClick={() => toggleGradeExpand(lessonKey)}
-                                                                                            className="w-full flex items-center gap-2 px-2 py-1.5 text-[11px] font-medium text-slate-500 hover:text-indigo-600 transition-colors"
-                                                                                        >
-                                                                                            {isLessonExpanded ? <ChevronDown size={10}/> : <ChevronRight size={10}/>}
-                                                                                            <span className="truncate">{lesson}</span>
-                                                                                            <span className="ml-auto bg-slate-100 text-slate-400 px-1 rounded-full text-[9px]">{list.length}</span>
-                                                                                        </button>
-                                                                                        
-                                                                                        {isLessonExpanded && (
-                                                                                            <div className="space-y-1 mt-1 mb-2">
-                                                                                                {list.map((m: any) => {
-                                                                                                    let parsed: any = {};
-                                                                                                    try { parsed = typeof m.matrix_data === 'string' ? JSON.parse(m.matrix_data) : m.matrix_data; } catch(e) {}
-                                                                                                    
-                                                                                                    const settings = parsed.settings || {};
-                                                                                                    const duration = settings.duration ? `${settings.duration}p` : '';
-                                                                                                    const isReal = settings.mode === 'REAL';
-                                                                        
-                                                                                                    const isSelected = editingMatrixId === m.id;
-
-                                                                                                    return (
-                                                                                                        <div 
-                                                                                                            key={m.id} 
-                                                                                                            className={`p-2.5 border rounded-xl shadow-xs cursor-pointer transition-all ${isSelected ? 'bg-indigo-50/90 border-indigo-400 ring-2 ring-indigo-200 shadow-sm' : 'bg-white border-slate-200 hover:border-indigo-300 hover:shadow-xs'}`} 
-                                                                                                            onClick={() => handleSelectMatrix(m)}
-                                                                                                        >
-                                                                                                            <div className="flex justify-between items-start gap-1">
-                                                                                                                <div className="flex-1 min-w-0">
-                                                                                                                    <h4 className={`font-bold text-xs truncate ${isSelected ? 'text-indigo-800' : 'text-slate-800'}`} title={m.name}>
-                                                                                                                        {m.name}
-                                                                                                                    </h4>
-                                                                                                                    {isSelected && (
-                                                                                                                        <span className="inline-block mt-0.5 text-[8px] font-bold bg-indigo-600 text-white px-1.5 py-0.2 rounded-full">
-                                                                                                                            Đang chọn
-                                                                                                                        </span>
-                                                                                                                    )}
-                                                                                                                </div>
-                                                                                                                <div className="flex items-center gap-0.5 shrink-0">
-                                                                                                                    <button 
-                                                                                                                        onClick={(e) => { e.stopPropagation(); handleOpenSaveModal(m); }} 
-                                                                                                                        className="text-slate-400 hover:text-indigo-600 p-1 rounded hover:bg-slate-100" 
-                                                                                                                        title="Cấu hình ma trận"
-                                                                                                                    >
-                                                                                                                        <Settings size={13}/>
-                                                                                                                    </button>
-                                                                                                                    <button 
-                                                                                                                        onClick={(e) => { e.stopPropagation(); if(confirm("Xoá ma trận này?")) apiService.deleteMatrix(m.id).then(loadData); }} 
-                                                                                                                        className="text-slate-400 hover:text-red-600 p-1 rounded hover:bg-slate-100" 
-                                                                                                                        title="Xoá"
-                                                                                                                    >
-                                                                                                                        <Trash2 size={13}/>
-                                                                                                                    </button>
-                                                                                                                </div>
-                                                                                                            </div>
-
-                                                                                                            <div className="flex justify-between items-center mt-2 pt-1 border-t border-slate-100">
-                                                                                                                <div className="flex gap-1 items-center">
-                                                                                                                    {isReal ? <span className="text-[8px] bg-red-50 text-red-600 px-1 rounded font-bold border border-red-100 uppercase">THẬT</span> : <span className="text-[8px] bg-green-50 text-green-600 px-1 rounded font-bold border border-green-100 uppercase">THỬ</span>}
-                                                                                                                    {duration && <span className="text-[8px] bg-slate-100 text-slate-600 px-1 rounded font-bold border border-slate-200">{duration}</span>}
-                                                                                                                </div>
-                                                                                                                <button
-                                                                                                                    onClick={(e) => { e.stopPropagation(); handleQuickGenerateTex(m); }}
-                                                                                                                    className="flex items-center gap-1 text-[10px] font-bold text-indigo-700 bg-indigo-100/70 hover:bg-indigo-200 px-2 py-0.5 rounded-md border border-indigo-200 transition-colors shadow-2xs"
-                                                                                                                    title="Sinh đề thi TeX ngẫu nhiên từ ma trận này"
-                                                                                                                >
-                                                                                                                    <Sparkles size={11} className="text-indigo-600" /> Tạo đề TeX
-                                                                                                                </button>
-                                                                                                            </div>
-                                                                                                        </div>
-                                                                                                    );
-                                                                                                })}
-                                                                                            </div>
-                                                                                        )}
-                                                                                    </div>
-                                                                                );
-                                                                            })}
-                                                                        </div>
-                                                                    )}
-                                                                </div>
-                                                            );
-                                                        })}
-                                                    </div>
-                                                )}
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
-                        </div>
-                    );
-                })}
-            </div>
-        );
-    };
 
     return (
         <div className="w-full h-full flex gap-3 overflow-hidden p-0.5">
@@ -674,7 +502,7 @@ export const ExamGenerator: React.FC = () => {
                     </div>
                 </div>
             ) : (
-                <div className="w-72 flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden shrink-0 transition-all duration-200">
+                <div className="w-80 max-w-[85vw] flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden shrink-0 transition-all duration-200">
                     <div className="p-3.5 border-b border-slate-100 bg-slate-50/90 flex justify-between items-center">
                         <h3 className="font-bold text-sm text-slate-800 flex items-center gap-2">
                             <Database size={17} className="text-indigo-600"/> Ma trận đã lưu
@@ -703,7 +531,10 @@ export const ExamGenerator: React.FC = () => {
                         {savedMatrices.length === 0 ? (
                             <div className="text-center text-slate-400 text-xs mt-6">Chưa có ma trận nào.</div>
                         ) : (
-                            renderMatrixList()
+                            <MatrixLibrary matrices={savedMatrices} selectedId={editingMatrixId} onSelect={handleSelectMatrix}
+                                onConfigure={handleOpenSaveModal} onGenerate={handleQuickGenerateTex} onReload={() => void loadData()}
+                                canEdit={m => user?.role === 'ADMIN' || (user?.role === 'TEACHER' && Number((m as any).created_by) === user.id)}
+                                onDelete={m => { if (confirm('Xóa ma trận này?')) void apiService.deleteMatrix(m.id).then(loadData).catch(e => alert(e.message)); }}/>
                         )}
                     </div>
                 </div>
@@ -1162,7 +993,13 @@ export const ExamGenerator: React.FC = () => {
                                         <option value={1}>Lớp 11</option>
                                         <option value={2}>Lớp 12</option>
                                     </select>
+                                    <label className="flex items-center gap-2 mt-2 text-xs text-slate-600"><input type="checkbox" checked={matrixMultiGrade} onChange={e => setMatrixMultiGrade(e.target.checked)}/>Dùng chung nhiều khối (Liên khối)</label>
                                 </div>
+                                <label className="text-xs font-bold text-slate-500">Mục đích đề<select value={matrixCatalog.purpose} onChange={e => setMatrixCatalog(old => ({ ...old, purpose: e.target.value }))} className="block w-full border rounded-xl p-3 mt-1 bg-white text-slate-700">{Object.entries(MATRIX_PURPOSES).map(([k,v]) => <option key={k} value={k}>{v}</option>)}</select></label>
+                                <label className="text-xs font-bold text-slate-500">Trạng thái biên tập<select value={matrixCatalog.status} onChange={e => setMatrixCatalog(old => ({ ...old, status: e.target.value }))} className="block w-full border rounded-xl p-3 mt-1 bg-white text-slate-700">{Object.entries(MATRIX_STATUSES).map(([k,v]) => <option key={k} value={k}>{v}</option>)}</select></label>
+                                <label className="text-xs font-bold text-slate-500">Năm học<input placeholder="2026-2027" value={matrixCatalog.year} onChange={e => setMatrixCatalog(old => ({ ...old, year: e.target.value }))} className="block w-full border rounded-xl p-3 mt-1 text-slate-700"/></label>
+                                <label className="text-xs font-bold text-slate-500">Học kỳ<select value={matrixCatalog.term} onChange={e => setMatrixCatalog(old => ({ ...old, term: e.target.value }))} className="block w-full border rounded-xl p-3 mt-1 bg-white text-slate-700"><option value="">Chưa chọn</option><option value="1">Học kỳ I</option><option value="2">Học kỳ II</option><option value="YEAR">Cả năm</option></select></label>
+                                <p className="col-span-2 text-xs text-slate-500">Khối lớp là đối tượng làm đề, không giới hạn khối kiến thức trong ma trận. Trạng thái biên tập không thay đổi quyền công khai hay bài đã giao.</p>
                                 {teacherClasses.length > 0 && (
                                     <div className="col-span-2">
                                         <label className="text-xs font-bold text-slate-500 uppercase mb-1 block flex items-center gap-2">Giao trực tiếp cho lớp (tuỳ chọn)</label>

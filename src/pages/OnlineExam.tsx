@@ -946,7 +946,7 @@ export const OnlineExam: React.FC = () => {
             );
         }
 
-        const gradeOrder = ['2', '1', '0', '9', '8', '7', '6', 'OT'];
+        const gradeOrder = ['2', '1', '0', '9', '8', '7', '6', 'MULTI', 'OT'];
         const sortedGrades = Object.entries(groupedExams).sort((a, b) => {
             return gradeOrder.indexOf(a[0]) - gradeOrder.indexOf(b[0]);
         });
@@ -964,7 +964,7 @@ export const OnlineExam: React.FC = () => {
                                 <div className="flex items-center gap-2">
                                     {isGradeExpanded ? <FolderOpen size={14}/> : <Folder size={14}/>}
                                     <span className="text-xs font-bold">
-                                        {grade === '0' ? 'Lớp 10' : grade === '1' ? 'Lớp 11' : grade === '2' ? 'Lớp 12' : grade === 'OT' ? 'Khác' : `Lớp ${grade}`}
+                                        {grade === '0' ? 'Lớp 10' : grade === '1' ? 'Lớp 11' : grade === '2' ? 'Lớp 12' : grade === 'MULTI' ? 'Liên khối' : grade === 'OT' ? 'Chưa phân loại' : `Lớp ${grade}`}
                                     </span>
                                 </div>
                                 {isGradeExpanded ? <ChevronDown size={14}/> : <ChevronRight size={14}/>}
