@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import DOMPurify from 'dompurify';
+import { svgImageSource } from '../utils/svgImageSource';
 import { apiService } from '../services/api';
 import { Loader2, Search, Eye, Copy, Check, Code, Image as ImageIcon, X, Database, Wand2, Save } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
@@ -44,17 +44,14 @@ const SvgViewer = ({ hash }: { hash: string }) => {
     useEffect(() => {
         apiService.fetchCachedImage(hash).then(res => {
             if (res) {
-                // Ensure the SVG is responsive
-                let responsiveSvg = res.replace(/width="[\d\.]+(pt|px|cm|in)"/i, 'width="100%"');
-                responsiveSvg = responsiveSvg.replace(/height="[\d\.]+(pt|px|cm|in)"/i, 'height="auto"');
-                setSvg(responsiveSvg);
+                setSvg(res);
             }
             else setError("Lỗi tải hình ảnh từ cache.");
         }).catch(e => setError(e.message));
     }, [hash]);
 
     if (error) return <div className="text-red-500 text-[10px] p-2 bg-red-50 rounded">{error}</div>;
-    return <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svg, { USE_PROFILES: { svg: true, svgFilters: true }, ADD_TAGS: ['style'], ADD_ATTR: ['style', 'class'], FORBID_TAGS: ['script', 'foreignObject', 'iframe', 'object', 'embed'], FORBID_ATTR: ['onload', 'onerror', 'onclick'] }) }} className="w-full flex justify-center [&>svg]:max-w-full [&>svg]:h-auto" />;
+    return <img src={svgImageSource(svg || '')} alt="Hình SVG đã biên dịch" className="block max-w-full h-auto mx-auto" />;
 };
 
 export const AdminSourceViewer: React.FC = () => {

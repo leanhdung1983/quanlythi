@@ -541,7 +541,7 @@ export const apiService = {
     async fetchCachedImage(hash: string) {
         try {
             const cleanHash = hash.trim();
-            const response = await fetch(`${API_URL}/images/${cleanHash}`);
+            const response = await fetch(`${API_URL}/images/${cleanHash}?format=original-svg-v2`, { cache: 'no-store' });
             const result = await handleResponse(response, `/images/${cleanHash}`);
             return result?.svg || null;
         } catch (e) {

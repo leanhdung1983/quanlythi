@@ -99,7 +99,7 @@ router.post('/admin/tikz-audit/sync', async (req, res) => {
                 await conn.rollback();
                 return res.status(422).json({ error: 'SVG không hợp lệ hoặc chứa nội dung không an toàn.' });
             }
-            await conn.query('INSERT IGNORE INTO question_images (tikz_hash, svg_content) VALUES (?, ?)', [hash, safeSvg]);
+            await conn.query('INSERT INTO question_images (tikz_hash, svg_content) VALUES (?, ?) ON DUPLICATE KEY UPDATE svg_content=VALUES(svg_content)', [hash, safeSvg]);
         }
         const updated = replaceRenderedBlock(row.content_latex, hash);
         const structure = inspectTikzStructure(updated);

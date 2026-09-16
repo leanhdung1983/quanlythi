@@ -29,7 +29,7 @@ router.get('/images/:hash', async (req, res) => {
         }
         const cleanSvg = sanitizeSvg(rows[0].svg_content);
         if (!cleanSvg) return res.status(422).json({ error: 'Ảnh lưu trữ không đạt yêu cầu an toàn.' });
-        res.setHeader('Cache-Control', 'public, max-age=86400');
+        res.setHeader('Cache-Control', 'no-store');
         res.json({ success: true, svg: cleanSvg });
     } catch (e) { 
         console.error("Error fetching image:", e);
@@ -43,7 +43,7 @@ router.post('/images', async (req, res) => {
         if (!/^[a-f0-9]{64}$/i.test(hash || '') || !svg) return res.status(400).json({ error: "Hash hoặc SVG không hợp lệ." });
         const cleanSvg = sanitizeSvg(svg);
         if (!cleanSvg) return res.status(400).json({ error: "Nội dung SVG không hợp lệ hoặc chứa mã không an toàn." });
-        await query("INSERT IGNORE INTO question_images (tikz_hash, svg_content) VALUES (?, ?)", [hash, cleanSvg]);
+        await query("INSERT INTO question_images (tikz_hash, svg_content) VALUES (?, ?) ON DUPLICATE KEY UPDATE svg_content=VALUES(svg_content)", [hash, cleanSvg]);
         res.json({ success: true });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });

@@ -1,11 +1,11 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import DOMPurify from 'dompurify';
 import { 
   Settings, Download, FileText, Bug, 
   RefreshCw, Loader2,
   Eye, EyeOff, Copy
 } from 'lucide-react';
 import { apiService } from '../services/api';
+import { svgImageSource } from '../utils/svgImageSource';
 
 interface TikZRendererProps {
   code?: string;
@@ -27,16 +27,6 @@ export const clearSvgCache = () => {
   svgCache.clear();
 };
 
-const cleanClientSvg = (rawSvg: string | null): string => {
-  if (!rawSvg) return '';
-  return DOMPurify.sanitize(rawSvg, {
-    USE_PROFILES: { svg: true, svgFilters: true },
-    ADD_TAGS: ['style'],
-    ADD_ATTR: ['style', 'class'],
-    FORBID_TAGS: ['script', 'foreignObject', 'iframe', 'object', 'embed'],
-    FORBID_ATTR: ['onload', 'onerror', 'onclick', 'onmouseover', 'onfocus', 'onblur']
-  });
-};
 
 export const TikZRenderer: React.FC<TikZRendererProps> = ({ 
   code, 
@@ -615,9 +605,12 @@ ${adjustedCode}
             )}
           </div>
         ) : svgContent ? (
-          <div 
-            dangerouslySetInnerHTML={{ __html: cleanClientSvg(svgContent) }} 
-            className="w-full transition-all duration-500"
+          <img
+            // LaTeX SVGs reuse glyph IDs (g0-0, etc.). An independent SVG
+            // document prevents references from resolving into another question.
+            src={svgImageSource(svgContent)}
+            alt="Hình vẽ toán học"
+            className="block w-full h-auto transition-all duration-500"
           />
         ) : (
            !isLoading && <div className="text-gray-400 text-sm">Waiting for code...</div>

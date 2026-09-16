@@ -1,6 +1,6 @@
 import mysql from 'mysql2/promise';
 import crypto from 'crypto';
-import sanitizeHtml from 'sanitize-html';
+import { sanitizeCompiledSvg } from './svgImage.js';
 import { cacheMiddleware, clearCache } from '../redis.js';
 
 // Re-export cache helpers
@@ -290,76 +290,7 @@ export function generateHash(content) {
     return crypto.createHash('sha256').update(normalizeLatex(content)).digest('hex');
 }
 
-export function sanitizeSvg(rawSvg) {
-    if (typeof rawSvg !== 'string') return '';
-    let source = rawSvg.trim();
-    source = source.replace(/<\?xml[\s\S]*?\?>/i, '').trim();
-    if (source.length === 0 || source.length > 2_000_000 || !/<svg\b[\s\S]*<\/svg>$/i.test(source)) return '';
-
-    const clean = sanitizeHtml(source, {
-        allowVulnerableTags: true,
-        allowedTags: [
-            'svg', 'g', 'path', 'rect', 'circle', 'ellipse', 'line', 'polyline', 'polygon',
-            'text', 'tspan', 'defs', 'symbol', 'use', 'clipPath', 'clippath', 'mask', 'marker',
-            'linearGradient', 'lineargradient', 'radialGradient', 'radialgradient', 'stop', 'pattern', 'title', 'desc',
-            'style'
-        ],
-        allowedAttributes: {
-            svg: ['xmlns', 'xmlns:xlink', 'width', 'height', 'viewBox', 'viewbox', 'preserveAspectRatio', 'preserveaspectratio', 'role', 'aria-label', 'version', 'class', 'style'],
-            style: ['type'],
-            '*': [
-                'id', 'class', 'style',
-                'transform', 'd', 'x', 'y', 'x1', 'y1', 'x2', 'y2', 'cx', 'cy',
-                'r', 'rx', 'ry', 'points', 'fill', 'fill-opacity', 'fill-rule', 'stroke',
-                'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-dasharray',
-                'stroke-dashoffset', 'stroke-opacity', 'opacity', 'font-size', 'font-family',
-                'font-style', 'font-weight', 'text-anchor', 'dominant-baseline', 'clip-path', 'clip-rule',
-                'mask', 'marker-start', 'marker-mid', 'marker-end', 'offset', 'stop-color',
-                'stop-opacity', 'gradientUnits', 'gradientunits', 'gradientTransform', 'gradienttransform', 'spreadMethod', 'spreadmethod',
-                'patternUnits', 'patternunits', 'patternContentUnits', 'patterncontentunits', 'patternTransform', 'patterntransform',
-                'overflow', 'visibility'
-            ],
-            use: ['href', 'xlink:href']
-        },
-        allowedStyles: {
-            '*': {
-                'fill': [/.*/],
-                'stroke': [/.*/],
-                'stroke-width': [/.*/],
-                'stroke-linecap': [/.*/],
-                'stroke-linejoin': [/.*/],
-                'stroke-miterlimit': [/.*/],
-                'stroke-dasharray': [/.*/],
-                'stroke-dashoffset': [/.*/],
-                'stroke-opacity': [/.*/],
-                'fill-opacity': [/.*/],
-                'fill-rule': [/.*/],
-                'opacity': [/.*/],
-                'font-size': [/.*/],
-                'font-family': [/.*/],
-                'font-style': [/.*/],
-                'font-weight': [/.*/],
-                'display': [/.*/],
-                'color': [/.*/],
-                'text-anchor': [/.*/],
-                'dominant-baseline': [/.*/],
-                'overflow': [/.*/],
-                'visibility': [/.*/]
-            }
-        },
-        allowedSchemes: [],
-        allowProtocolRelative: false,
-        transformTags: {
-            use: (tagName, attribs) => {
-                const href = attribs.href || attribs['xlink:href'];
-                return { tagName, attribs: href?.startsWith('#') ? attribs : {} };
-            }
-        },
-        parser: { lowerCaseTags: false, lowerCaseAttributeNames: false }
-    }).trim();
-
-    return clean.includes('<svg') && clean.endsWith('</svg>') ? clean : '';
-}
+export const sanitizeSvg = sanitizeCompiledSvg;
 
 export function getGradeDigitSQL() {
     return `CAST(g.code AS UNSIGNED)`;
