@@ -748,8 +748,8 @@ export async function seedDatabase() {
             question_id INT NOT NULL,
             caption TEXT NOT NULL,
             scheduled_at DATETIME NOT NULL,
-            image_mime VARCHAR(20) NOT NULL,
-            image_blob LONGBLOB NOT NULL,
+            image_mime VARCHAR(20) NULL,
+            image_blob LONGBLOB NULL,
             status ENUM('DRAFT','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT',
             created_by INT NOT NULL,
             approved_by INT NULL,
@@ -766,6 +766,10 @@ export async function seedDatabase() {
             UNIQUE KEY uq_social_claim(claim_token),
             INDEX idx_social_question(question_id)
         ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
+        const [socialImageColumns] = await pool.query("SHOW COLUMNS FROM social_post_queue WHERE Field IN ('image_mime','image_blob')");
+        if (socialImageColumns.some(column => column.Null === 'NO')) {
+            await pool.query('ALTER TABLE social_post_queue MODIFY COLUMN image_mime VARCHAR(20) NULL, MODIFY COLUMN image_blob LONGBLOB NULL');
+        }
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS tikz_render_failures (

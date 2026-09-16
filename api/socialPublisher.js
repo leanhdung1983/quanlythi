@@ -4,9 +4,10 @@ import { pool, initDbPromise } from './core.js';
 const PAGE_ID = process.env.FACEBOOK_PAGE_ID || '100105564680397';
 const TOKEN = process.env.FACEBOOK_PAGE_ACCESS_TOKEN || '';
 const GRAPH_VERSION = process.env.FACEBOOK_GRAPH_VERSION || 'v26.0';
+const AUTO_ENABLED = process.env.FACEBOOK_AUTO_POST_ENABLED === '1';
 
 export function publisherConfig() {
-    return { pageId: PAGE_ID, configured: Boolean(TOKEN), graphVersion: GRAPH_VERSION };
+    return { pageId: PAGE_ID, configured: Boolean(TOKEN), autoEnabled: AUTO_ENABLED, graphVersion: GRAPH_VERSION };
 }
 
 export async function verifyPageAccess(fetcher = fetch, token = TOKEN, pageId = PAGE_ID) {
@@ -64,7 +65,7 @@ async function finishPost(item, result) {
 }
 
 export async function publishDuePosts() {
-    if (!TOKEN) return 0;
+    if (!TOKEN || !AUTO_ENABLED) return 0;
     await initDbPromise;
     if (!pool) return 0;
     await pool.query(`UPDATE social_post_queue SET status='UNCERTAIN',claim_token=NULL,
@@ -94,7 +95,7 @@ export async function publishDuePosts() {
 }
 
 export function startSocialPublisher() {
-    if (!TOKEN) { console.log('[SOCIAL] Auto-post paused: FACEBOOK_PAGE_ACCESS_TOKEN is not configured.'); return; }
+    if (!TOKEN || !AUTO_ENABLED) { console.log('[SOCIAL] Auto-post disabled; manual content planning is active.'); return; }
     let busy = false;
     const run = async () => {
         if (busy) return;

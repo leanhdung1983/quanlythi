@@ -201,7 +201,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                                 <SidebarGroup title="Admin" isCompact={isCompact}>
                                     <SidebarItem to="/admin" icon={Shield} label="Quản trị User" isCompact={isCompact} />
                                     <SidebarItem to="/admin/source" icon={FileCode} label="Mã nguồn & SVG" isCompact={isCompact} />
-                                    <SidebarItem to="/admin/social" icon={Send} label="Đăng Facebook Page" isCompact={isCompact} />
+                                    <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" isCompact={isCompact} />
                                     <button 
                                         onClick={() => setShowAdminFeedback(true)}
                                         className={`flex items-center gap-3 px-3 py-3 my-1 mx-2 rounded-xl transition-all duration-300 group relative overflow-hidden text-slate-500 hover:bg-slate-50 hover:text-indigo-600 w-[calc(100%-16px)]`}
@@ -291,7 +291,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             <>
                                 <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">Hệ thống</div>
                                 <SidebarItem to="/admin" icon={Shield} label="Quản trị User" onClick={() => setIsMobileMenuOpen(false)}/>
-                                <SidebarItem to="/admin/social" icon={Send} label="Đăng Facebook Page" onClick={() => setIsMobileMenuOpen(false)}/>
+                                <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" onClick={() => setIsMobileMenuOpen(false)}/>
                             </>
                         )}
                         

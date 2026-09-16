@@ -5,6 +5,7 @@ afterEach(() => { vi.unstubAllEnvs(); vi.unstubAllGlobals(); vi.resetModules(); 
 describe('scheduled Facebook publishing', () => {
     it('claims one due post and increments usage only after Meta confirms it', async () => {
         vi.stubEnv('FACEBOOK_PAGE_ACCESS_TOKEN', 'private-test-token');
+        vi.stubEnv('FACEBOOK_AUTO_POST_ENABLED', '1');
         vi.stubEnv('FACEBOOK_PAGE_ID', '100105564680397');
         let claimed = false;
         const transactionQuery = vi.fn(async sql => {
@@ -34,6 +35,7 @@ describe('scheduled Facebook publishing', () => {
 
     it('does not retry a network-uncertain publish result', async () => {
         vi.stubEnv('FACEBOOK_PAGE_ACCESS_TOKEN', 'private-test-token');
+        vi.stubEnv('FACEBOOK_AUTO_POST_ENABLED', '1');
         let claimed = false;
         const fakePool = { query: vi.fn(async sql => {
             if (sql.includes("SET status='PUBLISHING'")) {
