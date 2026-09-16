@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest';
 import { sanitizeCompiledSvg as preserveSvgImage } from './svgImage.js';
 describe('preserve compiled SVG images', () => {
+    it('never serializes empty path attributes as invalid XML boolean attributes', () => {
+        for (const path of ['<path id="space" d=""/>', '<path id="space" d></path>']) {
+            const clean = preserveSvgImage(`<svg xmlns="http://www.w3.org/2000/svg"><defs>${path}</defs><text>x</text></svg>`);
+            expect(clean).toContain('id="space"');
+            expect(clean).not.toMatch(/\sd(?:\s|\/?>)/);
+            expect(clean).toContain('<text>x</text>');
+        }
+    });
     it('preserves every glyph, use reference, symbol, style and mathematical label', () => {
         const svg = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink"><style>.glyph{fill:black}</style><defs><symbol id="glyph0-1" overflow="visible"><path d="M0 0L2 3"/></symbol></defs><use xlink:href="#glyph0-1" x="30" y="20" class="glyph"/><text dx="1" dy="2">x y y′ −∞ +∞ + − 0</text></svg>`;
         const clean = preserveSvgImage(svg);

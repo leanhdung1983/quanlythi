@@ -8,6 +8,9 @@ export function sanitizeCompiledSvg(rawSvg) {
 
     const clean = sanitizeHtml(source, {
         allowVulnerableTags: true,
+        // SVG is XML, not HTML: a valueless attribute (e.g. d) invalidates
+        // the entire image. Drop empty attributes instead of emitting booleans.
+        nonBooleanAttributes: ['*'],
         allowedTags: [
             'svg', 'g', 'path', 'rect', 'circle', 'ellipse', 'line', 'polyline', 'polygon',
             'text', 'tspan', 'font', 'font-face', 'glyph', 'missing-glyph', 'defs', 'symbol', 'use', 'clipPath', 'clippath', 'mask', 'marker',
@@ -67,7 +70,7 @@ export function sanitizeCompiledSvg(rawSvg) {
                 return { tagName, attribs: href?.startsWith('#') ? attribs : {} };
             }
         },
-        parser: { lowerCaseTags: false, lowerCaseAttributeNames: false }
+        parser: { xmlMode: true, lowerCaseTags: false, lowerCaseAttributeNames: false }
     }).trim();
 
     return clean.includes('<svg') && clean.endsWith('</svg>') ? clean : '';
