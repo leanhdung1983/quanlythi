@@ -468,7 +468,13 @@ export const IdAssigner: React.FC = () => {
                 }
             }
 
-            alert(`✨ Hoàn tất! AI đã đề xuất mã ID cho ${updatedCount}/${itemsToProcess.length} câu hỏi.\n\nThầy/cô vui lòng kiểm tra lại danh sách bên trái rồi nhấn "Xác nhận lưu CSDL".`);
+            if (updatedCount === 0) {
+                alert(`⚠️ AI chưa thể đề xuất mã ID phù hợp cho ${itemsToProcess.length} câu hỏi này.\n\nNguyên nhân có thể do hạn mức API Gemini tạm thời vượt giới hạn (Quota Exceeded) hoặc nội dung câu hỏi chưa khớp dạng toán ID6. Thầy/cô có thể thử lại sau ít phút hoặc kiểm tra API Key.`);
+            } else if (updatedCount < itemsToProcess.length) {
+                alert(`✨ AI đã đề xuất thành công ${updatedCount}/${itemsToProcess.length} câu hỏi.\n(Các câu còn lại chưa hoàn tất do giới hạn lượt gọi API hoặc cần xem xét thủ công).\n\nThầy/cô vui lòng kiểm tra lại danh sách bên trái rồi nhấn "Xác nhận lưu CSDL".`);
+            } else {
+                alert(`✨ Hoàn tất! AI đã đề xuất mã ID chuẩn cho toàn bộ ${updatedCount}/${itemsToProcess.length} câu hỏi.\n\nThầy/cô vui lòng kiểm tra lại danh sách bên trái rồi nhấn "Xác nhận lưu CSDL".`);
+            }
         } catch (e: any) {
             console.error("AI Batch suggest error:", e);
             alert("Lỗi đề xuất AI: " + (e.message || "Vui lòng thử lại"));

@@ -85,29 +85,75 @@ export interface BatchSuggestResult {
     reason: string;
 }
 
+const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
+
+function isQuotaOrRateLimitError(err: unknown): boolean {
+    const msg = String((err as any)?.message || err || '').toLowerCase();
+    return msg.includes('429') || msg.includes('quota') || msg.includes('resource_exhausted') || msg.includes('hạn mức') || msg.includes('vượt quá');
+}
+
 export const batchSuggestIds = async (
     questions: Array<{ id: number; latex: string; current_id?: string }>,
     onProgress?: (processed: number, total: number) => void
 ): Promise<BatchSuggestResult[]> => {
     const CHUNK_SIZE = 10;
     const allResults: BatchSuggestResult[] = [];
+    let lastError: Error | null = null;
 
     for (let i = 0; i < questions.length; i += CHUNK_SIZE) {
         const chunk = questions.slice(i, i + CHUNK_SIZE);
-        try {
-            const response = await fetch('/api/ai/batch-suggest-ids', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({ questions: chunk })
-            });
-            const payload = await readApiResponse(response);
-            if (payload.results && Array.isArray(payload.results)) {
-                allResults.push(...payload.results);
+
+        // Pacing: add small pause between chunks if not the first chunk
+        if (i > 0) {
+            await sleep(600);
+        }
+
+        let chunkSuccess = false;
+        let attempt = 0;
+        const maxAttempts = 2;
+
+        while (attempt < maxAttempts && !chunkSuccess) {
+            attempt++;
+            try {
+                const response = await fetch('/api/ai/batch-suggest-ids', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ questions: chunk })
+                });
+                const payload = await readApiResponse(response);
+                if (payload.results && Array.isArray(payload.results)) {
+                    allResults.push(...payload.results);
+                    chunkSuccess = true;
+                    lastError = null;
+                }
+            } catch (e: any) {
+                lastError = e instanceof Error ? e : new Error(String(e));
+                console.warn(`Batch suggest chunk attempt ${attempt}/${maxAttempts} failed:`, e.message);
+
+                if (isQuotaOrRateLimitError(e)) {
+                    if (attempt < maxAttempts) {
+                        // Backoff delay before retrying
+                        await sleep(2500);
+                        continue;
+                    }
+                    // Quota exceeded: Stop trying further chunks to avoid endless failures
+                    console.error('Gemini quota or rate limit exceeded. Stopping further requests.', e);
+                    break;
+                }
+
+                // If not quota error, wait 1s before retry
+                if (attempt < maxAttempts) {
+                    await sleep(1000);
+                }
             }
-        } catch (e) {
-            console.error('Batch suggest chunk failed, falling back to individual', e);
+        }
+
+        // If batch chunk failed after retries and wasn't a quota exhaustion, try individual fallback
+        if (!chunkSuccess && lastError && !isQuotaOrRateLimitError(lastError)) {
+            console.warn('Batch chunk failed with non-quota error, trying individual fallback...');
             for (const q of chunk) {
                 try {
+                    await sleep(300);
                     const single = await validateAndTagQuestion(q.latex, q.current_id || '');
                     if (single && single.suggestedId) {
                         allResults.push({
@@ -117,13 +163,29 @@ export const batchSuggestIds = async (
                             reason: single.reason || 'Đề xuất bởi AI'
                         });
                     }
-                } catch (singleErr) {
-                    console.error('Single validation error', singleErr);
+                } catch (singleErr: any) {
+                    console.error('Single validation error:', singleErr.message);
+                    if (isQuotaOrRateLimitError(singleErr)) {
+                        lastError = singleErr instanceof Error ? singleErr : new Error(String(singleErr));
+                        break;
+                    }
                 }
             }
         }
+
         onProgress?.(Math.min(i + CHUNK_SIZE, questions.length), questions.length);
+
+        // If a fatal quota error occurred, break the outer loop so we don't spam further chunks
+        if (lastError && isQuotaOrRateLimitError(lastError)) {
+            break;
+        }
     }
+
+    // If 0 results were produced and an error occurred, throw it so UI receives the exact failure cause
+    if (allResults.length === 0 && lastError) {
+        throw lastError;
+    }
+
     return allResults;
 };
 

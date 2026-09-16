@@ -33,10 +33,10 @@ const authLimiter = rateLimit({
     message: { error: 'Quá nhiều lượt đăng nhập hoặc đăng ký từ IP này. Vui lòng thử lại sau 15 phút.' }
 });
 
-// AI Rate Limiter (Gemini API quota protection): 30 req/min
+// AI Rate Limiter (Gemini API quota protection): 60 req/min
 const aiLimiter = rateLimit({
     windowMs: 60 * 1000,
-    max: 30,
+    max: 60,
     standardHeaders: true,
     legacyHeaders: false,
     message: { error: 'Quá nhiều yêu cầu gọi AI. Vui lòng thử lại sau giây lát.' }

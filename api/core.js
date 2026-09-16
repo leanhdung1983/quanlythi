@@ -243,30 +243,29 @@ export function parseGeminiError(e) {
 }
 
 export async function generateWithFallback(ai, prompt, config, additionalParts = []) {
-    const primaryModel = 'gemini-3.6-flash';
-    const fallbackModel = 'gemini-3.5-flash';
+    const candidateModels = [
+        'gemini-2.5-flash',
+        'gemini-3.5-flash',
+        'gemini-2.5-flash-lite',
+        'gemini-3.6-flash'
+    ];
     const contents = additionalParts.length ? { parts: [...additionalParts, { text: prompt }] } : prompt;
-    try {
-        console.log(`Trying ${primaryModel}...`);
-        const response = await ai.models.generateContent({
-            model: primaryModel,
-            contents,
-            config: config
-        });
-        return response;
-    } catch (e) {
-        console.warn(`${primaryModel} failed (${e.message}). Falling back to ${fallbackModel}...`);
+    
+    let lastError = null;
+    for (const model of candidateModels) {
         try {
-            const responseFlash = await ai.models.generateContent({
-                model: fallbackModel,
+            const response = await ai.models.generateContent({
+                model,
                 contents,
-                config: config
+                config
             });
-            return responseFlash;
-        } catch {
-            throw e;
+            return response;
+        } catch (e) {
+            lastError = e;
+            console.warn(`[AI] Model ${model} failed (${e.message || e}). Trying next fallback model...`);
         }
     }
+    throw lastError || new Error('Tất cả các mô hình Gemini dự phòng đều không thể phản hồi.');
 }
 
 // --- LATEX, SVG, CRYPTO & HIERARCHY HELPERS ---

@@ -55,6 +55,52 @@ router.post('/ai/convert-document', async (req, res) => {
     }
 });
 
+// In-memory cache for ID6 catalog to avoid repetitive heavy queries and token bloat
+let cachedCatalogData = null;
+let cachedCatalogExpiry = 0;
+const CATALOG_CACHE_TTL_MS = 60 * 60 * 1000; // 1 hour
+
+async function getCachedId6Catalog() {
+    const now = Date.now();
+    if (cachedCatalogData && now < cachedCatalogExpiry) {
+        return cachedCatalogData;
+    }
+
+    // Fetch all metadata rows (covering all grades 6-12 without truncation)
+    const metadata = await query(`SELECT m.id_full, m.description, g.code AS grade, s.code AS subject,
+        c.chapter_number AS chapter, u.unit_number AS unit, l.code AS level
+        FROM id6_metadata m LEFT JOIN grades g ON m.grade_id=g.id LEFT JOIN subjects s ON m.subject_id=s.id
+        LEFT JOIN chapters c ON m.chapter_id=c.id LEFT JOIN units u ON m.unit_id=u.id LEFT JOIN levels l ON m.level_id=l.id
+        ORDER BY m.id`);
+
+    const validIds = new Set(metadata.map(item => normalizeId6(item.id_full)).filter(Boolean));
+
+    // Compress 4,600+ rows into ~1,150 base dạng lines using '*' for level (N/H/V/C)
+    // Structure: <Khối><Môn><Chương>*<Bài>-<Dạng>: <Mô tả>
+    const baseMap = new Map();
+    for (const item of metadata) {
+        const norm = normalizeId6(item.id_full);
+        if (!norm) continue;
+        const base = norm.replace(/[NHVC](?=\d+-)/, '*');
+        if (!baseMap.has(base)) {
+            baseMap.set(base, item.description || '');
+        }
+    }
+
+    const compactCatalog = Array.from(baseMap.entries())
+        .map(([id, desc]) => `${id}: ${desc}`)
+        .join('\n');
+
+    cachedCatalogData = {
+        compactCatalog,
+        validIds,
+        rawCount: metadata.length,
+        compressedCount: baseMap.size
+    };
+    cachedCatalogExpiry = now + CATALOG_CACHE_TTL_MS;
+    return cachedCatalogData;
+}
+
 router.post('/ai/validate-question', async (req, res) => {
     try {
         if (!requireTeacherOrAdmin(req, res)) return;
@@ -63,18 +109,15 @@ router.post('/ai/validate-question', async (req, res) => {
         const apiKey = await getGeminiApiKey(req.user.id);
         if (!apiKey) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
         const ai = new GoogleGenAI({ apiKey });
-        const metadata = await query(`SELECT m.id_full, m.description, g.code AS grade, s.code AS subject,
-            c.chapter_number AS chapter, u.unit_number AS unit, l.code AS level
-            FROM id6_metadata m LEFT JOIN grades g ON m.grade_id=g.id LEFT JOIN subjects s ON m.subject_id=s.id
-            LEFT JOIN chapters c ON m.chapter_id=c.id LEFT JOIN units u ON m.unit_id=u.id LEFT JOIN levels l ON m.level_id=l.id
-            ORDER BY m.id LIMIT 3000`);
-        const catalog = metadata.map(item => `${item.id_full}: ${item.description || ''}`).join('\n');
-        const response = await generateWithFallback(ai, `Câu hỏi LaTeX: ${latex}\nID hiện tại: ${current_id || ''}\n\nDanh mục ID hợp lệ:\n${catalog}\n\nHãy kiểm tra ID và chỉ đề xuất ID có trong danh mục.`, {
-            systemInstruction: 'Trả về JSON gồm isValid, reason, suggestedId, confidence từ 0 đến 1, alternatives (tối đa 3 ID), competencies, chapter, unit và detectedQuestionType. Không thêm markdown. Không được tạo ID ngoài danh mục.',
+
+        const { compactCatalog, validIds } = await getCachedId6Catalog();
+
+        const prompt = `Câu hỏi LaTeX: ${latex}\nID hiện tại: ${current_id || ''}\n\nDanh mục dạng toán chuẩn ID6:\n${compactCatalog}\n\nQuy tắc: Ký hiệu '*' là vị trí của mức độ N (Nhận biết), H (Thông hiểu), V (Vận dụng), C (Vận dụng cao). Hãy kiểm tra ID và chỉ đề xuất mã ID6 đầy đủ hợp lệ.`;
+        const response = await generateWithFallback(ai, prompt, {
+            systemInstruction: 'Trả về JSON gồm isValid, reason, suggestedId, confidence từ 0 đến 1, alternatives (tối đa 3 ID), competencies, chapter, unit và detectedQuestionType. Không thêm markdown. Thay thế * bằng N, H, V hoặc C để tạo mã ID6 chuẩn.',
             responseMimeType: 'application/json'
         });
         const data = JSON.parse((response.text || '{}').replace(/^```json\s*|\s*```$/g, ''));
-        const validIds = new Set(metadata.map(item => normalizeId6(item.id_full)).filter(Boolean));
         const suggestedId = normalizeId6(data.suggestedId || '');
         data.suggestedId = validIds.has(suggestedId) ? suggestedId : '';
         data.alternatives = (Array.isArray(data.alternatives) ? data.alternatives : [])
@@ -101,41 +144,43 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
         if (!apiKey) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
         const ai = new GoogleGenAI({ apiKey });
 
-        const metadata = await query(`SELECT m.id_full, m.description, g.code AS grade, s.code AS subject,
-            c.chapter_number AS chapter, u.unit_number AS unit, l.code AS level
-            FROM id6_metadata m LEFT JOIN grades g ON m.grade_id=g.id LEFT JOIN subjects s ON m.subject_id=s.id
-            LEFT JOIN chapters c ON m.chapter_id=c.id LEFT JOIN units u ON m.unit_id=u.id LEFT JOIN levels l ON m.level_id=l.id
-            ORDER BY m.id LIMIT 3000`);
-
-        const catalog = metadata.map(item => `${item.id_full}: ${item.description || ''}`).join('\n');
-        const validIds = new Set(metadata.map(item => normalizeId6(item.id_full)).filter(Boolean));
+        const { compactCatalog, validIds } = await getCachedId6Catalog();
 
         const questionsText = batch.map((q, idx) => {
-            const raw = typeof q.latex === 'string' ? q.latex.substring(0, 1200) : '';
+            const raw = typeof q.latex === 'string' ? q.latex.substring(0, 1500) : '';
             return `--- CÂU ${idx + 1} (REF_ID: ${q.id}) ---\n${raw}`;
         }).join('\n\n');
 
         const prompt = `Dưới đây là danh sách ${batch.length} câu hỏi Toán dạng LaTeX cần đề xuất mã ID6 chuẩn:
 ${questionsText}
 
-Danh mục mã ID6 hợp lệ:
-${catalog}
+Danh mục dạng toán chuẩn ID6:
+${compactCatalog}
+
+QUY TẮC MÃ ID6:
+Cấu trúc mã: <Khối><Môn><Chương><Mức_độ><Bài>-<Dạng>
+Ký hiệu '*' trong danh mục là vị trí của Mức độ nhận thức:
+- 'N': Nhận biết
+- 'H': Thông hiểu
+- 'V': Vận dụng
+- 'C': Vận dụng cao
+Ví dụ: Từ dạng "2D1*1-1", nếu câu ở mức Nhận biết thì thay '*' thành 'N' -> mã là "2D1N1-1".
 
 YÊU CẦU:
-1. Phân tích nội dung và mức độ (N: Nhận biết, H: Thông hiểu, V: Vận dụng, C: Vận dụng cao) của từng câu.
-2. Đề xuất đúng 1 mã ID6 chính xác nhất từ Danh mục mã ID6 hợp lệ cho từng câu.
+1. Phân tích nội dung và mức độ nhận thức (N, H, V, C) của từng câu.
+2. Chọn đúng dạng toán phù hợp từ Danh mục và thay thế '*' bằng chữ cái mức độ tương ứng.
 3. Trả về đúng JSON Array theo mẫu (không thêm văn bản ngoài JSON):
 [
   {
     "id": <REF_ID tương ứng>,
-    "suggestedId": "<mã ID6 chuẩn>",
+    "suggestedId": "<mã ID6 chuẩn, ví dụ 2D1N1-1>",
     "confidence": <số từ 0 đến 1>,
     "reason": "<mô tả ngắn dạng toán và mức độ>"
   }
 ]`;
 
         const response = await generateWithFallback(ai, prompt, {
-            systemInstruction: 'Bạn là chuyên gia phân loại câu hỏi Toán theo chuẩn ID6. Trả về đúng JSON Array, không thêm markdown hay giải thích ngoài JSON. Chỉ chọn suggestedId có trong danh mục ID hợp lệ.',
+            systemInstruction: 'Bạn là chuyên gia phân loại câu hỏi Toán theo chuẩn ID6. Trả về đúng JSON Array, không thêm markdown hay giải thích ngoài JSON. Chỉ chọn suggestedId khớp dạng toán trong danh mục và thay * bằng N, H, V hoặc C.',
             responseMimeType: 'application/json'
         });
 
