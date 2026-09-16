@@ -287,6 +287,7 @@ router.get('/students/:student_id/classes', async (req, res) => {
 
 // 11. Thống kê điểm của lớp
 router.get('/classes/:class_id/scores', async (req, res) => {
+    res.set('Cache-Control', 'private, no-store');
     try {
         if (!(await canManageClass(req, req.params.class_id))) return res.status(403).json({ error: 'Bạn không có quyền xem điểm của lớp này.' });
         const rows = await query(`
@@ -295,7 +296,7 @@ router.get('/classes/:class_id/scores', async (req, res) => {
                 m.id as matrix_id, m.name as assignment_name,
                 er.id as attempt_id,
                 er.score as score,
-                er.created_at as submit_time
+                er.last_updated as submit_time
             FROM class_students cs
             JOIN users u ON cs.student_id = u.id
             JOIN class_assignments ca ON cs.class_id = ca.class_id

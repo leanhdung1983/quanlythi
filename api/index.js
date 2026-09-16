@@ -52,6 +52,7 @@ const imageUploadLimiter = rateLimit({
 });
 
 // Apply General Rate Limiter to all /api routes
+app.use('/api', (req, res, next) => { res.setHeader('Cache-Control', 'private, no-store'); next(); });
 app.use('/api', apiLimiter);
 
 // Apply Session Authentication Middleware

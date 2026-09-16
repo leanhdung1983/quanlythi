@@ -13,6 +13,11 @@ import { sanitizeQuestionForStudent, rehydrateTrustedQuestions } from '../examSe
 import { buildLatexDocument } from '../texExamGenerator.js';
 
 const router = express.Router();
+// Results and live sessions must never be served from a browser/proxy cache.
+router.use((req, res, next) => {
+    if (/^\/(exam-results|exam\/|matrix-results)/.test(req.path)) res.set('Cache-Control', 'private, no-store');
+    next();
+});
 
 // 1. Saved Matrices
 router.get('/saved-matrices', async (req, res) => { 
@@ -153,6 +158,12 @@ router.get('/exam-results/:id', async (req, res) => {
         const examResult = rows[0];
 
         // If requester is a student and assignment disallows reviewing solutions, sanitize
+        if (req.user?.role === 'STUDENT' && examResult.status !== 'COMPLETED') {
+            const detail = typeof examResult.result_detail === 'string' ? JSON.parse(examResult.result_detail) : examResult.result_detail;
+            if (Array.isArray(detail?.questions)) detail.questions = detail.questions.map(q => sanitizeQuestionForStudent(q).sanitizedQuestion);
+            examResult.result_detail = detail;
+            examResult.review_locked = true;
+        }
         if (req.user?.role === 'STUDENT' && examResult.matrix_id) {
             const [assignment] = await query(`
                 SELECT ca.allow_review, ca.deadline
@@ -214,9 +225,10 @@ router.post('/exam-results', async (req, res) => {
         if (!id) return res.status(400).json({ error: 'Không tìm thấy phiên thi hợp lệ. Vui lòng bắt đầu lại bài thi.' });
         if (!(await canAccessExamResult(req, id))) return res.status(403).json({ error: 'Bạn không có quyền nộp bài thi này.' });
 
-        const [existing] = await query('SELECT user_id, status, result_detail FROM exam_results WHERE id = ?', [id]);
+        const [existing] = await query('SELECT user_id, status, score, result_detail FROM exam_results WHERE id = ?', [id]);
         if (!existing) return res.status(404).json({ error: 'Phiên thi không tồn tại.' });
-        if (existing.status !== 'IN_PROGRESS') return res.status(409).json({ error: 'Bài thi này đã được nộp hoặc không còn hiệu lực.' });
+        if (existing.status === 'COMPLETED') return res.json({ success: true, id, score: Number(existing.score), alreadySubmitted: true });
+        if (existing.status !== 'IN_PROGRESS') return res.status(409).json({ error: 'Bài thi này không còn hiệu lực.' });
         const storedDetail = typeof existing.result_detail === 'string' ? JSON.parse(existing.result_detail) : existing.result_detail;
         const trustedQuestions = Array.isArray(storedDetail?.questions) ? storedDetail.questions : [];
         const safeAnswers = answers && typeof answers === 'object' && !Array.isArray(answers) ? answers : {};
@@ -228,7 +240,7 @@ router.post('/exam-results', async (req, res) => {
             "UPDATE exam_results SET score = ?, duration_seconds = ?, result_detail = ?, status = 'COMPLETED', last_updated = NOW() WHERE id = ? AND user_id = ? AND status = 'IN_PROGRESS'",
             [score, safeDuration, resultDetail, id, existing.user_id]
         );
-        res.json({ success: true, score });
+        res.json({ success: true, id, score });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
@@ -317,7 +329,7 @@ router.put('/exam/progress', async (req, res) => {
             detail.answers = answers;
             
             await query(
-                "UPDATE exam_results SET result_detail = ?, last_updated = NOW() WHERE id = ?",
+                "UPDATE exam_results SET result_detail = ?, last_updated = NOW() WHERE id = ? AND status = 'IN_PROGRESS'",
                 [JSON.stringify(detail), id]
             );
             res.json({ success: true });

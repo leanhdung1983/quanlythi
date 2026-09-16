@@ -712,7 +712,9 @@ export async function seedDatabase() {
             ADD COLUMN IF NOT EXISTS created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
             ADD COLUMN IF NOT EXISTS updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`);
         await pool.query(`ALTER TABLE social_post_queue
-            MODIFY COLUMN status ENUM('DRAFT','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT'`);
+            MODIFY COLUMN status ENUM('DRAFT','READY','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT'`);
+        // Old manual queues used READY. Preserve those rows before normalizing.
+        await pool.query("UPDATE social_post_queue SET status='DRAFT' WHERE status='READY'");
         const [socialImageColumns] = await pool.query("SHOW COLUMNS FROM social_post_queue WHERE Field IN ('image_mime','image_blob')");
         if (socialImageColumns.some(column => column.Null === 'NO')) {
             await pool.query('ALTER TABLE social_post_queue MODIFY COLUMN image_mime VARCHAR(20) NULL, MODIFY COLUMN image_blob LONGBLOB NULL');

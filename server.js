@@ -77,9 +77,12 @@ async function startServer() {
         const rootDir = process.cwd();
         const distPath = path.join(rootDir, 'dist');
         if (fs.existsSync(distPath)) {
-            app.use(express.static(distPath, { maxAge: '1y', etag: false }));
+            app.use(express.static(distPath, { maxAge: '1y', etag: false, setHeaders: (res, filePath) => {
+                if (filePath.endsWith('.html')) res.setHeader('Cache-Control', 'no-store');
+            } }));
             app.get('*', (req, res) => {
                 if (req.path.startsWith('/api')) return res.status(404).json({ error: "Not Found" });
+                res.setHeader('Cache-Control', 'no-store');
                 res.sendFile(path.join(distPath, 'index.html'));
             });
         }

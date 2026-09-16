@@ -108,6 +108,19 @@ export const ClassManagement = () => {
     const [editMaxAttempts, setEditMaxAttempts] = useState(0);
     const [editAllowReview, setEditAllowReview] = useState(true);
 
+    useEffect(() => {
+        if (!isTeacher || !selectedClass) return;
+        let active = true;
+        const refresh = async () => {
+            if (document.visibilityState === 'hidden') return;
+            try { const data = await apiService.fetchClassScores(selectedClass.id); if (active) setScores(data || []); }
+            catch (e) { console.error('Không tải được điểm mới', e); }
+        };
+        const timer = setInterval(() => void refresh(), 15000);
+        window.addEventListener('focus', refresh);
+        return () => { active = false; clearInterval(timer); window.removeEventListener('focus', refresh); };
+    }, [isTeacher, selectedClass?.id]);
+
     const loadClasses = async () => {
         if (!user) return;
         try {

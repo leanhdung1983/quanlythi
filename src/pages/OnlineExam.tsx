@@ -438,36 +438,37 @@ export const OnlineExam: React.FC = () => {
         } catch { console.error("Error loading dashboard data"); }
     }, [user]);
 
+    const submittingRef = useRef(false);
+    const [submittedResultId, setSubmittedResultId] = useState<number | null>(null);
     const finishExam = useCallback(async (isAuto: boolean = false, autoMsg?: string) => {
-        if (isAuto) showAlert("Thông báo", autoMsg || "Hết giờ làm bài!");
-        
-        // Get scoring settings
-        const settings = examSettings || {};
-        const finalScore = calculateExamScore(questions, answers, settings);
-
-        setScore(finalScore); setMode('RESULT');
-        try { localStorage.removeItem('online_exam_progress'); } catch {}
-        clearSvgCache(); // Release cache on submit
-        if (user) {
+        if (submittingRef.current) return;
+        submittingRef.current = true;
+        try {
+            if (!user || !currentExamSessionId) throw new Error('Không tìm thấy phiên thi. Bài làm vẫn được giữ trên máy; vui lòng thử lại.');
+            const result = await apiService.saveExamResult({
+                id: currentExamSessionId,
+                duration_seconds: totalTime - timeLeft,
+                answers
+            }, isAuto);
+            if (!result?.success || !Number.isFinite(Number(result.score))) throw new Error('Máy chủ chưa xác nhận điểm bài thi.');
+            setScore(Number(result.score));
+            setSubmittedResultId(Number(result.id));
             try {
-                // Use keepalive for auto-submit to ensure it reaches server even if tab closes
-                await apiService.saveExamResult({ 
-                    id: currentExamSessionId || undefined,
-                    user_id: user.id, 
-                    matrix_id: currentMatrixId, // Ensure Matrix ID is saved
-                    exam_title: currentExamTitle, 
-                    score: finalScore, 
-                    duration_seconds: totalTime - timeLeft, 
-                    questions, 
-                    answers 
-                }, isAuto);
-                setCurrentExamSessionId(null);
-            } catch {
-                console.error("Error saving exam result");
-            }
-        }
-        loadDashboardData();
-    }, [questions, answers, user, currentMatrixId, currentExamSessionId, currentExamTitle, totalTime, timeLeft, loadDashboardData, examSettings, showAlert]);
+                const response = await apiService.fetchExamResultDetail(Number(result.id)) as any;
+                const detail = typeof response.data?.result_detail === 'string' ? JSON.parse(response.data.result_detail) : response.data?.result_detail;
+                if (Array.isArray(detail?.questions)) setQuestions(detail.questions);
+                if (detail?.answers) setAnswers(detail.answers);
+            } catch (e) { console.error('Đã nộp bài; có thể tải lại lời giải từ lịch sử.', e); }
+            setCurrentExamSessionId(null);
+            setMode('RESULT');
+            try { localStorage.removeItem('online_exam_progress'); } catch {}
+            clearSvgCache();
+            await loadDashboardData();
+            if (isAuto && autoMsg) showAlert('Thông báo', autoMsg);
+        } catch (e: any) {
+            showAlert('Chưa nộp được bài', e.message || 'Bài làm chưa được xác nhận. Vui lòng thử nộp lại.');
+        } finally { submittingRef.current = false; }
+    }, [answers, user, currentExamSessionId, totalTime, timeLeft, loadDashboardData, showAlert]);
 
     const groupedExams = useMemo(() => {
         const tree: Record<string, Record<string, Record<string, Record<string, SavedMatrix[]>>>> = {};
@@ -628,6 +629,22 @@ export const OnlineExam: React.FC = () => {
     };
 
     // --- MATRIX STATS HANDLER ---
+    useEffect(() => {
+        if (mode !== 'DASHBOARD' || dashTab !== 'STATS') return;
+        let active = true;
+        const refresh = async () => {
+            if (document.visibilityState === 'hidden') return;
+            await loadDashboardData();
+            if (selectedMatrixId) {
+                try { const rows = await apiService.fetchMatrixResults(Number(selectedMatrixId)); if (active) setMatrixResults(rows || []); }
+                catch (e) { console.error('Không tải được thống kê mới', e); }
+            }
+        };
+        void refresh();
+        const timer = setInterval(() => void refresh(), 15000);
+        window.addEventListener('focus', refresh);
+        return () => { active = false; clearInterval(timer); window.removeEventListener('focus', refresh); };
+    }, [mode, dashTab, selectedMatrixId, loadDashboardData]);
     const handleMatrixSelect = async (mId: string) => {
         setSelectedMatrixId(mId);
         if (!mId) { setMatrixResults([]); return; }
@@ -819,71 +836,10 @@ export const OnlineExam: React.FC = () => {
             
             if (!detail || !detail.questions) throw new Error("Chi tiết bài thi bị lỗi.");
 
-            const savedQuestions = detail.questions;
-            const idsToFetch = savedQuestions.map((q: any) => Number(q.id)).filter((id: number) => !isNaN(id));
-            let latestQs: any[] = [];
-            
-            if (idsToFetch.length > 0) {
-                try {
-                    latestQs = await apiService.fetchQuestionsByIds(idsToFetch);
-                } catch (e) { console.error("Failed to fetch latest questions", e); }
-            }
-            
-            const latestQsMap = new Map(latestQs.map(q => [q.id, q]));
-
-            const reconstructedQuestions = savedQuestions.map((savedQ: any) => {
-                const latestQ = latestQsMap.get(savedQ.id);
-                if (!latestQ) {
-                    // Fallback to saved question if not found in db
-                    return parseQuestionContent(savedQ, true);
-                }
-                
-                // Parse latest without shuffling
-                const parsedLatest = parseQuestionContent(latestQ, true);
-                
-                if (parsedLatest.type === 'TN' && parsedLatest.options && savedQ.options) {
-                    // Try to map parsedLatest options to savedQ options using originalIndex or text
-                    const newOptions = savedQ.options.map((savedOpt: any) => {
-                        let matchedOpt;
-                        if (savedOpt.originalIndex !== undefined) {
-                            matchedOpt = parsedLatest.options!.find(o => o.originalIndex === savedOpt.originalIndex);
-                        } else {
-                            // Fallback for old history: exact match
-                            matchedOpt = parsedLatest.options!.find(o => o.content === savedOpt.content);
-                        }
-                        return matchedOpt ? { ...matchedOpt, id: savedOpt.id } : savedOpt;
-                    });
-                    parsedLatest.options = newOptions;
-                }
-                
-                return { ...parsedLatest, id: savedQ.id }; // ensure ID matches
-            });
-
-            setQuestions(reconstructedQuestions);
-            setAnswers(detail.answers || {}); 
-            
-            let newScore = Number(data.score || 0);
-            if (data.matrix_id) {
-                const matrix = savedMatrices.find(m => m.id === data.matrix_id);
-                if (matrix) {
-                    let mData = matrix.matrix_data;
-                    if (typeof mData === 'string') {
-                        try { mData = JSON.parse(mData); } catch(e) { console.error(e); mData = {}; }
-                    }
-                    const settings = mData?.settings || {};
-                    newScore = calculateExamScore(reconstructedQuestions, detail.answers || {}, settings);
-                }
-            }
-            
-            if (newScore !== Number(data.score || 0)) {
-                try {
-                    await apiService.updateExamResultScore(data.id, newScore);
-                    setHistory(prev => prev.map((h: any) => h.id === data.id ? { ...h, score: newScore } : h));
-                    setMatrixResults(prev => prev.map((h: any) => h.id === data.id ? { ...h, score: newScore } : h));
-                } catch(e) { console.error("Failed to update score", e); }
-            }
-
-            setScore(newScore); 
+            // Review the immutable submitted snapshot, not today's edited/shuffled bank.
+            setQuestions(detail.questions.map((q: any) => Array.isArray(q.options) && q.content ? q : parseQuestionContent(q, true)));
+            setAnswers(detail.answers || {});
+            setScore(Number(data.score || 0));
             setCurrentExamTitle(data.exam_title); 
             setCurrentQIdx(0); 
             setMode('REVIEW');
@@ -2583,7 +2539,7 @@ export const OnlineExam: React.FC = () => {
                         {/* Action Buttons */}
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-in slide-in-from-bottom-8 duration-700 delay-300">
                                 <button 
-                                    onClick={() => { setMode('REVIEW'); setDashTab('STATS'); }}
+                                    onClick={() => { if (submittedResultId) void handleViewHistory({ id: submittedResultId }); }}
                                     className="w-full sm:w-auto min-w-[240px] px-10 py-6 bg-white border-2 border-indigo-600 text-indigo-600 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-indigo-600 hover:text-white transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-3 active:scale-95"
                                 >
                                     <Eye size={20}/> Xem giải chi tiết

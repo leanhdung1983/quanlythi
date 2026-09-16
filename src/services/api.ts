@@ -282,7 +282,7 @@ export const apiService = {
         return await handleResponse(response, '/exam-results');
     },
     async fetchExamResultDetail(id: number) {
-        const response = await fetch(`${API_URL}/exam-results/${id}`); 
+        const response = await fetch(`${API_URL}/exam-results/${id}`, { cache: 'no-store' });
         return await handleResponse(response, `/exam-results/${id}`);
     },
     async deleteExamResult(id: number) {
@@ -302,12 +302,12 @@ export const apiService = {
         return await handleResponse(response, `/exam-results/all/${userId}`);
     },
     async fetchAllExamHistory() {
-        const res = await fetch(`${API_URL}/exam-results/all-history`); 
+        const res = await fetch(`${API_URL}/exam-results/all-history`, { cache: 'no-store' });
         const r = await handleResponse(res, `/exam-results/all-history`); 
         return r.data;
     },
     async fetchUserExamHistory(userId: number) {
-        const res = await fetch(`${API_URL}/exam-results/history/${userId}`); 
+        const res = await fetch(`${API_URL}/exam-results/history/${userId}`, { cache: 'no-store' });
         const r = await handleResponse(res, `/exam-results/history/${userId}`); 
         return r.data;
     },
@@ -322,7 +322,7 @@ export const apiService = {
         return r.data;
     },
     async fetchMatrixResults(matrixId: number) {
-        const res = await fetch(`${API_URL}/online-exam/results/${matrixId}`); 
+        const res = await fetch(`${API_URL}/online-exam/results/${matrixId}`, { cache: 'no-store' });
         const r = await handleResponse(res, `/online-exam/results/${matrixId}`); 
         return r.data;
     },
@@ -618,7 +618,7 @@ export const apiService = {
         return r.data;
     },
     async fetchClassScores(classId: number) {
-        const res = await fetch(`${API_URL}/classes/${classId}/scores`);
+        const res = await fetch(`${API_URL}/classes/${classId}/scores`, { cache: 'no-store' });
         const r = await handleResponse(res, `/classes/${classId}/scores`);
         return r.data;
     },

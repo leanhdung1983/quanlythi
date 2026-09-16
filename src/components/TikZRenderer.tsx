@@ -610,6 +610,7 @@ ${adjustedCode}
             // document prevents references from resolving into another question.
             src={svgImageSource(svgContent)}
             alt="Hình vẽ toán học"
+            onError={() => setError('Không đọc được SVG đã lưu. Vui lòng nạp lại SVG gốc trong quản lý nguồn hình.')}
             className="block w-full h-auto transition-all duration-500"
           />
         ) : (
