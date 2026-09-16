@@ -152,9 +152,9 @@ router.get('/exam-results/history/:userId', async (req, res) => {
 
 router.get('/exam-results/:id', async (req, res) => {
     try {
-        if (!(await canAccessExamResult(req, req.params.id))) return res.status(403).json({ error: 'Bạn không có quyền xem kết quả này.' });
         const rows = await query("SELECT * FROM exam_results WHERE id = ?", [req.params.id]);
         if (rows.length === 0) return res.status(404).json({ error: "Exam result not found" });
+        if (!(await canAccessExamResult(req, req.params.id))) return res.status(403).json({ error: 'Bạn không có quyền xem kết quả này.' });
         const examResult = rows[0];
 
         // If requester is a student and assignment disallows reviewing solutions, sanitize
@@ -236,10 +236,15 @@ router.post('/exam-results', async (req, res) => {
         const safeDuration = Math.max(0, Math.min(Number(duration_seconds) || 0, 24 * 60 * 60));
         const resultDetail = JSON.stringify({ ...storedDetail, answers: safeAnswers });
 
-        await query(
+        const updated = await query(
             "UPDATE exam_results SET score = ?, duration_seconds = ?, result_detail = ?, status = 'COMPLETED', last_updated = NOW() WHERE id = ? AND user_id = ? AND status = 'IN_PROGRESS'",
             [score, safeDuration, resultDetail, id, existing.user_id]
         );
+        if (!updated.affectedRows) {
+            const [confirmed] = await query('SELECT score,status FROM exam_results WHERE id = ? AND user_id = ?', [id, existing.user_id]);
+            if (confirmed?.status === 'COMPLETED') return res.json({ success: true, id, score: Number(confirmed.score), alreadySubmitted: true });
+            return res.status(409).json({ error: 'Phiên thi đã thay đổi. Bài chưa được xác nhận; vui lòng tải lại trạng thái.' });
+        }
         res.json({ success: true, id, score });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });

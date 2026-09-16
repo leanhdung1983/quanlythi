@@ -10,7 +10,7 @@ import { clearSvgCache } from '../components/TikZRenderer';
 import { extractMatrixHierarchy, prepareMatrixPayload } from '../utils/matrixUtils';
 import { checkKQAnswer, calculateExamScore } from '../utils/gradeHelper';
 import { parseQuestionContent, shuffleArray } from '../utils/latexParser';
-import { ensureExamSessionId } from '../utils/examSession';
+import { ensureExamSessionId, resolveResumedSession, remainingExamSeconds } from '../utils/examSession';
 import { 
     Clock, PlayCircle, ChevronRight, BookOpen, 
     Loader2, BarChart3, 
@@ -211,6 +211,10 @@ export const OnlineExam: React.FC = () => {
 
     const [currentQIdx, setCurrentQIdx] = useState(0);
     const [currentExamSessionId, setCurrentExamSessionId] = useState<number | null>(null);
+    const [examOwnerId, setExamOwnerId] = useState<number | null>(null);
+    const currentUserIdRef = useRef(user?.id);
+    currentUserIdRef.current = user?.id;
+    const startingSessionRef = useRef(false);
     const [score, setScore] = useState(0);
     const [currentExamTitle, setCurrentExamTitle] = useState('');
     const [examSettings, setExamSettings] = useState<any>(null);
@@ -248,6 +252,37 @@ export const OnlineExam: React.FC = () => {
     const showConfirm = useCallback((title: string, message: string, onConfirm: () => void, onCancel?: () => void) => {
         setDialog({ isOpen: true, title, message, onConfirm, onCancel, isAlert: false });
     }, []);
+
+    const resumeSavedExam = useCallback(async (saved: any) => {
+        if (!user?.id || startingSessionRef.current) return;
+        startingSessionRef.current = true;
+        setIsStartingExam(true);
+        try {
+            if (!Array.isArray(saved.questions) || !saved.questions.length || !Number.isFinite(Number(saved.timeLeft)) || Number(saved.timeLeft) < 0 || !Number.isFinite(Number(saved.totalTime)) || Number(saved.totalTime) <= 0) throw new Error('Bài cũ không hợp lệ. Hãy chọn làm mới.');
+            const sessionId = await resolveResumedSession(saved, user.id, async id => {
+                const response = await apiService.fetchExamResultDetail(id) as any;
+                if (!response?.data) throw new Error('Không kiểm tra được phiên thi. Vui lòng thử lại.');
+                return response.data;
+            }, () => apiService.startExamSession({ matrix_id: saved.currentMatrixId,
+                exam_title: saved.currentExamTitle, questions: saved.questions,
+                duration_seconds: saved.totalTime, scoring_settings: saved.examSettings || {} }));
+            if (currentUserIdRef.current !== user.id) throw new Error('Tài khoản đã thay đổi. Vui lòng mở lại bài thi.');
+            setQuestions(saved.questions); setAnswers(saved.answers || {});
+            setTimeLeft(remainingExamSeconds(saved)); setTotalTime(Number(saved.totalTime));
+            setCurrentQIdx(saved.currentQIdx || 0); setCurrentExamTitle(saved.currentExamTitle);
+            setCurrentMatrixId(saved.currentMatrixId); setExamSettings(saved.examSettings || {});
+            setIsRealExam(!!saved.isRealExam); setCurrentExamSessionId(sessionId);
+            setExamOwnerId(user.id); setMode('TAKING_EXAM');
+        } catch (e: any) { showAlert('Không thể tiếp tục bài cũ', e.message || 'Vui lòng thử lại. Bài làm cũ vẫn được giữ.'); }
+        finally { startingSessionRef.current = false; setIsStartingExam(false); }
+    }, [user?.id, showAlert]);
+
+    useEffect(() => {
+        if (mode === 'TAKING_EXAM' && examOwnerId !== null && examOwnerId !== user?.id) {
+            setMode('DASHBOARD'); setCurrentExamSessionId(null);
+            showAlert('Tài khoản đã thay đổi', 'Bài thi cũ thuộc tài khoản trước. Hãy đăng nhập đúng tài khoản hoặc chọn làm mới.');
+        }
+    }, [mode, examOwnerId, user?.id, showAlert]);
 
     const handleViewActiveParticipants = useCallback(async (matrixId: number, showModal = true) => {
         setLoadingParticipants(true);
@@ -300,8 +335,9 @@ export const OnlineExam: React.FC = () => {
 
     // --- PROGRESS PERSISTENCE ---
     useEffect(() => {
-        if (mode === 'TAKING_EXAM' && questions.length > 0) {
+        if (mode === 'TAKING_EXAM' && questions.length > 0 && examOwnerId === user?.id) {
             const state = {
+                userId: user?.id,
                 questions,
                 answers,
                 timeLeft,
@@ -328,7 +364,7 @@ export const OnlineExam: React.FC = () => {
                 }
             }
         }
-    }, [mode, questions, answers, timeLeft, currentQIdx, currentExamTitle, currentMatrixId, totalTime, isRealExam, examSettings, currentExamSessionId]);
+    }, [mode, questions, answers, timeLeft, currentQIdx, currentExamTitle, currentMatrixId, totalTime, isRealExam, examSettings, currentExamSessionId, user?.id, examOwnerId]);
 
     // Backend periodic sync for live tracking
     useEffect(() => {
@@ -341,42 +377,29 @@ export const OnlineExam: React.FC = () => {
 
     // Resume Check on Mount
     useEffect(() => {
-        if (mode !== 'DASHBOARD') return;
+        if (mode !== 'DASHBOARD' || !user?.id) return;
 
         try {
             const saved = localStorage.getItem('online_exam_progress');
             if (saved) {
                 const state = JSON.parse(saved);
-                if (Date.now() - state.startTime < 4 * 60 * 60 * 1000) { // 4 hours expiry
+                if (state.userId !== undefined && Number(state.userId) !== user.id) return;
+                if (Array.isArray(state.questions) && state.questions.length) {
                     showConfirm(
                         "Tiếp tục bài thi?",
                         `Bạn có bài thi "${state.currentExamTitle}" chưa nộp. Bạn có muốn làm tiếp ngay không? (Nếu Chọn Hủy, tiến trình vẫn được lưu lại).`,
-                        () => {
-                            setQuestions(state.questions);
-                            setAnswers(state.answers);
-                            setTimeLeft(state.timeLeft);
-                            setTotalTime(state.totalTime);
-                            setCurrentQIdx(state.currentQIdx);
-                            setCurrentExamTitle(state.currentExamTitle);
-                            setCurrentMatrixId(state.currentMatrixId);
-                            setExamSettings(state.examSettings);
-                            setIsRealExam(!!state.isRealExam);
-                            setCurrentExamSessionId(state.currentExamSessionId || null);
-                            setMode('TAKING_EXAM');
-                        },
+                        () => { void resumeSavedExam(state); },
                         () => {
                             // Do nothing, let user manually start later
                         }
                     );
-                } else {
-                    try { localStorage.removeItem('online_exam_progress'); } catch {}
                 }
             }
         } catch (e) {
             console.error("Error resuming exam", e);
             try { localStorage.removeItem('online_exam_progress'); } catch {}
         }
-    }, [mode, showConfirm]);
+    }, [mode, showConfirm, user?.id, resumeSavedExam]);
 
     const loadDashboardData = useCallback(async () => {
         try {
@@ -445,7 +468,7 @@ export const OnlineExam: React.FC = () => {
         if (submittingRef.current) return;
         submittingRef.current = true;
         try {
-            if (!user) throw new Error('Vui lòng đăng nhập lại. Bài làm vẫn được giữ trên máy.');
+            if (!user || examOwnerId !== user.id) throw new Error('Vui lòng đăng nhập đúng tài khoản của bài thi. Bài làm vẫn được giữ trên máy.');
             let sessionId = currentExamSessionId;
             // Legacy local progress may predate server sessions. Recover it via
             // the normal start endpoint (including all LMS/attempt restrictions).
@@ -454,11 +477,13 @@ export const OnlineExam: React.FC = () => {
                     exam_title: currentExamTitle, questions, duration_seconds: totalTime, scoring_settings: examSettings || {} }));
                 setCurrentExamSessionId(sessionId);
             }
+            if (currentUserIdRef.current !== user.id) throw new Error('Tài khoản đã thay đổi. Vui lòng mở lại bài thi.');
             const result = await apiService.saveExamResult({
                 id: sessionId,
                 duration_seconds: totalTime - timeLeft,
                 answers
             }, isAuto);
+            if (currentUserIdRef.current !== user.id) throw new Error('Tài khoản đã thay đổi. Hãy đăng nhập đúng tài khoản để xem kết quả.');
             if (!result?.success || !Number.isFinite(Number(result.score))) throw new Error('Máy chủ chưa xác nhận điểm bài thi.');
             setScore(Number(result.score));
             setSubmittedResultId(Number(result.id));
@@ -477,7 +502,7 @@ export const OnlineExam: React.FC = () => {
         } catch (e: any) {
             showAlert('Chưa nộp được bài', e.message || 'Bài làm chưa được xác nhận. Vui lòng thử nộp lại.');
         } finally { submittingRef.current = false; }
-    }, [answers, questions, examSettings, currentMatrixId, currentExamTitle, user, currentExamSessionId, totalTime, timeLeft, loadDashboardData, showAlert]);
+    }, [answers, questions, examSettings, currentMatrixId, currentExamTitle, user, examOwnerId, currentExamSessionId, totalTime, timeLeft, loadDashboardData, showAlert]);
 
     const groupedExams = useMemo(() => {
         const tree: Record<string, Record<string, Record<string, Record<string, SavedMatrix[]>>>> = {};
@@ -620,6 +645,7 @@ export const OnlineExam: React.FC = () => {
 
     useEffect(() => {
         let timer: any;
+        if (mode === 'TAKING_EXAM' && timeLeft <= 0) { void finishExam(true); return; }
         if (mode === 'TAKING_EXAM' && timeLeft > 0) {
             timer = setInterval(() => {
                 setTimeLeft((prev) => {
@@ -695,31 +721,20 @@ export const OnlineExam: React.FC = () => {
             }
         }
 
-        if (savedState && savedState.currentMatrixId === m.id) {
+        if (savedState && Number(savedState.currentMatrixId) === Number(m.id) && (savedState.userId === undefined || Number(savedState.userId) === user?.id)) {
             showConfirm(
                 "Tiếp tục bài làm?",
                 `Bạn có bài làm chưa nộp của đề này. Nhấn ĐỒNG Ý để LÀM TIẾP, nhấn HUỶ để XOÁ BÀI CŨ và LÀM MỚI.`,
+                () => { void resumeSavedExam(savedState); },
                 () => {
-                    setQuestions(savedState.questions);
-                    setAnswers(savedState.answers);
-                    setCurrentExamTitle(savedState.currentExamTitle);
-                    setTimeLeft(savedState.timeLeft);
-                    setTotalTime(savedState.totalTime);
-                    setCurrentMatrixId(savedState.currentMatrixId);
-                    setCurrentQIdx(savedState.currentQIdx);
-                    setIsRealExam(!!savedState.isRealExam);
-                    setExamSettings(savedState.examSettings);
-                    setCurrentExamSessionId(savedState.currentExamSessionId || null);
-                    setMode('TAKING_EXAM');
-                },
-                () => {
-                    try { localStorage.removeItem('online_exam_progress'); } catch {}
                     handleStartExam(m, true);
                 }
             );
             return;
         }
 
+        if (!user?.id || startingSessionRef.current) return;
+        startingSessionRef.current = true;
         setIsStartingExam(true);
         try {
             let parsedData = m.matrix_data;
@@ -764,6 +779,7 @@ export const OnlineExam: React.FC = () => {
             const qs = qsRaw.map((q: any, idx: number) => ({ ...parseQuestionContent(q), id: q.id || idx }));
             const typeOrder: Record<string, number> = { 'TN': 1, 'TF': 2, 'KQ': 3, 'TL': 4 };
             qs.sort((a, b) => (typeOrder[a.type] || 99) - (typeOrder[b.type] || 99));
+            if (currentUserIdRef.current !== user.id) throw new Error('Tài khoản đã thay đổi. Vui lòng mở lại bài thi.');
 
             if (user?.id) {
                 try {
@@ -775,8 +791,8 @@ export const OnlineExam: React.FC = () => {
                         duration_seconds: duration * 60,
                         scoring_settings: settings
                     });
-                    if (sessionRes && sessionRes.id) {
-                        setCurrentExamSessionId(sessionRes.id);
+                    if (sessionRes?.success && Number.isSafeInteger(Number(sessionRes.id)) && Number(sessionRes.id) > 0) {
+                        setCurrentExamSessionId(Number(sessionRes.id));
                     } else throw new Error('Máy chủ chưa xác nhận phiên thi. Vui lòng thử lại.');
                 } catch(e: any) {
                     console.error("Failed to start session on server", e);
@@ -785,6 +801,8 @@ export const OnlineExam: React.FC = () => {
                 }
             }
 
+            if (currentUserIdRef.current !== user?.id) throw new Error('Tài khoản đã thay đổi. Vui lòng mở lại bài thi.');
+            setExamOwnerId(user.id);
             setQuestions(qs); 
             setAnswers({}); 
             setCurrentExamTitle(m.name);
@@ -799,6 +817,7 @@ export const OnlineExam: React.FC = () => {
             const error = e as Error;
             showAlert("Lỗi", "Lỗi khi tạo đề: " + (error.message || "Lỗi không xác định")); 
         } finally {
+            startingSessionRef.current = false;
             setIsStartingExam(false);
         }
     };

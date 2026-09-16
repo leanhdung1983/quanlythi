@@ -28,7 +28,7 @@ const handleResponse = async (response: Response, endpoint: string) => {
             handleSessionExpired(errorMessage);
         }
 
-        throw new Error(errorMessage);
+        throw Object.assign(new Error(errorMessage), { status: response.status });
     }
     if (contentType && contentType.includes("application/json")) return response.json();
     return response.text();
