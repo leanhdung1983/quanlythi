@@ -655,6 +655,11 @@ export const apiService = {
         const r = await handleResponse(res, `/classes/${classId}/assignments`);
         return r.data;
     },
+    async assignMatrixToClasses(classIds: number[], matrixId: number, options?: { open_time?: string | null, deadline?: string | null, max_attempts?: number, allow_review?: boolean }) {
+        const path = '/classes/assignments/bulk';
+        const res = await fetch(`${API_URL}${path}`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ class_ids: classIds, matrix_id: matrixId, ...options }) });
+        return await handleResponse(res, path);
+    },
     async assignMatrixToClass(classId: number, matrixId: number, options?: { open_time?: string | null, deadline?: string | null, max_attempts?: number, allow_review?: boolean }) {
         const res = await fetch(`${API_URL}/classes/${classId}/assignments`, {
             method: 'POST',

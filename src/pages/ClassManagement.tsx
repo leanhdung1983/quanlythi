@@ -94,6 +94,8 @@ export const ClassManagement = () => {
 
     // Assign Modal states
     const [showAssignModal, setShowAssignModal] = useState(false);
+    const [assignClassIds, setAssignClassIds] = useState<number[]>([]);
+    const [assigning, setAssigning] = useState(false);
     const [savedMatrices, setSavedMatrices] = useState<SavedMatrix[]>([]);
     const [selectedMatrixToAssign, setSelectedMatrixToAssign] = useState<SavedMatrix | null>(null);
     const [assignOpenTime, setAssignOpenTime] = useState('');
@@ -252,6 +254,7 @@ export const ClassManagement = () => {
     };
 
     const openAssignModal = async () => {
+        setAssignClassIds(selectedClass ? [Number(selectedClass.id)] : []);
         try {
             const data = await apiService.fetchSavedMatrices();
             if (data) {
@@ -270,27 +273,29 @@ export const ClassManagement = () => {
 
     const handleConfirmAssign = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!selectedClass || !selectedMatrixToAssign) return;
+        if (!selectedClass || !selectedMatrixToAssign || assigning) return;
+        if (!assignClassIds.length) return alert('Vui lòng chọn ít nhất một lớp.');
 
         if (assignOpenTime && assignDeadline && new Date(assignOpenTime) >= new Date(assignDeadline)) {
             alert("Hạn nộp bài phải diễn ra sau thời gian mở đề.");
             return;
         }
 
+        setAssigning(true);
         try {
-            await apiService.assignMatrixToClass(selectedClass.id, selectedMatrixToAssign.id, {
+            const result = await apiService.assignMatrixToClasses(assignClassIds, selectedMatrixToAssign.id, {
                 open_time: assignOpenTime ? new Date(assignOpenTime).toISOString() : null,
                 deadline: assignDeadline ? new Date(assignDeadline).toISOString() : null,
                 max_attempts: assignMaxAttempts,
                 allow_review: assignAllowReview
             });
-            alert("Đã giao bài tập thành công!");
+            alert(`Đã giao cho ${result.assigned.length} lớp. ${result.skipped.length} lớp đã nhận trước đó được giữ nguyên.`);
             loadClassDetails(selectedClass.id);
             setShowAssignModal(false);
             setSelectedMatrixToAssign(null);
         } catch (error: any) {
             alert(error.message || "Lỗi giao bài tập");
-        }
+        } finally { setAssigning(false); }
     };
 
     const openEditAssignmentModal = (assignment: AssignmentData) => {
@@ -698,7 +703,7 @@ export const ClassManagement = () => {
                             <div className="p-6 overflow-y-auto space-y-4 flex-1">
                                 <p className="text-xs text-slate-500 mb-2">Chọn đề thi từ danh sách ma trận đã tạo của bạn để cấu hình và giao cho học sinh:</p>
                                 {(() => {
-                                    const availableMatrices = savedMatrices.filter(m => !assignments.some(a => a.id === m.id));
+                                    const availableMatrices = savedMatrices;
                                     if (availableMatrices.length === 0) {
                                         return <p className="text-center text-slate-500 py-10">Không còn bài tập nào mới để giao cho lớp này.</p>;
                                     }
@@ -726,6 +731,7 @@ export const ClassManagement = () => {
                             </div>
                         ) : (
                             <form onSubmit={handleConfirmAssign} className="p-6 overflow-y-auto space-y-4 flex-1">
+                                <ClassSelection classes={classes} selected={assignClassIds} onChange={setAssignClassIds}/>
                                 <div className="p-3 bg-indigo-50 border border-indigo-100 rounded-xl">
                                     <p className="text-xs font-bold text-indigo-700 uppercase tracking-wider">Đề thi được chọn</p>
                                     <p className="font-bold text-slate-800 text-base">{selectedMatrixToAssign.name}</p>
@@ -803,7 +809,7 @@ export const ClassManagement = () => {
                                         type="submit"
                                         className="px-5 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl text-sm shadow-sm transition-all"
                                     >
-                                        Xác nhận giao bài
+                                        <span aria-live="polite">{assigning ? 'Đang giao bài…' : `Giao cho ${assignClassIds.length} lớp`}</span>
                                     </button>
                                 </div>
                             </form>
@@ -909,3 +915,4 @@ export const ClassManagement = () => {
         </div>
     );
 };
+import ClassSelection from '../components/ClassSelection';

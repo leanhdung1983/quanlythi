@@ -64,7 +64,9 @@ export const ExamGenerator: React.FC = () => {
     const [examDuration, setExamDuration] = useState(90);
     const [editingMatrixId, setEditingMatrixId] = useState<number | null>(null);
     const [teacherClasses, setTeacherClasses] = useState<any[]>([]);
-    const [assignClassId, setAssignClassId] = useState<string>('');
+    const [assignClassIds, setAssignClassIds] = useState<number[]>([]);
+    const [savingMatrix, setSavingMatrix] = useState(false);
+    const [assignmentOptions, setAssignmentOptions] = useState({ open_time: '', deadline: '', max_attempts: 0, allow_review: true });
     const [showExportMenu, setShowExportMenu] = useState(false);
 
     // Scoring Config
@@ -257,10 +259,13 @@ export const ExamGenerator: React.FC = () => {
 
     const handleOpenSaveModal = (m?: SavedMatrix) => {
         if (m && !handleSelectMatrix(m)) return;
+        setAssignClassIds([]);
+        setAssignmentOptions({ open_time: '', deadline: '', max_attempts: 0, allow_review: true });
         setShowSaveModal(true);
     };
 
     const handleNewMatrix = () => {
+        setAssignClassIds([]);
         setMatrixBaseline({}); setMatrixMultiGrade(false);
         setMatrixCatalog({ purpose: 'PRACTICE', term: '', year: '', status: 'DRAFT' });
         setTotalPointsTN(0); setTotalPointsTF(0); setTotalPointsKQ(0);
@@ -433,8 +438,16 @@ export const ExamGenerator: React.FC = () => {
     };
 
     const handleSaveMatrix = async () => {
+        if (savingMatrix) return;
         if (!matrixName.trim()) return alert("Nhập tên ma trận");
+        if (assignClassIds.length) {
+            if (!Number.isSafeInteger(assignmentOptions.max_attempts) || assignmentOptions.max_attempts < 0) return alert('Lượt thi phải là số nguyên không âm.');
+            if (assignmentOptions.open_time && assignmentOptions.deadline && new Date(assignmentOptions.open_time) >= new Date(assignmentOptions.deadline)) return alert('Hạn nộp phải sau thời gian mở đề.');
+        }
         if (!Number.isFinite(examDuration) || examDuration <= 0 || examDuration > 1440) return alert('Thời gian thi phải từ 1 đến 1440 phút.');
+        setSavingMatrix(true);
+        let savedId = editingMatrixId;
+        let saved = false;
         try {
             const data = {
                 name: matrixName,
@@ -446,14 +459,16 @@ export const ExamGenerator: React.FC = () => {
             };
             if (editingMatrixId) {
                 await apiService.updateSavedMatrix(editingMatrixId as number, matrixName, data.matrix_data);
-                if (assignClassId) {
-                     await apiService.assignMatrixToClass(Number(assignClassId), editingMatrixId as number).catch(e => console.error(e));
-                }
             } else {
                 const res: any = await apiService.saveMatrix(matrixName, data.matrix_data);
-                if (assignClassId && res?.id) {
-                     await apiService.assignMatrixToClass(Number(assignClassId), res.id).catch(e => console.error(e));
-                }
+                savedId = res?.id;
+                if (!savedId) throw new Error('Không nhận được mã ma trận đã lưu.');
+                setEditingMatrixId(savedId);
+            }
+            saved = true;
+            if (assignClassIds.length && savedId) {
+                const result = await apiService.assignMatrixToClasses(assignClassIds, Number(savedId), { ...assignmentOptions, open_time: assignmentOptions.open_time ? new Date(assignmentOptions.open_time).toISOString() : null, deadline: assignmentOptions.deadline ? new Date(assignmentOptions.deadline).toISOString() : null });
+                alert(`Đã giao cho ${result.assigned.length} lớp. ${result.skipped.length} lớp đã nhận trước đó được giữ nguyên.`);
             }
             setShowSaveModal(false);
             loadData();
@@ -461,13 +476,14 @@ export const ExamGenerator: React.FC = () => {
             // Reset matrix
             setMatrix({ TN: {}, TF: {}, KQ: {}, TL: {} });
             handleNewMatrix();
-            setAssignClassId('');
+            setAssignClassIds([]);
+            setAssignmentOptions({ open_time: '', deadline: '', max_attempts: 0, allow_review: true });
             setTabTotals({ TN: 0, TF: 0, KQ: 0, TL: 0 });
             setTotalQuestions(0);
         } catch (e) {
             console.error(e);
-            alert((e as Error).message || 'Lỗi lưu ma trận.');
-        }
+            alert(`${saved ? 'Ma trận đã lưu; chưa hoàn tất giao bài. Có thể thử lại mà không tạo ma trận mới. ' : ''}${(e as Error).message || 'Lỗi lưu ma trận.'}`);
+        } finally { setSavingMatrix(false); }
     };
 
 
@@ -1004,12 +1020,14 @@ export const ExamGenerator: React.FC = () => {
                                 {teacherClasses.length > 0 && (
                                     <div className="col-span-2">
                                         <label className="text-xs font-bold text-slate-500 uppercase mb-1 block flex items-center gap-2">Giao trực tiếp cho lớp (tuỳ chọn)</label>
-                                        <select value={assignClassId} onChange={e => setAssignClassId(e.target.value)} className="w-full border p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary-500 font-medium text-slate-700 bg-white">
-                                            <option value="">-- Không giao / Chỉ lưu lại --</option>
-                                            {teacherClasses.map(c => (
-                                                <option key={c.id} value={c.id}>{c.name}</option>
-                                            ))}
-                                        </select>
+                                        <ClassSelection classes={teacherClasses} selected={assignClassIds} onChange={setAssignClassIds}/>
+                                        <p className="text-xs text-slate-500 mt-2">Không chọn lớp nếu chỉ muốn lưu. Cấu hình dưới đây áp dụng chung cho các lớp mới nhận bài.</p>
+                                        {assignClassIds.length > 0 && <div className="grid grid-cols-2 gap-3 mt-3 text-xs text-slate-600">
+                                            <label>Mở đề (trống: mở ngay)<input type="datetime-local" className="block w-full border rounded-lg p-2" value={assignmentOptions.open_time} onChange={e => setAssignmentOptions(o => ({ ...o, open_time: e.target.value }))}/></label>
+                                            <label>Hạn nộp (trống: không hạn)<input type="datetime-local" className="block w-full border rounded-lg p-2" value={assignmentOptions.deadline} onChange={e => setAssignmentOptions(o => ({ ...o, deadline: e.target.value }))}/></label>
+                                            <label>Lượt thi (0: không giới hạn)<input type="number" min="0" step="1" className="block w-full border rounded-lg p-2" value={assignmentOptions.max_attempts} onChange={e => setAssignmentOptions(o => ({ ...o, max_attempts: Number(e.target.value) }))}/></label>
+                                            <label className="flex gap-2 items-center"><input type="checkbox" checked={assignmentOptions.allow_review} onChange={e => setAssignmentOptions(o => ({ ...o, allow_review: e.target.checked }))}/>Xem bài làm và lời giải sau nộp</label>
+                                        </div>}
                                     </div>
                                 )}
                             </div>
@@ -1102,7 +1120,7 @@ export const ExamGenerator: React.FC = () => {
 
                         <div className="flex justify-end gap-2 mt-6">
                             <button onClick={()=>setShowSaveModal(false)} className="px-5 py-2.5 text-slate-500 hover:bg-slate-100 rounded-xl font-bold transition-colors">Huỷ bỏ</button>
-                            <button onClick={handleSaveMatrix} className="px-6 py-2.5 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 shadow-lg shadow-primary-200 transition-colors flex items-center gap-2">
+                            <button disabled={savingMatrix} onClick={handleSaveMatrix} className="px-6 py-2.5 bg-primary-600 text-white rounded-xl font-bold hover:bg-primary-700 shadow-lg shadow-primary-200 transition-colors flex items-center gap-2 disabled:opacity-50">
                                 <Save size={18}/> Lưu Cấu hình
                             </button>
                         </div>
@@ -1112,3 +1130,4 @@ export const ExamGenerator: React.FC = () => {
         </div>
     );
 };
+import ClassSelection from '../components/ClassSelection';

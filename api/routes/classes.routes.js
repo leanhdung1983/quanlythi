@@ -1,4 +1,6 @@
 import express from 'express';
+import { pool } from '../core.js';
+import { assignClasses } from '../classAssignments.js';
 import { 
     query, 
     isAdmin, 
@@ -137,40 +139,17 @@ router.get('/classes/:class_id/assignments', async (req, res) => {
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
-// 8. Thêm bài tập (ma trận) vào lớp với thông số LMS
+// Single and multi-class assignments share atomic validation and duplicate protection.
+router.post('/classes/assignments/bulk', async (req, res) => {
+    try { res.json({ success: true, ...await assignClasses(pool, req.user, req.body) }); }
+    catch (e) { res.status(e.status || 500).json({ error: e.message }); }
+});
 router.post('/classes/:class_id/assignments', async (req, res) => {
     try {
-        const [cls] = await query("SELECT teacher_id FROM classes WHERE id = ?", [req.params.class_id]);
-        if (!cls) return res.status(404).json({ error: "Lớp học không tồn tại" });
-        if (req.user?.role !== 'ADMIN' && cls.teacher_id !== req.user?.id) {
-            return res.status(403).json({ error: "Bạn không có quyền giao bài tập cho lớp này." });
-        }
-
-        const { matrix_id, open_time, deadline, max_attempts, allow_review } = req.body;
-        const [matrix] = await query('SELECT created_by, is_public FROM matrix_templates WHERE id = ?', [matrix_id]);
-        if (!matrix) return res.status(404).json({ error: 'Ma trận không tồn tại.' });
-        if (!isAdmin(req) && !matrix.is_public && Number(matrix.created_by) !== Number(req.user?.id)) {
-            return res.status(403).json({ error: 'Bạn không có quyền sử dụng ma trận này.' });
-        }
-        const [existing] = await query("SELECT * FROM class_assignments WHERE class_id = ? AND matrix_id = ?", [req.params.class_id, matrix_id]);
-        if (existing) return res.status(400).json({ error: "Bài tập này đã được giao cho lớp" });
-        
-        const parsedOpenTime = open_time ? new Date(open_time) : null;
-        const parsedDeadline = deadline ? new Date(deadline) : null;
-        if (parsedOpenTime && isNaN(parsedOpenTime.getTime())) return res.status(400).json({ error: 'Thời gian mở đề không hợp lệ.' });
-        if (parsedDeadline && isNaN(parsedDeadline.getTime())) return res.status(400).json({ error: 'Hạn nộp bài không hợp lệ.' });
-        if (parsedOpenTime && parsedDeadline && parsedOpenTime >= parsedDeadline) {
-            return res.status(400).json({ error: 'Hạn nộp bài phải diễn ra sau thời gian mở đề.' });
-        }
-        const safeMaxAttempts = Math.max(0, parseInt(max_attempts, 10) || 0);
-        const safeAllowReview = allow_review !== false ? 1 : 0;
-
-        await query(
-            "INSERT INTO class_assignments (class_id, matrix_id, open_time, deadline, max_attempts, allow_review) VALUES (?, ?, ?, ?, ?, ?)",
-            [req.params.class_id, matrix_id, parsedOpenTime, parsedDeadline, safeMaxAttempts, safeAllowReview]
-        );
-        res.json({ success: true });
-    } catch (e) { res.status(500).json({ error: e.message }); }
+        const result = await assignClasses(pool, req.user, { ...req.body, class_ids: [req.params.class_id] });
+        if (result.skipped.length) return res.status(400).json({ error: 'Bài tập này đã được giao cho lớp' });
+        res.json({ success: true, ...result });
+    } catch (e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
 // 8.5. Cập nhật thông số LMS của bài tập đã giao
