@@ -164,21 +164,21 @@ export const ExamGenerator: React.FC = () => {
 
     const handleSelectMatrix = (m: any) => {
         const info = describeMatrix(m);
-        setMatrixMultiGrade(info.grade === 'MULTI');
-        setMatrixCatalog({ purpose: info.purpose, term: info.term, year: info.year, status: info.status });
-        setEditingMatrixId(m.id);
-        setMatrixName(m.name);
         let parsed: any = {};
         try {
             parsed = parseMatrixData(m.matrix_data);
         } catch (e) {
             console.error(e);
             alert('Không đọc được ma trận cũ. Chưa thay đổi dữ liệu.');
-            return;
+            return false;
         }
 
         let rawMatrix;
-        try { rawMatrix = editableMatrixSections(parsed); } catch (e: any) { alert(e.message); return; }
+        try { rawMatrix = editableMatrixSections(parsed); } catch (e: any) { alert(e.message); return false; }
+        setMatrixMultiGrade(info.grade === 'MULTI');
+        setMatrixCatalog({ purpose: info.purpose, term: info.term, year: info.year, status: info.status });
+        setEditingMatrixId(m.id);
+        setMatrixName(m.name);
         setMatrixBaseline(parsed);
         const loadedMatrix: Record<QuestionType, Record<string, LevelCounts>> = {
             TN: rawMatrix.TN || {},
@@ -190,7 +190,7 @@ export const ExamGenerator: React.FC = () => {
 
         const settings = parsed?.settings || {};
         if (settings) {
-            const normalized = normalizeGrade(settings.grade_id ?? info.grade);
+            const normalized = normalizeGrade(info.grade);
             const g = normalized !== null && normalized >= 10 ? normalized - 10 : selectedGrade;
             setMatrixGrade(g);
             setSelectedGrade(g);
@@ -219,10 +219,11 @@ export const ExamGenerator: React.FC = () => {
                 }
             }
         }
+        return true;
     };
 
     const handleQuickGenerateTex = async (m: any) => {
-        handleSelectMatrix(m);
+        if (!handleSelectMatrix(m)) return;
         setGenerating(true);
         try {
             let parsed: any = {};
@@ -255,7 +256,7 @@ export const ExamGenerator: React.FC = () => {
     };
 
     const handleOpenSaveModal = (m?: SavedMatrix) => {
-        if (m) handleSelectMatrix(m);
+        if (m && !handleSelectMatrix(m)) return;
         setShowSaveModal(true);
     };
 
