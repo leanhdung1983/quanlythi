@@ -703,7 +703,7 @@ export const ClassManagement = () => {
                             <div className="p-6 overflow-y-auto space-y-4 flex-1">
                                 <p className="text-xs text-slate-500 mb-2">Chọn đề thi từ danh sách ma trận đã tạo của bạn để cấu hình và giao cho học sinh:</p>
                                 {(() => {
-                                    const availableMatrices = savedMatrices;
+                                    const availableMatrices = savedMatrices.filter(m => !assignments.some(a => Number(a.id) === Number(m.id)));
                                     if (availableMatrices.length === 0) {
                                         return <p className="text-center text-slate-500 py-10">Không còn bài tập nào mới để giao cho lớp này.</p>;
                                     }
