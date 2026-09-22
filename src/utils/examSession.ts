@@ -23,7 +23,11 @@ export async function resolveResumedSession(saved: { userId?: number; currentExa
         let session;
         try { session = await lookup(id); }
         catch (error: any) {
-            if (error.status === 404 && Number(saved.userId) === userId) return ensureExamSessionId(null, start);
+            // A 404 proves the referenced server session no longer exists. Legacy
+            // local drafts did not store userId, so they may safely be rebound to
+            // the currently authenticated user through the normal start endpoint.
+            // Explicitly owned drafts from another account were rejected above.
+            if (error.status === 404) return ensureExamSessionId(null, start);
             throw error;
         }
         if (Number(session.user_id) !== userId) throw new Error('Phiên thi thuộc tài khoản khác. Hãy chọn làm mới.');
@@ -31,6 +35,6 @@ export async function resolveResumedSession(saved: { userId?: number; currentExa
         if (session.status !== 'IN_PROGRESS') return ensureExamSessionId(null, start);
         return id;
     }
-    if (Number(saved.userId) !== userId) throw new Error('Bài cũ không xác định được tài khoản. Hãy chọn làm mới; dữ liệu cũ vẫn được giữ.');
+    if (saved.userId !== undefined && Number(saved.userId) !== userId) throw new Error('Bài cũ thuộc tài khoản khác. Hãy chọn làm mới; dữ liệu cũ vẫn được giữ.');
     return ensureExamSessionId(null, start);
 }

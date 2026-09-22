@@ -47,6 +47,12 @@ describe('resume across logins and retakes', () => {
         }
         expect(await resolveResumedSession(saved, 1, async () => ({ user_id: 1, status: 'EXPIRED' }), async () => ({ success: true, id: 9 }))).toBe(9);
     });
+    it('migrates a legacy draft whose deleted server session predates saved ownership', async () => {
+        const start = vi.fn(async () => ({ success: true, id: 12 }));
+        const lookup = async () => { throw Object.assign(new Error('Exam result not found'), { status: 404 }); };
+        expect(await resolveResumedSession({ currentExamSessionId: 7 }, 1, lookup, start)).toBe(12);
+        expect(start).toHaveBeenCalledOnce();
+    });
     it('rejects a different account and legacy sessions belonging to others', async () => {
         const start = vi.fn(); const lookup = vi.fn(async () => ({ user_id: 2, status: 'IN_PROGRESS' }));
         await expect(resolveResumedSession(saved, 2, lookup, start)).rejects.toThrow('tài khoản khác');
@@ -68,7 +74,7 @@ describe('resume across logins and retakes', () => {
     });
     it('checks legacy ownership and rejects ambiguous legacy drafts', async () => {
         expect(await resolveResumedSession({ currentExamSessionId: 7 }, 1, async () => ({ user_id: 1, status: 'IN_PROGRESS' }), vi.fn())).toBe(7);
-        await expect(resolveResumedSession({}, 1, vi.fn(), vi.fn())).rejects.toThrow('không xác định');
+        expect(await resolveResumedSession({}, 1, vi.fn(), async () => ({ success: true, id: 11 }))).toBe(11);
     });
     it('propagates attempt/deadline restrictions when a replacement is required', async () => {
         await expect(resolveResumedSession({ userId: 1 }, 1, vi.fn(), async () => { throw new Error('Quá hạn hoặc hết lượt'); })).rejects.toThrow('Quá hạn');
