@@ -1,5 +1,5 @@
 import { describe, expect, it, vi } from 'vitest';
-import { ensureExamSessionId, resolveResumedSession, remainingExamSeconds } from './examSession';
+import { ensureExamSessionId, resolveResumedSession, remainingExamSeconds, examProgressSnapshot } from './examSession';
 describe('legacy exam session recovery', () => {
     it('creates a session for legacy progress missing its ID', async () => {
         const start = vi.fn(async () => ({ success: true, id: 9 }));
@@ -18,6 +18,9 @@ describe('legacy exam session recovery', () => {
 });
 
 describe('resume across logins and retakes', () => {
+    it('keeps ownership and server session when a page-hide snapshot overwrites local storage', () => {
+        expect(examProgressSnapshot({ currentExamSessionId: 77, answers: { 1: 'A' } }, 9)).toMatchObject({ userId: 9, currentExamSessionId: 77 });
+    });
     it('deducts offline time for real exams and submits expired exams without granting extra time', () => {
         expect(remainingExamSeconds({ timeLeft: 60, isRealExam: true, startTime: 1000 }, 31000)).toBe(30);
         expect(remainingExamSeconds({ timeLeft: 60, isRealExam: true, startTime: 1000 }, 91000)).toBe(0);

@@ -15,6 +15,12 @@ describe('preserve compiled SVG images', () => {
         for (const value of ['glyph0-1', 'xlink:href="#glyph0-1"', 'x="30"', 'y="20"', 'dx="1"', 'dy="2"', 'x y y′ −∞ +∞ + − 0']) expect(clean).toContain(value);
         expect(preserveSvgImage('<?xml version="1.0"?>\n' + svg)).toBe(clean);
     });
+    it('preserves presentation attributes used by dvisvgm for variation tables', () => {
+        const clean = preserveSvgImage('<svg xmlns="http://www.w3.org/2000/svg"><g color="black" paint-order="stroke"><text fill="currentColor" style="paint-order:stroke">x y y′ + −</text></g></svg>');
+        expect(clean).toContain('color="black"');
+        expect(clean).toContain('paint-order="stroke"');
+        expect(clean).toContain('fill="currentColor"');
+    });
     it('still removes executable SVG markup', () => {
         const clean = preserveSvgImage('<svg xmlns="http://www.w3.org/2000/svg" onload="alert(1)"><script>alert(1)</script><foreignObject><div>bad</div></foreignObject><use href="https://evil.example/x"/><text>x</text></svg>');
         expect(clean).not.toMatch(/onload|<script|foreignObject|https:\/\/evil/);

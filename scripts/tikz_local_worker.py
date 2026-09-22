@@ -104,6 +104,14 @@ def clean_svg(svg):
     return svg.strip()
 
 
+def validate_svg_references(svg):
+    ids = set(re.findall(r'\bid=["\']([^"\']+)["\']', svg))
+    references = re.findall(r'(?:xlink:href|href)=["\']#([^"\']+)["\']', svg)
+    missing = sorted(set(references) - ids)
+    if missing:
+        raise RuntimeError("SVG thiếu định nghĩa nét chữ/hình: " + ", ".join(missing[:5]))
+
+
 def compile_svg(source, timeout):
     if not EX_TEST_STYLE.is_file():
         raise RuntimeError(f"Thiếu bộ style ex_test: {EX_TEST_STYLE}")
@@ -131,7 +139,9 @@ def compile_svg(source, timeout):
         svg = work / "drawing.svg"
         commands = []
         if shutil.which("dvisvgm"):
-            commands.append(["dvisvgm", "--pdf", "--output=drawing.svg", "drawing.pdf"])
+            # Convert every glyph to paths. This prevents math signs and variation-table
+            # labels from disappearing on devices that do not have the TeX fonts.
+            commands.append(["dvisvgm", "--pdf", "--no-fonts", "--exact-bbox", "--output=drawing.svg", "drawing.pdf"])
         if shutil.which("pdf2svg"):
             commands.append(["pdf2svg", "drawing.pdf", "drawing.svg"])
         errors = []
@@ -152,6 +162,7 @@ def compile_svg(source, timeout):
             raise RuntimeError("Công cụ chuyển đổi không trả về SVG hợp lệ.")
         if len(result.encode("utf-8")) > MAX_SVG_BYTES:
             raise RuntimeError("SVG vượt giới hạn 1,9 MB.")
+        validate_svg_references(result)
         return result
 
 

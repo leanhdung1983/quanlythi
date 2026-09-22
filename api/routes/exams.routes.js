@@ -10,7 +10,7 @@ import {
     canAccessExamResult
 } from '../core.js';
 import { calculateServerScore } from '../scoring.js';
-import { sanitizeQuestionForStudent, rehydrateTrustedQuestions } from '../examSecurity.js';
+import { sanitizeQuestionForStudent, rehydrateTrustedQuestions, validateTrustedQuestions } from '../examSecurity.js';
 import { buildLatexDocument } from '../texExamGenerator.js';
 import { parseMatrixData, describeMatrix, normalizeGrade, validateCatalog } from '../../shared/matrixCatalog.js';
 
@@ -340,7 +340,8 @@ router.post('/exam/start', async (req, res) => {
 
         // Rehydrate questions using database records so the server has the authentic answer keys
         let trustedQuestions = questions;
-        const qIds = questions.map(q => Number(q.id)).filter(Number.isInteger);
+        const qIds = questions.map(q => Number(q.id)).filter(id => Number.isSafeInteger(id) && id > 0);
+        if (qIds.length !== questions.length) return res.status(422).json({ error: 'Đề có câu hỏi không xác định được trong ngân hàng. Vui lòng tạo lại đề.' });
         if (qIds.length > 0) {
             const dbRows = await query(
                 "SELECT id, legacy_full_id as id_full, content_latex, content_latex_original, type_id FROM questions WHERE id IN (?)",
@@ -348,7 +349,10 @@ router.post('/exam/start', async (req, res) => {
             );
             const dbMap = new Map(dbRows.map(r => [r.id, r]));
             trustedQuestions = rehydrateTrustedQuestions(questions, dbMap);
+            if (dbMap.size !== new Set(qIds).size) return res.status(422).json({ error: 'Có câu hỏi không còn tồn tại trong ngân hàng. Vui lòng tạo lại đề.' });
         }
+        const keyError = validateTrustedQuestions(trustedQuestions);
+        if (keyError) return res.status(422).json({ error: `${keyError} Giáo viên cần chuẩn hoá đáp án trước khi giao bài.` });
 
         const result_detail = JSON.stringify({ questions: trustedQuestions, answers: {}, scoring_settings: scoring_settings || {} });
         const result = await query(

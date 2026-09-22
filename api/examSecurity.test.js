@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { stripLoigiai, stripShortans, stripTrueMarkers, sanitizeQuestionForStudent, rehydrateTrustedQuestions } from './examSecurity.js';
+import { stripLoigiai, stripShortans, stripTrueMarkers, sanitizeQuestionForStudent, rehydrateTrustedQuestions, validateTrustedQuestions } from './examSecurity.js';
 
 describe('Exam Security & Answer Sanitization', () => {
     it('strips \\loigiai with nested braces cleanly without breaking math', () => {
@@ -104,5 +104,15 @@ Tập nghiệm $\{x \\in \\mathbb{R} \\mid x \\ge 1\}$.
         expect(rehydrated[0].options.find(o => o.id === 'A').isCorrect).toBe(false);
         expect(rehydrated[0].options.find(o => o.id === 'B').isCorrect).toBe(true);
         expect(rehydrated[0].solution).toContain('Lời giải 1+1=2');
+    });
+    it('refuses to start an exam when an authoritative answer key is missing', () => {
+        expect(validateTrustedQuestions([{ id: 1, type: 'TN', options: [{ isCorrect: false }] }])).toContain('đáp án');
+        expect(validateTrustedQuestions([{ id: 2, type: 'KQ', correctAnswer: '' }])).toContain('đáp án');
+        expect(validateTrustedQuestions([{ id: 3, type: 'TF', options: Array.from({ length: 4 }, () => ({ isCorrect: false })) }])).toBeNull();
+    });
+    it('recovers answer keys from original LaTeX when current display source lost its markers', () => {
+        const client = [{ id: 8, type: 'TN', options: ['A','B','C','D'].map((id, originalIndex) => ({ id, originalIndex, isCorrect: false })) }];
+        const rows = new Map([[8, { content_latex: '\\choice{$1$}{$2$}{$3$}{$4$}', content_latex_original: '\\choice{$1$}{\\True $2$}{$3$}{$4$}' }]]);
+        expect(rehydrateTrustedQuestions(client, rows)[0].options.find(option => option.id === 'B').isCorrect).toBe(true);
     });
 });

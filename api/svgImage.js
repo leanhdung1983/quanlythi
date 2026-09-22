@@ -29,6 +29,7 @@ export function sanitizeCompiledSvg(rawSvg) {
                 'stroke-width', 'stroke-linecap', 'stroke-linejoin', 'stroke-miterlimit', 'stroke-dasharray',
                 'stroke-dashoffset', 'stroke-opacity', 'opacity', 'font-size', 'font-family',
                 'font-style', 'font-weight', 'text-anchor', 'dominant-baseline', 'clip-path', 'clip-rule',
+                'color', 'paint-order', 'vector-effect',
                 'mask', 'marker-start', 'marker-mid', 'marker-end', 'offset', 'stop-color',
                 'stop-opacity', 'gradientUnits', 'gradientunits', 'gradientTransform', 'gradienttransform', 'spreadMethod', 'spreadmethod',
                 'patternUnits', 'patternunits', 'patternContentUnits', 'patterncontentunits', 'patternTransform', 'patterntransform',
@@ -59,7 +60,8 @@ export function sanitizeCompiledSvg(rawSvg) {
                 'text-anchor': [/.*/],
                 'dominant-baseline': [/.*/],
                 'overflow': [/.*/],
-                'visibility': [/.*/]
+                'visibility': [/.*/],
+                'paint-order': [/.*/]
             }
         },
         allowedSchemes: [],

@@ -11,6 +11,10 @@ export function remainingExamSeconds(saved: { timeLeft: number; isRealExam?: boo
     return Math.max(0, Number(saved.timeLeft) - elapsed);
 }
 
+export function examProgressSnapshot(input: any, userId: number) {
+    return { ...input, userId, currentExamSessionId: input.currentExamSessionId ?? null };
+}
+
 export async function resolveResumedSession(saved: { userId?: number; currentExamSessionId?: number }, userId: number,
     lookup: (id: number) => Promise<{ user_id: number; status: string }>, start: () => Promise<{ success?: boolean; id?: number }>): Promise<number> {
     if (saved.userId !== undefined && Number(saved.userId) !== userId) throw new Error('Bài làm thuộc tài khoản khác. Hãy chọn làm mới.');

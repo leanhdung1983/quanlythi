@@ -266,10 +266,20 @@ export function rehydrateTrustedQuestions(clientQuestions, dbQuestionsMap) {
             return clientQ;
         }
 
-        const rawLatex = dbQ.content_latex || dbQ.content_latex_original || '';
-        const { solution } = stripLoigiai(rawLatex);
-        const { shortAnswer } = stripShortans(rawLatex);
-        const { correctIndices, tfMap } = stripTrueMarkers(rawLatex);
+        const currentLatex = dbQ.content_latex || '';
+        const originalLatex = dbQ.content_latex_original || '';
+        const currentSolution = stripLoigiai(currentLatex).solution;
+        const originalSolution = stripLoigiai(originalLatex).solution;
+        const currentShort = stripShortans(currentLatex).shortAnswer;
+        const originalShort = stripShortans(originalLatex).shortAnswer;
+        const currentMarkers = stripTrueMarkers(currentLatex);
+        const originalMarkers = stripTrueMarkers(originalLatex);
+        const solution = currentSolution || originalSolution;
+        const shortAnswer = currentShort || originalShort;
+        const correctIndices = currentMarkers.correctIndices.length ? currentMarkers.correctIndices : originalMarkers.correctIndices;
+        const currentTfHasTrue = Object.values(currentMarkers.tfMap).some(Boolean);
+        const originalTfHasTrue = Object.values(originalMarkers.tfMap).some(Boolean);
+        const tfMap = !currentTfHasTrue && originalTfHasTrue ? originalMarkers.tfMap : currentMarkers.tfMap;
 
         const type = clientQ.type || 'TN';
         let options = Array.isArray(clientQ.options) ? [...clientQ.options] : [];
@@ -299,3 +309,12 @@ export function rehydrateTrustedQuestions(clientQuestions, dbQuestionsMap) {
     });
 }
 
+export function validateTrustedQuestions(questions) {
+    if (!Array.isArray(questions) || !questions.length) return 'Đề thi không có câu hỏi.';
+    for (const q of questions) {
+        if (q.type === 'TN' && q.options?.filter(option => option.isCorrect === true).length !== 1) return `Câu ${q.id} chưa có đúng một đáp án trắc nghiệm chuẩn.`;
+        if (q.type === 'TF' && (!Array.isArray(q.options) || q.options.length !== 4 || q.options.some(option => typeof option.isCorrect !== 'boolean'))) return `Câu ${q.id} chưa có đủ đáp án đúng/sai chuẩn.`;
+        if (q.type === 'KQ' && !String(q.correctAnswer ?? '').trim()) return `Câu ${q.id} chưa có đáp án trả lời ngắn chuẩn.`;
+    }
+    return null;
+}

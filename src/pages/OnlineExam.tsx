@@ -10,7 +10,7 @@ import { clearSvgCache } from '../components/TikZRenderer';
 import { extractMatrixHierarchy, prepareMatrixPayload } from '../utils/matrixUtils';
 import { checkKQAnswer, calculateExamScore } from '../utils/gradeHelper';
 import { parseQuestionContent, shuffleArray } from '../utils/latexParser';
-import { ensureExamSessionId, resolveResumedSession, remainingExamSeconds } from '../utils/examSession';
+import { ensureExamSessionId, resolveResumedSession, remainingExamSeconds, examProgressSnapshot } from '../utils/examSession';
 import { 
     Clock, PlayCircle, ChevronRight, BookOpen, 
     Loader2, BarChart3, 
@@ -216,6 +216,7 @@ export const OnlineExam: React.FC = () => {
     currentUserIdRef.current = user?.id;
     const startingSessionRef = useRef(false);
     const [score, setScore] = useState(0);
+    const [resultReviewLocked, setResultReviewLocked] = useState(false);
     const [currentExamTitle, setCurrentExamTitle] = useState('');
     const [examSettings, setExamSettings] = useState<any>(null);
     const [timeLeft, setTimeLeft] = useState(0);
@@ -268,6 +269,7 @@ export const OnlineExam: React.FC = () => {
                 duration_seconds: saved.totalTime, scoring_settings: saved.examSettings || {} }));
             if (currentUserIdRef.current !== user.id) throw new Error('Tài khoản đã thay đổi. Vui lòng mở lại bài thi.');
             setQuestions(saved.questions); setAnswers(saved.answers || {});
+            setResultReviewLocked(false);
             setTimeLeft(remainingExamSeconds(saved)); setTotalTime(Number(saved.totalTime));
             setCurrentQIdx(saved.currentQIdx || 0); setCurrentExamTitle(saved.currentExamTitle);
             setCurrentMatrixId(saved.currentMatrixId); setExamSettings(saved.examSettings || {});
@@ -336,8 +338,7 @@ export const OnlineExam: React.FC = () => {
     // --- PROGRESS PERSISTENCE ---
     useEffect(() => {
         if (mode === 'TAKING_EXAM' && questions.length > 0 && examOwnerId === user?.id) {
-            const state = {
-                userId: user?.id,
+            const state = examProgressSnapshot({
                 questions,
                 answers,
                 timeLeft,
@@ -349,7 +350,7 @@ export const OnlineExam: React.FC = () => {
                 isRealExam,
                 currentExamSessionId,
                 startTime: Date.now()
-            };
+            }, Number(user?.id));
             try {
                 localStorage.setItem('online_exam_progress', JSON.stringify(state));
             } catch (e) {
@@ -490,9 +491,14 @@ export const OnlineExam: React.FC = () => {
             try {
                 const response = await apiService.fetchExamResultDetail(Number(result.id)) as any;
                 const detail = typeof response.data?.result_detail === 'string' ? JSON.parse(response.data.result_detail) : response.data?.result_detail;
-                if (Array.isArray(detail?.questions)) setQuestions(detail.questions);
+                const locked = response.data?.review_locked === true;
+                setResultReviewLocked(locked);
+                if (!locked && Array.isArray(detail?.questions)) setQuestions(detail.questions);
                 if (detail?.answers) setAnswers(detail.answers);
-            } catch (e) { console.error('Đã nộp bài; có thể tải lại lời giải từ lịch sử.', e); }
+            } catch (e) {
+                setResultReviewLocked(true);
+                console.error('Đã nộp bài; có thể tải lại lời giải từ lịch sử.', e);
+            }
             setCurrentExamSessionId(null);
             setMode('RESULT');
             try { localStorage.removeItem('online_exam_progress'); } catch {}
@@ -539,11 +545,12 @@ export const OnlineExam: React.FC = () => {
                     finishExam(true, "Hệ thống tự động nộp bài do bạn đã thoát trình duyệt/chuyển tab trong kỳ thi thật."); 
                 } else {
                     // Force save progress on visibility change for non-real exams
-                    const state = {
+                    const state = examProgressSnapshot({
                         questions, answers, timeLeft, totalTime, currentQIdx,
                         currentExamTitle, currentMatrixId, examSettings, isRealExam,
+                        currentExamSessionId,
                         startTime: Date.now()
-                    };
+                    }, Number(user?.id));
                     try { localStorage.setItem('online_exam_progress', JSON.stringify(state)); } catch(e) { console.error(e); }
                 }
             }
@@ -632,7 +639,7 @@ export const OnlineExam: React.FC = () => {
             window.removeEventListener('contextmenu', handleContextMenu);
             window.removeEventListener('keydown', handleKeyDown);
         };
-    }, [mode, finishExam, isRealExam, questions, answers, timeLeft, totalTime, currentQIdx, currentExamTitle, currentMatrixId, examSettings, showConfirm]);
+    }, [mode, finishExam, isRealExam, questions, answers, timeLeft, totalTime, currentQIdx, currentExamTitle, currentMatrixId, examSettings, currentExamSessionId, user?.id, showConfirm]);
 
     // Export UI
     const [showSidebar, setShowSidebar] = useState(true);
@@ -803,6 +810,7 @@ export const OnlineExam: React.FC = () => {
 
             if (currentUserIdRef.current !== user?.id) throw new Error('Tài khoản đã thay đổi. Vui lòng mở lại bài thi.');
             setExamOwnerId(user.id);
+            setResultReviewLocked(false);
             setQuestions(qs); 
             setAnswers({}); 
             setCurrentExamTitle(m.name);
@@ -2286,6 +2294,7 @@ export const OnlineExam: React.FC = () => {
                             </div>
 
                             <div className="p-12">
+                                {resultReviewLocked && <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-center text-sm font-semibold text-amber-800">Điểm hiển thị trên màn hình đã được máy chủ chấm và lưu chính xác. Phần phân tích đúng/sai đang ẩn vì giáo viên chưa cho phép xem lời giải hoặc chưa tải được dữ liệu xác nhận.</div>}
                                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
                                     {/* Score Display */}
                                     <div className="flex-1 flex flex-col items-center justify-center p-12 bg-indigo-50/30 rounded-[3rem] border border-indigo-100/50 text-center group">
@@ -2302,7 +2311,7 @@ export const OnlineExam: React.FC = () => {
                                     </div>
 
                                     {/* Stats Grid */}
-                                    <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
+                                    {!resultReviewLocked && <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
                                         <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5 hover:border-exam-orange/30 transition-all">
                                             <div className="w-14 h-14 bg-exam-orange/10 rounded-2xl flex items-center justify-center text-exam-orange"><Target size={28}/></div>
                                             <div>
@@ -2357,11 +2366,12 @@ export const OnlineExam: React.FC = () => {
                                                 <div className="text-sm font-black text-slate-800 truncate max-w-[200px]">{selectedExam?.name}</div>
                                             </div>
                                         </div>
-                                    </div>
+                                    </div>}
                                 </div>
                             </div>
                         </div>
 
+                        {!resultReviewLocked && <>
                         {/* Analysis Section */}
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
                             {/* Performance by Level */}
@@ -2564,14 +2574,15 @@ export const OnlineExam: React.FC = () => {
                             </div>
                         </div>
 
+                        </>}
                         {/* Action Buttons */}
                             <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-in slide-in-from-bottom-8 duration-700 delay-300">
-                                <button 
+                                {!resultReviewLocked && <button
                                     onClick={() => { if (submittedResultId) void handleViewHistory({ id: submittedResultId }); }}
                                     className="w-full sm:w-auto min-w-[240px] px-10 py-6 bg-white border-2 border-indigo-600 text-indigo-600 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-indigo-600 hover:text-white transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-3 active:scale-95"
                                 >
                                     <Eye size={20}/> Xem giải chi tiết
-                                </button>
+                                </button>}
                                 <button 
                                     onClick={() => { setMode('DASHBOARD'); clearSvgCache(); }}
                                     className="w-full sm:w-auto min-w-[240px] px-10 py-6 bg-indigo-600 text-white rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 flex items-center justify-center gap-3 active:scale-95"
