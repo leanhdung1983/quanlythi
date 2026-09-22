@@ -13,6 +13,11 @@ trình không kết nối trực tiếp TiDB/MySQL và không lưu mật khẩu.
 
 ## Bấm nút trên web để biên dịch
 
+Trên Windows, có thể nhấp đúp `CHAY_TIKZ_SVG_LOCAL.bat`, nhập URL Render và
+chọn mục **1**. File BAT tự kiểm tra Python, TeX, công cụ SVG và không lưu mật
+khẩu. Có thể tạo shortcut của file này ra Desktop; không di chuyển riêng file
+BAT khỏi thư mục dự án.
+
 Trên máy local, mở terminal tại thư mục dự án và khởi động worker **một lần**:
 
 ```powershell
