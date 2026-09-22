@@ -10,6 +10,27 @@ const router = express.Router();
 const validHash = value => /^[a-f0-9]{64}$/i.test(String(value || ''));
 const placeholders = hashes => hashes.map(() => '?').join(',');
 
+router.get('/admin/tikz-failures', async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    try {
+        const [rows] = await pool.query(`
+            SELECT f.question_id AS questionId, f.tikz_hash AS hash, f.error_message AS error,
+                   f.updated_at AS updatedAt, q.legacy_full_id AS idFull,
+                   q.content_latex AS contentLatex, q.content_latex_original AS originalLatex,
+                   q.is_tikz_rendered AS isTikzRendered
+            FROM tikz_render_failures f
+            JOIN questions q ON q.id = f.question_id
+            ORDER BY f.updated_at DESC, f.question_id ASC
+            LIMIT 500
+        `);
+        res.set('Cache-Control', 'private, no-store');
+        res.json({ success: true, data: rows });
+    } catch (error) {
+        console.error('[TIKZ AUDIT] Failure list failed:', error);
+        res.status(500).json({ error: 'Không thể tải danh sách hình biên dịch lỗi.' });
+    }
+});
+
 router.get('/admin/tikz-audit', async (req, res) => {
     try {
         if (!requireAdmin(req, res)) return;

@@ -63,3 +63,11 @@ Biên dịch dùng `-no-shell-escape`, giới hạn thời gian mỗi bước (`
 mặc định 90 giây), thư mục tạm riêng và giới hạn SVG 1,9 MB. Không chỉnh
 các file Python cũ chứa thông tin database rồi đẩy chúng lên GitHub. Nếu
 thông tin DB đã từng được lưu trong mã, đổi mật khẩu DB trước khi sử dụng tiếp.
+
+## Sửa các câu biên dịch lỗi
+
+Nếu LaTeX hoặc SVG lỗi, worker không gửi hình đó vào `question_images`. Giao
+diện quản trị hiển thị mục **Các câu biên dịch hình bị lỗi**, gồm ID câu hỏi,
+hash hình và thông báo chi tiết. Bấm **Sửa mã TikZ**, sửa trực tiếp rồi chọn
+**Lưu & Đặt lại**. Mã mới được lưu vào câu hỏi, trạng thái trở về chưa dựng và
+lỗi cũ được xoá; lần bấm **Quét và biên dịch** kế tiếp sẽ xử lý lại câu này.

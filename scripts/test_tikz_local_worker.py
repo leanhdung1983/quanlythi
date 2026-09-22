@@ -13,6 +13,7 @@ class FakeApi:
     def __init__(self, cancelled_after=None):
         self.progress = []
         self.syncs = []
+        self.failures = []
         self.beats = 0
         self.cancelled_after = cancelled_after
 
@@ -37,6 +38,9 @@ class FakeApi:
             return {"success": True}
         if path.endswith("/sync"):
             self.syncs.append(data)
+            return {"success": True}
+        if path.endswith("/failure"):
+            self.failures.append(data)
             return {"success": True}
         raise AssertionError(f"Unexpected request: {method} {path}")
 
@@ -69,6 +73,15 @@ class LocalWorkerJobTests(unittest.TestCase):
             status = run_worker(self.args, api=api, job=self.job)
         self.assertEqual(status, "CANCELLED")
         self.assertEqual([progress["afterId"] for progress in api.progress], [1])
+
+    def test_compile_failure_is_reported_and_never_uploaded_as_svg(self):
+        api = FakeApi()
+        with patch("scripts.tikz_local_worker.compile_svg", side_effect=RuntimeError("LaTeX loi tai dong 12")):
+            status = run_worker(self.args, api=api, job=self.job)
+        self.assertEqual(status, "COMPLETED")
+        self.assertEqual(api.syncs, [])
+        self.assertEqual(len(api.failures), 2)
+        self.assertTrue(all("dong 12" in item["error"] for item in api.failures))
 
 
 if __name__ == "__main__":

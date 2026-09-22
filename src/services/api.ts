@@ -583,6 +583,11 @@ export const apiService = {
         const res = await fetch(`${API_URL}/admin/tikz-audit?afterId=${afterId}&limit=${limit}`);
         return await handleResponse(res, '/admin/tikz-audit');
     },
+    async fetchTikzFailures() {
+        const res = await fetch(`${API_URL}/admin/tikz-failures`, { cache: 'no-store' });
+        const result = await handleResponse(res, '/admin/tikz-failures');
+        return result.data;
+    },
     async fetchTikzJobStatus() {
         const res = await fetch(`${API_URL}/admin/tikz-jobs/status`);
         return await handleResponse(res, '/admin/tikz-jobs/status');

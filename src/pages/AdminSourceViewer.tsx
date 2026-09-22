@@ -38,6 +38,11 @@ interface TikzJob {
     errorMessage: string | null;
 }
 
+interface TikzFailure {
+    questionId: number; hash: string; error: string; updatedAt: string;
+    idFull: string | null; contentLatex: string; originalLatex: string | null; isTikzRendered: number;
+}
+
 const SvgViewer = ({ hash }: { hash: string }) => {
     const [svg, setSvg] = useState<string | null>(null);
     const [error, setError] = useState<string | null>(null);
@@ -74,11 +79,16 @@ export const AdminSourceViewer: React.FC = () => {
     const [workerOnline, setWorkerOnline] = useState(false);
     const [jobBusy, setJobBusy] = useState(false);
     const [jobError, setJobError] = useState<string | null>(null);
+    const [tikzFailures, setTikzFailures] = useState<TikzFailure[]>([]);
+    const [selectedFailure, setSelectedFailure] = useState<TikzFailure | null>(null);
+
+    const refreshFailures = async () => setTikzFailures(await apiService.fetchTikzFailures() || []);
 
     const refreshJob = async () => {
         const result = await apiService.fetchTikzJobStatus();
         setJob(result.job || null);
         setWorkerOnline(Boolean(result.worker));
+        await refreshFailures();
     };
 
     useEffect(() => {
@@ -140,9 +150,19 @@ export const AdminSourceViewer: React.FC = () => {
     };
 
     const handleSelectQuestion = (q: QuestionSource) => {
+        setSelectedFailure(null);
         setSelectedQuestion(q);
         setEditContent(q.original_latex || q.content_latex);
         setIsEditing(false);
+    };
+
+    const handleEditFailure = (failure: TikzFailure) => {
+        setSelectedFailure(failure);
+        setSelectedQuestion({ id: failure.questionId, legacy_full_id: failure.idFull || '',
+            content_latex: failure.contentLatex, original_latex: failure.originalLatex || failure.contentLatex,
+            is_tikz_rendered: failure.isTikzRendered });
+        setEditContent(failure.originalLatex || failure.contentLatex);
+        setIsEditing(true);
     };
 
     const handleSaveAndReset = async () => {
@@ -163,6 +183,7 @@ export const AdminSourceViewer: React.FC = () => {
             ]);
             setQuestions(qData);
             setImages(iData);
+            await refreshFailures();
             
             // Close modal
             setSelectedQuestion(null);
@@ -346,6 +367,19 @@ export const AdminSourceViewer: React.FC = () => {
                 <p className="mt-4 text-xs text-slate-500">Khởi động một lần <code>python scripts/tikz_local_worker.py --url URL_RENDER --daemon</code> trên máy có TeX. Để máy bật khi xử lý.</p>
             </section>
 
+            <section className="mb-8 rounded-3xl border border-red-200 bg-white p-6 shadow-sm">
+                <div className="flex items-center justify-between gap-4">
+                    <div><h2 className="text-lg font-black text-slate-800">Các câu biên dịch hình bị lỗi</h2><p className="text-sm text-slate-500">SVG lỗi không được lưu. Sửa mã TikZ, lưu câu hỏi rồi chạy biên dịch lại.</p></div>
+                    <button type="button" onClick={() => refreshFailures().catch(error => setJobError(error.message))} className="rounded-xl border px-4 py-2 text-sm font-bold">Làm mới</button>
+                </div>
+                {tikzFailures.length === 0 ? <p className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-700">Không có lỗi biên dịch đang chờ sửa.</p> : <div className="mt-4 max-h-96 space-y-3 overflow-y-auto">
+                    {tikzFailures.map(failure => <div key={`${failure.questionId}-${failure.hash}`} className="rounded-2xl border border-red-100 bg-red-50/40 p-4"><div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between"><div className="min-w-0">
+                        <p className="font-bold text-slate-800">Câu #{failure.questionId} — {failure.idFull || 'Chưa có ID6'}</p><p className="mt-1 font-mono text-[10px] text-slate-500">Hình: {failure.hash}</p>
+                        <pre className="mt-2 whitespace-pre-wrap break-words rounded-xl bg-white p-3 text-xs text-red-700">{failure.error}</pre><p className="mt-1 text-[10px] text-slate-400">Ghi nhận: {new Date(failure.updatedAt).toLocaleString('vi-VN')}</p>
+                    </div><button type="button" onClick={() => handleEditFailure(failure)} className="shrink-0 rounded-xl bg-red-600 px-4 py-2 text-xs font-bold text-white hover:bg-red-700">Sửa mã TikZ</button></div></div>)}
+                </div>}
+            </section>
+
             <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
                 {/* Questions List */}
                 <div className="lg:col-span-12 overflow-hidden bg-white border border-slate-200 rounded-[2.5rem] shadow-xl shadow-slate-200/40">
@@ -442,6 +476,7 @@ export const AdminSourceViewer: React.FC = () => {
                                         <p className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
                                             ID: <span className="text-indigo-500 font-mono">{selectedQuestion.legacy_full_id}</span>
                                         </p>
+                                        {selectedFailure && <p className="mt-2 max-w-3xl whitespace-pre-wrap rounded-xl bg-red-50 p-3 text-xs font-semibold text-red-700">Lỗi biên dịch: {selectedFailure.error}</p>}
                                     </div>
                                 </div>
                                 <button 

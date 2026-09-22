@@ -406,18 +406,24 @@ router.put('/questions/:id', async (req, res) => {
         }
         const sourceInput = req.body.raw_latex === undefined ? existing.content_latex : req.body.raw_latex;
         const source = normalizeQuestionSource(sourceInput, normalizedId).source;
+        const sourceWasEdited = req.body.raw_latex !== undefined;
+        const originalSource = sourceWasEdited ? source : existing.content_latex_original;
+        const renderStatus = sourceWasEdited
+            ? (/\\begin\s*\{\s*(?:tikzpicture|tkz-tab|tkz-euclide)\s*\}/i.test(source) ? 0 : 2)
+            : existing.is_tikz_rendered;
         await conn.query(`INSERT INTO question_revisions (question_id, content_latex, legacy_full_id, unit_id, level_id, type_id, change_type, changed_by)
             VALUES (?, ?, ?, ?, ?, ?, 'QUESTION_BANK_EDIT', ?)`,
             [existing.id, existing.content_latex, existing.legacy_full_id, existing.unit_id, existing.level_id, existing.type_id, req.user.id]);
         const difficulty = req.body.difficulty_index === undefined ? existing.difficulty_index : (Number.isFinite(Number(req.body.difficulty_index)) ? Number(req.body.difficulty_index) : null);
         const discrimination = req.body.discrimination_index === undefined ? existing.discrimination_index : (Number.isFinite(Number(req.body.discrimination_index)) ? Number(req.body.discrimination_index) : null);
         const competencies = req.body.competencies === undefined ? existing.competencies : JSON.stringify(req.body.competencies);
-        await conn.query(`UPDATE questions SET legacy_full_id = ?, content_latex = ?, unit_id = COALESCE(?, unit_id),
+        await conn.query(`UPDATE questions SET legacy_full_id = ?, content_latex = ?, content_latex_original = ?, is_tikz_rendered = ?, unit_id = COALESCE(?, unit_id),
             level_id = COALESCE(?, level_id), id_status = ?, id_review_status = ?, normalization_version = 1,
             normalized_at = NOW(), content_hash = ?, is_duplicate_checked = FALSE, difficulty_index = ?,
             discrimination_index = ?, competencies = ? WHERE id = ?`,
-            [normalizedId || null, source, metadata?.unit_id, metadata?.level_id, metadata ? 1 : 0,
+            [normalizedId || null, source, originalSource, renderStatus, metadata?.unit_id, metadata?.level_id, metadata ? 1 : 0,
                 metadata ? 'CONFIRMED' : 'PENDING', generateHash(source), difficulty, discrimination, competencies, existing.id]);
+        if (sourceWasEdited) await conn.query('DELETE FROM tikz_render_failures WHERE question_id = ?', [existing.id]);
         await conn.commit();
         await clearCache('/api/questions*');
         await clearCache('/api/tree-data*');

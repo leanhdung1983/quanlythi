@@ -75,5 +75,9 @@ export function sanitizeCompiledSvg(rawSvg) {
         parser: { xmlMode: true, lowerCaseTags: false, lowerCaseAttributeNames: false }
     }).trim();
 
-    return clean.includes('<svg') && clean.endsWith('</svg>') ? clean : '';
+    if (!clean.includes('<svg') || !clean.endsWith('</svg>')) return '';
+    const ids = new Set([...clean.matchAll(/\bid=["']([^"']+)["']/g)].map(match => match[1]));
+    const localReferences = [...clean.matchAll(/(?:href|xlink:href)=["']#([^"']+)["']/g)].map(match => match[1]);
+    if (localReferences.some(reference => !ids.has(reference))) return '';
+    return clean;
 }

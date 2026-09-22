@@ -26,6 +26,9 @@ describe('preserve compiled SVG images', () => {
         expect(clean).not.toMatch(/onload|<script|foreignObject|https:\/\/evil/);
         expect(clean).toContain('<text>x</text>');
     });
+    it('rejects SVG with missing local glyph definitions instead of saving a broken image', () => {
+        expect(preserveSvgImage('<svg xmlns="http://www.w3.org/2000/svg"><use href="#missing"/></svg>')).toBe('');
+    });
     it('rejects non-SVG and oversized input without filtering drawing components', () => {
         expect(preserveSvgImage('<html>not an image</html>')).toBe('');
         expect(preserveSvgImage(null)).toBe('');
