@@ -1,7 +1,9 @@
 # Kiểm kê và biên dịch TikZ trên máy local
 
 Chức năng quản trị **Source & SVG Viewer → Quét toàn bộ câu hỏi** đọc toàn bộ bảng
-`questions` theo ID tăng dần. Nó đối chiếu TikZ, `[TIKZ_HASH:...]` và bảng
+`questions` theo ID tăng dần nhưng lọc ngay tại database, chỉ lấy câu có dấu
+hiệu hình vẽ. Câu chỉ có mã nhận diện ID6 mà không có TikZ, placeholder hoặc
+lệnh chèn hình sẽ không được quét. Chức năng đối chiếu TikZ, `[TIKZ_HASH:...]` và bảng
 `question_images`, không sửa dữ liệu khi quét. Câu có TikZ lỗi, hình không phải
 TikZ hoặc SVG thiếu mã nguồn được liệt kê để xem thủ công.
 

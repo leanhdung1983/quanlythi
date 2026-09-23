@@ -68,7 +68,7 @@ class LocalWorkerJobTests(unittest.TestCase):
         compile_svg.assert_called_once()
 
     def test_stops_before_the_next_question_without_advancing_its_cursor(self):
-        api = FakeApi(cancelled_after=3)
+        api = FakeApi(cancelled_after=2)
         with patch("scripts.tikz_local_worker.compile_svg", return_value="<svg></svg>"):
             status = run_worker(self.args, api=api, job=self.job)
         self.assertEqual(status, "CANCELLED")

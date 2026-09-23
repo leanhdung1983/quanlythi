@@ -196,7 +196,9 @@ def run_worker(args, api=None, job=None):
             })
 
     while True:
-        page = api.request("GET", "/api/admin/tikz-audit?" + urlencode({"afterId": cursor, "limit": args.limit}))
+        page = api.request("GET", "/api/admin/tikz-audit?" + urlencode({
+            "afterId": cursor, "limit": args.limit, "actionable": 1,
+        }))
         for question in page["data"]:
             if args.max_questions and scanned >= args.max_questions:
                 break
@@ -218,10 +220,13 @@ def run_worker(args, api=None, job=None):
                 if question["status"] == "MALFORMED_SOURCE":
                     job_progress(question["id"], synced_before, failed_before)
                     continue
-            for image in question["images"]:
+            for image_index, image in enumerate(question["images"]):
                 if not image["needsAction"]:
                     continue
-                if not job_heartbeat():
+                # The question-level heartbeat already checked cancellation.
+                # Check again only between multiple drawings, saving one HTTPS
+                # round trip for the common one-drawing question.
+                if image_index > 0 and not job_heartbeat():
                     save_report()
                     return "CANCELLED"
                 hash_value = image["hash"]
@@ -315,7 +320,7 @@ if __name__ == "__main__":
     parser.add_argument("--url", required=True, help="URL dịch vụ Render, ví dụ https://quanlythi.onrender.com")
     parser.add_argument("--apply", action="store_true", help="Cho phép lưu SVG và cập nhật database; mặc định chỉ kiểm kê.")
     parser.add_argument("--daemon", action="store_true", help="Chờ nút trên web và tự xử lý lô công việc bằng TeX local.")
-    parser.add_argument("--limit", type=int, default=50, choices=range(1, 101), metavar="1..100")
+    parser.add_argument("--limit", type=int, default=100, choices=range(1, 101), metavar="1..100")
     parser.add_argument("--timeout", type=int, default=90, help="Thời gian tối đa cho mỗi bước biên dịch (giây).")
     parser.add_argument("--max-questions", type=int, default=0, help="Dừng sau N câu để chạy thử.")
     parser.add_argument("--report", default=str(PROJECT_ROOT / "output" / "tikz_worker_errors.json"))

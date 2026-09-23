@@ -36,8 +36,26 @@ router.get('/admin/tikz-audit', async (req, res) => {
         if (!requireAdmin(req, res)) return;
         const afterId = Math.max(0, Number.parseInt(req.query.afterId || '0', 10) || 0);
         const limit = Math.min(100, Math.max(1, Number.parseInt(req.query.limit || '50', 10) || 50));
+        const actionableOnly = req.query.actionable === '1';
+        // Filter at the database instead of sending every ID6 question to the
+        // local worker. A plain ID marker is not evidence of a drawing.
+        const drawingMarkerSql = `(
+            LOCATE('tikzpicture', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('tkz-tab', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('tkz-euclide', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('[TIKZ_HASH:', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('\\\\includegraphics', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('pspicture', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('\\\\begin{asy', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('tikzpicture', COALESCE(content_latex_original, '')) > 0 OR
+            LOCATE('tkz-tab', COALESCE(content_latex_original, '')) > 0 OR
+            LOCATE('tkz-euclide', COALESCE(content_latex_original, '')) > 0
+        )`;
         const [rows] = await pool.query(
-            'SELECT id, legacy_full_id, content_latex, content_latex_original, is_tikz_rendered FROM questions WHERE id > ? ORDER BY id ASC LIMIT ?',
+            `SELECT id, legacy_full_id, content_latex, content_latex_original, is_tikz_rendered
+             FROM questions WHERE id > ? AND ${drawingMarkerSql}
+             ${actionableOnly ? 'AND (is_tikz_rendered IS NULL OR is_tikz_rendered <> 1)' : ''}
+             ORDER BY id ASC LIMIT ?`,
             [afterId, limit + 1],
         );
         const page = rows.slice(0, limit);

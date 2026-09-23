@@ -294,7 +294,7 @@ export const AdminSourceViewer: React.FC = () => {
                 <div className="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
                     <div>
                         <h2 className="text-lg font-black text-slate-800">Kiểm kê TikZ → SVG toàn database</h2>
-                        <p className="text-sm text-slate-500">Đối chiếu mã TikZ, placeholder và SVG thực tế; không sửa database khi quét.</p>
+                        <p className="text-sm text-slate-500">Chỉ đọc các câu thực sự có TikZ, placeholder SVG hoặc lệnh chèn hình; câu chỉ có mã ID6 sẽ được bỏ qua.</p>
                     </div>
                     <button type="button" onClick={scanAllTikz} disabled={auditRunning}
                         className="rounded-xl bg-indigo-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-60">
@@ -334,7 +334,7 @@ export const AdminSourceViewer: React.FC = () => {
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h2 className="text-lg font-black text-slate-800">Quét và biên dịch SVG bằng máy local</h2>
-                        <p className="text-sm text-slate-500">Nút này tạo công việc trên Render. Worker local nhận việc, biên dịch LaTeX và đồng bộ từng hình.</p>
+                        <p className="text-sm text-slate-500">Worker chỉ nhận các câu có hình đang thiếu hoặc chưa dựng SVG; câu không có hình và câu đã hoàn tất được bỏ qua.</p>
                         <p className={`mt-2 text-xs font-bold ${workerOnline ? 'text-emerald-700' : 'text-amber-700'}`}>
                             Worker: {workerOnline ? 'Đang kết nối' : 'Chưa kết nối — công việc sẽ chờ máy local'}
                         </p>
