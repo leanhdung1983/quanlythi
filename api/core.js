@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import crypto from 'crypto';
+import { GoogleGenAI } from "@google/genai";
 import { sanitizeCompiledSvg } from './svgImage.js';
 import { cacheMiddleware, clearCache } from '../redis.js';
 
