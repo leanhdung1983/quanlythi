@@ -92,107 +92,110 @@ function isQuotaOrRateLimitError(err: unknown): boolean {
     return msg.includes('429') || msg.includes('quota') || msg.includes('resource_exhausted') || msg.includes('hạn mức') || msg.includes('vượt quá');
 }
 
+
+
 export const batchSuggestIds = async (
     questions: Array<{ id: number; latex: string; current_id?: string }>,
     onProgress?: (processed: number, total: number) => void,
     onChunkResults?: (chunkResults: BatchSuggestResult[]) => void
 ): Promise<BatchSuggestResult[]> => {
-    // 6 questions per chunk with filtered catalog consumes ~2,500 tokens per request, safely within 32k TPM
-    const CHUNK_SIZE = 6;
+    // Configuration
+    const CHUNK_SIZE = 4; // smaller chunk size reduces token usage
+    const PAUSE_MS = 1200; // pause between API calls to respect rate limits
+    const MAX_RETRIES = 2; // retry on quota errors
+
     const allResults: BatchSuggestResult[] = [];
-    let lastError: Error | null = null;
+    const total = questions.length;
 
-    for (let i = 0; i < questions.length; i += CHUNK_SIZE) {
+    // Helper to pause
+    const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
+
+    // Process each chunk sequentially
+    for (let i = 0; i < total; i += CHUNK_SIZE) {
         const chunk = questions.slice(i, i + CHUNK_SIZE);
+        const chunkIds = chunk.map(q => q.id);
+        const chunkLatex = chunk.map(q => q.latex).join('\n\n');
+        const currentIds = chunk.map(q => q.current_id).filter(Boolean).join(',');
 
-        // Pacing: add pause between chunks to allow token bucket refill
-        if (i > 0) {
-            await sleep(1200);
+        // Local pre‑check: avoid sending empty prompts
+        if (!chunkLatex.trim()) {
+            // mark as skipped
+            chunk.forEach(q => {
+                allResults.push({ id: q.id, suggestedId: q.current_id ?? '', confidence: 1, reason: 'Skipped – empty LaTeX' });
+            });
+            onProgress?.(Math.min(i + CHUNK_SIZE, total), total);
+            await delay(PAUSE_MS);
+            continue;
         }
 
-        let chunkSuccess = false;
         let attempt = 0;
-        const maxAttempts = 2;
-
-        while (attempt < maxAttempts && !chunkSuccess) {
-            attempt++;
+        while (attempt <= MAX_RETRIES) {
             try {
                 const response = await fetch('/api/ai/batch-suggest-ids', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ questions: chunk })
+                    body: JSON.stringify({
+                        id_list: chunkIds,
+                        filtered_catalog: chunkLatex,
+                        current_ids: currentIds
+                    })
                 });
-                const payload = await readApiResponse(response);
-                if (payload.results && Array.isArray(payload.results)) {
-                    allResults.push(...payload.results);
-                    chunkSuccess = true;
-                    lastError = null;
-                    // Stream results immediately to UI and state so they are never lost
-                    onChunkResults?.(payload.results);
-                }
-            } catch (e: any) {
-                lastError = e instanceof Error ? e : new Error(String(e));
-                console.warn(`Batch suggest chunk attempt ${attempt}/${maxAttempts} failed:`, e.message);
+                const payload = await response.json();
 
+                if (!payload.success) {
+                    // API indicated a problem – treat as quota if status 429
+                    if (response.status === 429 || isQuotaOrRateLimitError(new Error(payload.error || ''))) {
+                        throw new Error('Quota');
+                    }
+                    // Other error – surface
+                    throw new Error(payload.error || 'Unknown error from AI endpoint');
+                }
+
+                // Successful response
+                const results: BatchSuggestResult[] = payload.data?.results || [];
+                allResults.push(...results);
+                onChunkResults?.(results);
+                break; // exit retry loop
+            } catch (e) {
                 if (isQuotaOrRateLimitError(e)) {
-                    if (attempt < maxAttempts) {
-                        await sleep(3500);
-                        continue;
-                    }
-                    console.error('Gemini quota or rate limit exceeded. Stopping further requests.', e);
-                    break;
-                }
-
-                if (attempt < maxAttempts) {
-                    await sleep(1500);
-                }
-            }
-        }
-
-        // If batch chunk failed after retries and wasn't a quota exhaustion, try individual fallback
-        if (!chunkSuccess && lastError && !isQuotaOrRateLimitError(lastError)) {
-            console.warn('Batch chunk failed with non-quota error, trying individual fallback...');
-            const fallbackResults: BatchSuggestResult[] = [];
-            for (const q of chunk) {
-                try {
-                    await sleep(400);
-                    const single = await validateAndTagQuestion(q.latex, q.current_id || '');
-                    if (single && single.suggestedId) {
-                        const itemRes = {
-                            id: q.id,
-                            suggestedId: single.suggestedId,
-                            confidence: single.confidence || 0.8,
-                            reason: single.reason || 'Đề xuất bởi AI'
-                        };
-                        fallbackResults.push(itemRes);
-                        allResults.push(itemRes);
-                    }
-                } catch (singleErr: any) {
-                    console.error('Single validation error:', singleErr.message);
-                    if (isQuotaOrRateLimitError(singleErr)) {
-                        lastError = singleErr instanceof Error ? singleErr : new Error(String(singleErr));
+                    if (attempt < MAX_RETRIES) {
+                        // exponential back‑off
+                        const backoff = PAUSE_MS * Math.pow(2, attempt);
+                        await delay(backoff);
+                        attempt++;
+                    } else {
+                        // give up – mark remaining questions as failed
+                        chunk.forEach(q => {
+                            allResults.push({
+                                id: q.id,
+                                suggestedId: '',
+                                confidence: 0,
+                                reason: 'Quota exceeded – unable to obtain suggestion'
+                            });
+                        });
                         break;
                     }
+                } else {
+                    // Non‑quota error – report and stop retrying this chunk
+                    console.error('Batch suggest error', e);
+                    chunk.forEach(q => {
+                        allResults.push({
+                            id: q.id,
+                            suggestedId: '',
+                            confidence: 0,
+                            reason: 'Error: ' + (e as any).message
+                        });
+                    });
+                    break;
                 }
             }
-            if (fallbackResults.length > 0) {
-                onChunkResults?.(fallbackResults);
-            }
         }
 
-        onProgress?.(Math.min(i + CHUNK_SIZE, questions.length), questions.length);
-
-        // If a fatal quota error occurred, break the outer loop so we don't spam further chunks
-        if (lastError && isQuotaOrRateLimitError(lastError)) {
-            break;
-        }
-    }
-
-    // If 0 results were produced and an error occurred, throw it so UI receives the exact failure cause
-    if (allResults.length === 0 && lastError) {
-        throw lastError;
+        // Report progress after each chunk
+        onProgress?.(Math.min(i + CHUNK_SIZE, total), total);
+        // Small pause to avoid hitting rate limits
+        await delay(PAUSE_MS);
     }
 
     return allResults;
 };
-
