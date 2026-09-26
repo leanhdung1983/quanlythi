@@ -1,5 +1,6 @@
 import express from 'express';
-import rateLimit from 'express-rate-limit';
+import rateLimitPkg from 'express-rate-limit';
+const rateLimit = rateLimitPkg.default || rateLimitPkg;
 import { sessionMiddleware } from './core.js';
 
 import authRouter from './routes/auth.routes.js';

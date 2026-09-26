@@ -347,11 +347,13 @@ YÊU CẦU:
 
         if (!Array.isArray(parsedResults)) parsedResults = [];
 
-        const aiResults = parsedResults.map(item => {
+        // Map AI results back to original question IDs using order of needAiQuestions
+        const aiResults = needAiQuestions.map((q, idx) => {
+            const item = parsedResults[idx] || {};
             const normId = normalizeId6(item.suggestedId || '');
             const isValid = validIds.has(normId);
             return {
-                id: item.id,
+                id: q.id,
                 suggestedId: isValid ? normId : '',
                 confidence: Math.max(0, Math.min(1, Number(item.confidence) || 0)),
                 reason: item.reason || (isValid ? 'Đề xuất bởi AI' : 'Không khớp danh mục ID6')
