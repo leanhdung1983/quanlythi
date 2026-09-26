@@ -97,12 +97,13 @@ function isQuotaOrRateLimitError(err: unknown): boolean {
 export const batchSuggestIds = async (
     questions: Array<{ id: number; latex: string; current_id?: string }>,
     onProgress?: (processed: number, total: number) => void,
-    onChunkResults?: (chunkResults: BatchSuggestResult[]) => void
+    onChunkResults?: (chunkResults: BatchSuggestResult[]) => void,
+    isCancelled?: () => boolean
 ): Promise<BatchSuggestResult[]> => {
     // Configuration
-    const CHUNK_SIZE = 4; // smaller chunk size reduces token usage
-    const PAUSE_MS = 1200; // pause between API calls to respect rate limits
-    const MAX_RETRIES = 2; // retry on quota errors
+    const CHUNK_SIZE = 5; // 5 questions per chunk (balanced token usage and throughput)
+    const PAUSE_MS = 1000; // pause between API calls to respect rate limits
+    const MAX_RETRIES = 2; // retry on quota/rate limit errors
 
     const allResults: BatchSuggestResult[] = [];
     const total = questions.length;
@@ -110,82 +111,87 @@ export const batchSuggestIds = async (
     // Helper to pause
     const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
+    let fatalQuotaError: Error | null = null;
+
     // Process each chunk sequentially
     for (let i = 0; i < total; i += CHUNK_SIZE) {
-        const chunk = questions.slice(i, i + CHUNK_SIZE);
-        const chunkIds = chunk.map(q => q.id);
-        const chunkLatex = chunk.map(q => q.latex).join('\n\n');
-        const currentIds = chunk.map(q => q.current_id).filter(Boolean).join(',');
+        if (isCancelled?.()) {
+            break;
+        }
 
-        // Local pre‑check: avoid sending empty prompts
-        if (!chunkLatex.trim()) {
-            // mark as skipped
-            chunk.forEach(q => {
-                allResults.push({ id: q.id, suggestedId: q.current_id ?? '', confidence: 1, reason: 'Skipped – empty LaTeX' });
-            });
+        const chunk = questions.slice(i, i + CHUNK_SIZE);
+        const validLatexQuestions = chunk.filter(q => typeof q.latex === 'string' && q.latex.trim().length > 0);
+
+        // Local check: skip questions with empty LaTeX
+        if (validLatexQuestions.length === 0) {
+            const skippedResults = chunk.map(q => ({
+                id: q.id,
+                suggestedId: q.current_id ?? '',
+                confidence: 1,
+                reason: 'Bỏ qua – nội dung LaTeX rỗng'
+            }));
+            allResults.push(...skippedResults);
+            onChunkResults?.(skippedResults);
             onProgress?.(Math.min(i + CHUNK_SIZE, total), total);
             await delay(PAUSE_MS);
             continue;
         }
 
         let attempt = 0;
-        while (attempt <= MAX_RETRIES) {
+        let chunkSuccess = false;
+
+        while (attempt <= MAX_RETRIES && !chunkSuccess) {
+            if (isCancelled?.()) break;
+
             try {
                 const response = await fetch('/api/ai/batch-suggest-ids', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
                     body: JSON.stringify({
-                        id_list: chunkIds,
-                        filtered_catalog: chunkLatex,
-                        current_ids: currentIds
+                        questions: chunk.map(q => ({
+                            id: q.id,
+                            latex: q.latex,
+                            current_id: q.current_id
+                        }))
                     })
                 });
-                const payload = await response.json();
 
-                if (!payload.success) {
-                    // API indicated a problem – treat as quota if status 429
-                    if (response.status === 429 || isQuotaOrRateLimitError(new Error(payload.error || ''))) {
-                        throw new Error('Quota');
+                const payload = await response.json().catch(() => ({}));
+
+                if (!response.ok || !payload.success) {
+                    const errMsg = payload.error || payload.message || `Lỗi AI (${response.status})`;
+                    if (response.status === 401) {
+                        handleSessionExpired(errMsg);
                     }
-                    // Other error – surface
-                    throw new Error(payload.error || 'Unknown error from AI endpoint');
+                    const isQuota = response.status === 429 || payload.isQuota || isQuotaOrRateLimitError(errMsg);
+                    if (isQuota) {
+                        throw new Error(errMsg.includes('Quota') || errMsg.includes('hạn mức') ? errMsg : 'Quota Exceeded');
+                    }
+                    throw new Error(errMsg);
                 }
 
-                // Successful response
-                const results: BatchSuggestResult[] = payload.data?.results || [];
+                // Successful response: extract results
+                const results: BatchSuggestResult[] = payload.results || payload.data?.results || [];
                 allResults.push(...results);
                 onChunkResults?.(results);
-                break; // exit retry loop
-            } catch (e) {
-                if (isQuotaOrRateLimitError(e)) {
-                    if (attempt < MAX_RETRIES) {
-                        // exponential back‑off
-                        const backoff = PAUSE_MS * Math.pow(2, attempt);
+                chunkSuccess = true;
+            } catch (e: any) {
+                const isQuota = isQuotaOrRateLimitError(e);
+                if (isQuota) {
+                    if (attempt < MAX_RETRIES && !isCancelled?.()) {
+                        // Exponential back-off before retrying
+                        const backoff = PAUSE_MS * Math.pow(2, attempt + 1);
                         await delay(backoff);
                         attempt++;
                     } else {
-                        // give up – mark remaining questions as failed
-                        chunk.forEach(q => {
-                            allResults.push({
-                                id: q.id,
-                                suggestedId: '',
-                                confidence: 0,
-                                reason: 'Quota exceeded – unable to obtain suggestion'
-                            });
-                        });
+                        // Mark fatal quota error to stop further chunks
+                        fatalQuotaError = e instanceof Error ? e : new Error(String(e?.message || e));
+                        console.warn('Gemini API quota/rate limit reached. Stopping further chunks to preserve existing results.');
                         break;
                     }
                 } else {
-                    // Non‑quota error – report and stop retrying this chunk
-                    console.error('Batch suggest error', e);
-                    chunk.forEach(q => {
-                        allResults.push({
-                            id: q.id,
-                            suggestedId: '',
-                            confidence: 0,
-                            reason: 'Error: ' + (e as any).message
-                        });
-                    });
+                    // Non-quota error (network or parsing): report and stop retrying this chunk
+                    console.error('Batch suggest chunk error:', e);
                     break;
                 }
             }
@@ -193,8 +199,21 @@ export const batchSuggestIds = async (
 
         // Report progress after each chunk
         onProgress?.(Math.min(i + CHUNK_SIZE, total), total);
-        // Small pause to avoid hitting rate limits
-        await delay(PAUSE_MS);
+
+        // If quota is exhausted, stop processing subsequent chunks immediately
+        if (fatalQuotaError) {
+            break;
+        }
+
+        // Small pause to avoid hitting rate limits between chunks
+        if (i + CHUNK_SIZE < total && !isCancelled?.()) {
+            await delay(PAUSE_MS);
+        }
+    }
+
+    // If 0 questions were processed and a quota error occurred, throw it
+    if (allResults.length === 0 && fatalQuotaError) {
+        throw fatalQuotaError;
     }
 
     return allResults;

@@ -245,6 +245,7 @@ router.post('/ai/validate-question', async (req, res) => {
 });
 
 router.post('/ai/batch-suggest-ids', async (req, res) => {
+    let localResults = [];
     try {
         if (!requireTeacherOrAdmin(req, res)) return;
         const { questions } = req.body;
@@ -259,7 +260,7 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
         const { validIds } = catalogData;
 
         // 1. FAST LOCAL PRE-CHECK (Zero Tokens!)
-        const localResults = [];
+        localResults = [];
         const needAiQuestions = [];
 
         for (const q of batch) {
@@ -347,9 +348,9 @@ YÊU CẦU:
 
         if (!Array.isArray(parsedResults)) parsedResults = [];
 
-        // Map AI results back to original question IDs using order of needAiQuestions
+        // Map AI results back to original question IDs using id match first, fallback to index
         const aiResults = needAiQuestions.map((q, idx) => {
-            const item = parsedResults[idx] || {};
+            const item = parsedResults.find(p => p && (p.id == q.id || String(p.id || '').includes(String(q.id)))) || parsedResults[idx] || {};
             const normId = normalizeId6(item.suggestedId || '');
             const isValid = validIds.has(normId);
             return {
@@ -366,7 +367,9 @@ YÊU CẦU:
         if (localResults && localResults.length > 0) {
             return res.json({ success: true, results: localResults, warning: parseGeminiError(e) });
         }
-        res.status(500).json({ error: parseGeminiError(e) });
+        const errMsg = parseGeminiError(e);
+        const isQuota = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('quota') || String(e?.message || '').includes('RESOURCE_EXHAUSTED');
+        res.status(isQuota ? 429 : 500).json({ error: errMsg, isQuota });
     }
 });
 
