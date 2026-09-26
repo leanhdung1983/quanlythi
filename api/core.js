@@ -229,7 +229,9 @@ export async function getGeminiApiKeys(userId) {
     const keys = [];
     for (const raw of rawKeys) {
         if (typeof raw === 'string') {
-            const parts = raw.split(/[\n,;]+/).map(k => k.trim()).filter(k => k.length > 10);
+            const parts = raw.split(/[\r\n,;\s]+/)
+                .map(k => k.trim().replace(/^["']|["']$/g, ''))
+                .filter(k => k.length >= 20);
             for (const p of parts) {
                 if (!keys.includes(p)) keys.push(p);
             }
@@ -245,7 +247,7 @@ export async function getGeminiApiKey(userId) {
 
 export function parseGeminiError(e) {
     const msg = String(e?.message || e || '');
-    if (e?.status === 429 || msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
+    if (e?.status === 429 || msg.includes("429") || msg.toLowerCase().includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
         return "Lỗi: Đã vượt quá giới hạn lượt dùng hoặc hạn mức API (Quota Exceeded). Thầy/cô có thể thêm nhiều API Key miễn phí (cách nhau bởi dấu phẩy) trong Cài đặt tài khoản để hệ thống tự động xoay vòng.";
     }
     if (msg.includes("API key not valid") || msg.includes("API_KEY_INVALID")) {
@@ -266,9 +268,12 @@ export function parseGeminiError(e) {
 }
 
 export async function generateWithFallback(aiOrKeys, prompt, config, additionalParts = []) {
+    // Current primary models in 2026:
+    // 1. gemini-2.5-flash: State-of-the-art for mathematics, LaTeX, and classification (best quality)
+    // 2. gemini-2.0-flash: Fast, resilient fallback
     const candidateModels = [
-        'gemini-2.0-flash',
-        'gemini-1.5-flash'
+        'gemini-2.5-flash',
+        'gemini-2.0-flash'
     ];
     const contents = additionalParts.length ? { parts: [...additionalParts, { text: prompt }] } : prompt;
 
@@ -276,7 +281,7 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
     if (Array.isArray(aiOrKeys)) {
         aiInstances = aiOrKeys.map(k => (typeof k === 'string' ? new GoogleGenAI({ apiKey: k }) : k));
     } else if (aiOrKeys?._keys && Array.isArray(aiOrKeys._keys)) {
-        aiInstances = aiOrKeys._keys.map(k => new GoogleGenAI({ apiKey: k }));
+        aiInstances = aiOrKeys._keys.map(k => (typeof k === 'string' ? new GoogleGenAI({ apiKey: k }) : k));
     } else if (typeof aiOrKeys === 'string') {
         aiInstances = [new GoogleGenAI({ apiKey: aiOrKeys })];
     } else if (aiOrKeys) {
@@ -302,18 +307,21 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
             } catch (e) {
                 lastError = e;
                 const errMsg = String(e?.message || e || '');
-                const is429 = e?.status === 429 || errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED');
+                const is429 = e?.status === 429 || errMsg.includes('429') || errMsg.toLowerCase().includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED');
+                const isInvalidKey = errMsg.includes('API key not valid') || errMsg.includes('API_KEY_INVALID') || errMsg.includes('CONSUMER_SUSPENDED');
+
                 if (is429) {
                     quotaError = e;
                 }
-                console.warn(`[AI] Model ${model} (Key ${kIdx + 1}/${aiInstances.length}) failed: ${errMsg.slice(0, 120)}`);
 
-                // If quota exhausted, rotate immediately to next key if available
-                if (is429) {
+                console.warn(`[AI] Model ${model} (Key ${kIdx + 1}/${aiInstances.length}) failed: ${errMsg.slice(0, 140)}`);
+
+                // If quota exhausted or key invalid, immediately rotate to next API key
+                if (is429 || isInvalidKey) {
                     if (kIdx < aiInstances.length - 1) {
-                        console.warn(`[AI] Quota hit on Key ${kIdx + 1}. Rotating to next API key...`);
+                        console.warn(`[AI] Key ${kIdx + 1} hit ${is429 ? 'quota limit' : 'invalid status'}. Rotating to next API key (${kIdx + 2}/${aiInstances.length})...`);
                     }
-                    break;
+                    break; // Skip trying remaining models on this dead/exhausted key
                 }
             }
         }
@@ -438,7 +446,7 @@ export async function seedDatabase() {
                 avatar_url TEXT,
                 bio TEXT,
                 expiry_date DATETIME,
-                api_key VARCHAR(255),
+                api_key TEXT,
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
@@ -568,6 +576,7 @@ export async function seedDatabase() {
             await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS id_review_status VARCHAR(20) DEFAULT 'PENDING'");
             await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
             try { await pool.query("CREATE INDEX idx_questions_id_status ON questions(id_status)"); } catch {}
+            try { await pool.query("ALTER TABLE users MODIFY COLUMN api_key TEXT"); } catch {}
         } catch (e) {
             console.log("Migration notice (questions refactor):", e.message);
         }

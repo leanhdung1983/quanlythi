@@ -26,6 +26,7 @@ router.post('/ai/convert-document', async (req, res) => {
         const apiKeys = await getGeminiApiKeys(req.user.id);
         if (!apiKeys || apiKeys.length === 0) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
         const ai = new GoogleGenAI({ apiKey: apiKeys[0] });
+        ai._keys = apiKeys;
         if (mime_type === 'application/pdf') {
             const bytes = Buffer.from(base64_data, 'base64');
             const emit = event => res.write(`${JSON.stringify(event)}\n`);
@@ -262,7 +263,7 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
         const { validIds } = catalogData;
 
         // 1. FAST LOCAL PRE-CHECK (Zero Tokens!)
-        localResults = [];
+        const localResults = [];
         const needAiQuestions = [];
 
         for (const q of batch) {

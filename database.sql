@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS users (
     bio TEXT,
     grade_id INT,
     expiry_date DATETIME,
-    api_key VARCHAR(255),
+    api_key TEXT,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
