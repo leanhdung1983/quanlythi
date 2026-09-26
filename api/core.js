@@ -267,11 +267,10 @@ export function parseGeminiError(e) {
 
 export async function generateWithFallback(aiOrKeys, prompt, config, additionalParts = []) {
     const candidateModels = [
-        'gemini-2.5-flash',
         'gemini-2.0-flash',
         'gemini-1.5-flash',
-        'gemini-2.5-flash-lite',
-        'gemini-2.0-flash-lite'
+        'gemini-2.0-flash-lite',
+        'gemini-1.5-pro'
     ];
     const contents = additionalParts.length ? { parts: [...additionalParts, { text: prompt }] } : prompt;
 

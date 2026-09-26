@@ -254,7 +254,9 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
         }
         const batch = questions.slice(0, 10);
         const apiKeys = await getGeminiApiKeys(req.user.id);
-        if (!apiKeys || apiKeys.length === 0) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
+        if (!apiKeys || apiKeys.length === 0) {
+            return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key. Thầy/cô vui lòng vào mục Cài đặt tài khoản để nhập API Key từ Google AI Studio.' });
+        }
 
         const catalogData = await getCachedId6Catalog();
         const { validIds } = catalogData;
@@ -348,16 +350,20 @@ YÊU CẦU:
 
         if (!Array.isArray(parsedResults)) parsedResults = [];
 
-        // Map AI results back to original question IDs using id match first, fallback to index
+        // Map AI results back to original question IDs
         const aiResults = needAiQuestions.map((q, idx) => {
-            const item = parsedResults.find(p => p && (p.id == q.id || String(p.id || '').includes(String(q.id)))) || parsedResults[idx] || {};
-            const normId = normalizeId6(item.suggestedId || '');
-            const isValid = validIds.has(normId);
+            const item = parsedResults.find(p => p && p.id != null && (p.id == q.id || String(p.id).trim() === String(q.id).trim())) || parsedResults[idx] || {};
+            let rawSuggested = String(item.suggestedId || '').trim();
+            if (rawSuggested.includes('*')) {
+                rawSuggested = rawSuggested.replace(/\*/g, 'H');
+            }
+            const normId = normalizeId6(rawSuggested);
+            const isValid = Boolean(normId && (validIds.size === 0 || validIds.has(normId)));
             return {
                 id: q.id,
                 suggestedId: isValid ? normId : '',
                 confidence: Math.max(0, Math.min(1, Number(item.confidence) || 0)),
-                reason: item.reason || (isValid ? 'Đề xuất bởi AI' : 'Không khớp danh mục ID6')
+                reason: item.reason || (isValid ? 'Đề xuất bởi AI' : (normId ? `Mã ${normId} chưa có trong danh mục ID6` : 'AI không đề xuất được mã phù hợp'))
             };
         });
 

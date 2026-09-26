@@ -462,7 +462,7 @@ export const IdAssigner: React.FC = () => {
                 current_id: item.assignedId
             }));
 
-            await batchSuggestIds(
+            const batchResults = await batchSuggestIds(
                 questionsPayload, 
                 (processed, total) => {
                     setAiBatchProgress({
@@ -486,7 +486,9 @@ export const IdAssigner: React.FC = () => {
             }
 
             if (finalCount === 0) {
-                alert(`⚠️ AI chưa thể đề xuất mã ID phù hợp cho ${itemsToProcess.length} câu hỏi này.\n\nNguyên nhân có thể do hạn mức API Gemini tạm thời vượt giới hạn (Quota Exceeded) hoặc nội dung câu hỏi chưa khớp dạng toán ID6. Thầy/cô có thể thử lại sau ít phút hoặc kiểm tra API Key trong Cài đặt.`);
+                const sampleReason = batchResults.find(r => r && r.reason)?.reason;
+                const reasonDetail = sampleReason ? `\nChi tiết: "${sampleReason}"\n` : '';
+                alert(`⚠️ AI chưa thể đề xuất mã ID phù hợp cho ${itemsToProcess.length} câu hỏi này.${reasonDetail}\nNguyên nhân có thể do hạn mức API Gemini tạm thời vượt giới hạn (Quota Exceeded), chưa cấu hình API Key, hoặc nội dung câu hỏi chưa khớp dạng toán ID6.\nThầy/cô vui lòng kiểm tra API Key trong "Cài đặt tài khoản" hoặc thử lại sau.`);
             } else if (finalCount < itemsToProcess.length) {
                 alert(`✨ AI đã đề xuất thành công ${finalCount}/${itemsToProcess.length} câu hỏi.\n(Các câu còn lại tạm dừng do hạn mức API Gemini hoặc cần xem xét thủ công).\n\nToàn bộ ${finalCount} câu đã được lưu giữ trên danh sách bên trái. Thầy/cô vui lòng kiểm tra lại rồi nhấn "Xác nhận lưu CSDL".`);
             } else {

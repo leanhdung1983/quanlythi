@@ -112,6 +112,7 @@ export const batchSuggestIds = async (
     const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
     let fatalQuotaError: Error | null = null;
+    let lastError: Error | null = null;
 
     // Process each chunk sequentially
     for (let i = 0; i < total; i += CHUNK_SIZE) {
@@ -176,6 +177,7 @@ export const batchSuggestIds = async (
                 onChunkResults?.(results);
                 chunkSuccess = true;
             } catch (e: any) {
+                lastError = e instanceof Error ? e : new Error(String(e?.message || e));
                 const isQuota = isQuotaOrRateLimitError(e);
                 if (isQuota) {
                     if (attempt < MAX_RETRIES && !isCancelled?.()) {
@@ -185,13 +187,17 @@ export const batchSuggestIds = async (
                         attempt++;
                     } else {
                         // Mark fatal quota error to stop further chunks
-                        fatalQuotaError = e instanceof Error ? e : new Error(String(e?.message || e));
+                        fatalQuotaError = lastError;
                         console.warn('Gemini API quota/rate limit reached. Stopping further chunks to preserve existing results.');
                         break;
                     }
                 } else {
-                    // Non-quota error (network or parsing): report and stop retrying this chunk
+                    // Non-quota error (auth, key missing, network, or server):
                     console.error('Batch suggest chunk error:', e);
+                    // If no results have been obtained yet, immediately abort and throw so the user sees the real reason!
+                    if (allResults.length === 0) {
+                        throw lastError;
+                    }
                     break;
                 }
             }
@@ -211,9 +217,9 @@ export const batchSuggestIds = async (
         }
     }
 
-    // If 0 questions were processed and a quota error occurred, throw it
-    if (allResults.length === 0 && fatalQuotaError) {
-        throw fatalQuotaError;
+    // If 0 questions were processed and ANY error occurred, throw it
+    if (allResults.length === 0 && (fatalQuotaError || lastError)) {
+        throw (fatalQuotaError || lastError);
     }
 
     return allResults;
