@@ -268,9 +268,7 @@ export function parseGeminiError(e) {
 export async function generateWithFallback(aiOrKeys, prompt, config, additionalParts = []) {
     const candidateModels = [
         'gemini-2.0-flash',
-        'gemini-1.5-flash',
-        'gemini-2.0-flash-lite',
-        'gemini-1.5-pro'
+        'gemini-1.5-flash'
     ];
     const contents = additionalParts.length ? { parts: [...additionalParts, { text: prompt }] } : prompt;
 
@@ -290,6 +288,7 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
     }
 
     let lastError = null;
+    let quotaError = null;
     for (let kIdx = 0; kIdx < aiInstances.length; kIdx++) {
         const client = aiInstances[kIdx];
         for (const model of candidateModels) {
@@ -304,17 +303,22 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
                 lastError = e;
                 const errMsg = String(e?.message || e || '');
                 const is429 = e?.status === 429 || errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED');
+                if (is429) {
+                    quotaError = e;
+                }
                 console.warn(`[AI] Model ${model} (Key ${kIdx + 1}/${aiInstances.length}) failed: ${errMsg.slice(0, 120)}`);
 
-                // If quota exhausted and more keys exist, immediately rotate to next key
-                if (is429 && kIdx < aiInstances.length - 1) {
-                    console.warn(`[AI] Quota hit on Key ${kIdx + 1}. Rotating to next API key...`);
+                // If quota exhausted, rotate immediately to next key if available
+                if (is429) {
+                    if (kIdx < aiInstances.length - 1) {
+                        console.warn(`[AI] Quota hit on Key ${kIdx + 1}. Rotating to next API key...`);
+                    }
                     break;
                 }
             }
         }
     }
-    throw lastError || new Error('Tất cả các mô hình Gemini và API Key dự phòng đều không thể phản hồi.');
+    throw quotaError || lastError || new Error('Tất cả các mô hình Gemini và API Key dự phòng đều không thể phản hồi.');
 }
 
 // --- LATEX, SVG, CRYPTO & HIERARCHY HELPERS ---

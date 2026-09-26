@@ -101,8 +101,8 @@ export const batchSuggestIds = async (
     isCancelled?: () => boolean
 ): Promise<BatchSuggestResult[]> => {
     // Configuration
-    const CHUNK_SIZE = 5; // 5 questions per chunk (balanced token usage and throughput)
-    const PAUSE_MS = 1000; // pause between API calls to respect rate limits
+    const CHUNK_SIZE = 8; // 8 questions per chunk (reduces total API calls by ~40%)
+    const PAUSE_MS = 2000; // 2s pause between API calls to stay within free tier 15 RPM limit
     const MAX_RETRIES = 2; // retry on quota/rate limit errors
 
     const allResults: BatchSuggestResult[] = [];
