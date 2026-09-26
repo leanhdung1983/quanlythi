@@ -361,6 +361,9 @@ YÊU CẦU:
         const combinedResults = [...localResults, ...aiResults];
         res.json({ success: true, results: combinedResults });
     } catch (e) {
+        if (localResults && localResults.length > 0) {
+            return res.json({ success: true, results: localResults, warning: parseGeminiError(e) });
+        }
         res.status(500).json({ error: parseGeminiError(e) });
     }
 });

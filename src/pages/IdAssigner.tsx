@@ -409,32 +409,20 @@ export const IdAssigner: React.FC = () => {
         cancelAiBatchRef.current = false;
         setAiBatchProgress({ current: 0, total: itemsToProcess.length, message: `Bắt đầu phân tích ${itemsToProcess.length} câu hỏi...` });
 
-        try {
-            const questionsPayload = itemsToProcess.map(item => ({
-                id: item.id,
-                latex: item.content,
-                current_id: item.assignedId
-            }));
+        let updatedCount = 0;
+        const appliedIdSet = new Set<number>();
 
-            const results = await batchSuggestIds(questionsPayload, (processed, total) => {
-                setAiBatchProgress({
-                    current: processed,
-                    total: total,
-                    message: `Đang phân tích & đề xuất: ${processed}/${total} câu...`
-                });
-            });
-
-            if (cancelAiBatchRef.current) {
-                alert("Đã tạm dừng quá trình AI đề xuất theo yêu cầu.");
-                return;
-            }
-
+        const applyChunkResults = (chunkResults: Array<{ id: number; suggestedId: string; confidence: number; reason: string }>) => {
             const resultMap = new Map<number, { suggestedId: string; confidence: number; reason: string }>();
-            results.forEach(r => {
-                if (r.suggestedId) resultMap.set(r.id, r);
+            chunkResults.forEach(r => {
+                if (r.suggestedId && !appliedIdSet.has(r.id)) {
+                    resultMap.set(r.id, r);
+                    appliedIdSet.add(r.id);
+                }
             });
 
-            let updatedCount = 0;
+            if (resultMap.size === 0) return;
+
             setFiles(prev => prev.map(f => {
                 if (f.uniqueId !== fileId) return f;
                 const updatedItems = f.workItems.map(item => {
@@ -467,17 +455,49 @@ export const IdAssigner: React.FC = () => {
                     });
                 }
             }
+        };
+
+        try {
+            const questionsPayload = itemsToProcess.map(item => ({
+                id: item.id,
+                latex: item.content,
+                current_id: item.assignedId
+            }));
+
+            await batchSuggestIds(
+                questionsPayload, 
+                (processed, total) => {
+                    setAiBatchProgress({
+                        current: processed,
+                        total: total,
+                        message: `Đang phân tích & đề xuất: ${processed}/${total} câu... (Đã đề xuất được: ${updatedCount} câu)`
+                    });
+                },
+                (chunkResults) => {
+                    // Update state immediately as each chunk finishes - never lose progress
+                    applyChunkResults(chunkResults);
+                }
+            );
+
+            if (cancelAiBatchRef.current) {
+                alert(`Đã tạm dừng quá trình AI đề xuất. Đã giữ lại ${updatedCount} câu đã được đề xuất trước đó.`);
+                return;
+            }
 
             if (updatedCount === 0) {
                 alert(`⚠️ AI chưa thể đề xuất mã ID phù hợp cho ${itemsToProcess.length} câu hỏi này.\n\nNguyên nhân có thể do hạn mức API Gemini tạm thời vượt giới hạn (Quota Exceeded) hoặc nội dung câu hỏi chưa khớp dạng toán ID6. Thầy/cô có thể thử lại sau ít phút hoặc kiểm tra API Key.`);
             } else if (updatedCount < itemsToProcess.length) {
-                alert(`✨ AI đã đề xuất thành công ${updatedCount}/${itemsToProcess.length} câu hỏi.\n(Các câu còn lại chưa hoàn tất do giới hạn lượt gọi API hoặc cần xem xét thủ công).\n\nThầy/cô vui lòng kiểm tra lại danh sách bên trái rồi nhấn "Xác nhận lưu CSDL".`);
+                alert(`✨ AI đã đề xuất thành công ${updatedCount}/${itemsToProcess.length} câu hỏi.\n(Các câu còn lại chưa hoàn tất do giới hạn lượt gọi API hoặc cần xem xét thủ công).\n\nToàn bộ ${updatedCount} câu đã được giữ lại trên danh sách bên trái. Thầy/cô vui lòng kiểm tra lại rồi nhấn "Xác nhận lưu CSDL".`);
             } else {
                 alert(`✨ Hoàn tất! AI đã đề xuất mã ID chuẩn cho toàn bộ ${updatedCount}/${itemsToProcess.length} câu hỏi.\n\nThầy/cô vui lòng kiểm tra lại danh sách bên trái rồi nhấn "Xác nhận lưu CSDL".`);
             }
         } catch (e: any) {
             console.error("AI Batch suggest error:", e);
-            alert("Lỗi đề xuất AI: " + (e.message || "Vui lòng thử lại"));
+            if (updatedCount > 0) {
+                alert(`⚠️ Quá trình AI đề xuất tạm dừng do: ${e.message || "Lỗi không xác định"}\n\nTuy nhiên, ${updatedCount} câu hỏi đã được AI đề xuất trước đó VẪN ĐƯỢC GIỮ NGUYÊN trên danh sách bên trái. Thầy/cô có thể kiểm tra lại và nhấn "Xác nhận lưu CSDL"!`);
+            } else {
+                alert("Lỗi đề xuất AI: " + (e.message || "Vui lòng thử lại"));
+            }
         } finally {
             setIsAiBatchRunning(false);
             setAiBatchProgress({ current: 0, total: 0, message: '' });

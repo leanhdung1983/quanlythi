@@ -94,7 +94,8 @@ function isQuotaOrRateLimitError(err: unknown): boolean {
 
 export const batchSuggestIds = async (
     questions: Array<{ id: number; latex: string; current_id?: string }>,
-    onProgress?: (processed: number, total: number) => void
+    onProgress?: (processed: number, total: number) => void,
+    onChunkResults?: (chunkResults: BatchSuggestResult[]) => void
 ): Promise<BatchSuggestResult[]> => {
     // 6 questions per chunk with filtered catalog consumes ~2,500 tokens per request, safely within 32k TPM
     const CHUNK_SIZE = 6;
@@ -126,6 +127,8 @@ export const batchSuggestIds = async (
                     allResults.push(...payload.results);
                     chunkSuccess = true;
                     lastError = null;
+                    // Stream results immediately to UI and state so they are never lost
+                    onChunkResults?.(payload.results);
                 }
             } catch (e: any) {
                 lastError = e instanceof Error ? e : new Error(String(e));
@@ -133,7 +136,6 @@ export const batchSuggestIds = async (
 
                 if (isQuotaOrRateLimitError(e)) {
                     if (attempt < maxAttempts) {
-                        // Backoff delay before retrying
                         await sleep(3500);
                         continue;
                     }
@@ -150,17 +152,20 @@ export const batchSuggestIds = async (
         // If batch chunk failed after retries and wasn't a quota exhaustion, try individual fallback
         if (!chunkSuccess && lastError && !isQuotaOrRateLimitError(lastError)) {
             console.warn('Batch chunk failed with non-quota error, trying individual fallback...');
+            const fallbackResults: BatchSuggestResult[] = [];
             for (const q of chunk) {
                 try {
-                    await sleep(500);
+                    await sleep(400);
                     const single = await validateAndTagQuestion(q.latex, q.current_id || '');
                     if (single && single.suggestedId) {
-                        allResults.push({
+                        const itemRes = {
                             id: q.id,
                             suggestedId: single.suggestedId,
                             confidence: single.confidence || 0.8,
                             reason: single.reason || 'Đề xuất bởi AI'
-                        });
+                        };
+                        fallbackResults.push(itemRes);
+                        allResults.push(itemRes);
                     }
                 } catch (singleErr: any) {
                     console.error('Single validation error:', singleErr.message);
@@ -169,6 +174,9 @@ export const batchSuggestIds = async (
                         break;
                     }
                 }
+            }
+            if (fallbackResults.length > 0) {
+                onChunkResults?.(fallbackResults);
             }
         }
 
