@@ -180,15 +180,17 @@ export const UserProfile: React.FC = () => {
 
                 {/* API Key Settings */}
                 <div className="bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
-                    <h3 className="font-bold text-lg mb-4 flex items-center gap-2"><Key size={20} className="text-amber-500"/> Gemini API Key</h3>
-                    <p className="text-xs text-slate-500 mb-4">Nhập API Key riêng của bạn để sử dụng các tính năng AI không giới hạn (ID Assigner, Converter, etc).</p>
+                    <h3 className="font-bold text-lg mb-2 flex items-center gap-2"><Key size={20} className="text-amber-500"/> Gemini API Key</h3>
+                    <p className="text-xs text-slate-500 mb-3 leading-relaxed">
+                        Nhập API Key Google AI Studio. <strong>Mẹo chống hết hạn mức (Quota 429):</strong> Thầy/cô có thể nhập nhiều API Key (cách nhau bởi dấu phẩy hoặc xuống dòng) để hệ thống tự động xoay vòng khi hết hạn mức.
+                    </p>
                     <div className="space-y-3">
-                        <input 
-                            type="password" 
+                        <textarea 
+                            rows={2}
                             value={apiKey} 
                             onChange={e => setApiKey(e.target.value)} 
-                            className="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-mono text-sm"
-                            placeholder="AIza..."
+                            className="w-full p-3 border border-slate-300 rounded-xl outline-none focus:ring-2 focus:ring-amber-500 font-mono text-xs"
+                            placeholder="AIzaSy... (nhập 1 hoặc nhiều key cách nhau bằng dấu phẩy)"
                         />
                         <button onClick={handleSaveKey} disabled={isSaving} className="w-full bg-slate-800 text-white py-2 rounded-xl font-bold hover:bg-slate-700 transition-colors flex justify-center items-center gap-2">
                             <Save size={16}/> {isSaving ? 'Đang lưu...' : 'Lưu Key'}

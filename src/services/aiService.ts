@@ -96,16 +96,17 @@ export const batchSuggestIds = async (
     questions: Array<{ id: number; latex: string; current_id?: string }>,
     onProgress?: (processed: number, total: number) => void
 ): Promise<BatchSuggestResult[]> => {
-    const CHUNK_SIZE = 10;
+    // 6 questions per chunk with filtered catalog consumes ~2,500 tokens per request, safely within 32k TPM
+    const CHUNK_SIZE = 6;
     const allResults: BatchSuggestResult[] = [];
     let lastError: Error | null = null;
 
     for (let i = 0; i < questions.length; i += CHUNK_SIZE) {
         const chunk = questions.slice(i, i + CHUNK_SIZE);
 
-        // Pacing: add small pause between chunks if not the first chunk
+        // Pacing: add pause between chunks to allow token bucket refill
         if (i > 0) {
-            await sleep(600);
+            await sleep(1200);
         }
 
         let chunkSuccess = false;
@@ -133,17 +134,15 @@ export const batchSuggestIds = async (
                 if (isQuotaOrRateLimitError(e)) {
                     if (attempt < maxAttempts) {
                         // Backoff delay before retrying
-                        await sleep(2500);
+                        await sleep(3500);
                         continue;
                     }
-                    // Quota exceeded: Stop trying further chunks to avoid endless failures
                     console.error('Gemini quota or rate limit exceeded. Stopping further requests.', e);
                     break;
                 }
 
-                // If not quota error, wait 1s before retry
                 if (attempt < maxAttempts) {
-                    await sleep(1000);
+                    await sleep(1500);
                 }
             }
         }
@@ -153,7 +152,7 @@ export const batchSuggestIds = async (
             console.warn('Batch chunk failed with non-quota error, trying individual fallback...');
             for (const q of chunk) {
                 try {
-                    await sleep(300);
+                    await sleep(500);
                     const single = await validateAndTagQuestion(q.latex, q.current_id || '');
                     if (single && single.suggestedId) {
                         allResults.push({

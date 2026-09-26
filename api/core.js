@@ -207,34 +207,56 @@ export async function canManageMatrix(req, matrixId) {
 }
 
 // --- GEMINI AI HELPERS ---
-export async function getGeminiApiKey(userId) {
+export async function getGeminiApiKeys(userId) {
+    const rawKeys = [];
     try {
         if (userId) {
             const users = await query('SELECT api_key FROM users WHERE id = ?', [userId]);
-            if (users?.[0]?.api_key) return users[0].api_key;
+            if (users?.[0]?.api_key) rawKeys.push(users[0].api_key);
         }
         const rows = await query("SELECT setting_value FROM system_settings WHERE setting_key = 'gemini_api_key'");
         if (rows && rows.length > 0 && rows[0].setting_value) {
-            return rows[0].setting_value;
+            rawKeys.push(rows[0].setting_value);
         }
     } catch(e) {
-        console.error("Helper getGeminiApiKey error:", e.message);
+        console.error("Helper getGeminiApiKeys error:", e.message);
     }
-    return process.env.GEMINI_API_KEY || '';
+    if (process.env.GEMINI_API_KEY) {
+        rawKeys.push(process.env.GEMINI_API_KEY);
+    }
+
+    const keys = [];
+    for (const raw of rawKeys) {
+        if (typeof raw === 'string') {
+            const parts = raw.split(/[\n,;]+/).map(k => k.trim()).filter(k => k.length > 10);
+            for (const p of parts) {
+                if (!keys.includes(p)) keys.push(p);
+            }
+        }
+    }
+    return keys;
+}
+
+export async function getGeminiApiKey(userId) {
+    const keys = await getGeminiApiKeys(userId);
+    return keys[0] || '';
 }
 
 export function parseGeminiError(e) {
-    if (e.status === 429 || (e.message && e.message.includes("429")) || (e.message && e.message.includes("quota"))) {
-        return "Lỗi: Đã vượt quá giới hạn lượt dùng hoặc hạn mức API (Quota Exceeded). Vui lòng kiểm tra lại API Key hoặc tạo API Key mới từ Google AI Studio.";
+    const msg = String(e?.message || e || '');
+    if (e?.status === 429 || msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
+        return "Lỗi: Đã vượt quá giới hạn lượt dùng hoặc hạn mức API (Quota Exceeded). Thầy/cô có thể thêm nhiều API Key miễn phí (cách nhau bởi dấu phẩy) trong Cài đặt tài khoản để hệ thống tự động xoay vòng.";
     }
-    if (e.message && e.message.includes("API key not valid")) {
-        return "Lỗi: API Key không hợp lệ. Vui lòng thiết lập API Key đúng.";
+    if (msg.includes("API key not valid") || msg.includes("API_KEY_INVALID")) {
+        return "Lỗi: API Key không hợp lệ. Vui lòng thiết lập API Key đúng từ Google AI Studio.";
     }
     try {
         if (typeof e.message === 'string' && e.message.startsWith('{')) {
             const parsed = JSON.parse(e.message);
             if (parsed.error && parsed.error.message) {
-                if (parsed.error.code === 429) return "Lỗi: Quota Exceeded. API Key của bạn đã hết hạn mức.";
+                if (parsed.error.code === 429) {
+                    return "Lỗi: Quota Exceeded. API Key của bạn đã hết hạn mức. Vui lòng thêm thêm key dự phòng hoặc đợi ít phút.";
+                }
                 return "Lỗi từ Gemini: " + parsed.error.message;
             }
         }
@@ -242,30 +264,57 @@ export function parseGeminiError(e) {
     return "Lỗi trong quá trình tạo: " + (e.message || String(e));
 }
 
-export async function generateWithFallback(ai, prompt, config, additionalParts = []) {
+export async function generateWithFallback(aiOrKeys, prompt, config, additionalParts = []) {
     const candidateModels = [
         'gemini-2.5-flash',
-        'gemini-3.5-flash',
+        'gemini-2.0-flash',
+        'gemini-1.5-flash',
         'gemini-2.5-flash-lite',
-        'gemini-3.6-flash'
+        'gemini-2.0-flash-lite'
     ];
     const contents = additionalParts.length ? { parts: [...additionalParts, { text: prompt }] } : prompt;
-    
+
+    let aiInstances = [];
+    if (Array.isArray(aiOrKeys)) {
+        aiInstances = aiOrKeys.map(k => (typeof k === 'string' ? new GoogleGenAI({ apiKey: k }) : k));
+    } else if (aiOrKeys?._keys && Array.isArray(aiOrKeys._keys)) {
+        aiInstances = aiOrKeys._keys.map(k => new GoogleGenAI({ apiKey: k }));
+    } else if (typeof aiOrKeys === 'string') {
+        aiInstances = [new GoogleGenAI({ apiKey: aiOrKeys })];
+    } else if (aiOrKeys) {
+        aiInstances = [aiOrKeys];
+    }
+
+    if (aiInstances.length === 0) {
+        throw new Error('Chưa cấu hình Gemini API Key.');
+    }
+
     let lastError = null;
-    for (const model of candidateModels) {
-        try {
-            const response = await ai.models.generateContent({
-                model,
-                contents,
-                config
-            });
-            return response;
-        } catch (e) {
-            lastError = e;
-            console.warn(`[AI] Model ${model} failed (${e.message || e}). Trying next fallback model...`);
+    for (let kIdx = 0; kIdx < aiInstances.length; kIdx++) {
+        const client = aiInstances[kIdx];
+        for (const model of candidateModels) {
+            try {
+                const response = await client.models.generateContent({
+                    model,
+                    contents,
+                    config
+                });
+                return response;
+            } catch (e) {
+                lastError = e;
+                const errMsg = String(e?.message || e || '');
+                const is429 = e?.status === 429 || errMsg.includes('429') || errMsg.includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED');
+                console.warn(`[AI] Model ${model} (Key ${kIdx + 1}/${aiInstances.length}) failed: ${errMsg.slice(0, 120)}`);
+
+                // If quota exhausted and more keys exist, immediately rotate to next key
+                if (is429 && kIdx < aiInstances.length - 1) {
+                    console.warn(`[AI] Quota hit on Key ${kIdx + 1}. Rotating to next API key...`);
+                    break;
+                }
+            }
         }
     }
-    throw lastError || new Error('Tất cả các mô hình Gemini dự phòng đều không thể phản hồi.');
+    throw lastError || new Error('Tất cả các mô hình Gemini và API Key dự phòng đều không thể phản hồi.');
 }
 
 // --- LATEX, SVG, CRYPTO & HIERARCHY HELPERS ---

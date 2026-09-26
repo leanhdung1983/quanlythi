@@ -415,14 +415,15 @@ export const AdminUsers: React.FC = () => {
                         </div>
                         <div className="p-4 overflow-y-auto space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-slate-500 mb-1">Gemini API Key</label>
-                                <input 
-                                    className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-sm font-mono"
-                                    placeholder="AIzaSy..."
+                                <label className="block text-xs font-bold text-slate-500 mb-1">Gemini API Key Hệ Thống</label>
+                                <textarea 
+                                    rows={2}
+                                    className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-xs font-mono"
+                                    placeholder="AIzaSy... (có thể nhập nhiều key cách nhau bằng dấu phẩy hoặc xuống dòng)"
                                     value={geminiKey}
                                     onChange={e => setGeminiKey(e.target.value)}
                                 />
-                                <p className="text-xs text-slate-400 mt-2">API key dùng để tạo chương, bài học và câu hỏi bằng AI.</p>
+                                <p className="text-xs text-slate-400 mt-2">API key dùng cho toàn hệ thống. Hỗ trợ nhập nhiều key (cách nhau bởi dấu phẩy) để tự động xoay vòng tránh lỗi hết hạn mức (Quota 429).</p>
                             </div>
                         </div>
                         <div className="p-4 border-t border-slate-100 bg-slate-50 flex gap-2">

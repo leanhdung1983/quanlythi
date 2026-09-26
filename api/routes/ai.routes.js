@@ -3,11 +3,12 @@ import { GoogleGenAI } from "@google/genai";
 import { 
     query, 
     requireTeacherOrAdmin, 
-    getGeminiApiKey, 
+    getGeminiApiKey,
+    getGeminiApiKeys,
     generateWithFallback, 
     parseGeminiError 
 } from '../core.js';
-import { normalizeId6 } from '../id6.js';
+import { normalizeId6, extractSourceId, parseId6 } from '../id6.js';
 import { normalizeExTestOutput } from '../exTest.js';
 import { convertPdfToExTest } from '../pdfToExTest.js';
 
@@ -22,9 +23,9 @@ router.post('/ai/convert-document', async (req, res) => {
             return res.status(400).json({ error: 'Tệp PDF hoặc DOCX không hợp lệ.' });
         }
         if (Buffer.byteLength(base64_data, 'base64') > 20 * 1024 * 1024) return res.status(413).json({ error: 'Tệp vượt quá giới hạn 20 MB.' });
-        const apiKey = await getGeminiApiKey(req.user.id);
-        if (!apiKey) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
-        const ai = new GoogleGenAI({ apiKey });
+        const apiKeys = await getGeminiApiKeys(req.user.id);
+        if (!apiKeys || apiKeys.length === 0) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
+        const ai = new GoogleGenAI({ apiKey: apiKeys[0] });
         if (mime_type === 'application/pdf') {
             const bytes = Buffer.from(base64_data, 'base64');
             const emit = event => res.write(`${JSON.stringify(event)}\n`);
@@ -43,7 +44,7 @@ router.post('/ai/convert-document', async (req, res) => {
                 throw error;
             }
         }
-        const response = await generateWithFallback(ai, `Chuyển TOÀN BỘ tài liệu theo đúng thứ tự sang mã nguồn ex_test. Mỗi câu đặt trong \\begin{ex}...\\end{ex}. Câu trắc nghiệm dùng \\choice{...}{...}{...}{...}; câu đúng/sai dùng \\choiceTF{...}{...}{...}{...}; câu trả lời ngắn dùng \\shortans{...}; lời giải dùng \\loigiai{...}. Chỉ đặt \\True trước đáp án khi tài liệu gốc xác định chắc chắn. Giữ nguyên công thức trong $...$ hoặc môi trường toán, ký hiệu, hình/bảng, đánh số và thứ tự. Không đoán nội dung bị mờ, không tóm tắt, không thêm markdown hay phần mở đầu tài liệu. Nếu hình không thể tái tạo, thêm chú thích LaTeX % CAN_KIEM_TRA_HINH tại đúng vị trí.`, {
+        const response = await generateWithFallback(apiKeys, `Chuyển TOÀN BỘ tài liệu theo đúng thứ tự sang mã nguồn ex_test. Mỗi câu đặt trong \\begin{ex}...\\end{ex}. Câu trắc nghiệm dùng \\choice{...}{...}{...}{...}; câu đúng/sai dùng \\choiceTF{...}{...}{...}{...}; câu trả lời ngắn dùng \\shortans{...}; lời giải dùng \\loigiai{...}. Chỉ đặt \\True trước đáp án khi tài liệu gốc xác định chắc chắn. Giữ nguyên công thức trong $...$ hoặc môi trường toán, ký hiệu, hình/bảng, đánh số và thứ tự. Không đoán nội dung bị mờ, không tóm tắt, không thêm markdown hay phần mở đầu tài liệu. Nếu hình không thể tái tạo, thêm chú thích LaTeX % CAN_KIEM_TRA_HINH tại đúng vị trí.`, {
             systemInstruction: 'Bạn là chuyên gia Toán học và LaTeX ex_test. Xuất duy nhất mã LaTeX phần thân gồm các môi trường ex. Không bịa đáp án, lời giải hoặc hình không có trong tài liệu. Ưu tiên TikZ khi có thể tái tạo chính xác.',
             maxOutputTokens: 16384,
             responseMimeType: 'text/plain'
@@ -78,12 +79,18 @@ async function getCachedId6Catalog() {
     // Compress 4,600+ rows into ~1,150 base dạng lines using '*' for level (N/H/V/C)
     // Structure: <Khối><Môn><Chương>*<Bài>-<Dạng>: <Mô tả>
     const baseMap = new Map();
+    const byGradeMap = new Map();
+
     for (const item of metadata) {
         const norm = normalizeId6(item.id_full);
         if (!norm) continue;
         const base = norm.replace(/[NHVC](?=\d+-)/, '*');
         if (!baseMap.has(base)) {
-            baseMap.set(base, item.description || '');
+            const desc = item.description || '';
+            baseMap.set(base, desc);
+            const grade = norm[0];
+            if (!byGradeMap.has(grade)) byGradeMap.set(grade, []);
+            byGradeMap.get(grade).push(`${base}: ${desc}`);
         }
     }
 
@@ -93,6 +100,7 @@ async function getCachedId6Catalog() {
 
     cachedCatalogData = {
         compactCatalog,
+        byGradeMap,
         validIds,
         rawCount: metadata.length,
         compressedCount: baseMap.size
@@ -101,19 +109,123 @@ async function getCachedId6Catalog() {
     return cachedCatalogData;
 }
 
+// Strip unnecessary solution text to save 60-70% of prompt tokens
+function stripSolutionAndClean(latex) {
+    if (typeof latex !== 'string') return '';
+    let text = latex;
+    // Strip \loigiai{...}
+    text = text.replace(/\\loigiai\s*\{[\s\S]*?\}(?=\s*\\end\{ex\}|\s*$)/gi, '');
+    // Strip LaTeX line comments
+    text = text.replace(/%.*$/gm, '');
+    // Condense whitespace
+    text = text.replace(/\s+/g, ' ');
+    // Limit length to 600 chars (sufficient for question classification)
+    if (text.length > 600) {
+        text = text.substring(0, 600) + '...';
+    }
+    return text.trim();
+}
+
+// Detect dominant grade from question cues or existing IDs
+function detectGradesFromQuestions(questions) {
+    const gradeVotes = new Map();
+    const addVote = (g, weight = 1) => {
+        if (!g) return;
+        gradeVotes.set(g, (gradeVotes.get(g) || 0) + weight);
+    };
+
+    for (const q of questions) {
+        const id = q.current_id || '';
+        const match = id.match(/^(10|11|12|[0126789])/);
+        if (match) {
+            const g = match[1] === '10' ? '0' : match[1] === '11' ? '1' : match[1] === '12' ? '2' : match[1];
+            addVote(g, 3);
+        }
+
+        const latex = (q.latex || '').toLowerCase();
+        // Grade 12 (Giải tích 12, Hình không gian Oxyz, Số phức)
+        if (/nguyên hàm|tích phân|\\int|tiệm cận|cực trị|đồng biến|nghịch biến|oxyz|mặt phẳng|mặt cầu|số phức|tọa độ không gian/.test(latex)) {
+            addVote('2', 2);
+        }
+        // Grade 11 (Lượng giác, Đạo hàm, Cấp số, Xác suất)
+        if (/cấp số cộng|cấp số nhân|đạo hàm|lượng giác|\\sin|\\cos|\\tan|xác suất|nhị thức|dãy số|\\lim|giới hạn/.test(latex)) {
+            addVote('1', 2);
+        }
+        // Grade 10 (Mệnh đề, Tập hợp, Véc tơ, Tam thức bậc hai, Parabol, Elip)
+        if (/mệnh đề|tập hợp|véc tơ|bất đẳng thức|tam thức bậc hai|parabol|elip|hệ phương trình/.test(latex)) {
+            addVote('0', 2);
+        }
+    }
+
+    if (gradeVotes.size === 0) return null;
+
+    const sorted = Array.from(gradeVotes.entries()).sort((a, b) => b[1] - a[1]);
+    const topGrade = sorted[0][0];
+    const topScore = sorted[0][1];
+
+    const relevant = [topGrade];
+    for (let i = 1; i < sorted.length; i++) {
+        if (sorted[i][1] >= topScore * 0.5) {
+            relevant.push(sorted[i][0]);
+        }
+    }
+    return relevant;
+}
+
+// Return only the relevant catalog lines instead of all 1,150 lines (Saves ~80% prompt tokens)
+function getFilteredCatalog(catalogData, grades) {
+    if (!grades || grades.length === 0) {
+        // High school grades (0, 1, 2) cover the vast majority of questions
+        const hsGrades = ['0', '1', '2'];
+        const lines = [];
+        for (const g of hsGrades) {
+            const items = catalogData.byGradeMap?.get(g) || [];
+            lines.push(...items);
+        }
+        return lines.length > 0 ? lines.join('\n') : catalogData.compactCatalog;
+    }
+
+    const lines = [];
+    for (const g of grades) {
+        const items = catalogData.byGradeMap?.get(g) || [];
+        lines.push(...items);
+    }
+    return lines.length > 0 ? lines.join('\n') : catalogData.compactCatalog;
+}
+
 router.post('/ai/validate-question', async (req, res) => {
     try {
         if (!requireTeacherOrAdmin(req, res)) return;
         const { latex, current_id } = req.body;
         if (typeof latex !== 'string' || latex.length === 0 || latex.length > 100000) return res.status(400).json({ error: 'Nội dung câu hỏi không hợp lệ.' });
-        const apiKey = await getGeminiApiKey(req.user.id);
-        if (!apiKey) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
-        const ai = new GoogleGenAI({ apiKey });
+        
+        const apiKeys = await getGeminiApiKeys(req.user.id);
+        if (!apiKeys || apiKeys.length === 0) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
 
-        const { compactCatalog, validIds } = await getCachedId6Catalog();
+        const catalogData = await getCachedId6Catalog();
+        const { validIds } = catalogData;
 
-        const prompt = `Câu hỏi LaTeX: ${latex}\nID hiện tại: ${current_id || ''}\n\nDanh mục dạng toán chuẩn ID6:\n${compactCatalog}\n\nQuy tắc: Ký hiệu '*' là vị trí của mức độ N (Nhận biết), H (Thông hiểu), V (Vận dụng), C (Vận dụng cao). Hãy kiểm tra ID và chỉ đề xuất mã ID6 đầy đủ hợp lệ.`;
-        const response = await generateWithFallback(ai, prompt, {
+        // Zero-token local check if question already has source ID
+        const srcId = extractSourceId(latex);
+        if (srcId && validIds.has(srcId)) {
+            return res.json({
+                success: true,
+                data: {
+                    isValid: true,
+                    suggestedId: srcId,
+                    confidence: 1,
+                    reason: 'Mã ID hợp lệ được nhận diện trực tiếp từ câu hỏi (0 token).',
+                    alternatives: []
+                }
+            });
+        }
+
+        const detectedGrades = detectGradesFromQuestions([{ latex, current_id }]);
+        const promptCatalog = getFilteredCatalog(catalogData, detectedGrades);
+        const cleanLatex = stripSolutionAndClean(latex);
+
+        const prompt = `Câu hỏi LaTeX: ${cleanLatex}\nID hiện tại: ${current_id || ''}\n\nDanh mục dạng toán chuẩn ID6:\n${promptCatalog}\n\nQuy tắc: Ký hiệu '*' là vị trí của mức độ N (Nhận biết), H (Thông hiểu), V (Vận dụng), C (Vận dụng cao). Hãy kiểm tra ID và chỉ đề xuất mã ID6 đầy đủ hợp lệ.`;
+        const response = await generateWithFallback(apiKeys, prompt, {
             systemInstruction: 'Trả về JSON gồm isValid, reason, suggestedId, confidence từ 0 đến 1, alternatives (tối đa 3 ID), competencies, chapter, unit và detectedQuestionType. Không thêm markdown. Thay thế * bằng N, H, V hoặc C để tạo mã ID6 chuẩn.',
             responseMimeType: 'application/json'
         });
@@ -139,23 +251,65 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
         if (!Array.isArray(questions) || questions.length === 0) {
             return res.status(400).json({ error: 'Danh sách câu hỏi không hợp lệ.' });
         }
-        const batch = questions.slice(0, 15);
-        const apiKey = await getGeminiApiKey(req.user.id);
-        if (!apiKey) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
-        const ai = new GoogleGenAI({ apiKey });
+        const batch = questions.slice(0, 10);
+        const apiKeys = await getGeminiApiKeys(req.user.id);
+        if (!apiKeys || apiKeys.length === 0) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
 
-        const { compactCatalog, validIds } = await getCachedId6Catalog();
+        const catalogData = await getCachedId6Catalog();
+        const { validIds } = catalogData;
 
-        const questionsText = batch.map((q, idx) => {
-            const raw = typeof q.latex === 'string' ? q.latex.substring(0, 1500) : '';
-            return `--- CÂU ${idx + 1} (REF_ID: ${q.id}) ---\n${raw}`;
+        // 1. FAST LOCAL PRE-CHECK (Zero Tokens!)
+        const localResults = [];
+        const needAiQuestions = [];
+
+        for (const q of batch) {
+            const rawLatex = typeof q.latex === 'string' ? q.latex : '';
+            // Check if question already has source ID in comment or \begin{ex}[...]
+            const srcId = extractSourceId(rawLatex);
+            if (srcId && validIds.has(srcId)) {
+                localResults.push({
+                    id: q.id,
+                    suggestedId: srcId,
+                    confidence: 1.0,
+                    reason: 'Nhận diện tự động từ mã có sẵn trong câu hỏi (0 token)'
+                });
+                continue;
+            }
+
+            // Check if current_id can be normalized (e.g. legacy level Y, B, K, G -> N, H, V, C)
+            const normCurrent = normalizeId6(q.current_id || '');
+            if (normCurrent && validIds.has(normCurrent)) {
+                localResults.push({
+                    id: q.id,
+                    suggestedId: normCurrent,
+                    confidence: 0.95,
+                    reason: 'Chuẩn hóa tự động từ mã hiện tại (0 token)'
+                });
+                continue;
+            }
+
+            needAiQuestions.push(q);
+        }
+
+        // If all questions resolved locally, return immediately!
+        if (needAiQuestions.length === 0) {
+            return res.json({ success: true, results: localResults });
+        }
+
+        // 2. SMART FILTERED CATALOG & CLEANED QUESTIONS (Saves 80-85% tokens!)
+        const detectedGrades = detectGradesFromQuestions(needAiQuestions);
+        const promptCatalog = getFilteredCatalog(catalogData, detectedGrades);
+
+        const questionsText = needAiQuestions.map((q, idx) => {
+            const clean = stripSolutionAndClean(q.latex);
+            return `--- CÂU ${idx + 1} (REF_ID: ${q.id}) ---\n${clean}`;
         }).join('\n\n');
 
-        const prompt = `Dưới đây là danh sách ${batch.length} câu hỏi Toán dạng LaTeX cần đề xuất mã ID6 chuẩn:
+        const prompt = `Dưới đây là danh sách ${needAiQuestions.length} câu hỏi Toán dạng LaTeX cần đề xuất mã ID6 chuẩn:
 ${questionsText}
 
 Danh mục dạng toán chuẩn ID6:
-${compactCatalog}
+${promptCatalog}
 
 QUY TẮC MÃ ID6:
 Cấu trúc mã: <Khối><Môn><Chương><Mức_độ><Bài>-<Dạng>
@@ -179,7 +333,7 @@ YÊU CẦU:
   }
 ]`;
 
-        const response = await generateWithFallback(ai, prompt, {
+        const response = await generateWithFallback(apiKeys, prompt, {
             systemInstruction: 'Bạn là chuyên gia phân loại câu hỏi Toán theo chuẩn ID6. Trả về đúng JSON Array, không thêm markdown hay giải thích ngoài JSON. Chỉ chọn suggestedId khớp dạng toán trong danh mục và thay * bằng N, H, V hoặc C.',
             responseMimeType: 'application/json'
         });
@@ -193,7 +347,7 @@ YÊU CẦU:
 
         if (!Array.isArray(parsedResults)) parsedResults = [];
 
-        const results = parsedResults.map(item => {
+        const aiResults = parsedResults.map(item => {
             const normId = normalizeId6(item.suggestedId || '');
             const isValid = validIds.has(normId);
             return {
@@ -204,7 +358,8 @@ YÊU CẦU:
             };
         });
 
-        res.json({ success: true, results });
+        const combinedResults = [...localResults, ...aiResults];
+        res.json({ success: true, results: combinedResults });
     } catch (e) {
         res.status(500).json({ error: parseGeminiError(e) });
     }
@@ -213,10 +368,9 @@ YÊU CẦU:
 router.post('/ai/explain', async (req, res) => {
     try {
         const { question_latex, user_answer_latex, correct_answer_latex } = req.body;
-        const apiKey = await getGeminiApiKey(req.user?.id);
-        if (!apiKey) return res.status(400).json({ error: "Chưa cấu hình Gemini API Key" });
+        const apiKeys = await getGeminiApiKeys(req.user?.id);
+        if (!apiKeys || apiKeys.length === 0) return res.status(400).json({ error: "Chưa cấu hình Gemini API Key" });
         
-        const ai = new GoogleGenAI({ apiKey: apiKey, httpOptions: { headers: { 'User-Agent': 'aistudio-build' } } });
         const prompt = `Bạn là một gia sư Toán. Học sinh vừa làm sai câu hỏi sau:
 Đề bài:
 ${question_latex}
@@ -226,20 +380,19 @@ Câu trả lời của học sinh: ${user_answer_latex || 'Không rõ'}
 
 Hãy giải thích ngắn gọn, dễ hiểu (dưới 150 chữ) lý do tại sao học sinh sai, chỉ ra lỗi sai phổ biến ở dạng này và hướng dẫn cách giải đúng. Sử dụng LaTeX kẹp giữa $...$ hoặc $$...$$ cho biểu thức toán học.`;
         
-        const response = await generateWithFallback(ai, prompt);
+        const response = await generateWithFallback(apiKeys, prompt);
         res.json({ success: true, explanation: response.text });
     } catch (e) {
-        res.status(500).json({ error: e.message });
+        res.status(500).json({ error: parseGeminiError(e) });
     }
 });
 
 router.post('/ai/similar', async (req, res) => {
     try {
         const { question_latex, type } = req.body;
-        const apiKey = await getGeminiApiKey(req.user?.id);
-        if (!apiKey) return res.status(400).json({ error: "Chưa cấu hình Gemini API Key" });
+        const apiKeys = await getGeminiApiKeys(req.user?.id);
+        if (!apiKeys || apiKeys.length === 0) return res.status(400).json({ error: "Chưa cấu hình Gemini API Key" });
         
-        const ai = new GoogleGenAI({ apiKey: apiKey, httpOptions: { headers: { 'User-Agent': 'aistudio-build' } } });
         const prompt = `Bạn là một giáo viên Toán. Hãy tạo ra MỘT câu hỏi MỚI hoàn toàn tương tự về mặt mức độ và phương pháp giải với câu hỏi sau (thay đổi số liệu, ngữ cảnh):
 ${question_latex}
 
@@ -266,14 +419,14 @@ Lời giải chi tiết
 \\end{ex}
 Nếu đề bài là dạng ${type}, hãy sinh câu hỏi theo đúng định dạng tương ứng.`;
 
-        const response = await generateWithFallback(ai, prompt);
+        const response = await generateWithFallback(apiKeys, prompt);
         
         let latex = response.text || '';
         latex = latex.replace(/```latex\n?/g, '').replace(/```\n?/g, '').trim();
         
         res.json({ success: true, latex });
     } catch (e) {
-        res.status(500).json({ error: e.message });
+        res.status(500).json({ error: parseGeminiError(e) });
     }
 });
 
@@ -347,16 +500,15 @@ router.post('/adaptive/generate', async (req, res) => {
                 `, [...formats, limit]);
                 
                 try {
-                    const apiKey = await getGeminiApiKey(req.user?.id);
-                    if (apiKey) {
-                        const ai = new GoogleGenAI({ apiKey: apiKey, httpOptions: { headers: { 'User-Agent': 'aistudio-build' } } });
+                    const apiKeys = await getGeminiApiKeys(req.user?.id);
+                    if (apiKeys && apiKeys.length > 0) {
                         const prompt = `Bạn là một gia sư AI chuyên Toán. Học sinh vừa làm sai các câu hỏi thuộc các mã dạng bài (ID6) sau: ${formats.join(', ')}.
 Một vài nội dung đề bài làm sai:
 ${failedQs.slice(0, 3).map(q => q.original_latex).join('\n---\n')}
 
 Dựa vào nội dung trên, hãy phân tích ngắn gọn (tối đa 4 câu) về lỗi sai hoặc lỗ hổng kiến thức của học sinh, và đưa ra lời khuyên ôn tập cụ thể, dễ hiểu, động viên học sinh. Trả lời trực tiếp bằng tiếng Việt.`;
                         
-                        const response = await generateWithFallback(ai, prompt);
+                        const response = await generateWithFallback(apiKeys, prompt);
                         ai_analysis = response.text;
                     }
                 } catch (aiErr) {
@@ -386,7 +538,7 @@ Dựa vào nội dung trên, hãy phân tích ngắn gọn (tối đa 4 câu) v�
         }
 
         res.json({ success: true, data: questions, ai_analysis });
-    } catch (e) { res.status(500).json({ error: e.message }); }
+    } catch (e) { res.status(500).json({ error: parseGeminiError(e) }); }
 });
 
 export default router;
