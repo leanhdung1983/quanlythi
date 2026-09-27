@@ -23,7 +23,7 @@ from urllib.request import HTTPCookieProcessor, Request, build_opener
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EX_TEST_STYLE = PROJECT_ROOT / "template" / "ex_test.sty"
-MAX_SVG_BYTES = 12_000_000
+MAX_SVG_BYTES = 24_000_000
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -36,7 +36,7 @@ LATEX_TEMPLATE = r"""
 \usepackage{pgfplots,tkz-tab,tkz-euclide,tikz-3dplot}
 \usepackage{ex_test}
 \pgfplotsset{compat=1.15}
-\usetikzlibrary{arrows,arrows.meta,calc,intersections,angles,quotes,shapes,decorations.pathreplacing,backgrounds,positioning,patterns}
+\usetikzlibrary{arrows,arrows.meta,calc,intersections,angles,quotes,shapes,snakes,decorations.pathreplacing,decorations.pathmorphing,backgrounds,positioning,patterns}
 \providecommand{\skipInterval}{0.5cm}
 \definecolor{roofRedSide}{RGB}{194,55,50}
 \definecolor{roofRedBottom}{RGB}{145,33,30}
@@ -141,7 +141,7 @@ def compile_svg(source, timeout):
         if shutil.which("dvisvgm"):
             # Convert every glyph to paths. This prevents math signs and variation-table
             # labels from disappearing on devices that do not have the TeX fonts.
-            commands.append(["dvisvgm", "--pdf", "--no-fonts", "--exact-bbox", "--output=drawing.svg", "drawing.pdf"])
+            commands.append(["dvisvgm", "--pdf", "--no-fonts=0", "--optimize=all", "--exact-bbox", "--output=drawing.svg", "drawing.pdf"])
         if shutil.which("pdf2svg"):
             commands.append(["pdf2svg", "drawing.pdf", "drawing.svg"])
         errors = []
@@ -161,7 +161,7 @@ def compile_svg(source, timeout):
         if not re.search(r"<svg\b", result, re.IGNORECASE) or not result.endswith("</svg>"):
             raise RuntimeError("Công cụ chuyển đổi không trả về SVG hợp lệ.")
         if len(result.encode("utf-8")) > MAX_SVG_BYTES:
-            raise RuntimeError("SVG vượt giới hạn an toàn 12 MB.")
+            raise RuntimeError("SVG vượt giới hạn an toàn 24 MB.")
         validate_svg_references(result)
         return result
 

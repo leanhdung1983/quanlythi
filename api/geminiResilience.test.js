@@ -6,6 +6,11 @@ describe('Gemini quota resilience', () => {
         expect(cooldownForFailure(classifyGeminiFailure({ status: 429, message: 'rate limit; retryDelay: 35s' }))).toBe(60000);
         expect(cooldownForFailure(classifyGeminiFailure({ status: 429, message: 'Requests per day quota exceeded' }))).toBe(21600000);
     });
+    it('treats a retired model as a switchable model failure', () => {
+        const failure = classifyGeminiFailure(new Error('This model models/gemini-2.5-flash is no longer available to new users.'));
+        expect(failure.unavailableModel).toBe(true);
+        expect(cooldownForFailure(failure)).toBe(86400000);
+    });
     it('orders by model and skips cooling key/model pairs', () => {
         const cooldowns = new Map([['k1\u0000lite', 2000]]);
         const result = orderAvailableAttempts(['k1', 'k2'], ['lite', 'flash'], cooldowns, 1000);

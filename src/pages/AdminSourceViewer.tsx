@@ -364,7 +364,7 @@ export const AdminSourceViewer: React.FC = () => {
                 {job?.status === 'CANCEL_REQUESTED' && <p className="mt-3 text-xs text-amber-700">Worker sẽ dừng sau hình đang biên dịch.</p>}
                 {job?.errorMessage && <p className="mt-3 text-xs text-red-700">{job.errorMessage}</p>}
                 {jobError && <p className="mt-3 text-xs text-red-700">{jobError}</p>}
-                <p className="mt-4 text-xs text-slate-500">Khởi động một lần <code>python scripts/tikz_local_worker.py --url URL_RENDER --daemon</code> trên máy có TeX. SVG tối đa 12 MB; AI không được lưu trực tiếp mà luôn phải qua biên dịch và bộ lọc an toàn.</p>
+                <p className="mt-4 text-xs text-slate-500">Khởi động một lần <code>python scripts/tikz_local_worker.py --url URL_RENDER --daemon</code> trên máy có TeX. SVG được tối ưu và hỗ trợ tối đa 24 MB; AI không được lưu trực tiếp mà luôn phải qua biên dịch và bộ lọc an toàn.</p>
             </section>
 
             <section className="mb-8 rounded-3xl border border-red-200 bg-white p-6 shadow-sm">

@@ -143,7 +143,7 @@ router.post('/admin/tikz-audit/sync', async (req, res) => {
         return res.status(400).json({ error: 'SVG phải là chuỗi XML.' });
     }
     if (svg && Buffer.byteLength(svg, 'utf8') > MAX_SVG_BYTES) {
-        return res.status(413).json({ error: 'SVG vượt giới hạn an toàn 12 MB.' });
+        return res.status(413).json({ error: 'SVG vượt giới hạn an toàn 24 MB.' });
     }
     let conn;
     try {

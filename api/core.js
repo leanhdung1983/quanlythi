@@ -271,12 +271,11 @@ export function parseGeminiError(e) {
 const geminiCooldowns = new Map();
 
 export async function generateWithFallback(aiOrKeys, prompt, config, additionalParts = []) {
-    // Current primary models in 2026:
-    // 1. gemini-2.5-flash: State-of-the-art for mathematics, LaTeX, and classification (best quality)
-    // 2. gemini-2.0-flash: Fast, resilient fallback
+    // Stable models available to new projects in late 2026.
     const defaultModels = [
-        'gemini-2.5-flash',
-        'gemini-2.0-flash'
+        'gemini-3.8-flash',
+        'gemini-3.5-flash',
+        'gemini-3.5-flash-lite'
     ];
     const requestedModels = Array.isArray(config?.modelCandidates) ? config.modelCandidates.filter(Boolean) : [];
     const candidateModels = requestedModels.length ? requestedModels : defaultModels;
@@ -315,10 +314,11 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
     let lastError = null;
     let quotaError = null;
     const disabledKeys = new Set();
+    const disabledModels = new Set();
     const quotaFailuresByKey = new Map();
     const exhaustedKeys = new Set();
     for (const attempt of ordered.attempts) {
-        if (disabledKeys.has(attempt.keyIndex)) continue;
+        if (disabledKeys.has(attempt.keyIndex) || disabledModels.has(attempt.model)) continue;
         const client = aiInstances[attempt.keyIndex];
         try {
             return await client.models.generateContent({ model: attempt.model, contents, config: requestConfig });
@@ -333,13 +333,17 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
                 disabledKeys.add(attempt.keyIndex);
                 for (const model of candidateModels) geminiCooldowns.set(`${attempt.key}\u0000${model}`, Date.now() + cooldown);
             }
+            if (failure.unavailableModel) {
+                disabledModels.add(attempt.model);
+                for (const key of keyValues) geminiCooldowns.set(`${key}\u0000${attempt.model}`, Date.now() + cooldown);
+            }
             if (failure.quota) {
                 const failures = (quotaFailuresByKey.get(attempt.keyIndex) || 0) + 1;
                 quotaFailuresByKey.set(attempt.keyIndex, failures);
                 if (failures >= candidateModels.length) exhaustedKeys.add(attempt.keyIndex);
                 if (exhaustedKeys.size >= 2) break;
             }
-            if (!failure.transient && !failure.invalidKey) throw error;
+            if (!failure.transient && !failure.invalidKey && !failure.unavailableModel) throw error;
         }
     }
     throw quotaError || lastError || new Error('Tất cả các mô hình Gemini và API Key dự phòng đều không thể phản hồi.');

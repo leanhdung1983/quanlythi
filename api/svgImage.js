@@ -1,6 +1,6 @@
 import sanitizeHtml from 'sanitize-html';
 
-export const MAX_SVG_BYTES = 12_000_000;
+export const MAX_SVG_BYTES = 24_000_000;
 
 export function sanitizeCompiledSvg(rawSvg) {
     if (typeof rawSvg !== 'string') return '';
