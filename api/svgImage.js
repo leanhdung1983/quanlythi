@@ -1,10 +1,12 @@
 import sanitizeHtml from 'sanitize-html';
 
+export const MAX_SVG_BYTES = 12_000_000;
+
 export function sanitizeCompiledSvg(rawSvg) {
     if (typeof rawSvg !== 'string') return '';
     let source = rawSvg.trim();
     source = source.replace(/<\?xml[\s\S]*?\?>/i, '').trim();
-    if (source.length === 0 || source.length > 2_000_000 || !/<svg\b[\s\S]*<\/svg>$/i.test(source)) return '';
+    if (source.length === 0 || Buffer.byteLength(source, 'utf8') > MAX_SVG_BYTES || !/<svg\b[\s\S]*<\/svg>$/i.test(source)) return '';
 
     const clean = sanitizeHtml(source, {
         allowVulnerableTags: true,

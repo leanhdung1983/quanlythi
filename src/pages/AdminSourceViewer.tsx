@@ -334,7 +334,7 @@ export const AdminSourceViewer: React.FC = () => {
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h2 className="text-lg font-black text-slate-800">Quét và biên dịch SVG bằng máy local</h2>
-                        <p className="text-sm text-slate-500">Worker chỉ nhận các câu có hình đang thiếu hoặc chưa dựng SVG; câu không có hình và câu đã hoàn tất được bỏ qua.</p>
+                        <p className="text-sm text-slate-500">Worker chỉ nhận các câu có hình đang thiếu hoặc chưa dựng SVG; nếu biên dịch lỗi, AI sẽ sửa TikZ một lần rồi biên dịch và kiểm tra an toàn lại trước khi lưu.</p>
                         <p className={`mt-2 text-xs font-bold ${workerOnline ? 'text-emerald-700' : 'text-amber-700'}`}>
                             Worker: {workerOnline ? 'Đang kết nối' : 'Chưa kết nối — công việc sẽ chờ máy local'}
                         </p>
@@ -364,7 +364,7 @@ export const AdminSourceViewer: React.FC = () => {
                 {job?.status === 'CANCEL_REQUESTED' && <p className="mt-3 text-xs text-amber-700">Worker sẽ dừng sau hình đang biên dịch.</p>}
                 {job?.errorMessage && <p className="mt-3 text-xs text-red-700">{job.errorMessage}</p>}
                 {jobError && <p className="mt-3 text-xs text-red-700">{jobError}</p>}
-                <p className="mt-4 text-xs text-slate-500">Khởi động một lần <code>python scripts/tikz_local_worker.py --url URL_RENDER --daemon</code> trên máy có TeX. Để máy bật khi xử lý.</p>
+                <p className="mt-4 text-xs text-slate-500">Khởi động một lần <code>python scripts/tikz_local_worker.py --url URL_RENDER --daemon</code> trên máy có TeX. SVG tối đa 12 MB; AI không được lưu trực tiếp mà luôn phải qua biên dịch và bộ lọc an toàn.</p>
             </section>
 
             <section className="mb-8 rounded-3xl border border-red-200 bg-white p-6 shadow-sm">

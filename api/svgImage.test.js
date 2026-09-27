@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { sanitizeCompiledSvg as preserveSvgImage } from './svgImage.js';
+import { MAX_SVG_BYTES, sanitizeCompiledSvg as preserveSvgImage } from './svgImage.js';
 describe('preserve compiled SVG images', () => {
     it('never serializes empty path attributes as invalid XML boolean attributes', () => {
         for (const path of ['<path id="space" d=""/>', '<path id="space" d></path>']) {
@@ -32,6 +32,7 @@ describe('preserve compiled SVG images', () => {
     it('rejects non-SVG and oversized input without filtering drawing components', () => {
         expect(preserveSvgImage('<html>not an image</html>')).toBe('');
         expect(preserveSvgImage(null)).toBe('');
-        expect(preserveSvgImage('<svg>' + 'x'.repeat(2_000_000) + '</svg>')).toBe('');
+        expect(preserveSvgImage('<svg>' + 'x'.repeat(2_000_000) + '</svg>')).toContain('<svg>');
+        expect(preserveSvgImage('<svg>' + 'x'.repeat(MAX_SVG_BYTES) + '</svg>')).toBe('');
     });
 });

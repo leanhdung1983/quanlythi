@@ -31,6 +31,7 @@ export const AdaptiveTest: React.FC = () => {
     const [timeLeft, setTimeLeft] = useState(0);
     const [score, setScore] = useState(0);
     const [currentExamSessionId, setCurrentExamSessionId] = useState<number | null>(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     // AI Features State
     const [aiExplanationForQ, setAiExplanationForQ] = useState<number | null>(null);
@@ -144,6 +145,12 @@ export const AdaptiveTest: React.FC = () => {
     };
 
     const finishExam = useCallback(async () => {
+        if (isSubmitting) return;
+        if (!user || !currentExamSessionId) {
+            window.alert('Không tìm thấy phiên ôn tập để nộp. Vui lòng tải lại bài hoặc bắt đầu một đề mới.');
+            return;
+        }
+        setIsSubmitting(true);
         let totalPoints = 0;
         questions.forEach(q => {
             const userAns = answers[q.id];
@@ -156,25 +163,29 @@ export const AdaptiveTest: React.FC = () => {
                 if (checkKQAnswer(userAns, q.correctAnswer)) totalPoints += pts;
             }
         });
-        setScore(Math.round(totalPoints * 100) / 100);
-        setStep('result');
-        
-        // Save result if needed
-        if (user) {
-            try {
-                await apiService.saveExamResult({
-                    id: currentExamSessionId,
-                    user_id: user.id,
-                    exam_title: "Ôn tập Adaptive",
-                    score: Math.round(totalPoints * 100) / 100,
-                    duration_seconds: (questions.length * 2 * 60) - timeLeft,
-                    questions,
-                    answers
-                });
-                setCurrentExamSessionId(null);
-            } catch (e) { console.error(e); }
+        try {
+            const result = await apiService.saveExamResult({
+                id: currentExamSessionId,
+                duration_seconds: (questions.length * 2 * 60) - timeLeft,
+                answers
+            });
+            setScore(Number.isFinite(Number(result?.score)) ? Number(result.score) : Math.round(totalPoints * 100) / 100);
+            setCurrentExamSessionId(null);
+            setStep('result');
+        } catch (error) {
+            console.error('Adaptive submit failed', error);
+            window.alert(error instanceof Error ? error.message : 'Không thể nộp bài. Vui lòng thử lại.');
+        } finally {
+            setIsSubmitting(false);
         }
-    }, [questions, answers, user, timeLeft, currentExamSessionId]);
+    }, [questions, answers, user, timeLeft, currentExamSessionId, isSubmitting]);
+
+    const confirmFinishExam = useCallback(() => {
+        if (isSubmitting) return;
+        if (window.confirm(`Bạn còn ${formatTime(timeLeft)} để kiểm tra lại. Bạn có chắc chắn muốn nộp bài ngay bây giờ?`)) {
+            void finishExam();
+        }
+    }, [finishExam, isSubmitting, timeLeft]);
 
     useEffect(() => {
         let timer: ReturnType<typeof setInterval>;
@@ -538,7 +549,7 @@ export const AdaptiveTest: React.FC = () => {
                 <div className="flex items-center gap-4">
                     <button 
                         onClick={() => { 
-                            showConfirm("Thoát bài thi?", "Tiến trình của bạn sẽ được lưu lại (nếu là bài tự luyện). Bạn có chắc chắn muốn quay lại?", () => { setStep('intro');  });
+                            if (window.confirm('Tiến trình đang làm sẽ được lưu trên trình duyệt. Bạn có chắc chắn muốn quay lại?')) setStep('intro');
                         }} 
                         className="p-1.5 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-500 transition-all border border-slate-200 active:scale-95"
                     >
@@ -599,16 +610,11 @@ export const AdaptiveTest: React.FC = () => {
 
                     {!isReview && (
                         <button 
-                            onClick={() => { 
-                                showConfirm(
-                                    "Nộp bài?", 
-                                    "Bạn còn " + formatTime(timeLeft) + " để kiểm tra lại. Bạn có chắc chắn muốn nộp bài thi ngay bây giờ?", 
-                                    () => finishExam()
-                                ); 
-                            }} 
-                            className="bg-orange-500 hover:bg-orange-600 text-white px-6 py-2 rounded-xl font-black text-[11px] shadow-lg shadow-orange-500/30 transition-all active:scale-95 uppercase tracking-widest border border-orange-400/50"
+                            onClick={confirmFinishExam}
+                            disabled={isSubmitting}
+                            className="bg-orange-500 hover:bg-orange-600 disabled:opacity-60 text-white px-6 py-2 rounded-xl font-black text-[11px] shadow-lg shadow-orange-500/30 transition-all active:scale-95 uppercase tracking-widest border border-orange-400/50"
                         >
-                            Nộp bài
+                            {isSubmitting ? 'Đang nộp...' : 'Nộp bài'}
                         </button>
                     )}
                 </div>
@@ -806,16 +812,11 @@ export const AdaptiveTest: React.FC = () => {
                                     </div>
                                 </div>
                                 <button 
-                                    onClick={() => {
-                                        showConfirm(
-                                            "Nộp bài?", 
-                                            "Bạn còn " + formatTime(timeLeft) + " để kiểm tra lại. Bạn có chắc chắn muốn nộp bài thi ngay bây giờ?", 
-                                            () => finishExam()
-                                        ); 
-                                    }}
-                                    className="w-full bg-orange-500 h-16 rounded-[1.5rem] text-white font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl shadow-orange-100/50 hover:-translate-y-1 active:translate-y-0 active:scale-95"
+                                    onClick={confirmFinishExam}
+                                    disabled={isSubmitting}
+                                    className="w-full bg-orange-500 disabled:opacity-60 h-16 rounded-[1.5rem] text-white font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl shadow-orange-100/50 hover:-translate-y-1 active:translate-y-0 active:scale-95"
                                 >
-                                    Hoàn thành & nộp bài <ShieldCheck size={20}/>
+                                    {isSubmitting ? <><Loader2 className="animate-spin" size={20}/> Đang nộp bài...</> : <>Hoàn thành & nộp bài <ShieldCheck size={20}/></>}
                                 </button>
                             </div>
                         )}

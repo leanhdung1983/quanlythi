@@ -23,7 +23,7 @@ from urllib.request import HTTPCookieProcessor, Request, build_opener
 
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 EX_TEST_STYLE = PROJECT_ROOT / "template" / "ex_test.sty"
-MAX_SVG_BYTES = 1_900_000
+MAX_SVG_BYTES = 12_000_000
 
 if hasattr(sys.stdout, "reconfigure"):
     sys.stdout.reconfigure(encoding="utf-8")
@@ -161,7 +161,7 @@ def compile_svg(source, timeout):
         if not re.search(r"<svg\b", result, re.IGNORECASE) or not result.endswith("</svg>"):
             raise RuntimeError("Công cụ chuyển đổi không trả về SVG hợp lệ.")
         if len(result.encode("utf-8")) > MAX_SVG_BYTES:
-            raise RuntimeError("SVG vượt giới hạn 1,9 MB.")
+            raise RuntimeError("SVG vượt giới hạn an toàn 12 MB.")
         validate_svg_references(result)
         return result
 
@@ -257,6 +257,20 @@ def run_worker(args, api=None, job=None):
                     print(f"[ĐÃ LƯU] {label}")
                 except (RuntimeError, subprocess.TimeoutExpired) as error:
                     message = str(error)[:1000]
+                    try:
+                        repaired = api.request("POST", "/api/admin/tikz-audit/ai-fix", {
+                            "questionId": question["id"], "hash": hash_value, "error": message,
+                        })
+                        fixed_svg = compile_svg(repaired["fixedSource"], args.timeout)
+                        api.request("POST", "/api/admin/tikz-audit/sync", {
+                            "questionId": question["id"], "hash": hash_value, "svg": fixed_svg,
+                        })
+                        compiled[hash_value] = fixed_svg
+                        synced += 1
+                        print(f"[AI ĐÃ SỬA VÀ LƯU] {label}")
+                        continue
+                    except (RuntimeError, subprocess.TimeoutExpired, KeyError) as ai_error:
+                        message = f"{message} | AI sửa thất bại: {str(ai_error)}"[:1000]
                     failed += 1
                     outcomes.append({"id": question["id"], "hash": hash_value, "error": message})
                     print(f"[LỖI] {label}: {message}")

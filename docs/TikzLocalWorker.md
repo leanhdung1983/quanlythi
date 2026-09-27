@@ -62,7 +62,9 @@ hoàn tất. Các khối thất bại giữ nguyên để có thể chạy lại
 lưu mặc định ở `output/tikz_worker_errors.json` trên máy local.
 
 Biên dịch dùng `-no-shell-escape`, giới hạn thời gian mỗi bước (`--timeout`,
-mặc định 90 giây), thư mục tạm riêng và giới hạn SVG 1,9 MB. Không chỉnh
+mặc định 90 giây), thư mục tạm riêng và giới hạn an toàn SVG 12 MB. Khi biên dịch
+lỗi, worker có thể nhờ AI sửa mã TikZ đúng một lần; bản sửa vẫn phải biên dịch
+thành công và vượt qua bộ lọc SVG phía server trước khi được lưu. Không chỉnh
 các file Python cũ chứa thông tin database rồi đẩy chúng lên GitHub. Nếu
 thông tin DB đã từng được lưu trong mã, đổi mật khẩu DB trước khi sử dụng tiếp.
 

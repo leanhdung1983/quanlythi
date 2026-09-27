@@ -67,6 +67,7 @@ app.use('/api', authRouter);
 // Only AI endpoints consume the AI quota; background job polling must not.
 app.use('/api/ai', aiLimiter);
 app.use('/api/adaptive/generate', aiLimiter);
+app.use('/api/admin/tikz-audit/ai-fix', aiLimiter);
 app.use('/api', aiRouter);
 app.use('/api/images', imageUploadLimiter);
 app.use('/api', classesRouter);

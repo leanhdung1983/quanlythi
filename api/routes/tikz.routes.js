@@ -1,7 +1,9 @@
 import express from 'express';
 import {
-    pool, requireAdmin, sanitizeSvg, generateHash, clearCache,
+    pool, requireAdmin, sanitizeSvg, generateHash, clearCache, getGeminiApiKeys, generateWithFallback, parseGeminiError,
 } from '../core.js';
+import { MAX_SVG_BYTES } from '../svgImage.js';
+import { normalizeAiTikzFix } from '../tikzAiFix.js';
 import {
     extractTikzBlocks, extractSvgReferences, inspectTikzQuestion, inspectTikzStructure, replaceRenderedBlock,
 } from '../tikzAudit.js';
@@ -95,6 +97,40 @@ router.get('/admin/tikz-audit', async (req, res) => {
     }
 });
 
+router.post('/admin/tikz-audit/ai-fix', async (req, res) => {
+    try {
+        if (!requireAdmin(req, res)) return;
+        const questionId = Number.parseInt(req.body.questionId, 10);
+        const hash = String(req.body.hash || '').toLowerCase();
+        const compileError = String(req.body.error || '').slice(0, 2000);
+        if (!Number.isSafeInteger(questionId) || questionId < 1 || !validHash(hash)) {
+            return res.status(400).json({ error: 'ID câu hỏi hoặc hash không hợp lệ.' });
+        }
+        const [rows] = await pool.query(
+            'SELECT content_latex, content_latex_original FROM questions WHERE id = ? LIMIT 1', [questionId],
+        );
+        const row = rows[0];
+        if (!row) return res.status(404).json({ error: 'Câu hỏi không tồn tại.' });
+        const source = extractTikzBlocks(row.content_latex).find(block => block.hash === hash)?.source
+            || extractTikzBlocks(row.content_latex_original).find(block => block.hash === hash)?.source;
+        if (!source) return res.status(422).json({ error: 'Không còn mã TikZ gốc để AI sửa.' });
+        const keys = await getGeminiApiKeys(req.user.id);
+        if (!keys.length) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
+        const prompt = `Mã TikZ bị lỗi:\n${source}\n\nLỗi biên dịch:\n${compileError || 'Không xác định'}\n\nHãy sửa tối thiểu để biên dịch được và giữ nguyên nội dung hình học, nhãn, số liệu. Chỉ trả về đúng một khối TikZ đã sửa, không markdown, không thêm package, không dùng input/include hay đọc ghi tệp.`;
+        const response = await generateWithFallback(keys, prompt, {
+            systemInstruction: 'Bạn sửa mã TikZ/PGFPlots an toàn. Không thay đổi ý nghĩa toán học. Chỉ xuất mã hình, không xuất documentclass, usepackage, markdown hoặc giải thích.',
+            responseMimeType: 'text/plain',
+            maxOutputTokens: 4096,
+        });
+        const fixedSource = normalizeAiTikzFix(response.text || '');
+        if (!fixedSource) return res.status(422).json({ error: 'AI không trả về mã TikZ an toàn và hoàn chỉnh.' });
+        res.json({ success: true, fixedSource });
+    } catch (error) {
+        console.error('[TIKZ AI FIX] Failed:', error);
+        res.status(502).json({ error: parseGeminiError(error) });
+    }
+});
+
 router.post('/admin/tikz-audit/sync', async (req, res) => {
     if (!requireAdmin(req, res)) return;
     const questionId = Number.parseInt(req.body.questionId, 10);
@@ -106,8 +142,8 @@ router.post('/admin/tikz-audit/sync', async (req, res) => {
     if (svg !== null && svg !== undefined && typeof svg !== 'string') {
         return res.status(400).json({ error: 'SVG phải là chuỗi XML.' });
     }
-    if (svg && Buffer.byteLength(svg, 'utf8') > 2_000_000) {
-        return res.status(413).json({ error: 'SVG vượt giới hạn 2 MB.' });
+    if (svg && Buffer.byteLength(svg, 'utf8') > MAX_SVG_BYTES) {
+        return res.status(413).json({ error: 'SVG vượt giới hạn an toàn 12 MB.' });
     }
     let conn;
     try {
