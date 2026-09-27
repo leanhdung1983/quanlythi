@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractSourceId, injectCanonicalId, normalizeId6, normalizeQuestionSource, parseId6, validateId6Candidate } from './id6.js';
+import { extractSourceId, injectCanonicalId, normalizeId6, normalizeQuestionSource, parseId6, requiresAiIdReview, validateId6Candidate } from './id6.js';
 
 describe('ID6 canonical rules', () => {
     it.each([['12d01b03_04', '2D1H3-4'], ['2H2K5-7', '2H2V5-7'], ['10C3G2-1', '0C3C2-1']])('normalizes %s', (input, expected) => {
@@ -38,5 +38,9 @@ describe('ID6 canonical rules', () => {
         const result = validateId6Candidate({ content_latex: '\\begin{ex}\n%[2D1H3-4]\nNội dung\\end{ex}', unit_id: 3, level_id: 2 }, '2D1H3-4', metadata);
         expect(result.isValid).toBe(true);
         expect(result.reasonCodes).toEqual([]);
+    });
+    it('forces AI review for a scanner level mismatch but not source normalization alone', () => {
+        expect(requiresAiIdReview(['ID_LEVEL_MISMATCH'])).toBe(true);
+        expect(requiresAiIdReview(['ID_NOT_IN_SOURCE', 'ID_LEGACY'])).toBe(false);
     });
 });

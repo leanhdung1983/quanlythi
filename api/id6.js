@@ -74,6 +74,16 @@ export function describeId6Issues(issues = []) {
     return issues.map(code => ID6_REASON_MESSAGES[code] || code).join(' ');
 }
 
+const AI_REVIEW_ISSUES = new Set([
+    'ID_MISSING', 'ID_MALFORMED', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH',
+    'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH'
+]);
+
+/** Issues that cannot be safely repaired by syntax/source normalization alone. */
+export function requiresAiIdReview(issues = []) {
+    return issues.some(code => AI_REVIEW_ISSUES.has(code));
+}
+
 export function inspectQuestionId(question, metadataById) {
     const rawId = String(question.legacy_full_id || '').trim();
     const parsed = parseId6(rawId);

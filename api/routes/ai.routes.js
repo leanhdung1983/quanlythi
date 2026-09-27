@@ -7,7 +7,7 @@ import {
     generateWithFallback, 
     parseGeminiError 
 } from '../core.js';
-import { normalizeId6, extractSourceId, validateId6Candidate } from '../id6.js';
+import { normalizeId6, extractSourceId, injectCanonicalId, requiresAiIdReview, validateId6Candidate } from '../id6.js';
 import { normalizeExTestOutput } from '../exTest.js';
 import { convertPdfToExTest } from '../pdfToExTest.js';
 
@@ -202,10 +202,13 @@ const MAX_ID_PROMPT_CHARS = 30000;
 
 function toValidatedSuggestion(question, suggestedId, catalogData, ai = {}) {
     const normalized = normalizeId6(suggestedId || '');
+    const candidateMetadata = normalized ? catalogData.metadataById.get(normalized) : null;
+    // Validate the exact state that review/confirm will persist: canonical source
+    // marker plus the catalog unit and level belonging to the proposed ID.
     const validation = validateId6Candidate({
-        content_latex: question.latex || '',
-        unit_id: question.unit_id,
-        level_id: question.level_id
+        content_latex: candidateMetadata ? injectCanonicalId(question.latex || '', normalized) : (question.latex || ''),
+        unit_id: candidateMetadata?.unit_id ?? question.unit_id,
+        level_id: candidateMetadata?.level_id ?? question.level_id
     }, normalized, catalogData.metadataById);
     const aiReason = String(ai.reason || '').trim();
     return {
@@ -223,7 +226,9 @@ function toValidatedSuggestion(question, suggestedId, catalogData, ai = {}) {
 router.post('/ai/validate-question', async (req, res) => {
     try {
         if (!requireTeacherOrAdmin(req, res)) return;
-        const { latex, current_id } = req.body;
+        const { latex, current_id, unit_id, level_id } = req.body;
+        const issueCodes = Array.isArray(req.body.issue_codes) ? req.body.issue_codes.filter(code => typeof code === 'string') : [];
+        const forceAiReview = requiresAiIdReview(issueCodes);
         if (typeof latex !== 'string' || latex.length === 0 || latex.length > 100000) return res.status(400).json({ error: 'Nội dung câu hỏi không hợp lệ.' });
         
         const apiKeys = await getGeminiApiKeys(req.user.id);
@@ -234,8 +239,8 @@ router.post('/ai/validate-question', async (req, res) => {
 
         // Zero-token local check if question already has source ID
         const srcId = extractSourceId(latex);
-        if (srcId && validIds.has(srcId)) {
-            const result = toValidatedSuggestion({ id: 0, latex }, srcId, catalogData, { confidence: 1 });
+        if (!forceAiReview && srcId && validIds.has(srcId)) {
+            const result = toValidatedSuggestion({ id: 0, latex, unit_id, level_id }, srcId, catalogData, { confidence: 1 });
             return res.json({
                 success: true,
                 data: {
@@ -252,14 +257,14 @@ router.post('/ai/validate-question', async (req, res) => {
         const promptCatalog = getFilteredCatalog(catalogData, detectedGrades);
         const cleanLatex = stripSolutionAndClean(latex);
 
-        const prompt = `Câu hỏi LaTeX: ${cleanLatex}\nID hiện tại: ${current_id || ''}\n\nDanh mục dạng toán chuẩn ID6:\n${promptCatalog}\n\nQuy tắc: Ký hiệu '*' là vị trí của mức độ N (Nhận biết), H (Thông hiểu), V (Vận dụng), C (Vận dụng cao). Hãy kiểm tra ID và chỉ đề xuất mã ID6 đầy đủ hợp lệ.`;
+        const prompt = `Câu hỏi LaTeX: ${cleanLatex}\nID hiện tại: ${current_id || ''}\nCác lỗi scanner đã phát hiện: ${issueCodes.join(', ') || 'Không có'}\n\nDanh mục dạng toán chuẩn ID6:\n${promptCatalog}\n\nQuy tắc: Ký hiệu '*' là vị trí của mức độ N (Nhận biết), H (Thông hiểu), V (Vận dụng), C (Vận dụng cao). Nếu scanner báo ID_LEVEL_MISMATCH, bắt buộc phân tích lại mức độ nhận thức từ nội dung, không được kết luận ID hiện tại hợp lệ chỉ vì mã tồn tại trong danh mục. Hãy đề xuất mã ID6 đầy đủ phù hợp nhất.`;
         const response = await generateWithFallback(apiKeys, prompt, {
             systemInstruction: 'Trả về JSON gồm isValid, reason, suggestedId, confidence từ 0 đến 1, alternatives (tối đa 3 ID), competencies, chapter, unit và detectedQuestionType. Không thêm markdown. Thay thế * bằng N, H, V hoặc C để tạo mã ID6 chuẩn.',
             responseMimeType: 'application/json'
         });
         const data = JSON.parse((response.text || '{}').replace(/^```json\s*|\s*```$/g, ''));
         const suggestedId = normalizeId6(data.suggestedId || '');
-        const validated = toValidatedSuggestion({ id: 0, latex }, suggestedId, catalogData, data);
+        const validated = toValidatedSuggestion({ id: 0, latex, unit_id, level_id }, suggestedId, catalogData, data);
         data.suggestedId = validated.suggestedId;
         data.isValid = validated.isValid;
         data.reasonCodes = validated.reasonCodes;
@@ -298,9 +303,10 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
 
         for (const q of batch) {
             const rawLatex = typeof q.latex === 'string' ? q.latex : '';
+            const forceAiReview = requiresAiIdReview(Array.isArray(q.issue_codes) ? q.issue_codes : []);
             // Check if question already has source ID in comment or \begin{ex}[...]
             const srcId = extractSourceId(rawLatex);
-            if (srcId && validIds.has(srcId)) {
+            if (!forceAiReview && srcId && validIds.has(srcId)) {
                 localResults.push(toValidatedSuggestion(q, srcId, catalogData, {
                     confidence: 1,
                     reason: 'Nhận diện tự động từ mã có sẵn trong câu hỏi (0 token).'
@@ -310,7 +316,7 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
 
             // Check if current_id can be normalized (e.g. legacy level Y, B, K, G -> N, H, V, C)
             const normCurrent = normalizeId6(q.current_id || '');
-            if (normCurrent && validIds.has(normCurrent)) {
+            if (!forceAiReview && normCurrent && validIds.has(normCurrent)) {
                 localResults.push(toValidatedSuggestion(q, normCurrent, catalogData, {
                     confidence: 0.95,
                     reason: 'Chuẩn hóa tự động từ mã hiện tại (0 token).'
@@ -332,7 +338,8 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
 
         const questionsText = needAiQuestions.map((q, idx) => {
             const clean = stripSolutionAndClean(q.latex);
-            return `--- CÂU ${idx + 1} (REF_ID: ${q.id}) ---\n${clean}`;
+            const issues = Array.isArray(q.issue_codes) ? q.issue_codes.join(', ') : '';
+            return `--- CÂU ${idx + 1} (REF_ID: ${q.id}) ---\nID hiện tại: ${q.current_id || 'chưa có'}\nLỗi scanner: ${issues || 'không có'}\n${clean}`;
         }).join('\n\n');
 
         const prompt = `Dưới đây là danh sách ${needAiQuestions.length} câu hỏi Toán dạng LaTeX cần đề xuất mã ID6 chuẩn:
@@ -351,7 +358,7 @@ Ký hiệu '*' trong danh mục là vị trí của Mức độ nhận thức:
 Ví dụ: Từ dạng "2D1*1-1", nếu câu ở mức Nhận biết thì thay '*' thành 'N' -> mã là "2D1N1-1".
 
 YÊU CẦU:
-1. Phân tích nội dung và mức độ nhận thức (N, H, V, C) của từng câu.
+1. Phân tích nội dung và mức độ nhận thức (N, H, V, C) của từng câu. Nếu lỗi scanner có ID_LEVEL_MISMATCH, không được giữ nguyên mức độ chỉ vì ID hiện tại có trong danh mục.
 2. Chọn đúng dạng toán phù hợp từ Danh mục và thay thế '*' bằng chữ cái mức độ tương ứng.
 3. Trả về đúng JSON Array theo mẫu (không thêm văn bản ngoài JSON):
 [

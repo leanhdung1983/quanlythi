@@ -68,11 +68,21 @@ export const convertDocToLatex = async (
         pageCount: 0, missingQuestionNumbers: [], warnings: payload.warnings || [], complete: Boolean(payload.complete) };
 };
 
-export const validateAndTagQuestion = async (latex: string, currentId: string) => {
+export const validateAndTagQuestion = async (
+    latex: string,
+    currentId: string,
+    context: { issueCodes?: string[]; unitId?: number; levelId?: number } = {}
+) => {
     const response = await fetch('/api/ai/validate-question', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ latex, current_id: currentId })
+        body: JSON.stringify({
+            latex,
+            current_id: currentId,
+            issue_codes: context.issueCodes || [],
+            unit_id: context.unitId,
+            level_id: context.levelId
+        })
     });
     const payload = await readApiResponse(response);
     return payload.data || null;
@@ -108,7 +118,7 @@ function abortableDelay(ms: number, signal?: AbortSignal): Promise<void> {
 }
 
 export const batchSuggestIds = async (
-    questions: Array<{ id: number; latex: string; current_id?: string; unit_id?: number; level_id?: number }>,
+    questions: Array<{ id: number; latex: string; current_id?: string; unit_id?: number; level_id?: number; issue_codes?: string[] }>,
     onProgress?: (processed: number, total: number) => void,
     onChunkResults?: (chunkResults: BatchSuggestResult[]) => void,
     isCancelled?: () => boolean,
@@ -166,7 +176,8 @@ export const batchSuggestIds = async (
                             latex: q.latex,
                             current_id: q.current_id,
                             unit_id: q.unit_id,
-                            level_id: q.level_id
+                            level_id: q.level_id,
+                            issue_codes: q.issue_codes
                         }))
                     })
                 });

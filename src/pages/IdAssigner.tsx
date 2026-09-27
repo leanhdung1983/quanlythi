@@ -399,8 +399,10 @@ export const IdAssigner: React.FC = () => {
         if (!currentItems || currentItems.length === 0) return;
 
         const validIdSet = new Set(metadata.map(m => m.id_full));
+        const semanticReviewCodes = new Set(['ID_MISSING', 'ID_MALFORMED', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH', 'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH']);
         const itemsToProcess = currentItems.filter(item => {
-            return !isValidID6(item.assignedId) || !validIdSet.has(item.assignedId) || item.assignedId.includes('?');
+            const scannerRequiresAi = item.issueCodes?.some(code => semanticReviewCodes.has(code));
+            return scannerRequiresAi || !isValidID6(item.assignedId) || !validIdSet.has(item.assignedId) || item.assignedId.includes('?');
         });
 
         if (itemsToProcess.length === 0) {
@@ -466,7 +468,8 @@ export const IdAssigner: React.FC = () => {
                 latex: item.content,
                 current_id: item.assignedId,
                 unit_id: item.unitId,
-                level_id: item.levelId
+                level_id: item.levelId,
+                issue_codes: item.issueCodes || []
             }));
 
             const batchResults = await batchSuggestIds(
@@ -975,7 +978,11 @@ export const IdAssigner: React.FC = () => {
         setIsValidating(true);
         setAiResult(null);
         try {
-            const result = await validateAndTagQuestion(currentItem.content, currentItem.assignedId);
+            const result = await validateAndTagQuestion(currentItem.content, currentItem.assignedId, {
+                issueCodes: currentItem.issueCodes,
+                unitId: currentItem.unitId,
+                levelId: currentItem.levelId
+            });
             setAiResult(result);
             
             // If AI suggests competencies, we could potentially auto-tag them here or just show them
@@ -1502,16 +1509,18 @@ export const IdAssigner: React.FC = () => {
                                                 <div className="flex items-start gap-2 mb-2">
                                                     {aiResult.isValid ? <CheckCircle2 size={16} className="text-green-600 shrink-0"/> : <AlertTriangle size={16} className="text-amber-600 shrink-0"/>}
                                                     <div>
-                                                        <p className="font-bold mb-1">{aiResult.isValid ? 'ID Hợp lệ' : 'ID Có thể chưa chính xác'}</p>
+                                                        <p className="font-bold mb-1">{aiResult.isValid ? 'Đề xuất AI hợp lệ' : 'ID Có thể chưa chính xác'}</p>
                                                         <p className="opacity-90">{aiResult.reason}</p>
                                                         {aiResult.confidence !== undefined && <p className="mt-1 font-bold">Độ tin cậy: {Math.round(aiResult.confidence * 100)}%</p>}
                                                     </div>
                                                 </div>
                                                 
-                                                {!aiResult.isValid && aiResult.suggestedId && (
-                                                    <div className="mt-2 p-2 bg-white/50 rounded-lg border border-amber-200 flex justify-between items-center">
+                                                {aiResult.suggestedId && (aiResult.suggestedId !== currentItem.assignedId || Boolean(currentItem.issueCodes?.some(code => ['ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH'].includes(code)))) && (
+                                                    <div className="mt-2 p-2 bg-white/50 rounded-lg border border-indigo-200 flex justify-between items-center">
                                                         <span>Đề xuất: <code className="font-bold">{aiResult.suggestedId}</code></span>
-                                                        <button onClick={applyAISuggestion} className="bg-amber-600 text-white px-2 py-1 rounded text-[10px] font-bold hover:bg-amber-700">Áp dụng</button>
+                                                        <button onClick={applyAISuggestion} className="bg-indigo-600 text-white px-2 py-1 rounded text-[10px] font-bold hover:bg-indigo-700">
+                                                            {aiResult.suggestedId === currentItem.assignedId ? 'Đồng bộ mức độ' : 'Áp dụng'}
+                                                        </button>
                                                     </div>
                                                 )}
                                                 {aiResult.alternatives && aiResult.alternatives.length > 0 && (
