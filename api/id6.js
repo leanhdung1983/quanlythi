@@ -59,6 +59,21 @@ export function normalizeQuestionSource(source, id) {
     return { source: after, changed: after !== before };
 }
 
+export const ID6_REASON_MESSAGES = Object.freeze({
+    ID_MISSING: 'Câu hỏi chưa có mã ID6.',
+    ID_MALFORMED: 'Mã ID6 không đúng cấu trúc chuẩn.',
+    ID_LEGACY: 'Mã ID6 đang ở định dạng cũ và cần chuẩn hóa.',
+    ID_UNKNOWN: 'Mã ID6 không tồn tại trong danh mục.',
+    ID_SOURCE_MISMATCH: 'Mã trong nguồn LaTeX khác mã đang kiểm tra.',
+    ID_NOT_IN_SOURCE: 'Nguồn LaTeX chưa chứa mã ID6 chuẩn.',
+    ID_UNIT_MISMATCH: 'Mã ID6 không khớp bài đã lưu.',
+    ID_LEVEL_MISMATCH: 'Mã ID6 không khớp mức độ đã lưu.'
+});
+
+export function describeId6Issues(issues = []) {
+    return issues.map(code => ID6_REASON_MESSAGES[code] || code).join(' ');
+}
+
 export function inspectQuestionId(question, metadataById) {
     const rawId = String(question.legacy_full_id || '').trim();
     const parsed = parseId6(rawId);
@@ -75,4 +90,18 @@ export function inspectQuestionId(question, metadataById) {
     if (metadata?.unit_id && question.unit_id && Number(metadata.unit_id) !== Number(question.unit_id)) issues.push('ID_UNIT_MISMATCH');
     if (metadata?.level_id && question.level_id && Number(metadata.level_id) !== Number(question.level_id)) issues.push('ID_LEVEL_MISMATCH');
     return { normalized, sourceId, metadata, issues, suggestedId: metadata ? normalized : (sourceId && metadataById.has(sourceId) ? sourceId : '') };
+}
+
+/** Validate an AI candidate with exactly the same rules used by the ID review scanner. */
+export function validateId6Candidate(question, candidateId, metadataById) {
+    const review = inspectQuestionId({
+        ...question,
+        legacy_full_id: candidateId
+    }, metadataById);
+    return {
+        ...review,
+        isValid: review.issues.length === 0,
+        reasonCodes: review.issues,
+        reason: describeId6Issues(review.issues)
+    };
 }

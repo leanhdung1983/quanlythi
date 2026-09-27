@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractSourceId, injectCanonicalId, normalizeId6, normalizeQuestionSource, parseId6 } from './id6.js';
+import { extractSourceId, injectCanonicalId, normalizeId6, normalizeQuestionSource, parseId6, validateId6Candidate } from './id6.js';
 
 describe('ID6 canonical rules', () => {
     it.each([['12d01b03_04', '2D1H3-4'], ['2H2K5-7', '2H2V5-7'], ['10C3G2-1', '0C3C2-1']])('normalizes %s', (input, expected) => {
@@ -26,5 +26,17 @@ describe('ID6 canonical rules', () => {
         const result = normalizeQuestionSource('```latex\r\n\\begin{ex}\r\n$x + 1$   \r\n\\end{ex}\r\n```', '2D1H3-4');
         expect(result.source).toContain('$x + 1$');
         expect(result.changed).toBe(true);
+    });
+    it('uses scanner rules for an AI candidate instead of declaring a catalog ID valid', () => {
+        const metadata = new Map([['2D1H3-4', { id_full: '2D1H3-4', unit_id: 3, level_id: 2 }]]);
+        const result = validateId6Candidate({ content_latex: '\\begin{ex}\nNội dung\\end{ex}', unit_id: 3, level_id: 2 }, '2D1H3-4', metadata);
+        expect(result.isValid).toBe(false);
+        expect(result.reasonCodes).toContain('ID_NOT_IN_SOURCE');
+    });
+    it('accepts a candidate only when catalog, source, unit and level agree', () => {
+        const metadata = new Map([['2D1H3-4', { id_full: '2D1H3-4', unit_id: 3, level_id: 2 }]]);
+        const result = validateId6Candidate({ content_latex: '\\begin{ex}\n%[2D1H3-4]\nNội dung\\end{ex}', unit_id: 3, level_id: 2 }, '2D1H3-4', metadata);
+        expect(result.isValid).toBe(true);
+        expect(result.reasonCodes).toEqual([]);
     });
 });

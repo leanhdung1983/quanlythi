@@ -81,42 +81,53 @@ export const validateAndTagQuestion = async (latex: string, currentId: string) =
 export interface BatchSuggestResult {
     id: number;
     suggestedId: string;
+    isValid?: boolean;
+    reasonCodes?: string[];
     confidence: number;
     reason: string;
 }
-
-const sleep = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 function isQuotaOrRateLimitError(err: unknown): boolean {
     const msg = String((err as any)?.message || err || '').toLowerCase();
     return msg.includes('429') || msg.includes('quota') || msg.includes('resource_exhausted') || msg.includes('hạn mức') || msg.includes('vượt quá');
 }
 
-
+function abortableDelay(ms: number, signal?: AbortSignal): Promise<void> {
+    if (signal?.aborted) return Promise.reject(new DOMException('Đã dừng hàng đợi AI.', 'AbortError'));
+    return new Promise((resolve, reject) => {
+        const onAbort = () => {
+            window.clearTimeout(timer);
+            reject(new DOMException('Đã dừng hàng đợi AI.', 'AbortError'));
+        };
+        const timer = window.setTimeout(() => {
+            signal?.removeEventListener('abort', onAbort);
+            resolve();
+        }, ms);
+        signal?.addEventListener('abort', onAbort, { once: true });
+    });
+}
 
 export const batchSuggestIds = async (
-    questions: Array<{ id: number; latex: string; current_id?: string }>,
+    questions: Array<{ id: number; latex: string; current_id?: string; unit_id?: number; level_id?: number }>,
     onProgress?: (processed: number, total: number) => void,
     onChunkResults?: (chunkResults: BatchSuggestResult[]) => void,
-    isCancelled?: () => boolean
+    isCancelled?: () => boolean,
+    signal?: AbortSignal
 ): Promise<BatchSuggestResult[]> => {
     // Configuration
-    const CHUNK_SIZE = 8; // 8 questions per chunk (reduces total API calls by ~40%)
-    const PAUSE_MS = 2000; // 2s pause between API calls to stay within free tier 15 RPM limit
-    const MAX_RETRIES = 2; // retry on quota/rate limit errors
+    const CHUNK_SIZE = 4;
+    const PAUSE_MS = 4500; // <= 13 calls/minute, leaving headroom for the free-tier quota
+    const MAX_RETRIES = 1; // bounded retry: server already rotates keys/models
 
     const allResults: BatchSuggestResult[] = [];
     const total = questions.length;
-
-    // Helper to pause
-    const delay = (ms: number) => new Promise(res => setTimeout(res, ms));
 
     let fatalQuotaError: Error | null = null;
     let lastError: Error | null = null;
 
     // Process each chunk sequentially
     for (let i = 0; i < total; i += CHUNK_SIZE) {
-        if (isCancelled?.()) {
+        if (isCancelled?.() || signal?.aborted) {
             break;
         }
 
@@ -134,7 +145,7 @@ export const batchSuggestIds = async (
             allResults.push(...skippedResults);
             onChunkResults?.(skippedResults);
             onProgress?.(Math.min(i + CHUNK_SIZE, total), total);
-            await delay(PAUSE_MS);
+            await abortableDelay(PAUSE_MS, signal).catch(() => undefined);
             continue;
         }
 
@@ -142,17 +153,20 @@ export const batchSuggestIds = async (
         let chunkSuccess = false;
 
         while (attempt <= MAX_RETRIES && !chunkSuccess) {
-            if (isCancelled?.()) break;
+            if (isCancelled?.() || signal?.aborted) break;
 
             try {
                 const response = await fetch('/api/ai/batch-suggest-ids', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
+                    signal,
                     body: JSON.stringify({
                         questions: chunk.map(q => ({
                             id: q.id,
                             latex: q.latex,
-                            current_id: q.current_id
+                            current_id: q.current_id,
+                            unit_id: q.unit_id,
+                            level_id: q.level_id
                         }))
                     })
                 });
@@ -183,7 +197,7 @@ export const batchSuggestIds = async (
                     if (attempt < MAX_RETRIES && !isCancelled?.()) {
                         // Exponential back-off before retrying
                         const backoff = PAUSE_MS * Math.pow(2, attempt + 1);
-                        await delay(backoff);
+                        await abortableDelay(backoff, signal);
                         attempt++;
                     } else {
                         // Mark fatal quota error to stop further chunks
@@ -212,8 +226,8 @@ export const batchSuggestIds = async (
         }
 
         // Small pause to avoid hitting rate limits between chunks
-        if (i + CHUNK_SIZE < total && !isCancelled?.()) {
-            await delay(PAUSE_MS);
+        if (i + CHUNK_SIZE < total && !isCancelled?.() && !signal?.aborted) {
+            await abortableDelay(PAUSE_MS, signal);
         }
     }
 

@@ -3,12 +3,11 @@ import { GoogleGenAI } from "@google/genai";
 import { 
     query, 
     requireTeacherOrAdmin, 
-    getGeminiApiKey,
     getGeminiApiKeys,
     generateWithFallback, 
     parseGeminiError 
 } from '../core.js';
-import { normalizeId6, extractSourceId, parseId6 } from '../id6.js';
+import { normalizeId6, extractSourceId, validateId6Candidate } from '../id6.js';
 import { normalizeExTestOutput } from '../exTest.js';
 import { convertPdfToExTest } from '../pdfToExTest.js';
 
@@ -69,13 +68,16 @@ async function getCachedId6Catalog() {
     }
 
     // Fetch all metadata rows (covering all grades 6-12 without truncation)
-    const metadata = await query(`SELECT m.id_full, m.description, g.code AS grade, s.code AS subject,
+    const metadata = await query(`SELECT m.id_full, m.description, m.unit_id, m.level_id, g.code AS grade, s.code AS subject,
         c.chapter_number AS chapter, u.unit_number AS unit, l.code AS level
         FROM id6_metadata m LEFT JOIN grades g ON m.grade_id=g.id LEFT JOIN subjects s ON m.subject_id=s.id
         LEFT JOIN chapters c ON m.chapter_id=c.id LEFT JOIN units u ON m.unit_id=u.id LEFT JOIN levels l ON m.level_id=l.id
         ORDER BY m.id`);
 
-    const validIds = new Set(metadata.map(item => normalizeId6(item.id_full)).filter(Boolean));
+    const metadataById = new Map(metadata
+        .map(item => [normalizeId6(item.id_full), item])
+        .filter(([id]) => id));
+    const validIds = new Set(metadataById.keys());
 
     // Compress 4,600+ rows into ~1,150 base dạng lines using '*' for level (N/H/V/C)
     // Structure: <Khối><Môn><Chương>*<Bài>-<Dạng>: <Mô tả>
@@ -103,6 +105,7 @@ async function getCachedId6Catalog() {
         compactCatalog,
         byGradeMap,
         validIds,
+        metadataById,
         rawCount: metadata.length,
         compressedCount: baseMap.size
     };
@@ -194,6 +197,29 @@ function getFilteredCatalog(catalogData, grades) {
     return lines.length > 0 ? lines.join('\n') : catalogData.compactCatalog;
 }
 
+const MAX_ID_BATCH_SIZE = 6;
+const MAX_ID_PROMPT_CHARS = 30000;
+
+function toValidatedSuggestion(question, suggestedId, catalogData, ai = {}) {
+    const normalized = normalizeId6(suggestedId || '');
+    const validation = validateId6Candidate({
+        content_latex: question.latex || '',
+        unit_id: question.unit_id,
+        level_id: question.level_id
+    }, normalized, catalogData.metadataById);
+    const aiReason = String(ai.reason || '').trim();
+    return {
+        id: question.id,
+        suggestedId: validation.metadata ? normalized : '',
+        isValid: validation.isValid,
+        reasonCodes: validation.reasonCodes,
+        confidence: Math.max(0, Math.min(1, Number(ai.confidence) || 0)),
+        reason: validation.isValid
+            ? (aiReason || 'Mã đề xuất đã được validator ID6 xác nhận.')
+            : [aiReason, validation.reason].filter(Boolean).join(' ')
+    };
+}
+
 router.post('/ai/validate-question', async (req, res) => {
     try {
         if (!requireTeacherOrAdmin(req, res)) return;
@@ -209,13 +235,14 @@ router.post('/ai/validate-question', async (req, res) => {
         // Zero-token local check if question already has source ID
         const srcId = extractSourceId(latex);
         if (srcId && validIds.has(srcId)) {
+            const result = toValidatedSuggestion({ id: 0, latex }, srcId, catalogData, { confidence: 1 });
             return res.json({
                 success: true,
                 data: {
-                    isValid: true,
-                    suggestedId: srcId,
-                    confidence: 1,
-                    reason: 'Mã ID hợp lệ được nhận diện trực tiếp từ câu hỏi (0 token).',
+                    ...result,
+                    reason: result.isValid
+                        ? 'Mã trong nguồn LaTeX đã được validator ID6 xác nhận (0 token).'
+                        : result.reason,
                     alternatives: []
                 }
             });
@@ -232,13 +259,16 @@ router.post('/ai/validate-question', async (req, res) => {
         });
         const data = JSON.parse((response.text || '{}').replace(/^```json\s*|\s*```$/g, ''));
         const suggestedId = normalizeId6(data.suggestedId || '');
-        data.suggestedId = validIds.has(suggestedId) ? suggestedId : '';
+        const validated = toValidatedSuggestion({ id: 0, latex }, suggestedId, catalogData, data);
+        data.suggestedId = validated.suggestedId;
+        data.isValid = validated.isValid;
+        data.reasonCodes = validated.reasonCodes;
         data.alternatives = (Array.isArray(data.alternatives) ? data.alternatives : [])
             .map(item => normalizeId6(typeof item === 'string' ? item : item?.id))
             .filter((id, index, values) => id && validIds.has(id) && values.indexOf(id) === index)
             .slice(0, 3);
         data.confidence = Math.max(0, Math.min(1, Number(data.confidence) || 0));
-        if (!data.suggestedId) data.reason = `${data.reason || ''} Đề xuất AI không khớp danh mục ID6 nên chưa thể áp dụng.`.trim();
+        data.reason = validated.reason || (data.suggestedId ? 'Mã đề xuất đã được validator ID6 xác nhận.' : 'Đề xuất AI không khớp danh mục ID6 nên chưa thể áp dụng.');
         res.json({ success: true, data });
     } catch (e) {
         res.status(500).json({ error: parseGeminiError(e) });
@@ -253,7 +283,7 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
         if (!Array.isArray(questions) || questions.length === 0) {
             return res.status(400).json({ error: 'Danh sách câu hỏi không hợp lệ.' });
         }
-        const batch = questions.slice(0, 10);
+        const batch = questions.slice(0, MAX_ID_BATCH_SIZE);
         const apiKeys = await getGeminiApiKeys(req.user.id);
         if (!apiKeys || apiKeys.length === 0) {
             return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key. Thầy/cô vui lòng vào mục Cài đặt tài khoản để nhập API Key từ Google AI Studio.' });
@@ -263,7 +293,7 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
         const { validIds } = catalogData;
 
         // 1. FAST LOCAL PRE-CHECK (Zero Tokens!)
-        const localResults = [];
+        localResults = [];
         const needAiQuestions = [];
 
         for (const q of batch) {
@@ -271,24 +301,20 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
             // Check if question already has source ID in comment or \begin{ex}[...]
             const srcId = extractSourceId(rawLatex);
             if (srcId && validIds.has(srcId)) {
-                localResults.push({
-                    id: q.id,
-                    suggestedId: srcId,
-                    confidence: 1.0,
-                    reason: 'Nhận diện tự động từ mã có sẵn trong câu hỏi (0 token)'
-                });
+                localResults.push(toValidatedSuggestion(q, srcId, catalogData, {
+                    confidence: 1,
+                    reason: 'Nhận diện tự động từ mã có sẵn trong câu hỏi (0 token).'
+                }));
                 continue;
             }
 
             // Check if current_id can be normalized (e.g. legacy level Y, B, K, G -> N, H, V, C)
             const normCurrent = normalizeId6(q.current_id || '');
             if (normCurrent && validIds.has(normCurrent)) {
-                localResults.push({
-                    id: q.id,
-                    suggestedId: normCurrent,
+                localResults.push(toValidatedSuggestion(q, normCurrent, catalogData, {
                     confidence: 0.95,
-                    reason: 'Chuẩn hóa tự động từ mã hiện tại (0 token)'
-                });
+                    reason: 'Chuẩn hóa tự động từ mã hiện tại (0 token).'
+                }));
                 continue;
             }
 
@@ -302,7 +328,7 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
 
         // 2. SMART FILTERED CATALOG & CLEANED QUESTIONS (Saves 80-85% tokens!)
         const detectedGrades = detectGradesFromQuestions(needAiQuestions);
-        const promptCatalog = getFilteredCatalog(catalogData, detectedGrades);
+        const promptCatalog = getFilteredCatalog(catalogData, detectedGrades).slice(0, MAX_ID_PROMPT_CHARS);
 
         const questionsText = needAiQuestions.map((q, idx) => {
             const clean = stripSolutionAndClean(q.latex);
@@ -339,7 +365,8 @@ YÊU CẦU:
 
         const response = await generateWithFallback(apiKeys, prompt, {
             systemInstruction: 'Bạn là chuyên gia phân loại câu hỏi Toán theo chuẩn ID6. Trả về đúng JSON Array, không thêm markdown hay giải thích ngoài JSON. Chỉ chọn suggestedId khớp dạng toán trong danh mục và thay * bằng N, H, V hoặc C.',
-            responseMimeType: 'application/json'
+            responseMimeType: 'application/json',
+            maxOutputTokens: 2048
         });
 
         let parsedResults = [];
@@ -358,14 +385,7 @@ YÊU CẦU:
             if (rawSuggested.includes('*')) {
                 rawSuggested = rawSuggested.replace(/\*/g, 'H');
             }
-            const normId = normalizeId6(rawSuggested);
-            const isValid = Boolean(normId && (validIds.size === 0 || validIds.has(normId)));
-            return {
-                id: q.id,
-                suggestedId: isValid ? normId : '',
-                confidence: Math.max(0, Math.min(1, Number(item.confidence) || 0)),
-                reason: item.reason || (isValid ? 'Đề xuất bởi AI' : (normId ? `Mã ${normId} chưa có trong danh mục ID6` : 'AI không đề xuất được mã phù hợp'))
-            };
+            return toValidatedSuggestion(q, rawSuggested, catalogData, item);
         });
 
         const combinedResults = [...localResults, ...aiResults];

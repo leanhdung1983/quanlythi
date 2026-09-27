@@ -24,6 +24,8 @@ interface WorkItem {
     issueCodes?: string[];
     suggestedId?: string;
     updatedAt?: string;
+    unitId?: number;
+    levelId?: number;
     aiSuggested?: boolean;
     aiConfidence?: number;
     aiReason?: string;
@@ -72,6 +74,7 @@ export const IdAssigner: React.FC = () => {
     const [isAiBatchRunning, setIsAiBatchRunning] = useState(false);
     const [aiBatchProgress, setAiBatchProgress] = useState({ current: 0, total: 0, message: '' });
     const cancelAiBatchRef = useRef(false);
+    const aiBatchAbortRef = useRef<AbortController | null>(null);
     
     // --- STATE: ID BUILDER FORM ---
     const [selClass, setSelClass] = useState(2);
@@ -85,7 +88,7 @@ export const IdAssigner: React.FC = () => {
     const [metadataSearch, setMetadataSearch] = useState('');
     
     // --- STATE: AI VALIDATION ---
-    const [aiResult, setAiResult] = useState<{ isValid: boolean, reason: string, suggestedId?: string, confidence?: number, alternatives?: string[], competencies?: string[] } | null>(null);
+    const [aiResult, setAiResult] = useState<{ isValid: boolean, reason: string, reasonCodes?: string[], suggestedId?: string, confidence?: number, alternatives?: string[], competencies?: string[] } | null>(null);
     const [isValidating, setIsValidating] = useState(false);
     
     const fileInputRef = useRef(null);
@@ -407,6 +410,8 @@ export const IdAssigner: React.FC = () => {
 
         setIsAiBatchRunning(true);
         cancelAiBatchRef.current = false;
+        aiBatchAbortRef.current?.abort();
+        aiBatchAbortRef.current = new AbortController();
         setAiBatchProgress({ current: 0, total: itemsToProcess.length, message: `Bắt đầu phân tích ${itemsToProcess.length} câu hỏi...` });
 
         const appliedIdSet = new Set<number>();
@@ -459,7 +464,9 @@ export const IdAssigner: React.FC = () => {
             const questionsPayload = itemsToProcess.map(item => ({
                 id: item.id,
                 latex: item.content,
-                current_id: item.assignedId
+                current_id: item.assignedId,
+                unit_id: item.unitId,
+                level_id: item.levelId
             }));
 
             const batchResults = await batchSuggestIds(
@@ -475,7 +482,8 @@ export const IdAssigner: React.FC = () => {
                     // Update state immediately as each chunk finishes - never lose progress
                     applyChunkResults(chunkResults);
                 },
-                () => cancelAiBatchRef.current
+                () => cancelAiBatchRef.current,
+                aiBatchAbortRef.current.signal
             );
 
             const finalCount = appliedIdSet.size;
@@ -497,12 +505,17 @@ export const IdAssigner: React.FC = () => {
         } catch (e: any) {
             console.error("AI Batch suggest error:", e);
             const finalCount = appliedIdSet.size;
+            if (e?.name === 'AbortError' || cancelAiBatchRef.current) {
+                alert(`Đã dừng ngay hàng đợi AI. ${finalCount} câu đã đề xuất trước đó vẫn được giữ nguyên.`);
+                return;
+            }
             if (finalCount > 0) {
                 alert(`⚠️ Quá trình AI đề xuất tạm dừng do: ${e.message || "Hạn mức API hoặc sự cố mạng"}\n\nTuy nhiên, ${finalCount} câu hỏi đã được AI đề xuất trước đó VẪN ĐƯỢC GIỮ NGUYÊN trên danh sách bên trái. Thầy/cô có thể kiểm tra lại và nhấn "Xác nhận lưu CSDL"!`);
             } else {
                 alert("Lỗi đề xuất AI: " + (e.message || "Vui lòng thử lại"));
             }
         } finally {
+            aiBatchAbortRef.current = null;
             setIsAiBatchRunning(false);
             setAiBatchProgress({ current: 0, total: 0, message: '' });
         }
@@ -540,6 +553,8 @@ export const IdAssigner: React.FC = () => {
                 issueCodes: q.issues || [],
                 suggestedId: q.suggestedId,
                 updatedAt: q.updated_at,
+                unitId: q.unit_id,
+                levelId: q.level_id,
                 hasChanged: Boolean(q.suggestedId && q.suggestedId !== normalizeID(q.legacy_full_id || q.id_full || ''))
             }));
 
@@ -1715,6 +1730,8 @@ export const IdAssigner: React.FC = () => {
                                 type="button"
                                 onClick={() => {
                                     cancelAiBatchRef.current = true;
+                                    aiBatchAbortRef.current?.abort();
+                                    setAiBatchProgress(prev => ({ ...prev, message: 'Đang dừng request hiện tại...' }));
                                 }}
                                 className="px-5 py-2 text-xs font-bold text-slate-500 hover:text-red-600 hover:bg-red-50 rounded-xl transition-all border border-slate-200 hover:border-red-200"
                             >
