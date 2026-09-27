@@ -3,6 +3,7 @@ import crypto from 'crypto';
 import { GoogleGenAI } from "@google/genai";
 import { sanitizeCompiledSvg } from './svgImage.js';
 import { classifyGeminiFailure, cooldownForFailure, orderAvailableAttempts } from './geminiResilience.js';
+import { resolveGeminiModels } from './geminiModels.js';
 import { cacheMiddleware, clearCache } from '../redis.js';
 
 // Re-export cache helpers
@@ -271,15 +272,9 @@ export function parseGeminiError(e) {
 const geminiCooldowns = new Map();
 
 export async function generateWithFallback(aiOrKeys, prompt, config, additionalParts = []) {
-    // Stable models available to new projects in late 2026.
-    const defaultModels = [
-        'gemini-3.8-flash',
-        'gemini-3.5-flash',
-        'gemini-3.5-flash-lite'
-    ];
     const requestedModels = Array.isArray(config?.modelCandidates) ? config.modelCandidates.filter(Boolean) : [];
-    const candidateModels = requestedModels.length ? requestedModels : defaultModels;
-    const { modelCandidates: _modelCandidates, ...requestConfig } = config || {};
+    const modelPreference = config?.modelPreference === 'lite' ? 'lite' : 'flash';
+    const { modelCandidates: _modelCandidates, modelPreference: _modelPreference, ...requestConfig } = config || {};
     const contents = additionalParts.length ? { parts: [...additionalParts, { text: prompt }] } : prompt;
 
     let aiInstances = [];
@@ -296,6 +291,8 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
     if (aiInstances.length === 0) {
         throw new Error('Chưa cấu hình Gemini API Key.');
     }
+
+    const candidateModels = await resolveGeminiModels(aiInstances[0], requestedModels, modelPreference);
 
     const keys = Array.isArray(aiOrKeys) ? aiOrKeys : (aiOrKeys?._keys || []);
     const keyValues = keys.length

@@ -367,7 +367,8 @@ YÊU CẦU:
             systemInstruction: 'Bạn là chuyên gia phân loại câu hỏi Toán theo chuẩn ID6. Trả về đúng JSON Array, không thêm markdown hay giải thích ngoài JSON. Chỉ chọn suggestedId khớp dạng toán trong danh mục và thay * bằng N, H, V hoặc C.',
             responseMimeType: 'application/json',
             maxOutputTokens: 2048,
-            modelCandidates: ['gemini-3.5-flash-lite', 'gemini-3.1-flash-lite', 'gemini-3.8-flash']
+            modelPreference: 'lite',
+            modelCandidates: ['gemini-3.5-flash-lite', 'gemini-3.8-flash']
         });
 
         let parsedResults = [];
