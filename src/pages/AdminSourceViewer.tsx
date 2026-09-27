@@ -36,6 +36,7 @@ interface TikzJob {
     failed: number;
     heartbeatAt: string | null;
     errorMessage: string | null;
+    stale?: boolean;
 }
 
 interface TikzFailure {
@@ -81,6 +82,7 @@ export const AdminSourceViewer: React.FC = () => {
     const [jobError, setJobError] = useState<string | null>(null);
     const [tikzFailures, setTikzFailures] = useState<TikzFailure[]>([]);
     const [selectedFailure, setSelectedFailure] = useState<TikzFailure | null>(null);
+    const activeJob = Boolean(job && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(job.status));
 
     const refreshFailures = async () => setTikzFailures(await apiService.fetchTikzFailures() || []);
 
@@ -340,9 +342,9 @@ export const AdminSourceViewer: React.FC = () => {
                         </p>
                     </div>
                     <div className="flex flex-wrap gap-2">
-                        <button type="button" onClick={startJob} disabled={jobBusy || Boolean(job && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(job.status))}
+                        <button type="button" onClick={startJob} disabled={jobBusy || (activeJob && !job?.stale)}
                             className="rounded-xl bg-emerald-600 px-5 py-3 text-sm font-bold text-white disabled:opacity-50">
-                            Quét và biên dịch
+                            {jobBusy ? 'Đang gửi...' : job?.stale ? 'Khởi động lại lô bị treo' : activeJob ? 'Đang biên dịch...' : 'Quét và biên dịch'}
                         </button>
                         {job && ['QUEUED', 'RUNNING'].includes(job.status) && (
                             <button type="button" onClick={cancelJob} disabled={jobBusy}
@@ -362,6 +364,7 @@ export const AdminSourceViewer: React.FC = () => {
                     </div>
                 )}
                 {job?.status === 'CANCEL_REQUESTED' && <p className="mt-3 text-xs text-amber-700">Worker sẽ dừng sau hình đang biên dịch.</p>}
+                {job?.stale && <p className="mt-3 text-xs font-bold text-red-700">Lô đã mất heartbeat quá 10 phút. Có thể bấm “Khởi động lại lô bị treo”.</p>}
                 {job?.errorMessage && <p className="mt-3 text-xs text-red-700">{job.errorMessage}</p>}
                 {jobError && <p className="mt-3 text-xs text-red-700">{jobError}</p>}
                 <p className="mt-4 text-xs text-slate-500">Khởi động một lần <code>python scripts/tikz_local_worker.py --url URL_RENDER --daemon</code> trên máy có TeX. SVG được tối ưu và hỗ trợ tối đa 24 MB; AI không được lưu trực tiếp mà luôn phải qua biên dịch và bộ lọc an toàn.</p>

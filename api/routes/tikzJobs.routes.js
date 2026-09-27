@@ -7,6 +7,8 @@ const workerIdValid = value => /^[a-f0-9-]{36}$/i.test(String(value || ''));
 const tokenValid = value => /^[a-f0-9]{64}$/i.test(String(value || ''));
 const jobId = value => Number.isSafeInteger(Number(value)) && Number(value) > 0 ? Number(value) : null;
 const publicColumns = 'id, status, after_id AS afterId, scanned, synced, failed, heartbeat_at AS heartbeatAt, error_message AS errorMessage, created_at AS createdAt, updated_at AS updatedAt';
+const jobIsStale = job => ['RUNNING', 'CANCEL_REQUESTED'].includes(job?.status)
+    && (!job.heartbeatAt || Date.now() - new Date(job.heartbeatAt).getTime() > 10 * 60 * 1000);
 
 async function withTransaction(work) {
     const conn = await pool.getConnection();
@@ -33,7 +35,8 @@ router.get('/admin/tikz-jobs/status', async (req, res) => {
     try {
         const [jobs] = await pool.query(`SELECT ${publicColumns} FROM tikz_render_jobs ORDER BY id DESC LIMIT 1`);
         const [workers] = await pool.query('SELECT worker_id AS workerId, last_seen AS lastSeen FROM tikz_worker_presence WHERE last_seen > NOW() - INTERVAL 30 SECOND ORDER BY last_seen DESC LIMIT 1');
-        res.json({ success: true, job: jobs[0] || null, worker: workers[0] || null });
+        const job = jobs[0] || null;
+        res.json({ success: true, job: job ? { ...job, stale: jobIsStale(job) } : null, worker: workers[0] || null });
     } catch (error) { fail(res, error, 'Không thể đọc trạng thái biên dịch.'); }
 });
 
@@ -55,10 +58,14 @@ router.post('/admin/tikz-jobs', async (req, res) => {
             if (!control.length) throw new Error('TikZ job control missing');
             if (control[0].active_job_id) {
                 const [active] = await conn.query(`SELECT ${publicColumns} FROM tikz_render_jobs WHERE id = ? FOR UPDATE`, [control[0].active_job_id]);
-                const cancelledStale = active.length && active[0].status === 'CANCEL_REQUESTED'
-                    && (!active[0].heartbeatAt || Date.now() - new Date(active[0].heartbeatAt).getTime() > 10 * 60 * 1000);
-                if (cancelledStale) {
-                    await conn.query("UPDATE tikz_render_jobs SET status = 'CANCELLED', lease_token = NULL WHERE id = ?", [active[0].id]);
+                const stale = active.length && jobIsStale(active[0]);
+                if (stale) {
+                    const terminalStatus = active[0].status === 'CANCEL_REQUESTED' ? 'CANCELLED' : 'FAILED';
+                    await conn.query(
+                        'UPDATE tikz_render_jobs SET status = ?, error_message = ?, lease_token = NULL WHERE id = ?',
+                        [terminalStatus, 'Worker mất heartbeat quá 10 phút; lô đã được đóng để khởi động lại.', active[0].id],
+                    );
+                    await conn.query('UPDATE tikz_render_control SET active_job_id = NULL WHERE id = 1 AND active_job_id = ?', [active[0].id]);
                 } else if (active.length && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(active[0].status)) {
                     return { job: active[0], existing: true };
                 }
