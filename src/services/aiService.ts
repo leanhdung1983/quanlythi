@@ -180,7 +180,9 @@ export const batchSuggestIds = async (
                     }
                     const isQuota = response.status === 429 || payload.isQuota || isQuotaOrRateLimitError(errMsg);
                     if (isQuota) {
-                        throw new Error(errMsg.includes('Quota') || errMsg.includes('hạn mức') ? errMsg : 'Quota Exceeded');
+                        const quotaError = new Error(errMsg.includes('Quota') || errMsg.includes('hạn mức') || errMsg.includes('giới hạn') ? errMsg : 'Quota Exceeded') as Error & { retryAfterMs?: number };
+                        quotaError.retryAfterMs = Number(payload.retryAfterMs) || 0;
+                        throw quotaError;
                     }
                     throw new Error(errMsg);
                 }
@@ -196,7 +198,8 @@ export const batchSuggestIds = async (
                 if (isQuota) {
                     if (attempt < MAX_RETRIES && !isCancelled?.()) {
                         // Exponential back-off before retrying
-                        const backoff = PAUSE_MS * Math.pow(2, attempt + 1);
+                        const requestedWait = Number((e as { retryAfterMs?: number })?.retryAfterMs) || 0;
+                        const backoff = Math.min(10 * 60 * 1000, Math.max(PAUSE_MS * Math.pow(2, attempt + 1), requestedWait));
                         await abortableDelay(backoff, signal);
                         attempt++;
                     } else {

@@ -2,6 +2,7 @@ import mysql from 'mysql2/promise';
 import crypto from 'crypto';
 import { GoogleGenAI } from "@google/genai";
 import { sanitizeCompiledSvg } from './svgImage.js';
+import { classifyGeminiFailure, cooldownForFailure, orderAvailableAttempts } from './geminiResilience.js';
 import { cacheMiddleware, clearCache } from '../redis.js';
 
 // Re-export cache helpers
@@ -248,7 +249,7 @@ export async function getGeminiApiKey(userId) {
 export function parseGeminiError(e) {
     const msg = String(e?.message || e || '');
     if (e?.status === 429 || msg.includes("429") || msg.toLowerCase().includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
-        return "Lỗi: Đã vượt quá giới hạn lượt dùng hoặc hạn mức API (Quota Exceeded). Thầy/cô có thể thêm nhiều API Key miễn phí (cách nhau bởi dấu phẩy) trong Cài đặt tài khoản để hệ thống tự động xoay vòng.";
+        return "Gemini đang giới hạn lượt dùng của project. Hệ thống đã tự chuyển model/key và làm nguội lựa chọn bị 429; vui lòng giữ cửa sổ mở để tự thử lại. Nhiều key chỉ tăng quota khi chúng thuộc các Google Cloud project khác nhau.";
     }
     if (msg.includes("API key not valid") || msg.includes("API_KEY_INVALID")) {
         return "Lỗi: API Key không hợp lệ. Vui lòng thiết lập API Key đúng từ Google AI Studio.";
@@ -258,7 +259,7 @@ export function parseGeminiError(e) {
             const parsed = JSON.parse(e.message);
             if (parsed.error && parsed.error.message) {
                 if (parsed.error.code === 429) {
-                    return "Lỗi: Quota Exceeded. API Key của bạn đã hết hạn mức. Vui lòng thêm thêm key dự phòng hoặc đợi ít phút.";
+                    return "Gemini đã hết quota của project. Hệ thống sẽ tự thử lại sau thời gian làm nguội; key dự phòng chỉ hữu ích nếu thuộc project khác.";
                 }
                 return "Lỗi từ Gemini: " + parsed.error.message;
             }
@@ -267,14 +268,19 @@ export function parseGeminiError(e) {
     return "Lỗi trong quá trình tạo: " + (e.message || String(e));
 }
 
+const geminiCooldowns = new Map();
+
 export async function generateWithFallback(aiOrKeys, prompt, config, additionalParts = []) {
     // Current primary models in 2026:
     // 1. gemini-2.5-flash: State-of-the-art for mathematics, LaTeX, and classification (best quality)
     // 2. gemini-2.0-flash: Fast, resilient fallback
-    const candidateModels = [
+    const defaultModels = [
         'gemini-2.5-flash',
         'gemini-2.0-flash'
     ];
+    const requestedModels = Array.isArray(config?.modelCandidates) ? config.modelCandidates.filter(Boolean) : [];
+    const candidateModels = requestedModels.length ? requestedModels : defaultModels;
+    const { modelCandidates: _modelCandidates, ...requestConfig } = config || {};
     const contents = additionalParts.length ? { parts: [...additionalParts, { text: prompt }] } : prompt;
 
     let aiInstances = [];
@@ -292,38 +298,48 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
         throw new Error('Chưa cấu hình Gemini API Key.');
     }
 
+    const keys = Array.isArray(aiOrKeys) ? aiOrKeys : (aiOrKeys?._keys || []);
+    const keyValues = keys.length
+        ? keys.map((key, index) => typeof key === 'string' ? key : `client-${index}`)
+        : aiInstances.map((_, index) => `client-${index}`);
+    const ordered = orderAvailableAttempts(keyValues, candidateModels, geminiCooldowns);
+    if (!ordered.attempts.length) {
+        const seconds = Number.isFinite(ordered.earliestRetryAt)
+            ? Math.max(1, Math.ceil((ordered.earliestRetryAt - Date.now()) / 1000)) : 60;
+        const error = new Error(`Các model/API key đang tạm nghỉ sau lỗi quota. Hệ thống sẽ thử lại sau khoảng ${seconds} giây.`);
+        error.status = 429;
+        error.retryAfterMs = seconds * 1000;
+        throw error;
+    }
+
     let lastError = null;
     let quotaError = null;
-    for (let kIdx = 0; kIdx < aiInstances.length; kIdx++) {
-        const client = aiInstances[kIdx];
-        for (const model of candidateModels) {
-            try {
-                const response = await client.models.generateContent({
-                    model,
-                    contents,
-                    config
-                });
-                return response;
-            } catch (e) {
-                lastError = e;
-                const errMsg = String(e?.message || e || '');
-                const is429 = e?.status === 429 || errMsg.includes('429') || errMsg.toLowerCase().includes('quota') || errMsg.includes('RESOURCE_EXHAUSTED');
-                const isInvalidKey = errMsg.includes('API key not valid') || errMsg.includes('API_KEY_INVALID') || errMsg.includes('CONSUMER_SUSPENDED');
-
-                if (is429) {
-                    quotaError = e;
-                }
-
-                console.warn(`[AI] Model ${model} (Key ${kIdx + 1}/${aiInstances.length}) failed: ${errMsg.slice(0, 140)}`);
-
-                // If quota exhausted or key invalid, immediately rotate to next API key
-                if (is429 || isInvalidKey) {
-                    if (kIdx < aiInstances.length - 1) {
-                        console.warn(`[AI] Key ${kIdx + 1} hit ${is429 ? 'quota limit' : 'invalid status'}. Rotating to next API key (${kIdx + 2}/${aiInstances.length})...`);
-                    }
-                    break; // Skip trying remaining models on this dead/exhausted key
-                }
+    const disabledKeys = new Set();
+    const quotaFailuresByKey = new Map();
+    const exhaustedKeys = new Set();
+    for (const attempt of ordered.attempts) {
+        if (disabledKeys.has(attempt.keyIndex)) continue;
+        const client = aiInstances[attempt.keyIndex];
+        try {
+            return await client.models.generateContent({ model: attempt.model, contents, config: requestConfig });
+        } catch (error) {
+            lastError = error;
+            const failure = classifyGeminiFailure(error);
+            const cooldown = cooldownForFailure(failure);
+            if (cooldown) geminiCooldowns.set(attempt.id, Date.now() + cooldown + Math.floor(Math.random() * 3000));
+            if (failure.quota) quotaError = error;
+            console.warn(`[AI] Model ${attempt.model} (Key ${attempt.keyIndex + 1}/${aiInstances.length}) failed: ${String(error?.message || error).slice(0, 140)}`);
+            if (failure.invalidKey) {
+                disabledKeys.add(attempt.keyIndex);
+                for (const model of candidateModels) geminiCooldowns.set(`${attempt.key}\u0000${model}`, Date.now() + cooldown);
             }
+            if (failure.quota) {
+                const failures = (quotaFailuresByKey.get(attempt.keyIndex) || 0) + 1;
+                quotaFailuresByKey.set(attempt.keyIndex, failures);
+                if (failures >= candidateModels.length) exhaustedKeys.add(attempt.keyIndex);
+                if (exhaustedKeys.size >= 2) break;
+            }
+            if (!failure.transient && !failure.invalidKey) throw error;
         }
     }
     throw quotaError || lastError || new Error('Tất cả các mô hình Gemini và API Key dự phòng đều không thể phản hồi.');

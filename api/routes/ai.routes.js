@@ -366,7 +366,8 @@ YÊU CẦU:
         const response = await generateWithFallback(apiKeys, prompt, {
             systemInstruction: 'Bạn là chuyên gia phân loại câu hỏi Toán theo chuẩn ID6. Trả về đúng JSON Array, không thêm markdown hay giải thích ngoài JSON. Chỉ chọn suggestedId khớp dạng toán trong danh mục và thay * bằng N, H, V hoặc C.',
             responseMimeType: 'application/json',
-            maxOutputTokens: 2048
+            maxOutputTokens: 2048,
+            modelCandidates: ['gemini-2.5-flash-lite', 'gemini-2.5-flash', 'gemini-2.0-flash']
         });
 
         let parsedResults = [];
@@ -396,7 +397,11 @@ YÊU CẦU:
         }
         const errMsg = parseGeminiError(e);
         const isQuota = e?.status === 429 || String(e?.message || '').includes('429') || String(e?.message || '').includes('quota') || String(e?.message || '').includes('RESOURCE_EXHAUSTED');
-        res.status(isQuota ? 429 : 500).json({ error: errMsg, isQuota });
+        res.status(isQuota ? 429 : 500).json({
+            error: errMsg,
+            isQuota,
+            retryAfterMs: isQuota ? Math.max(5000, Math.min(Number(e?.retryAfterMs) || 60000, 10 * 60 * 1000)) : undefined
+        });
     }
 });
 
