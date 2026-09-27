@@ -618,11 +618,17 @@ export const IdAssigner: React.FC = () => {
 
             alert("Đã cập nhật thành công vào CSDL!");
             
-            const cleanItems = file.workItems.map(i => ({...i, originalId: i.assignedId, hasChanged: false}));
+            const savedIds = new Set(modifiedItems.map(item => item.id));
+            const cleanItems = file.workItems.map(i => savedIds.has(i.id)
+                ? { ...i, originalId: i.assignedId, hasChanged: false, issueCodes: [], suggestedId: undefined }
+                : i);
             setFiles(prev => prev.map(f => f.uniqueId === fileId ? { ...f, workItems: cleanItems, isDirty: false } : f));
 
-        } catch {
-            alert("Lỗi lưu CSDL");
+        } catch (e: any) {
+            console.error('ID review save error:', e);
+            const detail = e?.message || 'Máy chủ không trả về chi tiết lỗi.';
+            const hint = e?.status === 409 ? '\nDữ liệu đã thay đổi; vui lòng tải lại danh sách rà soát rồi áp dụng lại đề xuất.' : '';
+            alert(`Lỗi lưu dữ liệu: ${detail}${hint}`);
         } finally {
             setIsSavingDb(false);
         }

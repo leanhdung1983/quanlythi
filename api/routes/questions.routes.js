@@ -15,7 +15,7 @@ import {
     cacheMiddleware, 
     clearCache 
 } from '../core.js';
-import { inspectQuestionId, normalizeId6, normalizeQuestionSource } from '../id6.js';
+import { inspectQuestionId, normalizeId6, normalizeQuestionSource, questionTimestampChanged } from '../id6.js';
 
 const router = express.Router();
 
@@ -783,7 +783,7 @@ router.post('/questions/review/confirm', async (req, res) => {
                 error.status = 403;
                 throw error;
             }
-            if (change.expected_updated_at && row.updated_at && new Date(change.expected_updated_at).getTime() !== new Date(row.updated_at).getTime()) {
+            if (questionTimestampChanged(change.expected_updated_at, row.updated_at)) {
                 const error = new Error(`Câu hỏi #${row.id} vừa được người khác cập nhật. Vui lòng tải lại.`);
                 error.status = 409;
                 throw error;
@@ -811,6 +811,7 @@ router.post('/questions/review/confirm', async (req, res) => {
         res.json({ success: true, updated: changes.length });
     } catch (e) {
         await conn.rollback();
+        console.error('[ID Review] Save failed:', e?.code || e?.name || 'ERROR', e?.message || e);
         res.status(e.status || 500).json({ error: e.message });
     } finally { conn.release(); }
 });

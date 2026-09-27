@@ -84,6 +84,16 @@ export function requiresAiIdReview(issues = []) {
     return issues.some(code => AI_REVIEW_ISSUES.has(code));
 }
 
+/** Compare optimistic-lock timestamps at database (second) precision.
+ * Unparseable client timestamps must not create a false conflict. */
+export function questionTimestampChanged(expected, actual) {
+    if (!expected || !actual) return false;
+    const expectedMs = new Date(expected).getTime();
+    const actualMs = new Date(actual).getTime();
+    if (!Number.isFinite(expectedMs) || !Number.isFinite(actualMs)) return false;
+    return Math.floor(expectedMs / 1000) !== Math.floor(actualMs / 1000);
+}
+
 export function inspectQuestionId(question, metadataById) {
     const rawId = String(question.legacy_full_id || '').trim();
     const parsed = parseId6(rawId);
