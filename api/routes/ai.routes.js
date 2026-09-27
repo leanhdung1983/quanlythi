@@ -69,7 +69,7 @@ async function getCachedId6Catalog() {
 
     // Fetch all metadata rows (covering all grades 6-12 without truncation)
     const metadata = await query(`SELECT m.id_full, m.description, m.unit_id, m.level_id, g.code AS grade, s.code AS subject,
-        c.chapter_number AS chapter, u.unit_number AS unit, l.code AS level
+        c.chapter_number AS chapter, c.name AS chapter_name, u.unit_number AS unit, u.name AS unit_name, l.code AS level
         FROM id6_metadata m LEFT JOIN grades g ON m.grade_id=g.id LEFT JOIN subjects s ON m.subject_id=s.id
         LEFT JOIN chapters c ON m.chapter_id=c.id LEFT JOIN units u ON m.unit_id=u.id LEFT JOIN levels l ON m.level_id=l.id
         ORDER BY m.id`);
@@ -410,6 +410,73 @@ YÊU CẦU:
             isQuota,
             retryAfterMs: isQuota ? Math.max(5000, Math.min(Number(e?.retryAfterMs) || 60000, 10 * 60 * 1000)) : undefined
         });
+    }
+});
+
+router.post('/ai/audit-question-ids', async (req, res) => {
+    try {
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const limit = Math.min(Math.max(Number(req.body?.limit) || 4, 1), 6);
+        const ownershipSql = req.user.role === 'ADMIN' ? '' : 'AND q.created_by = ?';
+        const params = req.user.role === 'ADMIN' ? [limit] : [req.user.id, limit];
+        const questions = await query(`
+            SELECT q.id, q.legacy_full_id, q.content_latex, q.unit_id, q.level_id, q.content_hash
+            FROM questions q
+            WHERE NOT EXISTS (
+                SELECT 1 FROM question_id_suggestions s
+                WHERE s.question_id = q.id
+                  AND COALESCE(s.content_hash, '') = COALESCE(q.content_hash, '')
+                  AND COALESCE(s.current_id, '') = COALESCE(q.legacy_full_id, '')
+                  AND s.status IN ('VALID', 'PENDING', 'APPLIED')
+            ) ${ownershipSql}
+            ORDER BY q.id ASC LIMIT ?
+        `, params);
+
+        if (!questions.length) return res.json({ success: true, processed: 0, flagged: 0, remaining: 0, results: [] });
+        const apiKeys = await getGeminiApiKeys(req.user.id);
+        if (!apiKeys.length) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key để rà soát nội dung.' });
+        const catalogData = await getCachedId6Catalog();
+        const detectedGrades = detectGradesFromQuestions(questions.map(q => ({ latex: q.content_latex, current_id: q.legacy_full_id })));
+        const promptCatalog = getFilteredCatalog(catalogData, detectedGrades).slice(0, MAX_ID_PROMPT_CHARS);
+        const questionText = questions.map(q => `--- CÂU REF_ID ${q.id} ---\nID hiện tại: ${q.legacy_full_id || 'chưa có'}\n${stripSolutionAndClean(q.content_latex)}`).join('\n\n');
+        const response = await generateWithFallback(apiKeys, `${questionText}\n\nDanh mục ID6:\n${promptCatalog}\n\nHãy rà soát độc lập từng câu. Kiểm tra nội dung có thực sự khớp chương, bài, dạng và mức độ N/H/V/C của ID hiện tại hay không. Nếu không khớp, đề xuất ID phù hợp nhất. Trả về JSON Array gồm id, suggestedId, confidence, reason.`, {
+            systemInstruction: 'Bạn là chuyên gia kiểm định phân loại câu hỏi Toán theo ID6. Không mặc định ID hiện tại đúng chỉ vì nó tồn tại. Đọc nội dung, đối chiếu danh mục và trả về JSON Array duy nhất.',
+            responseMimeType: 'application/json', maxOutputTokens: 2048, modelPreference: 'lite'
+        });
+        let parsed = JSON.parse((response.text || '[]').replace(/^```json\s*|\s*```$/g, ''));
+        if (!Array.isArray(parsed)) parsed = [];
+        const results = [];
+        for (let index = 0; index < questions.length; index++) {
+            const q = questions[index];
+            const ai = parsed.find(item => String(item?.id) === String(q.id)) || parsed[index] || {};
+            const currentId = normalizeId6(q.legacy_full_id || '');
+            const suggestedId = normalizeId6(ai.suggestedId || '');
+            const proposal = toValidatedSuggestion({ id: q.id, latex: q.content_latex, unit_id: q.unit_id, level_id: q.level_id }, suggestedId, catalogData, ai);
+            const currentReview = validateId6Candidate({ content_latex: q.content_latex, unit_id: q.unit_id, level_id: q.level_id }, currentId, catalogData.metadataById);
+            const sameId = Boolean(currentId && suggestedId === currentId);
+            const isValid = sameId && currentReview.isValid;
+            const issueCodes = isValid ? [] : [...new Set([
+                ...currentReview.reasonCodes,
+                ...(sameId ? [] : ['ID_CONTENT_MISMATCH'])
+            ])];
+            const status = isValid ? 'VALID' : 'PENDING';
+            const reason = String(ai.reason || proposal.reason || currentReview.reason || '').slice(0, 2000);
+            await query(`INSERT INTO question_id_suggestions
+                (question_id, current_id, suggested_id, issue_codes, confidence, reason, source, status, content_hash)
+                VALUES (?, ?, ?, ?, ?, ?, 'AI', ?, ?)`, [q.id, currentId || null, proposal.suggestedId || suggestedId || null,
+                JSON.stringify(issueCodes), proposal.confidence, reason, status, q.content_hash || null]);
+            await query('UPDATE questions SET id_review_status = ? WHERE id = ?', [isValid ? 'AI_VALID' : 'NEEDS_REVIEW', q.id]);
+            results.push({ id: q.id, isValid, suggestedId: proposal.suggestedId || suggestedId, reason, reasonCodes: issueCodes, confidence: proposal.confidence });
+        }
+        const remainingRows = await query(`SELECT COUNT(*) AS total FROM questions q WHERE NOT EXISTS (
+            SELECT 1 FROM question_id_suggestions s WHERE s.question_id=q.id
+              AND COALESCE(s.content_hash,'')=COALESCE(q.content_hash,'')
+              AND COALESCE(s.current_id,'')=COALESCE(q.legacy_full_id,'')
+              AND s.status IN ('VALID','PENDING','APPLIED')
+        ) ${ownershipSql}`, req.user.role === 'ADMIN' ? [] : [req.user.id]);
+        res.json({ success: true, processed: results.length, flagged: results.filter(r => !r.isValid).length, remaining: Number(remainingRows[0]?.total || 0), results });
+    } catch (e) {
+        res.status(e?.status === 429 ? 429 : 500).json({ error: parseGeminiError(e), retryAfterMs: e?.retryAfterMs });
     }
 });
 

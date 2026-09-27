@@ -731,6 +731,14 @@ router.get('/questions/id-review', async (req, res) => {
         const includeAll = req.query.all === 'true';
         const start = (page - 1) * limit;
         const metadata = await loadMetadataMap();
+        const suggestionRows = await query(`
+            SELECT s.* FROM question_id_suggestions s
+            INNER JOIN (
+                SELECT question_id, MAX(id) AS max_id FROM question_id_suggestions
+                WHERE status = 'PENDING' GROUP BY question_id
+            ) latest ON latest.max_id = s.id
+        `);
+        const pendingSuggestions = new Map(suggestionRows.map(item => [Number(item.question_id), item]));
         const data = [];
         let total = 0;
         let cursor = Number.MAX_SAFE_INTEGER;
@@ -751,10 +759,21 @@ router.get('/questions/id-review', async (req, res) => {
             cursor = rows[rows.length - 1].id;
             for (const row of rows) {
                 const review = inspectQuestionId(row, metadata);
-                const needsReview = review.issues.length > 0;
+                const aiSuggestion = pendingSuggestions.get(Number(row.id));
+                const aiIssues = aiSuggestion
+                    ? (typeof aiSuggestion.issue_codes === 'string' ? JSON.parse(aiSuggestion.issue_codes || '[]') : (aiSuggestion.issue_codes || []))
+                    : [];
+                const issues = [...new Set([...review.issues, ...aiIssues])];
+                const needsReview = issues.length > 0 || Boolean(aiSuggestion);
                 if (!includeAll && !needsReview) continue;
-                if (issueCode && !review.issues.includes(issueCode)) continue;
-                if (total >= start && data.length < limit) data.push({ ...row, ...review, metadata: review.metadata || null, needsReview });
+                if (issueCode && !issues.includes(issueCode)) continue;
+                if (total >= start && data.length < limit) data.push({
+                    ...row, ...review, issues,
+                    suggestedId: aiSuggestion?.suggested_id || review.suggestedId,
+                    aiReason: aiSuggestion?.reason || '',
+                    aiConfidence: aiSuggestion ? Number(aiSuggestion.confidence || 0) : undefined,
+                    metadata: review.metadata || null, needsReview
+                });
                 total++;
             }
         }
@@ -819,6 +838,10 @@ router.post('/questions/review/confirm', async (req, res) => {
                 id_status = 1, id_review_status = 'CONFIRMED', normalization_version = 1, normalized_at = NOW(),
                 content_hash = ?, is_duplicate_checked = FALSE WHERE id = ?`,
                 [id, normalized.source, meta.unit_id, meta.level_id, hash, row.id]);
+            await conn.query(`UPDATE question_id_suggestions
+                SET status = 'APPLIED', reviewed_by = ?, reviewed_at = NOW(), current_id = ?, suggested_id = ?,
+                    issue_codes = JSON_ARRAY(), content_hash = ?
+                WHERE question_id = ? AND status = 'PENDING'`, [req.user.id, id, id, hash, row.id]);
         }
         await conn.commit();
         await clearCache('/api/questions*');

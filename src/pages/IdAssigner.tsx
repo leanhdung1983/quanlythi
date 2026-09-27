@@ -526,10 +526,29 @@ export const IdAssigner: React.FC = () => {
 
     const handleLoadFromDB = async () => {
         setIsProcessing(true);
+        setProcessingProgress(0);
         setShowDbLoadModal(false);
         try {
             let questions: any[] = [];
+            let reviewWarning = '';
             if (dbLoadType === 'REVIEW') {
+                let reviewed = 0;
+                let total = 0;
+                try {
+                    for (;;) {
+                        const audit = await apiService.auditQuestionIds(4);
+                        const processed = Number(audit.processed || 0);
+                        const remaining = Number(audit.remaining || 0);
+                        reviewed += processed;
+                        total = Math.max(total, reviewed + remaining);
+                        setProcessingProgress(total > 0 ? Math.min(99, Math.round((reviewed / total) * 100)) : 100);
+                        if (remaining === 0) break;
+                        if (processed === 0) throw new Error('Không thể tiếp tục hàng đợi rà soát ID.');
+                        await new Promise(resolve => window.setTimeout(resolve, 4500));
+                    }
+                } catch (auditError: any) {
+                    reviewWarning = auditError?.message || 'Hàng đợi AI tạm dừng; kết quả đã rà vẫn được giữ lại.';
+                }
                 const res = await apiService.fetchQuestionReview(200);
                 questions = res.data || [];
             } else {
@@ -558,7 +577,10 @@ export const IdAssigner: React.FC = () => {
                 updatedAt: q.updated_at,
                 unitId: q.unit_id,
                 levelId: q.level_id,
-                hasChanged: Boolean(q.suggestedId && q.suggestedId !== normalizeID(q.legacy_full_id || q.id_full || ''))
+                aiSuggested: Boolean(q.suggestedId),
+                aiConfidence: q.aiConfidence,
+                aiReason: q.aiReason,
+                hasChanged: Boolean(q.suggestedId && (q.suggestedId !== normalizeID(q.legacy_full_id || q.id_full || '') || (q.issues || []).length > 0))
             }));
 
             const newFile: LoadedFile = {
@@ -575,9 +597,12 @@ export const IdAssigner: React.FC = () => {
             setActiveFileId(newFile.uniqueId);
             setSidebarMode('QUESTIONS');
             if (items.length > 0) setSelectedQuestionId(items[0].id);
+            if (reviewWarning) {
+                window.setTimeout(() => alert(`Rà soát AI tạm dừng: ${reviewWarning}\nCác kết quả đã hoàn tất vẫn được lưu và hiển thị. Lần chạy sau hệ thống tiếp tục từ câu chưa rà.`), 100);
+            }
 
             // Tự động kích hoạt đề xuất ID bằng AI nếu bật lựa chọn
-            if (autoSuggestAiOnLoad && (dbLoadType === 'UNASSIGNED' || dbLoadType === 'REVIEW')) {
+            if (autoSuggestAiOnLoad && dbLoadType === 'UNASSIGNED') {
                 setTimeout(() => {
                     handleBatchAiSuggest(newFile.uniqueId, items);
                 }, 300);
@@ -587,6 +612,7 @@ export const IdAssigner: React.FC = () => {
             alert("Lỗi tải từ DB: " + e.message);
         } finally {
             setIsProcessing(false);
+            setProcessingProgress(0);
         }
     };
 
@@ -1612,8 +1638,8 @@ export const IdAssigner: React.FC = () => {
                                         <AlertTriangle size={18}/>
                                     </div>
                                     <div>
-                                        <h4 className="font-bold text-slate-800">Rà soát ID đang có vấn đề</h4>
-                                        <p className="text-xs text-slate-500">Tìm ID sai chuẩn, không khớp mục lục, mã nguồn hoặc dữ liệu chương/bài.</p>
+                                        <h4 className="font-bold text-slate-800">Rà soát tổng thể ID bằng AI</h4>
+                                        <p className="text-xs text-slate-500">Quét các câu chưa rà hoặc đã thay đổi; kiểm tra nội dung, chương/bài/dạng và mức độ. Câu đã rà hợp lệ sẽ được bỏ qua.</p>
                                     </div>
                                 </div>
                             </div>
@@ -1641,8 +1667,8 @@ export const IdAssigner: React.FC = () => {
                             </div>
                         </div>
 
-                        {/* Tùy chọn đề xuất AI hàng loạt */}
-                        <div className="mt-4 pt-4 border-t border-slate-100">
+                        {/* Tùy chọn đề xuất AI hàng loạt; REVIEW đã tự chạy kiểm định AI tổng thể. */}
+                        {dbLoadType !== 'REVIEW' && <div className="mt-4 pt-4 border-t border-slate-100">
                             <label className="flex items-start gap-3 p-3 bg-gradient-to-r from-indigo-50/80 to-purple-50/80 rounded-xl border border-indigo-100 cursor-pointer hover:bg-indigo-50/90 transition-colors select-none">
                                 <input 
                                     type="checkbox" 
@@ -1661,7 +1687,7 @@ export const IdAssigner: React.FC = () => {
                                     </p>
                                 </div>
                             </label>
-                        </div>
+                        </div>}
 
                         <div className="mt-6 flex justify-end gap-2">
                             <button onClick={() => setShowDbLoadModal(false)} className="px-4 py-2 text-slate-500 font-bold hover:bg-slate-100 rounded-lg">Huỷ</button>
@@ -1685,8 +1711,8 @@ export const IdAssigner: React.FC = () => {
                             </div>
                         </div>
                         <div>
-                            <h3 className="text-lg font-black text-slate-800">Đang xử lý file...</h3>
-                            <p className="text-sm text-slate-500 mt-1">Vui lòng đợi trong giây lát, hệ thống đang phân tích cấu trúc câu hỏi.</p>
+                            <h3 className="text-lg font-black text-slate-800">{dbLoadType === 'REVIEW' ? 'Đang rà soát tổng thể ID...' : 'Đang xử lý file...'}</h3>
+                            <p className="text-sm text-slate-500 mt-1">{dbLoadType === 'REVIEW' ? 'AI đang kiểm tra các câu chưa từng rà soát hoặc đã thay đổi. Câu đã xác nhận sẽ được bỏ qua.' : 'Vui lòng đợi trong giây lát, hệ thống đang phân tích cấu trúc câu hỏi.'}</p>
                         </div>
                         <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                             <div 

@@ -635,6 +635,9 @@ export async function seedDatabase() {
                 CONSTRAINT fk_suggestion_reviewer FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
+        await pool.query("ALTER TABLE question_id_suggestions ADD COLUMN IF NOT EXISTS content_hash VARCHAR(64)")
+            .catch(e => console.log('Migration notice (suggestion content hash):', e.message));
+        try { await pool.query("CREATE INDEX idx_suggestion_fingerprint ON question_id_suggestions(question_id, content_hash, current_id, status)"); } catch {}
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS matrix_templates (

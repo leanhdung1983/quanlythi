@@ -402,6 +402,12 @@ export const apiService = {
         const response = await fetch(`${API_URL}/questions/review-summary`);
         return await handleResponse(response, '/questions/review-summary');
     },
+    async auditQuestionIds(limit = 4) {
+        const response = await fetch(`${API_URL}/ai/audit-question-ids`, {
+            method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ limit })
+        });
+        return await handleResponse(response, '/ai/audit-question-ids');
+    },
     async previewQuestionNormalization(ids: number[]) {
         const response = await fetch(`${API_URL}/questions/normalize/preview`, {
             method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ ids })
