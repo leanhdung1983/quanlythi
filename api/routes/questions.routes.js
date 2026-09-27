@@ -275,7 +275,15 @@ router.get('/questions', cacheMiddleware(180), async (req, res) => {
         const whereClauses = [];
 
         if (req.query.unclassified === 'true') {
-            whereClauses.push("(id_status = 0 OR legacy_full_id IS NULL OR TRIM(legacy_full_id) = '' OR legacy_full_id = 'UNKNOWN')");
+            // The legacy id_status flag can be stale after older automatic imports.
+            // Classification is determined by the canonical catalog, not that flag.
+            whereClauses.push(`(
+                legacy_full_id IS NULL OR TRIM(legacy_full_id) = '' OR UPPER(TRIM(legacy_full_id)) = 'UNKNOWN'
+                OR NOT EXISTS (
+                    SELECT 1 FROM id6_metadata m
+                    WHERE m.id_full = TRIM(questions.legacy_full_id)
+                )
+            )`);
         } else if (req.query.search) {
             whereClauses.push("(legacy_full_id LIKE ? OR content_latex LIKE ?)");
             params.push(`%${req.query.search}%`, `%${req.query.search}%`);
@@ -376,8 +384,14 @@ router.post('/questions', async (req, res) => {
                 const isTikzRendered = hasTikZ ? 0 : 2;
 
                 await conn.query(
-                    "INSERT INTO questions (legacy_full_id, content_latex, content_latex_original, unit_id, level_id, type_id, created_by, created_by_name, content_hash, choices, is_tikz_rendered, id_status) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", 
-                    [normalizedId || null, canonicalSource, q.raw_latex, unitId, levelId, typeId, created_by, created_by_name, contentHash, choicesJson, isTikzRendered, idStatus]
+                    `INSERT INTO questions
+                    (legacy_full_id, content_latex, content_latex_original, unit_id, level_id, type_id,
+                     created_by, created_by_name, content_hash, choices, is_tikz_rendered, id_status,
+                     id_review_status, normalization_version, normalized_at)
+                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`,
+                    [normalizedId || null, canonicalSource, q.raw_latex, unitId, levelId, typeId,
+                        created_by, created_by_name, contentHash, choicesJson, isTikzRendered, idStatus,
+                        idStatus ? 'CONFIRMED' : 'PENDING', idStatus ? 1 : 0, idStatus ? new Date() : null]
                 );
             }
             await conn.commit();
@@ -672,7 +686,8 @@ router.post('/validate-ids', async (req, res) => {
 async function loadMetadataMap(conn = null) {
     const runner = conn || pool;
     const [rows] = await runner.query(`
-        SELECT m.id_full, m.unit_id, m.level_id, m.description, c.chapter_number, u.unit_number,
+        SELECT m.id_full, m.unit_id, m.level_id, m.description, c.chapter_number, c.name AS chapter_name,
+               u.unit_number, u.name AS unit_name,
                g.code AS grade_code, s.code AS subject_code, l.code AS level_code
         FROM id6_metadata m
         LEFT JOIN grades g ON m.grade_id = g.id

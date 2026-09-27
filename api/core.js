@@ -967,6 +967,16 @@ export async function seedDatabase() {
         try { await pool.query("CREATE INDEX idx_chapters_grade_subject_num ON chapters(grade_id, subject_id, chapter_number)"); } catch {}
         try { await pool.query("CREATE INDEX idx_units_chapter_num ON units(chapter_id, unit_number)"); } catch {}
 
+        // Repair stale flags created by older automatic ID assignment flows.
+        // Do not mark semantic review as confirmed here; only acknowledge that
+        // the stored canonical ID exists in the current ID6 catalog.
+        await pool.query(`
+            UPDATE questions q
+            INNER JOIN id6_metadata m ON m.id_full = TRIM(q.legacy_full_id)
+            SET q.id_status = 1
+            WHERE COALESCE(q.id_status, 0) = 0
+        `).catch(e => console.log('Migration notice (ID status reconciliation):', e.message));
+
     } catch (err) { if (err.code !== 'ER_NO_SUCH_TABLE') console.error("[SEED ERROR]", err.message); }
 }
 

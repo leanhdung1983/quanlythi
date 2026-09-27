@@ -257,7 +257,7 @@ router.post('/ai/validate-question', async (req, res) => {
         const promptCatalog = getFilteredCatalog(catalogData, detectedGrades);
         const cleanLatex = stripSolutionAndClean(latex);
 
-        const prompt = `Câu hỏi LaTeX: ${cleanLatex}\nID hiện tại: ${current_id || ''}\nCác lỗi scanner đã phát hiện: ${issueCodes.join(', ') || 'Không có'}\n\nDanh mục dạng toán chuẩn ID6:\n${promptCatalog}\n\nQuy tắc: Ký hiệu '*' là vị trí của mức độ N (Nhận biết), H (Thông hiểu), V (Vận dụng), C (Vận dụng cao). Nếu scanner báo ID_LEVEL_MISMATCH, bắt buộc phân tích lại mức độ nhận thức từ nội dung, không được kết luận ID hiện tại hợp lệ chỉ vì mã tồn tại trong danh mục. Hãy đề xuất mã ID6 đầy đủ phù hợp nhất.`;
+        const prompt = `Câu hỏi LaTeX: ${cleanLatex}\nID hiện tại: ${current_id || ''}\nCác lỗi scanner đã phát hiện: ${issueCodes.join(', ') || 'Không có'}\n\nDanh mục dạng toán chuẩn ID6:\n${promptCatalog}\n\nQuy tắc: Ký hiệu '*' là vị trí của mức độ N (Nhận biết), H (Thông hiểu), V (Vận dụng), C (Vận dụng cao). Nếu scanner báo ID_LEVEL_MISMATCH, bắt buộc phân tích lại mức độ nhận thức. Nếu báo ID_CONTENT_MISMATCH, bắt buộc chọn lại chương/bài/dạng theo nội dung (ví dụ tích phân không thể dùng ID thống kê). Không được kết luận ID hiện tại hợp lệ chỉ vì mã tồn tại trong danh mục. Hãy đề xuất mã ID6 đầy đủ phù hợp nhất.`;
         const response = await generateWithFallback(apiKeys, prompt, {
             systemInstruction: 'Trả về JSON gồm isValid, reason, suggestedId, confidence từ 0 đến 1, alternatives (tối đa 3 ID), competencies, chapter, unit và detectedQuestionType. Không thêm markdown. Thay thế * bằng N, H, V hoặc C để tạo mã ID6 chuẩn.',
             responseMimeType: 'application/json'
@@ -358,7 +358,7 @@ Ký hiệu '*' trong danh mục là vị trí của Mức độ nhận thức:
 Ví dụ: Từ dạng "2D1*1-1", nếu câu ở mức Nhận biết thì thay '*' thành 'N' -> mã là "2D1N1-1".
 
 YÊU CẦU:
-1. Phân tích nội dung và mức độ nhận thức (N, H, V, C) của từng câu. Nếu lỗi scanner có ID_LEVEL_MISMATCH, không được giữ nguyên mức độ chỉ vì ID hiện tại có trong danh mục.
+1. Phân tích nội dung, chương/bài/dạng và mức độ nhận thức (N, H, V, C) của từng câu. Nếu lỗi scanner có ID_LEVEL_MISMATCH hoặc ID_CONTENT_MISMATCH, không được giữ nguyên phân loại chỉ vì ID hiện tại có trong danh mục.
 2. Chọn đúng dạng toán phù hợp từ Danh mục và thay thế '*' bằng chữ cái mức độ tương ứng.
 3. Trả về đúng JSON Array theo mẫu (không thêm văn bản ngoài JSON):
 [

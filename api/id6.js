@@ -67,7 +67,8 @@ export const ID6_REASON_MESSAGES = Object.freeze({
     ID_SOURCE_MISMATCH: 'Mã trong nguồn LaTeX khác mã đang kiểm tra.',
     ID_NOT_IN_SOURCE: 'Nguồn LaTeX chưa chứa mã ID6 chuẩn.',
     ID_UNIT_MISMATCH: 'Mã ID6 không khớp bài đã lưu.',
-    ID_LEVEL_MISMATCH: 'Mã ID6 không khớp mức độ đã lưu.'
+    ID_LEVEL_MISMATCH: 'Mã ID6 không khớp mức độ đã lưu.',
+    ID_CONTENT_MISMATCH: 'Nội dung câu hỏi không khớp chủ đề của mã ID6.'
 });
 
 export function describeId6Issues(issues = []) {
@@ -76,8 +77,27 @@ export function describeId6Issues(issues = []) {
 
 const AI_REVIEW_ISSUES = new Set([
     'ID_MISSING', 'ID_MALFORMED', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH',
-    'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH'
+    'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH', 'ID_CONTENT_MISMATCH'
 ]);
+
+const DOMAIN_PATTERNS = Object.freeze({
+    INTEGRAL: /\\int\b|\\displaystyle\s*\\int|nguyên\s*hàm|tích\s*phân/i,
+    STATISTICS: /thống\s*kê|mẫu\s*số\s*liệu|số\s*trung\s*bình|trung\s*vị|tứ\s*phân\s*vị|phương\s*sai|độ\s*lệch\s*chuẩn|biểu\s*đồ\s*(?:cột|tần)/i
+});
+
+export function detectId6ContentDomain(value) {
+    const text = String(value || '');
+    return Object.keys(DOMAIN_PATTERNS).find(domain => DOMAIN_PATTERNS[domain].test(text)) || '';
+}
+
+export function hasId6ContentMismatch(question, metadata) {
+    if (!metadata) return false;
+    const questionDomain = detectId6ContentDomain(question?.content_latex);
+    if (!questionDomain) return false;
+    const catalogText = [metadata.description, metadata.chapter_name, metadata.unit_name].filter(Boolean).join(' ');
+    const catalogDomain = detectId6ContentDomain(catalogText);
+    return Boolean(catalogDomain && catalogDomain !== questionDomain);
+}
 
 /** Issues that cannot be safely repaired by syntax/source normalization alone. */
 export function requiresAiIdReview(issues = []) {
@@ -109,6 +129,7 @@ export function inspectQuestionId(question, metadataById) {
     if (!sourceId && normalized) issues.push('ID_NOT_IN_SOURCE');
     if (metadata?.unit_id && question.unit_id && Number(metadata.unit_id) !== Number(question.unit_id)) issues.push('ID_UNIT_MISMATCH');
     if (metadata?.level_id && question.level_id && Number(metadata.level_id) !== Number(question.level_id)) issues.push('ID_LEVEL_MISMATCH');
+    if (hasId6ContentMismatch(question, metadata)) issues.push('ID_CONTENT_MISMATCH');
     return { normalized, sourceId, metadata, issues, suggestedId: metadata ? normalized : (sourceId && metadataById.has(sourceId) ? sourceId : '') };
 }
 

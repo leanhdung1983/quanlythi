@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { extractSourceId, injectCanonicalId, normalizeId6, normalizeQuestionSource, parseId6, questionTimestampChanged, requiresAiIdReview, validateId6Candidate } from './id6.js';
+import { extractSourceId, injectCanonicalId, inspectQuestionId, normalizeId6, normalizeQuestionSource, parseId6, questionTimestampChanged, requiresAiIdReview, validateId6Candidate } from './id6.js';
 
 describe('ID6 canonical rules', () => {
     it.each([['12d01b03_04', '2D1H3-4'], ['2H2K5-7', '2H2V5-7'], ['10C3G2-1', '0C3C2-1']])('normalizes %s', (input, expected) => {
@@ -47,5 +47,18 @@ describe('ID6 canonical rules', () => {
         expect(questionTimestampChanged('2026-09-27T03:00:00.900Z', '2026-09-27T03:00:00.000Z')).toBe(false);
         expect(questionTimestampChanged('2026-09-27T03:00:00Z', '2026-09-27T03:00:01Z')).toBe(true);
         expect(questionTimestampChanged('not-a-date', '2026-09-27T03:00:00Z')).toBe(false);
+    });
+    it('flags an integral question that was assigned to a statistics catalog ID', () => {
+        const metadata = new Map([['2D3H1-1', {
+            id_full: '2D3H1-1', unit_id: 1, level_id: 2,
+            chapter_name: 'Các số đặc trưng đo xu thế trung tâm cho mẫu số liệu ghép nhóm',
+            description: 'Tính phương sai và độ lệch chuẩn'
+        }]]);
+        const review = inspectQuestionId({
+            legacy_full_id: '2D3H1-1', unit_id: 1, level_id: 2,
+            content_latex: '\\begin{ex}\n%[2D3H1-1]\nTính tích phân $\\int_0^1 x^2 dx$.\\end{ex}'
+        }, metadata);
+        expect(review.issues).toContain('ID_CONTENT_MISMATCH');
+        expect(requiresAiIdReview(review.issues)).toBe(true);
     });
 });

@@ -399,7 +399,7 @@ export const IdAssigner: React.FC = () => {
         if (!currentItems || currentItems.length === 0) return;
 
         const validIdSet = new Set(metadata.map(m => m.id_full));
-        const semanticReviewCodes = new Set(['ID_MISSING', 'ID_MALFORMED', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH', 'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH']);
+        const semanticReviewCodes = new Set(['ID_MISSING', 'ID_MALFORMED', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH', 'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH', 'ID_CONTENT_MISMATCH']);
         const itemsToProcess = currentItems.filter(item => {
             const scannerRequiresAi = item.issueCodes?.some(code => semanticReviewCodes.has(code));
             return scannerRequiresAi || !isValidID6(item.assignedId) || !validIdSet.has(item.assignedId) || item.assignedId.includes('?');
@@ -1339,7 +1339,7 @@ export const IdAssigner: React.FC = () => {
                                                         ID_MISSING: 'Chưa có ID', ID_MALFORMED: 'Sai cú pháp', ID_LEGACY: 'ID chuẩn cũ',
                                                         ID_UNKNOWN: 'Không có trong mục lục', ID_SOURCE_MISMATCH: 'ID trong mã nguồn không khớp',
                                                         ID_NOT_IN_SOURCE: 'Mã nguồn thiếu ID', ID_UNIT_MISMATCH: 'Sai chương/bài',
-                                                        ID_LEVEL_MISMATCH: 'Sai mức độ'
+                                                        ID_LEVEL_MISMATCH: 'Sai mức độ', ID_CONTENT_MISMATCH: 'Sai chủ đề/nội dung'
                                                     } as Record<string, string>)[code] || code}
                                                 </span>
                                             ))}
