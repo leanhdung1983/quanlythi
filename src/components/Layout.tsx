@@ -270,6 +270,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/adaptive" icon={Zap} label="Ôn tập Adaptive" onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" onClick={() => setIsMobileMenuOpen(false)}/>
+                        <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" onClick={() => setIsMobileMenuOpen(false)}/>
                         
                         {isTeacher && (
                             <>

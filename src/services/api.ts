@@ -259,8 +259,13 @@ export const apiService = {
         return await handleResponse(response, `/users/${userId}/profile`);
     },
     async adminResetPassword(userId: number) {
-        const response = await fetch(`${API_URL}/users/${userId}/reset-password`, { method: 'POST' }); 
-        return await handleResponse(response, `/users/${userId}/reset-password`);
+        const response = await fetch(`${API_URL}/users/${userId}/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({})
+        });
+        const result = await handleResponse(response, `/users/${userId}/reset-password`);
+        return { ...result, newPassword: result.newPassword || result.new_password };
     },
     async createUser(data: unknown) {
         const response = await fetch(`${API_URL}/users`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify(data) }); 

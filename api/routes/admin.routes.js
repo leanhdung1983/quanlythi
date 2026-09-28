@@ -356,13 +356,14 @@ router.delete('/admin/users/:id', handleDeleteUser);
 router.post(['/users/:id/reset-password', '/admin/users/:id/reset-password'], async (req, res) => {
     try {
         if (!requireAdmin(req, res)) return;
-        const { new_password } = req.body;
+        const { new_password } = req.body || {};
         const pass = (typeof new_password === 'string' && new_password.length >= 8) 
             ? new_password 
             : crypto.randomBytes(6).toString('hex');
         const hash = await bcrypt.hash(pass, 10);
         await query("UPDATE users SET password_hash = ? WHERE id = ?", [hash, req.params.id]);
-        res.json({ success: true, new_password: pass });
+        res.set('Cache-Control', 'private, no-store');
+        res.json({ success: true, newPassword: pass, new_password: pass });
     } catch (e) {
         res.status(500).json({ error: e.message });
     }

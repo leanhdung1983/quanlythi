@@ -140,10 +140,9 @@ export const ClassManagement = () => {
 
     const loadClassDetails = async (classId: number) => {
         try {
-            const studs = await apiService.fetchClassStudents(classId);
-            setStudents(studs || []);
-            
             if (isTeacher) {
+                const studs = await apiService.fetchClassStudents(classId);
+                setStudents(studs || []);
                 const assigns = await apiService.fetchClassAssignments(classId);
                 setAssignments(assigns || []);
                 const scoreData = await apiService.fetchClassScores(classId);
@@ -367,17 +366,26 @@ export const ClassManagement = () => {
                                 </button>
                             </form>
                         ) : (
-                            <form onSubmit={handleJoinClass} className="flex gap-2 mb-4">
-                                <input 
-                                    type="text" 
-                                    value={joinCode}
-                                    onChange={(e) => setJoinCode(e.target.value)}
-                                    placeholder="Nhập mã lớp..."
-                                    className="flex-1 px-3 py-2 border rounded-lg focus:outline-none focus:border-indigo-500 uppercase"
-                                />
-                                <button type="submit" className="p-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
-                                    <KeyRound className="w-5 h-5" />
-                                </button>
+                            <form onSubmit={handleJoinClass} className="mb-5 rounded-xl border border-green-200 bg-green-50 p-3">
+                                <label htmlFor="join-class-code" className="mb-1 block text-sm font-bold text-green-800">
+                                    Tìm và tham gia lớp bằng mã
+                                </label>
+                                <p className="mb-3 text-xs text-green-700">Nhập mã lớp do giáo viên cung cấp.</p>
+                                <div className="flex flex-col gap-2 sm:flex-row">
+                                    <input
+                                        id="join-class-code"
+                                        type="text"
+                                        value={joinCode}
+                                        onChange={(e) => setJoinCode(e.target.value)}
+                                        placeholder="Ví dụ: ABC123"
+                                        autoComplete="off"
+                                        className="min-w-0 flex-1 px-3 py-2 border border-green-200 rounded-lg focus:outline-none focus:border-green-500 uppercase bg-white"
+                                    />
+                                    <button type="submit" disabled={!joinCode.trim()} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 font-bold flex items-center justify-center gap-2">
+                                        <KeyRound className="w-4 h-4" />
+                                        Tham gia lớp
+                                    </button>
+                                </div>
                             </form>
                         )}
 

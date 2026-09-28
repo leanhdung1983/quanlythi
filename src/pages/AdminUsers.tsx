@@ -115,7 +115,7 @@ export const AdminUsers: React.FC = () => {
             if (res.newPassword) {
                 setResetResult({ username, pass: res.newPassword });
             } else {
-                alert("Reset thành công.");
+                alert("Đã reset nhưng không nhận được mật khẩu mới. Vui lòng thử lại.");
             }
         } catch { 
             alert("Lỗi khi reset mật khẩu"); 
