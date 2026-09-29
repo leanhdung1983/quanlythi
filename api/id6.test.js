@@ -22,6 +22,11 @@ describe('ID6 canonical rules', () => {
         expect(result).toContain('%[2D1H3-4]');
         expect(result).not.toContain('$[');
     });
+    it('keeps an inline question body outside the ID comment', () => {
+        const result = injectCanonicalId('\\begin{ex}%[2D4V2-2]Biểu đồ sau mô tả kết quả điều tra.\n\\end{ex}', '2D4V2-2');
+        expect(result).toContain('%[2D4V2-2]\nBiểu đồ sau mô tả kết quả điều tra.');
+        expect(result).not.toContain('%[2D4V2-2]Biểu đồ');
+    });
     it('normalizes line endings without changing math content', () => {
         const result = normalizeQuestionSource('```latex\r\n\\begin{ex}\r\n$x + 1$   \r\n\\end{ex}\r\n```', '2D1H3-4');
         expect(result.source).toContain('$x + 1$');

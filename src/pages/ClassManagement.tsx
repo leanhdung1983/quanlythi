@@ -4,7 +4,7 @@ import { useAuthStore } from '../services/authStore';
 import { apiService } from '../services/api';
 import { 
     Users, Plus, Trash2, KeyRound, BookOpen, Layers, X, BarChart, Download, 
-    Settings, Clock, Calendar
+    Settings, Clock, Calendar, LogOut
 } from 'lucide-react';
 import { SavedMatrix } from '../types';
 
@@ -91,6 +91,7 @@ export const ClassManagement = () => {
     
     // Student states
     const [joinCode, setJoinCode] = useState('');
+    const [leavingClass, setLeavingClass] = useState(false);
 
     // Assign Modal states
     const [showAssignModal, setShowAssignModal] = useState(false);
@@ -249,6 +250,24 @@ export const ClassManagement = () => {
             loadClassDetails(selectedClass.id);
         } catch (error) {
             alert('Lỗi xoá học sinh');
+        }
+    };
+
+    const handleLeaveClass = async () => {
+        if (!selectedClass || !user || isTeacher || leavingClass) return;
+        if (!confirm(`Bạn có chắc muốn rời lớp “${selectedClass.name}”?\n\nBạn sẽ không còn thấy các bài tập của lớp này.`)) return;
+
+        setLeavingClass(true);
+        try {
+            await apiService.removeStudentFromClass(selectedClass.id, user.id);
+            setSelectedClass(null);
+            setAssignments([]);
+            await loadClasses();
+            alert('Bạn đã rời lớp thành công.');
+        } catch (error: any) {
+            alert(error.message || 'Không thể rời lớp. Vui lòng thử lại.');
+        } finally {
+            setLeavingClass(false);
         }
     };
 
@@ -433,13 +452,24 @@ export const ClassManagement = () => {
                     {selectedClass ? (
                         <div className="space-y-6">
                             <div className="bg-white p-6 rounded-2xl shadow-sm border border-slate-100">
-                                <div className="flex items-center justify-between mb-6">
+                                <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between mb-6">
                                     <h2 className="text-2xl font-bold text-slate-800">{selectedClass.name}</h2>
                                     {isTeacher && (
                                         <div className="bg-indigo-100 text-indigo-800 px-4 py-2 rounded-lg font-mono font-bold flex items-center gap-2">
                                             <span>Mã tham gia:</span>
                                             <span className="text-xl tracking-widest">{selectedClass.code}</span>
                                         </div>
+                                    )}
+                                    {!isTeacher && (
+                                        <button
+                                            type="button"
+                                            onClick={handleLeaveClass}
+                                            disabled={leavingClass}
+                                            className="self-start sm:self-auto px-4 py-2 rounded-lg border border-red-200 bg-red-50 text-red-600 hover:bg-red-100 disabled:cursor-not-allowed disabled:opacity-50 font-bold flex items-center gap-2"
+                                        >
+                                            <LogOut className="w-4 h-4" />
+                                            {leavingClass ? 'Đang rời lớp...' : 'Rời lớp'}
+                                        </button>
                                     )}
                                 </div>
 

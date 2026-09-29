@@ -268,8 +268,9 @@ export const IdAssigner: React.FC = () => {
         if (/\\begin\{ex\}/i.test(content)) {
             // Remove any potential double % tags if B failed or overlapped
             content = content.replace(/(\\begin\{ex\})\s*%\[.*?\]/gi, '$1');
-            // Inject strictly as \begin{ex}%[ID] (compact)
-            return content.replace(/(\\begin\{ex\})/i, `$1${newTag}`);
+            // A LaTeX comment consumes the rest of its line. Always terminate the
+            // ID comment before the question body so inline source is not hidden.
+            return content.replace(/(\\begin\{ex\})/i, `$1${newTag}\n`);
         } else {
             return `${newTag}\n${content.trim()}`;
         }
