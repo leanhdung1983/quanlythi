@@ -256,6 +256,10 @@ export const IdAssigner: React.FC = () => {
         // Remove ALL variants: %[...], $[...], [...] including legacy chars
         const idPattern = `\\d+\\s*[a-zA-Z]\\s*\\d+\\s*[a-zA-Z]\\s*\\d+\\s*-\\s*\\d+`;
         const placeholderPattern = `[\\?]+(?:-[\\?]+)?`; 
+
+        // Remove legacy bracket metadata such as %[author/source]. Only the
+        // canonical ID6 marker inserted below is allowed to remain.
+        content = content.replace(/%\s*\[[^\]\r\n]*\][ \t]*/g, '');
         
         // Remove standalone tags
         const cleanupRegex = new RegExp(`\\s*([%\\$])?\\s*\\[\\s*(?:${idPattern}|${placeholderPattern})\\s*\\]`, 'gi');

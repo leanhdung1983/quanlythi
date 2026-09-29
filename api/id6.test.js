@@ -27,6 +27,13 @@ describe('ID6 canonical rules', () => {
         expect(result).toContain('%[2D4V2-2]\nBiểu đồ sau mô tả kết quả điều tra.');
         expect(result).not.toContain('%[2D4V2-2]Biểu đồ');
     });
+    it('removes non-ID6 bracket comments without removing the inline question body', () => {
+        const source = "\\begin{ex}%[1H4H5-3]\n%[Nguyễn Văn Nay]\tCho hình lăng trụ tam giác đều $ABC.A'B'C'$.\n\\end{ex}";
+        const result = injectCanonicalId(source, '1H4H5-3');
+        expect(result.match(/%\[[^\]]+\]/g)).toEqual(['%[1H4H5-3]']);
+        expect(result).toContain("Cho hình lăng trụ tam giác đều $ABC.A'B'C'$.");
+        expect(result).not.toContain('Nguyễn Văn Nay');
+    });
     it('normalizes line endings without changing math content', () => {
         const result = normalizeQuestionSource('```latex\r\n\\begin{ex}\r\n$x + 1$   \r\n\\end{ex}\r\n```', '2D1H3-4');
         expect(result.source).toContain('$x + 1$');

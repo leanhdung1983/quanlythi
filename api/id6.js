@@ -44,7 +44,11 @@ export function injectCanonicalId(source, id) {
     result = result.replace(/^\s*```(?:latex|tex)?\s*\n?/i, '').replace(/\n?\s*```\s*$/i, '');
     result = result.replace(/\\begin\{(?:bt|vd|cau|bai|tuluan|tl)\}/gi, '\\begin{ex}')
         .replace(/\\end\{(?:bt|vd|cau|bai|tuluan|tl)\}/gi, '\\end{ex}');
-    result = result.replace(/[%$]\s*\[\s*(?:10|11|12|[0126789])\s*[DHC]\s*\d+\s*[NHVCXYBKGT]\s*\d+\s*[-_]\s*\d+\s*\][ \t]*\n?/gi, '');
+    // Legacy sources may contain bracket metadata comments such as %[author].
+    // Remove every %[...], then insert exactly one validated ID6 marker below.
+    // Do not consume the rest of the line because it may be the question body.
+    result = result.replace(/%\s*\[[^\]\r\n]*\][ \t]*/g, '');
+    result = result.replace(/\$\s*\[\s*(?:10|11|12|[0126789])\s*[DHC]\s*\d+\s*[NHVCXYBKGT]\s*\d+\s*[-_]\s*\d+\s*\][ \t]*\n?/gi, '');
     result = result.replace(/(\\begin\{ex\})\s*\[\s*(?:10|11|12|[0126789])\s*[DHC]\s*\d+\s*[NHVCXYBKGT]\s*\d+\s*[-_]\s*\d+\s*\]/gi, '$1');
     return result.replace(/\\begin\{ex\}/i, `\\begin{ex}\n%[${normalizedId}]\n`).trim();
 }
