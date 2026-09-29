@@ -49,8 +49,18 @@ export function injectCanonicalId(source, id) {
     // Do not consume the rest of the line because it may be the question body.
     result = result.replace(/%\s*\[[^\]\r\n]*\][ \t]*/g, '');
     result = result.replace(/\$\s*\[\s*(?:10|11|12|[0126789])\s*[DHC]\s*\d+\s*[NHVCXYBKGT]\s*\d+\s*[-_]\s*\d+\s*\][ \t]*\n?/gi, '');
+    // At the beginning of a question only the canonical ID6 comment is kept.
+    // Drop consecutive legacy header comments such as "%Câu 1", while
+    // preserving comments that occur later inside the body or solution.
+    result = result.replace(
+        /(\\begin\{ex\})[ \t]*(?:\r?\n)?(?:[ \t]*%[^\r\n]*(?:\r?\n|$))+/i,
+        '$1\n'
+    );
     result = result.replace(/(\\begin\{ex\})\s*\[\s*(?:10|11|12|[0126789])\s*[DHC]\s*\d+\s*[NHVCXYBKGT]\s*\d+\s*[-_]\s*\d+\s*\]/gi, '$1');
-    return result.replace(/\\begin\{ex\}/i, `\\begin{ex}\n%[${normalizedId}]\n`).trim();
+    return result.replace(
+        /\\begin\{ex\}[ \t]*(?:\r?\n[ \t]*)*/i,
+        `\\begin{ex}\n%[${normalizedId}]\n`
+    ).trim();
 }
 
 export function normalizeQuestionSource(source, id) {

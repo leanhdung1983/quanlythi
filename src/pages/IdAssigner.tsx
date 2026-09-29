@@ -260,6 +260,14 @@ export const IdAssigner: React.FC = () => {
         // Remove legacy bracket metadata such as %[author/source]. Only the
         // canonical ID6 marker inserted below is allowed to remain.
         content = content.replace(/%\s*\[[^\]\r\n]*\][ \t]*/g, '');
+
+        // Remove consecutive legacy header comments immediately after
+        // \begin{ex} (for example "%Câu 1" or "% Nguồn: ..."). Comments
+        // deeper in the question/solution are intentionally left untouched.
+        content = content.replace(
+            /(\\begin\{ex\})[ \t]*(?:\r?\n)?(?:[ \t]*%[^\r\n]*(?:\r?\n|$))+/i,
+            '$1\n'
+        );
         
         // Remove standalone tags
         const cleanupRegex = new RegExp(`\\s*([%\\$])?\\s*\\[\\s*(?:${idPattern}|${placeholderPattern})\\s*\\]`, 'gi');
@@ -274,7 +282,10 @@ export const IdAssigner: React.FC = () => {
             content = content.replace(/(\\begin\{ex\})\s*%\[.*?\]/gi, '$1');
             // A LaTeX comment consumes the rest of its line. Always terminate the
             // ID comment before the question body so inline source is not hidden.
-            return content.replace(/(\\begin\{ex\})/i, `$1${newTag}\n`);
+            return content.replace(
+                /(\\begin\{ex\})[ \t]*(?:\r?\n[ \t]*)*/i,
+                `$1${newTag}\n`
+            );
         } else {
             return `${newTag}\n${content.trim()}`;
         }

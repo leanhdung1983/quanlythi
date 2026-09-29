@@ -34,6 +34,14 @@ describe('ID6 canonical rules', () => {
         expect(result).toContain("Cho hình lăng trụ tam giác đều $ABC.A'B'C'$.");
         expect(result).not.toContain('Nguyễn Văn Nay');
     });
+    it('removes all legacy header comment lines except the canonical ID6 marker', () => {
+        const source = '\\begin{ex}%[1H4H5-3]\n%Câu 1\n% Nguồn: đề minh họa\nNội dung thật của câu hỏi.\n% comment trong thân cần giữ\n\\end{ex}';
+        const result = injectCanonicalId(source, '1H4H5-3');
+        expect(result).toContain('\\begin{ex}\n%[1H4H5-3]\nNội dung thật của câu hỏi.');
+        expect(result).not.toContain('%Câu 1');
+        expect(result).not.toContain('% Nguồn: đề minh họa');
+        expect(result).toContain('% comment trong thân cần giữ');
+    });
     it('normalizes line endings without changing math content', () => {
         const result = normalizeQuestionSource('```latex\r\n\\begin{ex}\r\n$x + 1$   \r\n\\end{ex}\r\n```', '2D1H3-4');
         expect(result.source).toContain('$x + 1$');
