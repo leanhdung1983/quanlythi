@@ -26,6 +26,10 @@ Trên máy local, mở terminal tại thư mục dự án và khởi động wor
 python scripts/tikz_local_worker.py --url https://TEN-DICH-VU.onrender.com --daemon
 ```
 
+Worker mặc định biên dịch song song 2 hình để tận dụng CPU nhưng vẫn gửi kết
+quả theo thứ tự ID. Có thể dùng `--workers 1` trên máy yếu hoặc `--workers 3`
+đến `--workers 4` trên máy nhiều nhân. Không nên chạy nhiều cửa sổ worker.
+
 Đăng nhập bằng tài khoản ADMIN khi được hỏi và giữ terminal chạy. Trong
 **Source & SVG Viewer**, chờ trạng thái **Worker: Đang kết nối**, rồi bấm
 **Quét và biên dịch**. Render lưu công việc trong database; worker chủ động
@@ -67,6 +71,13 @@ lỗi, worker có thể nhờ AI sửa mã TikZ đúng một lần; bản sửa 
 thành công và vượt qua bộ lọc SVG phía server trước khi được lưu. Không chỉnh
 các file Python cũ chứa thông tin database rồi đẩy chúng lên GitHub. Nếu
 thông tin DB đã từng được lưu trong mã, đổi mật khẩu DB trước khi sử dụng tiếp.
+
+Trong lô dài, worker chỉ giữ một cửa sổ nhỏ SVG trong bộ nhớ, gửi heartbeat khi
+TeX đang chạy và tự tiếp tục tối đa ba lần nếu HTTPS bị gián đoạn. Con trỏ quét
+được lưu cả với trang không có hình cần làm, nên việc nối lại không quét lại từ
+đầu. Bộ quét luôn đối chiếu placeholder với `question_images`, không tin riêng
+cờ `is_tikz_rendered`; vì vậy SVG bị thiếu hoặc dữ liệu cũ gắn sai trạng thái vẫn
+được phát hiện.
 
 ## Sửa các câu biên dịch lỗi
 

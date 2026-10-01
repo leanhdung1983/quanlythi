@@ -42,6 +42,8 @@ class FakeApi:
         if path.endswith("/failure"):
             self.failures.append(data)
             return {"success": True}
+        if path.endswith("/ai-fix"):
+            return {"success": True, "fixedSource": "fixed tikz"}
         raise AssertionError(f"Unexpected request: {method} {path}")
 
 
@@ -51,6 +53,7 @@ class LocalWorkerJobTests(unittest.TestCase):
         self.args = SimpleNamespace(
             url="https://example.onrender.com", apply=True, limit=50,
             max_questions=0, timeout=10,
+            workers=2,
             report=str(Path(self.tmp.name) / "report.json"),
         )
         self.job = {"id": 8, "afterId": 0, "token": "f" * 64}

@@ -1,5 +1,8 @@
 import { describe, expect, it } from 'vitest';
-import { extractTikzBlocks, inspectTikzQuestion, inspectTikzStructure, replaceRenderedBlock, tikzHash } from './tikzAudit.js';
+import {
+    extractTikzBlocks, inspectTikzQuestion, inspectTikzStructure, isActionableTikzAudit,
+    replaceRenderedBlock, tikzHash,
+} from './tikzAudit.js';
 
 const block = '\\begin{tikzpicture}\\draw (0,0)--(1,1);\\end{tikzpicture}';
 const hash = tikzHash(block);
@@ -24,7 +27,12 @@ describe('TikZ audit', () => {
         expect(inspectTikzQuestion(question(`[TIKZ_HASH:${hash}]`)).status).toBe('MISSING_SOURCE');
     });
     it('checks SVG existence instead of trusting status', () => {
-        expect(inspectTikzQuestion(question(`[TIKZ_HASH:${hash}]`, block, 1), new Set([hash])).status).toBe('READY');
+        const missing = inspectTikzQuestion(question(`[TIKZ_HASH:${hash}]`, block, 1));
+        const ready = inspectTikzQuestion(question(`[TIKZ_HASH:${hash}]`, block, 1), new Set([hash]));
+        expect(missing.status).toBe('PENDING');
+        expect(isActionableTikzAudit(missing)).toBe(true);
+        expect(ready.status).toBe('READY');
+        expect(isActionableTikzAudit(ready)).toBe(false);
     });
     it('only replaces the intended block', () => {
         const other = '\\begin{tikzpicture}\\draw (2,2);\\end{tikzpicture}';

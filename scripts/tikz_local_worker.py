@@ -5,6 +5,8 @@ No database credentials or API keys are stored by this script.
 """
 
 import argparse
+from collections import OrderedDict
+from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 import getpass
 import json
 import os
@@ -173,7 +175,11 @@ def run_worker(args, api=None, job=None):
     cursor = job["afterId"] if job else 0
     scanned = synced = failed = 0
     outcomes = []
-    compiled = {}
+    # SVGs can be tens of MB. Keep only a small LRU instead of retaining the
+    # entire database run in RAM (which previously made long jobs crash).
+    compiled = OrderedDict()
+    cache_limit = max(4, getattr(args, "workers", 1) * 4)
+    executor = ThreadPoolExecutor(max_workers=max(1, getattr(args, "workers", 1)))
 
     def save_report():
         if outcomes:
@@ -195,10 +201,59 @@ def run_worker(args, api=None, job=None):
                 "synced": synced - synced_before, "failed": failed - failed_before,
             })
 
-    while True:
+    def job_checkpoint(question_id):
+        if job and question_id > 0:
+            api.request("POST", f"/api/admin/tikz-jobs/{job['id']}/progress", {
+                "token": job["token"], "afterId": question_id,
+                "synced": 0, "failed": 0, "scanned": 0,
+            })
+
+    def remember_compiled(hash_value, svg):
+        compiled[hash_value] = svg
+        compiled.move_to_end(hash_value)
+        while len(compiled) > cache_limit:
+            compiled.popitem(last=False)
+
+    def wait_for_compile(future):
+        """Keep the remote lease alive while TeX is busy on the local machine."""
+        while True:
+            try:
+                return future.result(timeout=20 if job else None)
+            except FutureTimeout:
+                if not job_heartbeat():
+                    future.cancel()
+                    raise InterruptedError("Công việc đã được yêu cầu dừng.")
+
+    try:
+      while True:
         page = api.request("GET", "/api/admin/tikz-audit?" + urlencode({
             "afterId": cursor, "limit": args.limit, "actionable": 1,
         }))
+        # TeX processes are independent. Start the unique drawings in this page
+        # in a small rolling window. Do not queue the whole page: completed SVGs
+        # may be very large and futures would otherwise retain all of them in RAM.
+        futures = {}
+        source_queue = []
+        if args.apply:
+            remaining = args.max_questions - scanned if args.max_questions else len(page["data"])
+            for question in page["data"][:remaining]:
+                for image in question["images"]:
+                    hash_value = image["hash"]
+                    if (image["needsAction"] and not image["exists"] and image["source"]
+                            and hash_value not in compiled
+                            and all(queued[0] != hash_value for queued in source_queue)):
+                        source_queue.append((hash_value, image["source"]))
+        source_queue = iter(source_queue)
+
+        def fill_compile_window():
+            while len(futures) < max(1, getattr(args, "workers", 1)):
+                try:
+                    hash_value, source = next(source_queue)
+                except StopIteration:
+                    break
+                futures[hash_value] = executor.submit(compile_svg, source, args.timeout)
+
+        fill_compile_window()
         for question in page["data"]:
             if args.max_questions and scanned >= args.max_questions:
                 break
@@ -248,24 +303,36 @@ def run_worker(args, api=None, job=None):
                     svg = None
                     if not image["exists"]:
                         if hash_value not in compiled:
-                            compiled[hash_value] = compile_svg(image["source"], args.timeout)
+                            future = futures.pop(hash_value, None)
+                            try:
+                                svg_result = wait_for_compile(future) if future else compile_svg(image["source"], args.timeout)
+                            finally:
+                                fill_compile_window()
+                            remember_compiled(hash_value, svg_result)
+                        else:
+                            compiled.move_to_end(hash_value)
                         svg = compiled[hash_value]
                     api.request("POST", "/api/admin/tikz-audit/sync", {
                         "questionId": question["id"], "hash": hash_value, "svg": svg,
                     })
                     synced += 1
                     print(f"[ĐÃ LƯU] {label}")
+                except InterruptedError:
+                    save_report()
+                    return "CANCELLED"
                 except (RuntimeError, subprocess.TimeoutExpired) as error:
                     message = str(error)[:1000]
                     try:
                         repaired = api.request("POST", "/api/admin/tikz-audit/ai-fix", {
                             "questionId": question["id"], "hash": hash_value, "error": message,
                         })
-                        fixed_svg = compile_svg(repaired["fixedSource"], args.timeout)
+                        fixed_svg = wait_for_compile(executor.submit(
+                            compile_svg, repaired["fixedSource"], args.timeout,
+                        ))
                         api.request("POST", "/api/admin/tikz-audit/sync", {
                             "questionId": question["id"], "hash": hash_value, "svg": fixed_svg,
                         })
-                        compiled[hash_value] = fixed_svg
+                        remember_compiled(hash_value, fixed_svg)
                         synced += 1
                         print(f"[AI ĐÃ SỬA VÀ LƯU] {label}")
                         continue
@@ -287,8 +354,13 @@ def run_worker(args, api=None, job=None):
             break
         if page["afterId"] <= cursor:
             raise RuntimeError("Con trỏ quét không tiến; dừng để tránh bỏ sót dữ liệu.")
+        # The server may return an empty actionable page after checking stored
+        # hashes. Persist its scan cursor so a reconnect does not rescan it.
+        job_checkpoint(page["afterId"])
         cursor = page["afterId"]
         print(f"Đã quét {scanned} câu, đồng bộ {synced} hình, lỗi {failed}.")
+    finally:
+        executor.shutdown(wait=False, cancel_futures=True)
     print(f"HOÀN TẤT: quét {scanned} câu, đồng bộ {synced} hình, lỗi {failed}.")
     save_report()
     return "COMPLETED"
@@ -307,16 +379,26 @@ def run_daemon(args):
             claimed = api.request("POST", "/api/admin/tikz-worker/claim", {"workerId": worker_id})["job"]
             if claimed:
                 print(f"[LÔ #{claimed['id']}] Bắt đầu từ ID câu hỏi {claimed['afterId']}.")
-                try:
-                    status = run_worker(args, api=api, job=claimed)
-                    api.request("POST", f"/api/admin/tikz-jobs/{claimed['id']}/finish", {
-                        "token": claimed["token"], "status": status,
-                    })
-                except Exception as error:
-                    print(f"[LÔ #{claimed['id']}] Lỗi: {error}")
+                last_error = None
+                for resume_attempt in range(3):
+                    try:
+                        status = run_worker(args, api=api, job=claimed)
+                        api.request("POST", f"/api/admin/tikz-jobs/{claimed['id']}/finish", {
+                            "token": claimed["token"], "status": status,
+                        })
+                        last_error = None
+                        break
+                    except Exception as error:
+                        last_error = error
+                        print(f"[LÔ #{claimed['id']}] Mất kết nối/tạm lỗi, tiếp tục lần {resume_attempt + 2}/3: {error}")
+                        if "HTTP 401" in str(error):
+                            api.login()
+                        time.sleep(min(15, 3 * (resume_attempt + 1)))
+                if last_error is not None:
+                    print(f"[LÔ #{claimed['id']}] Dừng sau 3 lần tiếp tục: {last_error}")
                     try:
                         api.request("POST", f"/api/admin/tikz-jobs/{claimed['id']}/finish", {
-                            "token": claimed["token"], "status": "FAILED", "error": str(error)[:1000],
+                            "token": claimed["token"], "status": "FAILED", "error": str(last_error)[:1000],
                         })
                     except RuntimeError as finish_error:
                         print(f"Không cập nhật được trạng thái lô: {finish_error}")
@@ -336,6 +418,8 @@ if __name__ == "__main__":
     parser.add_argument("--daemon", action="store_true", help="Chờ nút trên web và tự xử lý lô công việc bằng TeX local.")
     parser.add_argument("--limit", type=int, default=100, choices=range(1, 101), metavar="1..100")
     parser.add_argument("--timeout", type=int, default=90, help="Thời gian tối đa cho mỗi bước biên dịch (giây).")
+    parser.add_argument("--workers", type=int, default=2, choices=range(1, 5), metavar="1..4",
+                        help="Số hình biên dịch song song; mặc định 2 để tăng tốc mà không làm quá tải máy.")
     parser.add_argument("--max-questions", type=int, default=0, help="Dừng sau N câu để chạy thử.")
     parser.add_argument("--report", default=str(PROJECT_ROOT / "output" / "tikz_worker_errors.json"))
     arguments = parser.parse_args()

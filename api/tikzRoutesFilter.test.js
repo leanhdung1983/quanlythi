@@ -24,9 +24,9 @@ describe('TikZ audit candidate filtering', () => {
         expect(calls[0].sql).toContain("LOCATE('[TIKZ_HASH:'");
         expect(calls[0].sql).not.toContain('is_tikz_rendered <> 1');
     });
-    it('worker mode requests only drawings that still need rendering', async () => {
+    it('worker mode does not trust the stale rendered flag before checking SVG storage', async () => {
         expect((await fetch(`${base}?actionable=1&afterId=10&limit=25`)).status).toBe(200);
-        expect(calls[0].sql).toContain('is_tikz_rendered <> 1');
+        expect(calls[0].sql).not.toContain('is_tikz_rendered <> 1');
         expect(calls[0].params).toEqual([10, 26]);
     });
 });

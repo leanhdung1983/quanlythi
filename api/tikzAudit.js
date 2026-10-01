@@ -89,6 +89,11 @@ export function inspectTikzQuestion(question, existingHashes = new Set()) {
     };
 }
 
+export function isActionableTikzAudit(audit) {
+    return audit.images.some(image => image.needsAction)
+        || ['MALFORMED_SOURCE', 'SOURCE_MISMATCH', 'OTHER_IMAGE'].includes(audit.status);
+}
+
 export function replaceRenderedBlock(content, hash) {
     let result = String(content || '');
     for (const block of extractTikzBlocks(result)) {

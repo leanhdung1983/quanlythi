@@ -142,17 +142,18 @@ router.post('/admin/tikz-worker/claim', async (req, res) => {
 router.post('/admin/tikz-jobs/:id/progress', async (req, res) => {
     if (!requireAdmin(req, res)) return;
     const id = jobId(req.params.id);
-    const { token, afterId, synced = 0, failed = 0 } = req.body;
+    const { token, afterId, synced = 0, failed = 0, scanned = 1 } = req.body;
     if (!id || !tokenValid(token) || !Number.isSafeInteger(afterId) || afterId < 0
         || !Number.isSafeInteger(synced) || synced < 0 || synced > 100
-        || !Number.isSafeInteger(failed) || failed < 0 || failed > 100) {
+        || !Number.isSafeInteger(failed) || failed < 0 || failed > 100
+        || !Number.isSafeInteger(scanned) || scanned < 0 || scanned > 100) {
         return res.status(400).json({ error: 'Tiến độ không hợp lệ.' });
     }
     try {
         const [result] = await pool.query(
-            `UPDATE tikz_render_jobs SET after_id = ?, scanned = scanned + 1, synced = synced + ?, failed = failed + ?, heartbeat_at = NOW()
+            `UPDATE tikz_render_jobs SET after_id = ?, scanned = scanned + ?, synced = synced + ?, failed = failed + ?, heartbeat_at = NOW()
              WHERE id = ? AND lease_token = ? AND status IN ('RUNNING', 'CANCEL_REQUESTED') AND after_id < ?`,
-            [afterId, synced, failed, id, token, afterId],
+            [afterId, scanned, synced, failed, id, token, afterId],
         );
         if (!result.affectedRows) {
             const [rows] = await pool.query('SELECT after_id AS afterId, lease_token AS token, status FROM tikz_render_jobs WHERE id = ?', [id]);

@@ -5,7 +5,8 @@ import {
 import { MAX_SVG_BYTES } from '../svgImage.js';
 import { normalizeAiTikzFix } from '../tikzAiFix.js';
 import {
-    extractTikzBlocks, extractSvgReferences, inspectTikzQuestion, inspectTikzStructure, replaceRenderedBlock,
+    extractTikzBlocks, extractSvgReferences, inspectTikzQuestion, inspectTikzStructure,
+    isActionableTikzAudit, replaceRenderedBlock,
 } from '../tikzAudit.js';
 
 const router = express.Router();
@@ -56,7 +57,6 @@ router.get('/admin/tikz-audit', async (req, res) => {
         const [rows] = await pool.query(
             `SELECT id, legacy_full_id, content_latex, content_latex_original, is_tikz_rendered
              FROM questions WHERE id > ? AND ${drawingMarkerSql}
-             ${actionableOnly ? 'AND (is_tikz_rendered IS NULL OR is_tikz_rendered <> 1)' : ''}
              ORDER BY id ASC LIMIT ?`,
             [afterId, limit + 1],
         );
@@ -80,13 +80,19 @@ router.get('/admin/tikz-audit', async (req, res) => {
             );
             for (const error of errors) failures.set(`${error.question_id}:${error.tikz_hash}`, error.error_message);
         }
-        const data = page.map(row => {
+        let data = page.map(row => {
             const audit = inspectTikzQuestion(row, existing);
             audit.images = audit.images.map(image => ({
                 ...image, error: failures.get(`${row.id}:${image.hash}`) || null,
             }));
             return audit;
         });
+        // Never trust is_tikz_rendered alone: an SVG may have been deleted or
+        // an old import may contain a raw block while still carrying status=1.
+        // Filter only after comparing every referenced hash with question_images.
+        if (actionableOnly) {
+            data = data.filter(isActionableTikzAudit);
+        }
         res.json({
             success: true, data, afterId: page.at(-1)?.id || afterId,
             hasMore: rows.length > limit,
