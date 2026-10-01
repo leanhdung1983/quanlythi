@@ -9,7 +9,7 @@ import {
     canManageMatrix, 
     canAccessExamResult
 } from '../core.js';
-import { calculateServerScore } from '../scoring.js';
+import { calculateServerScore, regradeStoredExamDetail, scoringSettingsSignature } from '../scoring.js';
 import { sanitizeQuestionForStudent, rehydrateTrustedQuestions, validateTrustedQuestions } from '../examSecurity.js';
 import { buildLatexDocument } from '../texExamGenerator.js';
 import { parseMatrixData, describeMatrix, normalizeGrade, validateCatalog } from '../../shared/matrixCatalog.js';
@@ -86,24 +86,57 @@ router.post('/saved-matrices/catalog/bulk', async (req, res) => {
 });
 
 router.put('/saved-matrices/:id', async (req, res) => { 
+    let conn;
     try { 
         const { name, matrix_data, grade_id, is_public } = req.body; 
         if (!requireTeacherOrAdmin(req, res)) return;
-        const [existing] = await query("SELECT created_by,is_public,grade_id FROM matrix_templates WHERE id = ?", [req.params.id]);
-        if (!existing) return res.status(404).json({ error: "Ma trận không tồn tại" });
+        conn = await pool.getConnection();
+        await conn.beginTransaction();
+        const [[existing]] = await conn.query(
+            "SELECT created_by,is_public,grade_id,matrix_data FROM matrix_templates WHERE id = ? FOR UPDATE", [req.params.id],
+        );
+        if (!existing) { await conn.rollback(); return res.status(404).json({ error: "Ma trận không tồn tại" }); }
         if (!isAdmin(req) && Number(existing.created_by) !== Number(req.user?.id)) {
+            await conn.rollback();
             return res.status(403).json({ error: "Bạn không có quyền chỉnh sửa ma trận của người khác." });
         }
-        if (!String(name || '').trim()) return res.status(400).json({ error: 'Nhập tên ma trận.' });
+        if (!String(name || '').trim()) { await conn.rollback(); return res.status(400).json({ error: 'Nhập tên ma trận.' }); }
         const data = parseMatrixData(matrix_data);
         if (data.catalog) data.catalog = validateCatalog(data.catalog);
         const info = describeMatrix({ matrix_data: data, grade_id: grade_id ?? existing.grade_id });
-        await query(
+        await conn.query(
             "UPDATE matrix_templates SET name = ?, matrix_data = ?, grade_id = ?, is_public = ? WHERE id = ?", 
             [String(name).trim(), JSON.stringify(data), ['MULTI','UNKNOWN'].includes(info.grade) ? null : Number(info.grade), is_public === undefined ? (existing.is_public || 0) : (is_public ? 1 : 0), req.params.id]
-        ); 
-        res.json({ success: true }); 
-    } catch(e) { res.status(500).json({ error: e.message }); } 
+        );
+
+        let regraded = 0;
+        let skipped = 0;
+        let oldSettings = {};
+        try { oldSettings = parseMatrixData(existing.matrix_data).settings || {}; } catch { /* legacy matrix */ }
+        const settingsChanged = scoringSettingsSignature(oldSettings) !== scoringSettingsSignature(data.settings || {});
+        if (settingsChanged) {
+            const [results] = await conn.query(
+                "SELECT id,result_detail FROM exam_results WHERE matrix_id = ? AND status = 'COMPLETED' FOR UPDATE",
+                [req.params.id],
+            );
+            for (const result of results) {
+                try {
+                    const recalculated = regradeStoredExamDetail(result.result_detail, data.settings || {});
+                    if (!recalculated) { skipped += 1; continue; }
+                    await conn.query(
+                        'UPDATE exam_results SET score = ?, result_detail = ?, last_updated = NOW() WHERE id = ?',
+                        [recalculated.score, JSON.stringify(recalculated.detail), result.id],
+                    );
+                    regraded += 1;
+                } catch {
+                    skipped += 1;
+                }
+            }
+        }
+        await conn.commit();
+        res.json({ success: true, regraded, skipped });
+    } catch(e) { if (conn) await conn.rollback(); res.status(500).json({ error: e.message }); }
+    finally { conn?.release(); }
 });
 
 router.delete('/saved-matrices/:id', async (req, res) => { 
@@ -261,16 +294,21 @@ router.post('/exam-results', async (req, res) => {
         if (!id) return res.status(400).json({ error: 'Không tìm thấy phiên thi hợp lệ. Vui lòng bắt đầu lại bài thi.' });
         if (!(await canAccessExamResult(req, id))) return res.status(403).json({ error: 'Bạn không có quyền nộp bài thi này.' });
 
-        const [existing] = await query('SELECT user_id, status, score, result_detail FROM exam_results WHERE id = ?', [id]);
+        const [existing] = await query('SELECT user_id, matrix_id, status, score, result_detail FROM exam_results WHERE id = ?', [id]);
         if (!existing) return res.status(404).json({ error: 'Phiên thi không tồn tại.' });
         if (existing.status === 'COMPLETED') return res.json({ success: true, id, score: Number(existing.score), alreadySubmitted: true });
         if (existing.status !== 'IN_PROGRESS') return res.status(409).json({ error: 'Bài thi này không còn hiệu lực.' });
         const storedDetail = typeof existing.result_detail === 'string' ? JSON.parse(existing.result_detail) : existing.result_detail;
         const trustedQuestions = Array.isArray(storedDetail?.questions) ? storedDetail.questions : [];
         const safeAnswers = answers && typeof answers === 'object' && !Array.isArray(answers) ? answers : {};
-        const score = calculateServerScore(trustedQuestions, safeAnswers, storedDetail?.scoring_settings || {});
+        let scoringSettings = storedDetail?.scoring_settings || {};
+        if (existing.matrix_id) {
+            const [matrix] = await query('SELECT matrix_data FROM matrix_templates WHERE id = ?', [existing.matrix_id]);
+            if (matrix) scoringSettings = parseMatrixData(matrix.matrix_data).settings || {};
+        }
+        const score = calculateServerScore(trustedQuestions, safeAnswers, scoringSettings);
         const safeDuration = Math.max(0, Math.min(Number(duration_seconds) || 0, 24 * 60 * 60));
-        const resultDetail = JSON.stringify({ ...storedDetail, answers: safeAnswers });
+        const resultDetail = JSON.stringify({ ...storedDetail, answers: safeAnswers, scoring_settings: scoringSettings });
 
         const updated = await query(
             "UPDATE exam_results SET score = ?, duration_seconds = ?, result_detail = ?, status = 'COMPLETED', last_updated = NOW() WHERE id = ? AND user_id = ? AND status = 'IN_PROGRESS'",

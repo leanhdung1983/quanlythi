@@ -58,3 +58,30 @@ export function calculateServerScore(questions, answers = {}, settings = {}) {
     }
     return Math.round(Math.max(0, Math.min(10, totalPoints)) * 100) / 100;
 }
+
+export function regradeStoredExamDetail(rawDetail, settings = {}) {
+    let detail = rawDetail;
+    if (typeof detail === 'string') detail = JSON.parse(detail);
+    if (!detail || typeof detail !== 'object' || Array.isArray(detail)
+        || !Array.isArray(detail.questions) || detail.questions.length === 0
+        || !detail.answers || typeof detail.answers !== 'object' || Array.isArray(detail.answers)) return null;
+    const scoringSettings = settings && typeof settings === 'object' && !Array.isArray(settings) ? settings : {};
+    const updatedDetail = { ...detail, scoring_settings: scoringSettings };
+    return {
+        score: calculateServerScore(detail.questions, detail.answers, scoringSettings),
+        detail: updatedDetail,
+    };
+}
+
+export function scoringSettingsSignature(settings = {}) {
+    const source = settings && typeof settings === 'object' && !Array.isArray(settings) ? settings : {};
+    return JSON.stringify({
+        points_tn: Number(source.points_tn) || 0,
+        points_tf: Number(source.points_tf) || 0,
+        points_kq: Number(source.points_kq) || 0,
+        total_points_tn: Number(source.total_points_tn) || 0,
+        total_points_tf: Number(source.total_points_tf) || 0,
+        total_points_kq: Number(source.total_points_kq) || 0,
+        tf_scoring_mode: source.tf_scoring_mode || '10-25-50-100',
+    });
+}
