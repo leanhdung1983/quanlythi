@@ -797,12 +797,13 @@ router.post('/questions/normalize/preview', async (req, res) => {
         if (requestedIds.length > 200) return res.status(413).json({ error: 'Mỗi lần chỉ được chuẩn hóa tối đa 200 câu hỏi.' });
         const ids = requestedIds;
         if (!ids.length) return res.status(400).json({ error: 'Danh sách câu hỏi không hợp lệ.' });
-        const rows = await query('SELECT id, created_by, legacy_full_id, content_latex, updated_at FROM questions WHERE id IN (?)', [ids]);
+        const rows = await query('SELECT id, created_by, legacy_full_id, content_latex, content_latex_original, updated_at FROM questions WHERE id IN (?)', [ids]);
         if (rows.length !== ids.length || rows.some(row => !canReviewRow(req, row))) return res.status(403).json({ error: 'Có câu hỏi không thuộc quyền quản lý của bạn.' });
         const data = rows.map(row => {
             const normalizedId = normalizeId6(row.legacy_full_id);
-            const normalized = normalizeQuestionSource(row.content_latex, normalizedId);
-            return { id: row.id, id_full: normalizedId, before: row.content_latex, after: normalized.source, changed: normalized.changed, updated_at: row.updated_at };
+            const source = row.content_latex_original || row.content_latex;
+            const normalized = normalizeQuestionSource(source, normalizedId, { formatLayout: true });
+            return { id: row.id, id_full: normalizedId, before: source, after: normalized.source, changed: normalized.changed, updated_at: row.updated_at };
         });
         res.json({ success: true, data });
     } catch (e) { res.status(500).json({ error: e.message }); }
@@ -839,7 +840,8 @@ router.post('/questions/review/confirm', async (req, res) => {
                 error.status = 422;
                 throw error;
             }
-            const normalized = normalizeQuestionSource(change.content_latex ?? row.content_latex, id);
+            const normalized = normalizeQuestionSource(change.content_latex ?? row.content_latex, id,
+                { formatLayout: change.change_type === 'SOURCE_NORMALIZATION' });
             await conn.query(`INSERT INTO question_revisions
                 (question_id, content_latex, legacy_full_id, unit_id, level_id, type_id, change_type, changed_by)
                 VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [row.id, row.content_latex, row.legacy_full_id, row.unit_id, row.level_id, row.type_id, change.change_type || 'ID_REVIEW', req.user.id]);
@@ -848,6 +850,11 @@ router.post('/questions/review/confirm', async (req, res) => {
                 id_status = 1, id_review_status = 'CONFIRMED', normalization_version = 1, normalized_at = NOW(),
                 content_hash = ?, is_duplicate_checked = FALSE WHERE id = ?`,
                 [id, normalized.source, meta.unit_id, meta.level_id, hash, row.id]);
+            if (change.change_type === 'SOURCE_NORMALIZATION') {
+                const renderStatus = /\\begin\s*\{\s*(?:tikzpicture|tkz-tab|tkz-euclide)\s*\}/i.test(normalized.source) ? 0 : 2;
+                await conn.query('UPDATE questions SET content_latex_original = ?, is_tikz_rendered = ? WHERE id = ?',
+                    [normalized.source, renderStatus, row.id]);
+            }
             const grading = await synchronizeQuestionEdit(conn, row, normalized.source);
             regraded += grading.regraded;
             skipped += grading.skipped;

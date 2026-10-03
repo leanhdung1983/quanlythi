@@ -1409,7 +1409,7 @@ export const QuestionBank: React.FC = () => {
                             <button aria-label="Đóng" disabled={normalizing} onClick={() => setShowNormalization(false)} className="p-2 hover:bg-slate-100 rounded disabled:opacity-50"><X size={20}/></button>
                         </div>
                         <div className="p-4 border-b space-y-3">
-                            <p className="text-sm text-slate-600">Xem các thay đổi mã nguồn và ID trước khi lưu vào ngân hàng câu hỏi.</p>
+                            <p className="text-sm text-slate-600">Chuẩn hoá dòng ID, tách từng lựa chọn và phần lời giải ra dòng riêng. Lời giải trống được điền “nội dung lời giải” để bổ sung sau.</p>
                             <div className="flex flex-wrap items-center gap-3">
                                 <label htmlFor="normalization-scope" className="text-sm font-semibold">Phạm vi</label>
                                 <select id="normalization-scope" value={normalizationScope} disabled={normalizing} onChange={e => { setNormalizationScope(e.target.value as typeof normalizationScope); setNormalizationPreview(null); }} className="border rounded-lg px-3 py-2 text-sm">

@@ -1,12 +1,13 @@
 import express from 'express';
 import { afterAll, beforeAll, beforeEach, expect, it, vi } from 'vitest';
 
-const { conn, clearCache } = vi.hoisted(() => ({
+const { conn, clearCache, query } = vi.hoisted(() => ({
     conn: { query: vi.fn(), beginTransaction: vi.fn(), commit: vi.fn(), rollback: vi.fn(), release: vi.fn() },
     clearCache: vi.fn(),
+    query: vi.fn(),
 }));
 vi.mock('./core.js', () => ({
-    pool: { getConnection: async () => conn }, query: vi.fn(),
+    pool: { getConnection: async () => conn }, query,
     isAdmin: () => true, requireAdmin: () => true, requireTeacherOrAdmin: () => true,
     canManageQuestion: async () => true, generateHash: () => 'hash', normalizeLatex: x => x,
     sanitizeSvg: x => x, resolveHierarchyIds: vi.fn(), getGradeDigitSQL: () => '0',
@@ -63,4 +64,29 @@ it('rolls back the question edit when saving a regraded result fails', async () 
     expect(conn.rollback).toHaveBeenCalledOnce();
     expect(conn.commit).not.toHaveBeenCalled();
     expect(clearCache).not.toHaveBeenCalled();
+});
+it('previews the original answer-bearing source and saves exactly that formatted layout', async () => {
+    const source = '\\begin{ex}%[2D1H3-4]%Câu 3\nQuestion \\choice{\\True one}{two}{three}{four} \\loigiai{ }\\end{ex}';
+    const row = { id: 42, created_by: 1, legacy_full_id: '2D1H3-4',
+        content_latex: 'Rendered display without answer markers', content_latex_original: source };
+    query.mockResolvedValue([row]);
+    const previewResponse = await fetch(base + '/questions/normalize/preview', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ ids: [42] }),
+    });
+    const { data } = await previewResponse.json();
+    expect(data[0].before).toBe(source);
+    expect(data[0].after).toContain('\\choice\n{\\True one}\n{two}\n{three}\n{four}');
+    expect(data[0].after).toContain('\\loigiai{\nnội dung lời giải\n}');
+    conn.query.mockImplementation(async sql => {
+        if (sql.includes('FROM id6_metadata')) return [[{ id_full: '2D1H3-4', unit_id: 1, level_id: 2 }]];
+        if (sql.startsWith('SELECT * FROM questions')) return [[row]];
+        return [{ affectedRows: 1 }];
+    });
+    const saveResponse = await fetch(base + '/questions/review/confirm', {
+        method: 'POST', headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ changes: [{ id: 42, id_full: data[0].id_full, content_latex: data[0].after, change_type: 'SOURCE_NORMALIZATION' }] }),
+    });
+    expect(saveResponse.status).toBe(200);
+    expect(conn.query.mock.calls.find(([sql]) => sql.startsWith('UPDATE questions SET legacy_full_id'))[1][1]).toBe(data[0].after);
+    expect(conn.query.mock.calls.find(([sql]) => sql.startsWith('UPDATE questions SET content_latex_original'))[1][0]).toBe(data[0].after);
 });

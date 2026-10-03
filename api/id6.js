@@ -63,13 +63,79 @@ export function injectCanonicalId(source, id) {
     ).trim();
 }
 
-export function normalizeQuestionSource(source, id) {
+// Format structural blocks without splitting math groups or commands in comments.
+export function formatQuestionLayout(source) {
+    const edits = [];
+    let depth = 0;
+    const skipSpace = index => {
+        while (/\s/.test(source[index] || '') && index < source.length) index++;
+        return index;
+    };
+    const readGroup = start => {
+        if (source[start] !== '{') return null;
+        let nesting = 1;
+        for (let i = start + 1; i < source.length; i++) {
+            if (source[i] === '\\') { i++; continue; }
+            if (source[i] === '%') { while (i < source.length && source[i] !== '\n') i++; continue; }
+            if (source[i] === '{') nesting++;
+            if (source[i] === '}') nesting--;
+            if (!nesting) return { content: source.slice(start + 1, i), end: i + 1 };
+        }
+        return null;
+    };
+    for (let i = 0; i < source.length; i++) {
+        if (source[i] === '%') { while (i < source.length && source[i] !== '\n') i++; continue; }
+        if (source[i] === '\\') {
+            const command = depth === 0 && source.slice(i).match(/^\\(choiceTF|choice|loigiai)\b/);
+            if (command) {
+                let end = skipSpace(i + command[0].length);
+                let header = command[0];
+                if (source[end] === '[') {
+                    const close = source.indexOf(']', end + 1);
+                    if (close < 0) continue;
+                    header += source.slice(end, close + 1);
+                    end = skipSpace(close + 1);
+                }
+                const groups = [];
+                const count = command[1] === 'loigiai' ? 1 : 4;
+                for (let n = 0; n < count; n++) {
+                    const group = readGroup(end);
+                    if (!group) break;
+                    groups.push(group.content.trim());
+                    end = n + 1 === count ? group.end : skipSpace(group.end);
+                }
+                if (groups.length === count) {
+                    const text = count === 1 ? `${header}{\n${groups[0] || 'nội dung lời giải'}\n}`
+                        : `${header}\n${groups.map(content => `{${content}}`).join('\n')}`;
+                    edits.push({ start: i, end, text: `\n${text}\n` });
+                    i = end - 1;
+                    continue;
+                }
+            }
+            i++;
+            continue;
+        }
+        if (source[i] === '{') depth++;
+        if (source[i] === '}') depth--;
+    }
+    let result = source;
+    for (const edit of edits.reverse()) {
+        result = result.slice(0, edit.start).replace(/\s+$/, '') + edit.text
+            + result.slice(edit.end).replace(/^\s+/, '');
+    }
+    result = result.replace(/\\begin\{ex\}\n%\[([^\]\n]+)\]\n/, '\\begin{ex} %[$1]\n');
+    result = result.replace(/\s*\\end\{ex\}/g, '\n\\end{ex}');
+    return result.replace(/[ \t]+$/gm, '').trim();
+}
+
+export function normalizeQuestionSource(source, id, { formatLayout = false } = {}) {
     const before = typeof source === 'string' ? source : '';
     let after = before.replace(/^\uFEFF/, '').replace(/\r\n?/g, '\n').replace(/[ \t]+$/gm, '').trim();
     after = after.replace(/^```(?:latex|tex)?\s*\n?/i, '').replace(/\n?```$/i, '').trim();
     after = after.replace(/\\begin\{(?:bt|vd|cau|bai|tuluan|tl)\}/gi, '\\begin{ex}')
         .replace(/\\end\{(?:bt|vd|cau|bai|tuluan|tl)\}/gi, '\\end{ex}');
     if (normalizeId6(id)) after = injectCanonicalId(after, id);
+    if (formatLayout) after = formatQuestionLayout(after);
     return { source: after, changed: after !== before };
 }
 
