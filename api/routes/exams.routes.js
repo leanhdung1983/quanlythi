@@ -15,6 +15,39 @@ import { buildLatexDocument } from '../texExamGenerator.js';
 import { parseMatrixData, describeMatrix, normalizeGrade, validateCatalog } from '../../shared/matrixCatalog.js';
 
 const router = express.Router();
+// Repair older submissions that missed the rubric-change regrade.
+async function refreshHistoryScores(rows) {
+    const settingsByMatrix = new Map();
+    for (const row of rows) {
+        if (row.status !== 'COMPLETED' || !row.matrix_id) continue;
+        if (!settingsByMatrix.has(row.matrix_id)) {
+            const [matrix] = await query('SELECT matrix_data FROM matrix_templates WHERE id = ?', [row.matrix_id]);
+            settingsByMatrix.set(row.matrix_id, matrix ? parseMatrixData(matrix.matrix_data).settings || {} : null);
+        }
+        const settings = settingsByMatrix.get(row.matrix_id);
+        if (!settings) continue;
+        let detail;
+        try {
+            detail = typeof row.result_detail === 'string' ? JSON.parse(row.result_detail) : row.result_detail;
+        } catch { continue; }
+        if (scoringSettingsSignature(detail?.scoring_settings) === scoringSettingsSignature(settings)) continue;
+        const updated = regradeStoredExamDetail(detail, settings);
+        if (!updated) continue;
+        const serialized = JSON.stringify(updated.detail);
+        // Do not overwrite a result changed concurrently by a teacher or submission.
+        const changed = await query(
+            "UPDATE exam_results SET score = ?, result_detail = ?, last_updated = NOW() WHERE id = ? AND status = 'COMPLETED' AND score = ? AND result_detail = ?",
+            [updated.score, serialized, row.id, row.score, row.result_detail]
+        );
+        if (changed.affectedRows) {
+            row.score = updated.score;
+            row.result_detail = serialized;
+        } else {
+            const [current] = await query('SELECT score, result_detail FROM exam_results WHERE id = ?', [row.id]);
+            if (current) Object.assign(row, current);
+        }
+    }
+}
 // Results and live sessions must never be served from a browser/proxy cache.
 router.use((req, res, next) => {
     if (/^\/(exam-results|exam\/|matrix-results)/.test(req.path)) res.set('Cache-Control', 'private, no-store');
@@ -204,6 +237,7 @@ router.get('/exam-results/all-history', async (req, res) => {
             WHERE r.status = 'COMPLETED'
             ORDER BY r.exam_title ASC, u.full_name ASC, r.created_at DESC
         `);
+        await refreshHistoryScores(rows);
         res.json({ success: true, data: rows });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -215,6 +249,7 @@ router.get('/exam-results/history/:userId', async (req, res) => {
             "SELECT * FROM exam_results WHERE user_id = ? AND status = 'COMPLETED' ORDER BY created_at DESC", 
             [req.params.userId]
         );
+        await refreshHistoryScores(rows);
         res.json({ success: true, data: rows });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -224,6 +259,7 @@ router.get('/exam-results/:id', async (req, res) => {
         const rows = await query("SELECT * FROM exam_results WHERE id = ?", [req.params.id]);
         if (rows.length === 0) return res.status(404).json({ error: "Exam result not found" });
         if (!(await canAccessExamResult(req, req.params.id))) return res.status(403).json({ error: 'Bạn không có quyền xem kết quả này.' });
+        await refreshHistoryScores(rows);
         const examResult = rows[0];
 
         // If requester is a student and assignment disallows reviewing solutions, sanitize
