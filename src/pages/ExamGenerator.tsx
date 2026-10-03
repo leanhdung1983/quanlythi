@@ -458,7 +458,10 @@ export const ExamGenerator: React.FC = () => {
                         total_points_tn: totalPointsTN, total_points_tf: totalPointsTF, total_points_kq: totalPointsKQ, tf_scoring_mode: tfScoringMode } }
             };
             if (editingMatrixId) {
-                await apiService.updateSavedMatrix(editingMatrixId as number, matrixName, data.matrix_data);
+                const result = await apiService.updateSavedMatrix(editingMatrixId as number, matrixName, data.matrix_data) as { regraded?: number; skipped?: number };
+                if (result.regraded || result.skipped) {
+                    alert(`Đã cập nhật cách tính điểm và chấm lại ${result.regraded || 0} bài đã nộp.${result.skipped ? ` Có ${result.skipped} bài thiếu dữ liệu để chấm lại; cần kiểm tra riêng.` : ''}`);
+                }
             } else {
                 const res: any = await apiService.saveMatrix(matrixName, data.matrix_data);
                 savedId = res?.id;

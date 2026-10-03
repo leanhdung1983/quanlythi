@@ -9,48 +9,17 @@ import {
     canManageMatrix, 
     canAccessExamResult
 } from '../core.js';
-import { calculateServerScore, regradeStoredExamDetail, scoringSettingsSignature } from '../scoring.js';
+import { regradeStoredExamDetail, scoringSettingsSignature } from '../scoring.js';
+import { synchronizeExamDetail } from '../examRegrade.js';
+import { refreshHistoryScores } from '../examHistory.js';
 import { sanitizeQuestionForStudent, rehydrateTrustedQuestions, validateTrustedQuestions } from '../examSecurity.js';
 import { buildLatexDocument } from '../texExamGenerator.js';
 import { parseMatrixData, describeMatrix, normalizeGrade, validateCatalog } from '../../shared/matrixCatalog.js';
 
 const router = express.Router();
-// Repair older submissions that missed the rubric-change regrade.
-async function refreshHistoryScores(rows) {
-    const settingsByMatrix = new Map();
-    for (const row of rows) {
-        if (row.status !== 'COMPLETED' || !row.matrix_id) continue;
-        if (!settingsByMatrix.has(row.matrix_id)) {
-            const [matrix] = await query('SELECT matrix_data FROM matrix_templates WHERE id = ?', [row.matrix_id]);
-            settingsByMatrix.set(row.matrix_id, matrix ? parseMatrixData(matrix.matrix_data).settings || {} : null);
-        }
-        const settings = settingsByMatrix.get(row.matrix_id);
-        if (!settings) continue;
-        let detail;
-        try {
-            detail = typeof row.result_detail === 'string' ? JSON.parse(row.result_detail) : row.result_detail;
-        } catch { continue; }
-        if (scoringSettingsSignature(detail?.scoring_settings) === scoringSettingsSignature(settings)) continue;
-        const updated = regradeStoredExamDetail(detail, settings);
-        if (!updated) continue;
-        const serialized = JSON.stringify(updated.detail);
-        // Do not overwrite a result changed concurrently by a teacher or submission.
-        const changed = await query(
-            "UPDATE exam_results SET score = ?, result_detail = ?, last_updated = NOW() WHERE id = ? AND status = 'COMPLETED' AND score = ? AND result_detail = ?",
-            [updated.score, serialized, row.id, row.score, row.result_detail]
-        );
-        if (changed.affectedRows) {
-            row.score = updated.score;
-            row.result_detail = serialized;
-        } else {
-            const [current] = await query('SELECT score, result_detail FROM exam_results WHERE id = ?', [row.id]);
-            if (current) Object.assign(row, current);
-        }
-    }
-}
 // Results and live sessions must never be served from a browser/proxy cache.
 router.use((req, res, next) => {
-    if (/^\/(exam-results|exam\/|matrix-results)/.test(req.path)) res.set('Cache-Control', 'private, no-store');
+    if (/^\/(exam-results|exam\/|matrix-results|online-exam\/results)/.test(req.path)) res.set('Cache-Control', 'private, no-store');
     next();
 });
 
@@ -147,24 +116,24 @@ router.put('/saved-matrices/:id', async (req, res) => {
         let oldSettings = {};
         try { oldSettings = parseMatrixData(existing.matrix_data).settings || {}; } catch { /* legacy matrix */ }
         const settingsChanged = scoringSettingsSignature(oldSettings) !== scoringSettingsSignature(data.settings || {});
-        if (settingsChanged) {
-            const [results] = await conn.query(
-                "SELECT id,result_detail FROM exam_results WHERE matrix_id = ? AND status = 'COMPLETED' FOR UPDATE",
-                [req.params.id],
+        const [results] = await conn.query(
+            "SELECT id,result_detail FROM exam_results WHERE matrix_id = ? AND status = 'COMPLETED' FOR UPDATE",
+            [req.params.id],
+        );
+        for (const result of results) {
+            let recalculated;
+            try {
+                const detail = typeof result.result_detail === 'string' ? JSON.parse(result.result_detail) : result.result_detail;
+                if (!settingsChanged && scoringSettingsSignature(detail?.scoring_settings) === scoringSettingsSignature(data.settings || {})) continue;
+                recalculated = regradeStoredExamDetail(result.result_detail, data.settings || {});
+            } catch { skipped += 1; continue; }
+            if (!recalculated) { skipped += 1; continue; }
+            // A database failure must roll back the rubric change as well.
+            await conn.query(
+                'UPDATE exam_results SET score = ?, result_detail = ?, last_updated = NOW() WHERE id = ?',
+                [recalculated.score, JSON.stringify(recalculated.detail), result.id],
             );
-            for (const result of results) {
-                try {
-                    const recalculated = regradeStoredExamDetail(result.result_detail, data.settings || {});
-                    if (!recalculated) { skipped += 1; continue; }
-                    await conn.query(
-                        'UPDATE exam_results SET score = ?, result_detail = ?, last_updated = NOW() WHERE id = ?',
-                        [recalculated.score, JSON.stringify(recalculated.detail), result.id],
-                    );
-                    regraded += 1;
-                } catch {
-                    skipped += 1;
-                }
-            }
+            regraded += 1;
         }
         await conn.commit();
         res.json({ success: true, regraded, skipped });
@@ -250,6 +219,7 @@ router.get('/exam-results/history/:userId', async (req, res) => {
             [req.params.userId]
         );
         await refreshHistoryScores(rows);
+        if (req.user?.role === 'STUDENT') rows.forEach(row => { delete row.result_detail; });
         res.json({ success: true, data: rows });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -261,6 +231,11 @@ router.get('/exam-results/:id', async (req, res) => {
         if (!(await canAccessExamResult(req, req.params.id))) return res.status(403).json({ error: 'Bạn không có quyền xem kết quả này.' });
         await refreshHistoryScores(rows);
         const examResult = rows[0];
+        if (req.user?.role === 'STUDENT') {
+            const detail = typeof examResult.result_detail === 'string' ? JSON.parse(examResult.result_detail) : examResult.result_detail;
+            examResult.result_detail = { ...detail };
+            delete examResult.result_detail.submitted_questions;
+        }
 
         // If requester is a student and assignment disallows reviewing solutions, sanitize
         if (req.user?.role === 'STUDENT' && examResult.status !== 'COMPLETED') {
@@ -332,7 +307,11 @@ router.post('/exam-results', async (req, res) => {
 
         const [existing] = await query('SELECT user_id, matrix_id, status, score, result_detail FROM exam_results WHERE id = ?', [id]);
         if (!existing) return res.status(404).json({ error: 'Phiên thi không tồn tại.' });
-        if (existing.status === 'COMPLETED') return res.json({ success: true, id, score: Number(existing.score), alreadySubmitted: true });
+        if (existing.status === 'COMPLETED') {
+            existing.id = id;
+            await refreshHistoryScores([existing]);
+            return res.json({ success: true, id, score: Number(existing.score), alreadySubmitted: true });
+        }
         if (existing.status !== 'IN_PROGRESS') return res.status(409).json({ error: 'Bài thi này không còn hiệu lực.' });
         const storedDetail = typeof existing.result_detail === 'string' ? JSON.parse(existing.result_detail) : existing.result_detail;
         const trustedQuestions = Array.isArray(storedDetail?.questions) ? storedDetail.questions : [];
@@ -342,9 +321,14 @@ router.post('/exam-results', async (req, res) => {
             const [matrix] = await query('SELECT matrix_data FROM matrix_templates WHERE id = ?', [existing.matrix_id]);
             if (matrix) scoringSettings = parseMatrixData(matrix.matrix_data).settings || {};
         }
-        const score = calculateServerScore(trustedQuestions, safeAnswers, scoringSettings);
+        const ids = trustedQuestions.map(q => Number(q.id)).filter(Number.isSafeInteger);
+        const bankRows = ids.length ? await query('SELECT id,content_latex,content_latex_original FROM questions WHERE id IN (?)', [ids]) : [];
+        const synchronized = synchronizeExamDetail({ ...storedDetail, answers: safeAnswers }, scoringSettings,
+            new Map(bankRows.map(q => [Number(q.id), q])));
+        if (!synchronized) return res.status(422).json({ error: 'Không thể chấm bài: dữ liệu đề thi không hợp lệ.' });
+        const score = synchronized.score;
         const safeDuration = Math.max(0, Math.min(Number(duration_seconds) || 0, 24 * 60 * 60));
-        const resultDetail = JSON.stringify({ ...storedDetail, answers: safeAnswers, scoring_settings: scoringSettings });
+        const resultDetail = JSON.stringify(synchronized.detail);
 
         const updated = await query(
             "UPDATE exam_results SET score = ?, duration_seconds = ?, result_detail = ?, status = 'COMPLETED', last_updated = NOW() WHERE id = ? AND user_id = ? AND status = 'IN_PROGRESS'",
@@ -468,6 +452,13 @@ router.get('/exam/active/:userId', async (req, res) => {
             [req.params.userId]
         );
         if (rows.length > 0) {
+            if (req.user?.role === 'STUDENT') {
+                const raw = rows[0].result_detail;
+                const detail = { ...(typeof raw === 'string' ? JSON.parse(raw) : raw) };
+                delete detail.submitted_questions;
+                if (Array.isArray(detail.questions)) detail.questions = detail.questions.map(q => sanitizeQuestionForStudent(q).sanitizedQuestion);
+                rows[0].result_detail = detail;
+            }
             res.json({ success: true, found: true, exam: rows[0] });
         } else {
             res.json({ success: true, found: false });
@@ -543,6 +534,8 @@ router.get('/online-exam/results/:matrixId', async (req, res) => {
             WHERE r.matrix_id = ? AND r.status = 'COMPLETED'
             ORDER BY r.score DESC, r.duration_seconds ASC
         `, [req.params.matrixId]);
+        await refreshHistoryScores(rows);
+        rows.sort((a, b) => Number(b.score) - Number(a.score) || Number(a.duration_seconds) - Number(b.duration_seconds));
         res.json({ success: true, data: rows });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });

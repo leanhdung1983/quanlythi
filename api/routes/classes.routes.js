@@ -1,6 +1,7 @@
 import express from 'express';
 import { pool } from '../core.js';
 import { assignClasses } from '../classAssignments.js';
+import { refreshHistoryScores } from '../examHistory.js';
 import { 
     query, 
     isAdmin, 
@@ -274,6 +275,7 @@ router.get('/classes/:class_id/scores', async (req, res) => {
                 u.id as student_id, u.full_name, u.username,
                 m.id as matrix_id, m.name as assignment_name,
                 er.id as attempt_id,
+                er.status, er.result_detail,
                 er.score as score,
                 er.last_updated as submit_time
             FROM class_students cs
@@ -285,12 +287,20 @@ router.get('/classes/:class_id/scores', async (req, res) => {
             ORDER BY u.full_name ASC, m.id ASC, er.created_at ASC
         `, [req.params.class_id]);
 
+        const attempts = rows.filter(r => r.attempt_id).map(r => ({ ...r, id: r.attempt_id }));
+        await refreshHistoryScores(attempts);
+        const scores = new Map(attempts.map(r => [r.id, r.score]));
+        rows.forEach(r => { if (scores.has(r.attempt_id)) r.score = scores.get(r.attempt_id); });
+
         const attemptCounts = {};
         const formattedRows = rows.map(r => {
-            if (!r.attempt_id) return { ...r, attempt_index: null };
+            const summary = { ...r };
+            delete summary.status;
+            delete summary.result_detail;
+            if (!r.attempt_id) return { ...summary, attempt_index: null };
             const key = `${r.student_id}_${r.matrix_id}`;
             attemptCounts[key] = (attemptCounts[key] || 0) + 1;
-            return { ...r, attempt_index: attemptCounts[key] };
+            return { ...summary, attempt_index: attemptCounts[key] };
         });
 
         res.json({ success: true, data: formattedRows });

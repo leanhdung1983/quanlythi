@@ -577,12 +577,15 @@ export const QuestionBank: React.FC = () => {
                 id_full: extractedIdFull || q?.id_full // FALLBACK to existing ID if not extracted
             };
 
-            await apiService.updateQuestion(id, updatePayload);
+            const result = await apiService.updateQuestion(id, updatePayload) as { regraded?: number; skipped?: number };
             setQuestions(prev => prev.map(q => q.id === id ? { ...q, ...updatePayload } : q));
             if (selectedQ?.id === id) {
                 setSelectedQ(prev => prev ? { ...prev, ...updatePayload } : null);
             }
             setInlineEditId(null);
+            if (result.regraded || result.skipped) {
+                alert(`Đã lưu đáp án và chấm lại ${result.regraded || 0} bài đã nộp.${result.skipped ? ` Có ${result.skipped} bài chưa thể ghép đáp án mới với câu đã thi; cần kiểm tra riêng.` : ''}`);
+            }
             
             // Reload to grab any backend metadata changes
             setTimeout(() => loadQuestions(), 500);

@@ -5,6 +5,7 @@ const question = { id: 42, type: 'TN', options: [{ id: 'A', isCorrect: false }, 
 let matrix;
 let result;
 let committed;
+let failRegrade;
 const conn = {
     beginTransaction: vi.fn(async () => {}),
     rollback: vi.fn(async () => {}),
@@ -15,6 +16,7 @@ const conn = {
         if (sql.startsWith('UPDATE matrix_templates')) return [{ affectedRows: 1 }];
         if (sql.startsWith('SELECT id,result_detail')) return [[result]];
         if (sql.startsWith('UPDATE exam_results')) {
+            if (failRegrade) throw new Error('Regrade update failed');
             result.score = params[0]; result.result_detail = params[1]; return [{ affectedRows: 1 }];
         }
         throw new Error(`Unexpected SQL: ${sql}`);
@@ -46,6 +48,7 @@ beforeEach(() => {
         result_detail: JSON.stringify({ questions: [question], answers: { 42: 'B' }, scoring_settings: { total_points_tn: 10 } }),
     };
     committed = false;
+    failRegrade = false;
     vi.clearAllMocks();
 });
 
@@ -62,5 +65,27 @@ describe('matrix score changes', () => {
         expect(JSON.parse(result.result_detail).answers).toEqual({ 42: 'B' });
         expect(JSON.parse(result.result_detail).scoring_settings).toEqual(matrixData.settings);
         expect(committed).toBe(true);
+    });
+    it('repairs a stale submission when resaving an unchanged rubric', async () => {
+        const detail = JSON.parse(result.result_detail);
+        detail.scoring_settings = { total_points_tn: 4 };
+        result.result_detail = JSON.stringify(detail);
+        result.score = 4;
+        const response = await fetch(base, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: 'Ma trận', matrix_data: JSON.parse(matrix.matrix_data) }),
+        });
+        expect(await response.json()).toMatchObject({ success: true, regraded: 1 });
+        expect(result.score).toBe(10);
+    });
+    it('rolls back a rubric edit when saving a regraded score fails', async () => {
+        failRegrade = true;
+        const response = await fetch(base, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ name: 'Ma trận', matrix_data: { settings: { total_points_tn: 4 } } }),
+        });
+        expect(response.status).toBe(500);
+        expect(committed).toBe(false);
+        expect(conn.rollback).toHaveBeenCalledOnce();
     });
 });

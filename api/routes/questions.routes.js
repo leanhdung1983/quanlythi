@@ -16,6 +16,7 @@ import {
     clearCache 
 } from '../core.js';
 import { inspectQuestionId, normalizeId6, normalizeQuestionSource, questionTimestampChanged } from '../id6.js';
+import { synchronizeQuestionEdit } from '../examRegrade.js';
 
 const router = express.Router();
 
@@ -438,10 +439,11 @@ router.put('/questions/:id', async (req, res) => {
             [normalizedId || null, source, originalSource, renderStatus, metadata?.unit_id, metadata?.level_id, metadata ? 1 : 0,
                 metadata ? 'CONFIRMED' : 'PENDING', generateHash(source), difficulty, discrimination, competencies, existing.id]);
         if (sourceWasEdited) await conn.query('DELETE FROM tikz_render_failures WHERE question_id = ?', [existing.id]);
+        const grading = sourceWasEdited ? await synchronizeQuestionEdit(conn, existing, source) : { regraded: 0, skipped: 0 };
         await conn.commit();
         await clearCache('/api/questions*');
         await clearCache('/api/tree-data*');
-        res.json({ success: true, id_full: normalizedId || null });
+        res.json({ success: true, id_full: normalizedId || null, ...grading });
     } catch(e) {
         await conn.rollback();
         res.status(500).json({ error: e.message });
@@ -523,7 +525,11 @@ router.post('/questions/batch-update', async (req, res) => {
         const conn = await pool.getConnection();
         try {
             await conn.beginTransaction();
+            let regraded = 0, skipped = 0;
             for (const item of updates) {
+                const [[previous]] = await conn.query('SELECT * FROM questions WHERE id = ? FOR UPDATE', [item.id]);
+                if (!previous) throw new Error(`Câu hỏi #${item.id} không còn tồn tại.`);
+                let normalizedSource;
                 if (item.id_full) {
                     const normalizedId = normalizeId6(item.id_full);
                     if (!normalizedId) {
@@ -538,19 +544,22 @@ router.post('/questions/batch-update', async (req, res) => {
                         error.status = 422;
                         throw error;
                     }
-                    const normalizedSource = normalizeQuestionSource(item.raw_latex, normalizedId).source;
+                    normalizedSource = normalizeQuestionSource(item.raw_latex, normalizedId).source;
                     await conn.query(`UPDATE questions SET content_latex = ?, legacy_full_id = ?, unit_id = ?, level_id = ?,
                         id_status = 1, id_review_status = 'CONFIRMED', normalization_version = 1, normalized_at = NOW(),
                         content_hash = ?, is_duplicate_checked = FALSE, is_tikz_rendered = 0 WHERE id = ?`,
                         [normalizedSource, normalizedId, meta.unit_id, meta.level_id, generateHash(normalizedSource), item.id]);
                 } else {
-                    const normalizedSource = normalizeQuestionSource(item.raw_latex, '').source;
+                    normalizedSource = normalizeQuestionSource(item.raw_latex, '').source;
                     await conn.query("UPDATE questions SET content_latex = ?, content_hash = ?, is_duplicate_checked = FALSE, is_tikz_rendered = 0 WHERE id = ?", [normalizedSource, generateHash(normalizedSource), item.id]);
                 }
+                const grading = await synchronizeQuestionEdit(conn, previous, normalizedSource);
+                regraded += grading.regraded;
+                skipped += grading.skipped;
             }
             await conn.commit();
             await clearCache('/api/questions*');
-            res.json({ success: true });
+            res.json({ success: true, regraded, skipped });
         } catch (e) { await conn.rollback(); throw e; } finally { conn.release(); }
     } catch(e) { res.status(e.status || 500).json({ error: e.message }); }
 });
@@ -808,6 +817,7 @@ router.post('/questions/review/confirm', async (req, res) => {
     try {
         await conn.beginTransaction();
         const metadata = await loadMetadataMap(conn);
+        let regraded = 0, skipped = 0;
         for (const change of changes) {
             const [rows] = await conn.query('SELECT * FROM questions WHERE id = ? FOR UPDATE', [Number(change.id)]);
             const row = rows[0];
@@ -838,6 +848,9 @@ router.post('/questions/review/confirm', async (req, res) => {
                 id_status = 1, id_review_status = 'CONFIRMED', normalization_version = 1, normalized_at = NOW(),
                 content_hash = ?, is_duplicate_checked = FALSE WHERE id = ?`,
                 [id, normalized.source, meta.unit_id, meta.level_id, hash, row.id]);
+            const grading = await synchronizeQuestionEdit(conn, row, normalized.source);
+            regraded += grading.regraded;
+            skipped += grading.skipped;
             await conn.query(`UPDATE question_id_suggestions
                 SET status = 'APPLIED', reviewed_by = ?, reviewed_at = NOW(), current_id = ?, suggested_id = ?,
                     issue_codes = JSON_ARRAY(), content_hash = ?
@@ -846,7 +859,7 @@ router.post('/questions/review/confirm', async (req, res) => {
         await conn.commit();
         await clearCache('/api/questions*');
         await clearCache('/api/tree-data*');
-        res.json({ success: true, updated: changes.length });
+        res.json({ success: true, updated: changes.length, regraded, skipped });
     } catch (e) {
         await conn.rollback();
         console.error('[ID Review] Save failed:', e?.code || e?.name || 'ERROR', e?.message || e);
@@ -882,9 +895,10 @@ router.post('/questions/:id/revisions/:revisionId/restore', async (req, res) => 
             content_hash = ?, is_duplicate_checked = FALSE, id_status = ?, id_review_status = 'PENDING', normalization_version = 0 WHERE id = ?`,
             [revision.content_latex, restoredId || null, restoredMeta?.unit_id ?? revision.unit_id, restoredMeta?.level_id ?? revision.level_id,
                 revision.type_id, generateHash(revision.content_latex), restoredMeta ? 1 : 0, current.id]);
+        const grading = await synchronizeQuestionEdit(conn, current, revision.content_latex);
         await conn.commit();
         await clearCache('/api/questions*');
-        res.json({ success: true });
+        res.json({ success: true, ...grading });
     } catch (e) { await conn.rollback(); res.status(500).json({ error: e.message }); } finally { conn.release(); }
 });
 

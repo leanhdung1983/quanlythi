@@ -872,10 +872,23 @@ export const OnlineExam: React.FC = () => {
             
             if (!detail || !detail.questions) throw new Error("Chi tiết bài thi bị lỗi.");
 
-            // Review the immutable submitted snapshot, not today's edited/shuffled bank.
-            setQuestions(detail.questions.map((q: any) => Array.isArray(q.options) && q.content ? q : parseQuestionContent(q, true)));
+            // Review the submitted question order with the synchronized grading key.
+            setQuestions(detail.questions.map((q: any) => {
+                if (Array.isArray(q.options) && q.content) return q;
+                const parsed = parseQuestionContent(q, true);
+                return { ...parsed, ...q, content: q.content || parsed.content,
+                    options: Array.isArray(q.options) && q.options.length ? q.options : parsed.options,
+                    correctAnswer: q.correctAnswer ?? parsed.correctAnswer,
+                    solution: q.solution ?? parsed.solution };
+            }));
             setAnswers(detail.answers || {});
             setScore(Number(data.score || 0));
+            setExamSettings(detail.scoring_settings || {});
+            setResultReviewLocked(false);
+            const updateHistoryScore = (rows: unknown[]) => rows.map((row: any) =>
+                Number(row.id) === Number(data.id) ? { ...row, score: data.score } : row);
+            setHistory(updateHistoryScore);
+            setMatrixResults(updateHistoryScore);
             setCurrentExamTitle(data.exam_title); 
             setCurrentQIdx(0); 
             setMode('REVIEW');
@@ -2161,6 +2174,7 @@ export const OnlineExam: React.FC = () => {
                                     ></div>
                                 </div>
                             </div>
+                            <div className="mt-2 text-xs text-slate-400">Số câu đã trả lời</div>
                         </div>
 
                         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-6">
