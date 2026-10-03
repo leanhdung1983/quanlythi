@@ -10,6 +10,15 @@ import { Plus, Trash2, Search, FileText, Loader2, UploadCloud, Database, X, Edit
 import { useLanguageStore } from '../services/languageStore';
 import { MathRenderer } from '../components/MathRenderer';
 
+interface NormalizationPreview {
+    id: number;
+    id_full: string;
+    before: string;
+    after: string;
+    changed: boolean;
+    updated_at: string;
+}
+
 export const QuestionBank: React.FC = () => {
     const { t } = useLanguageStore();
     const { user } = useAuthStore();
@@ -70,6 +79,44 @@ export const QuestionBank: React.FC = () => {
     const [inlineEditSaving, setInlineEditSaving] = useState(false);
 
     const [showUserGuide, setShowUserGuide] = useState(false);
+    const [showNormalization, setShowNormalization] = useState(false);
+    const [normalizationScope, setNormalizationScope] = useState<'selected' | 'page' | 'filtered'>('page');
+    const [normalizationPreview, setNormalizationPreview] = useState<NormalizationPreview[] | null>(null);
+    const [normalizing, setNormalizing] = useState(false);
+
+    const previewNormalization = async () => {
+        const targets = normalizationScope === 'selected' ? (selectedQ ? [selectedQ] : [])
+            : normalizationScope === 'page' ? currentQuestions : questions;
+        if (!targets.length) return alert('Chưa có câu hỏi để chuẩn hoá.');
+        if (targets.length > 200) return alert('Mỗi lần chuẩn hoá tối đa 200 câu. Hãy thu hẹp bộ lọc hoặc chọn trang hiện tại.');
+        setNormalizing(true);
+        try {
+            const result = await apiService.previewQuestionNormalization(targets.map(q => q.id));
+            setNormalizationPreview(result.data || []);
+        } catch (error: any) {
+            alert(`Không thể chuẩn hoá: ${error.message}`);
+        } finally { setNormalizing(false); }
+    };
+
+    const saveNormalization = async () => {
+        const changed = normalizationPreview?.filter(item => item.changed) || [];
+        if (!changed.length) return;
+        setNormalizing(true);
+        try {
+            await apiService.confirmQuestionReview(changed.map(item => ({
+                id: item.id, id_full: item.id_full, content_latex: item.after,
+                expected_updated_at: item.updated_at, change_type: 'SOURCE_NORMALIZATION',
+            })));
+            setShowNormalization(false);
+            setNormalizationPreview(null);
+            setSelectedQ(null);
+            await loadQuestions();
+            alert(`Đã chuẩn hoá ${changed.length} câu hỏi.`);
+        } catch (error: any) {
+            if (error.status === 409) setNormalizationPreview(null);
+            alert(`Không thể lưu: ${error.message}${error.status === 409 ? ' Hãy xem trước lại vì dữ liệu vừa thay đổi.' : ''}`);
+        } finally { setNormalizing(false); }
+    };
 
     const filteredQuestions = questions;
 
@@ -927,6 +974,11 @@ export const QuestionBank: React.FC = () => {
                     <button className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-indigo-600">
                         <Sparkles size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">AI ID</span>
                     </button>
+                    {(user?.role === 'ADMIN' || user?.role === 'TEACHER') && (
+                        <button onClick={() => { setNormalizationScope(selectedQ ? 'selected' : 'page'); setNormalizationPreview(null); setShowNormalization(true); }} disabled={loading || inlineEditId !== null || inlineEditSaving} className="flex flex-col items-center justify-center min-w-16 h-10 px-2 bg-emerald-50 border border-emerald-200 rounded shadow-sm hover:bg-emerald-100 text-emerald-700 disabled:opacity-50" title={inlineEditId !== null ? 'Lưu hoặc huỷ chỉnh sửa câu hỏi trước khi chuẩn hoá' : 'Chuẩn hoá mã nguồn câu hỏi và xem trước khi lưu'}>
+                            <CheckCircle2 size={14}/><span className="text-[8px] font-bold uppercase mt-0.5">Chuẩn hoá</span>
+                        </button>
+                    )}
                     <div className="w-px bg-slate-300 mx-1 h-8 self-center"></div>
                     <button onClick={() => setIsAdding(true)} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-emerald-600">
                         <Plus size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Nhập</span>
@@ -1349,6 +1401,53 @@ export const QuestionBank: React.FC = () => {
                 </div>
             )}
 
+            {showNormalization && (
+                <div className="fixed inset-0 z-50 bg-black/50 flex items-center justify-center p-4">
+                    <div role="dialog" aria-modal="true" aria-labelledby="normalization-title" className="bg-white rounded-2xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden">
+                        <div className="p-4 border-b flex items-center justify-between">
+                            <h2 id="normalization-title" className="text-lg font-bold text-slate-800">Chuẩn hoá câu hỏi</h2>
+                            <button aria-label="Đóng" disabled={normalizing} onClick={() => setShowNormalization(false)} className="p-2 hover:bg-slate-100 rounded disabled:opacity-50"><X size={20}/></button>
+                        </div>
+                        <div className="p-4 border-b space-y-3">
+                            <p className="text-sm text-slate-600">Xem các thay đổi mã nguồn và ID trước khi lưu vào ngân hàng câu hỏi.</p>
+                            <div className="flex flex-wrap items-center gap-3">
+                                <label htmlFor="normalization-scope" className="text-sm font-semibold">Phạm vi</label>
+                                <select id="normalization-scope" value={normalizationScope} disabled={normalizing} onChange={e => { setNormalizationScope(e.target.value as typeof normalizationScope); setNormalizationPreview(null); }} className="border rounded-lg px-3 py-2 text-sm">
+                                    <option value="selected" disabled={!selectedQ}>Câu đang chọn</option>
+                                    <option value="page">Trang hiện tại ({currentQuestions.length} câu)</option>
+                                    <option value="filtered">Danh sách đã tải theo bộ lọc ({questions.length} câu)</option>
+                                </select>
+                                <button onClick={previewNormalization} disabled={normalizing} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-semibold text-sm disabled:opacity-50 flex items-center gap-2">
+                                    {normalizing && <Loader2 size={16} className="animate-spin"/>} Xem trước
+                                </button>
+                            </div>
+                            <p className="text-xs text-slate-500">Tối đa 200 câu mỗi lần. Có thể thu hẹp bộ lọc để chọn đúng nhóm cần chuẩn hoá.</p>
+                        </div>
+                        <div className="p-4 overflow-y-auto flex-1 space-y-4">
+                            {normalizationPreview === null ? <p className="text-sm text-slate-500">Chọn phạm vi rồi nhấn “Xem trước”.</p> : (
+                                <>
+                                    <p className="text-sm font-semibold text-slate-700">Đã kiểm tra {normalizationPreview.length} câu, có {normalizationPreview.filter(item => item.changed).length} câu cần chuẩn hoá.</p>
+                                    {!normalizationPreview.some(item => item.changed) && <p className="text-sm text-emerald-700">Mã nguồn đã đúng chuẩn, không có thay đổi cần lưu.</p>}
+                                    {normalizationPreview.filter(item => item.changed).map(item => (
+                                        <div key={item.id} className="border rounded-xl overflow-hidden">
+                                            <div className="bg-slate-50 px-3 py-2 text-sm font-semibold">Câu #{item.id} · {item.id_full || 'Chưa có ID hợp lệ'}</div>
+                                            <div className="grid md:grid-cols-2">
+                                                <div className="p-3 border-b md:border-b-0 md:border-r"><div className="text-xs font-bold text-slate-500 mb-2">Trước</div><pre className="whitespace-pre-wrap break-words text-xs font-mono">{item.before}</pre></div>
+                                                <div className="p-3 bg-emerald-50"><div className="text-xs font-bold text-emerald-700 mb-2">Sau</div><pre className="whitespace-pre-wrap break-words text-xs font-mono">{item.after}</pre></div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </>
+                            )}
+                        </div>
+                        <div className="p-4 border-t flex justify-end gap-3">
+                            <button disabled={normalizing} onClick={() => setShowNormalization(false)} className="px-4 py-2 border rounded-lg text-sm disabled:opacity-50">Đóng</button>
+                            <button onClick={saveNormalization} disabled={normalizing || !normalizationPreview?.some(item => item.changed)} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold disabled:opacity-50">Lưu chuẩn hoá</button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
             {showUserGuide && (
                 <div className="fixed inset-0 bg-black/60 z-[100] flex items-center justify-center p-4 backdrop-blur-sm">
                     <div className="bg-white rounded-3xl w-full max-w-4xl max-h-[90vh] flex flex-col shadow-2xl overflow-hidden relative">
@@ -1400,6 +1499,10 @@ export const QuestionBank: React.FC = () => {
                                     <li>Dán nội dung Latex (`.tex`) của tài liệu vào khung nhập. Hệ thống sẽ tự động bóc tách các câu hỏi và các ID liên quan.</li>
                                     <li>Chọn <strong>Lưu lên Data Server</strong> để lưu các câu hỏi phân tách thành công.</li>
                                 </ul>
+                            </section>
+                            <section>
+                                <h3 className="font-bold text-slate-800 text-lg mb-2">5. Chuẩn hoá câu hỏi</h3>
+                                <p>Nhấn <strong>Chuẩn hoá</strong> trên thanh công cụ, chọn câu đang xem, trang hiện tại hoặc danh sách đã tải theo bộ lọc. Nhấn <strong>Xem trước</strong> để so sánh nội dung trước và sau, rồi nhấn <strong>Lưu chuẩn hoá</strong> để áp dụng. Mỗi lần xử lý tối đa 200 câu thuộc quyền quản lý của bạn.</p>
                             </section>
                         </div>
                     </div>

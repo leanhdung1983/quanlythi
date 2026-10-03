@@ -676,31 +676,6 @@ export const IdAssigner: React.FC = () => {
         }
     };
 
-    const handleNormalizeDbSource = async () => {
-        if (!activeFile?.isDbSource) return;
-        const ids = activeFile.workItems.map(item => item.dbId).filter((id): id is number => Boolean(id));
-        if (!ids.length) return;
-        setIsProcessing(true);
-        try {
-            const result = await apiService.previewQuestionNormalization(ids);
-            const changed = (result.data || []).filter((item: any) => item.changed);
-            if (!changed.length) return alert('Mã nguồn đã đúng chuẩn, không có thay đổi an toàn nào cần áp dụng.');
-            if (!confirm(`Tìm thấy ${changed.length} câu có thể chuẩn hóa an toàn. Áp dụng vào bản xem trước để bạn kiểm tra trước khi lưu?`)) return;
-            const changedById = new Map(changed.map((item: any) => [Number(item.id), item]));
-            setFiles(prev => prev.map(file => file.uniqueId !== activeFile.uniqueId ? file : {
-                ...file,
-                isDirty: true,
-                workItems: file.workItems.map(item => {
-                    const preview: any = item.dbId ? changedById.get(item.dbId) : null;
-                    return preview ? { ...item, content: preview.after, assignedId: preview.id_full || item.assignedId, updatedAt: preview.updated_at, hasChanged: true } : item;
-                })
-            }));
-            alert('Đã tạo bản xem trước. Hãy kiểm tra nội dung rồi nhấn “Cập nhật DB” để xác nhận.');
-        } catch (e: any) {
-            alert(`Không thể chuẩn hóa: ${e.message}`);
-        } finally { setIsProcessing(false); }
-    };
-
     // --- ACTIONS: FILES ---
     const handleFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
         const fileList = e.target.files;
@@ -1187,9 +1162,6 @@ export const IdAssigner: React.FC = () => {
                                         {activeFile.workItems.filter(i => i.hasChanged).length}
                                     </span>
                                 )}
-                            </button>
-                            <button onClick={handleNormalizeDbSource} disabled={isProcessing || isSavingDb || isAiBatchRunning} className="px-2.5 py-1.5 rounded-lg text-xs font-bold flex items-center gap-1 shadow-sm bg-emerald-50 border border-emerald-200 text-emerald-700 hover:bg-emerald-100 disabled:opacity-50 transition-all">
-                                <Sparkles size={13}/> Chuẩn hóa
                             </button>
                         </>
                     )}
