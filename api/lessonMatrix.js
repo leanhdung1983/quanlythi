@@ -1,11 +1,11 @@
 import { parseId6 } from './id6.js';
 
-export function lessonMatrixInventory(questions) {
+export function lessonMatrixInventory(questions, byLesson = false) {
     const groups = new Map();
     for (const q of questions) {
         const id = parseId6(q.legacy_full_id);
         if (!id || !['TN', 'TF', 'KQ'].includes(q.type)) continue;
-        const key = `${id.grade}-${id.subject}-${id.chapter}-${id.unit}-${id.count}`;
+        const key = `${id.grade}-${id.subject}-${id.chapter}-${id.unit}-${byLesson ? '*' : id.count}`;
         const token = `${q.type}:${key}`;
         if (!groups.has(token)) groups.set(token, { key, type: q.type, available: { N: 0, H: 0, V: 0, C: 0 } });
         groups.get(token).available[id.level]++;

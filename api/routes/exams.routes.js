@@ -15,6 +15,7 @@ import { refreshHistoryScores } from '../examHistory.js';
 import { sanitizeQuestionForStudent, rehydrateTrustedQuestions, validateTrustedQuestions } from '../examSecurity.js';
 import { buildLatexDocument } from '../texExamGenerator.js';
 import { parseMatrixData, describeMatrix, normalizeGrade, validateCatalog } from '../../shared/matrixCatalog.js';
+import { selectLessonQuestions } from '../matrixSelection.js';
 
 const router = express.Router();
 // Results and live sessions must never be served from a browser/proxy cache.
@@ -611,7 +612,7 @@ router.post('/online-exam/generate', async (req, res) => {
                             );
                         }
 
-                        const reqItem = { type, targets: allTargetsForThis, quantity, found: [] };
+                        const reqItem = { type, targets: allTargetsForThis, quantity, found: [], scope: { cls, sub, chap, unit, count, lvl, quantity, qType: type } };
                         allRequirements.push(reqItem);
 
                         allTargetsForThis.forEach(t => {
@@ -657,9 +658,14 @@ router.post('/online-exam/generate', async (req, res) => {
                 return x - Math.floor(x);
             };
 
-            for (const reqItem of allRequirements) {
+            for (const reqItem of allRequirements.sort((a, b) => Number(a.scope.count === '*') - Number(b.scope.count === '*'))) {
+                if (reqItem.scope.count === '*') {
+                    const selected = selectLessonQuestions(allIds, reqItem.scope, new Set(pickedIds), getNextRandom);
+                    selected.forEach(row => { pickedIds.push(row.id); reqMapping[row.id] = reqItem.type; });
+                    continue;
+                }
                 if (reqItem.found.length > 0) {
-                    const pool = [...reqItem.found].sort((a, b) => a.id - b.id);
+                    const pool = reqItem.found.filter(row => !pickedIds.includes(row.id)).sort((a, b) => a.id - b.id);
                     for (let i = pool.length - 1; i > 0; i--) {
                         const j = Math.floor(getNextRandom() * (i + 1));
                         [pool[i], pool[j]] = [pool[j], pool[i]];
@@ -832,7 +838,7 @@ router.post('/generate-exam-matrix', async (req, res) => {
                                 sub: String(sub || 'D').toUpperCase(),
                                 chap: Number(chap),
                                 unit: Number(unit),
-                                count: Number(count),
+                                count: count === '*' ? '*' : Number(count),
                                 lvl,
                                 quantity
                             });
@@ -848,7 +854,7 @@ router.post('/generate-exam-matrix', async (req, res) => {
                         const sub = String(parts[1] || 'D').toUpperCase();
                         const chap = parseInt(parts[2], 10);
                         const unit = parseInt(parts[3], 10);
-                        const count = parseInt(parts[4], 10);
+                        const count = parts[4] === '*' ? '*' : parseInt(parts[4], 10);
                         for (const lvl of ['N', 'H', 'V', 'C']) {
                             const quantity = Number(counts[lvl]) || 0;
                             if (quantity > 0) {
@@ -891,8 +897,13 @@ router.post('/generate-exam-matrix', async (req, res) => {
         const reqMapping = {};
 
         // Randomly iterate through requirements
-        for (const req of allRequirements) {
+        for (const req of allRequirements.sort((a, b) => Number(a.count === '*') - Number(b.count === '*'))) {
             const { qType, cls, sub, chap, unit, count, lvl, quantity } = req;
+            if (count === '*') {
+                const selected = selectLessonQuestions(allIds, req, pickedIds);
+                selected.forEach(row => { pickedIds.add(row.id); reqMapping[row.id] = qType; });
+                continue;
+            }
 
             const classes = [String(cls)];
             if (cls === 2) classes.push('12');

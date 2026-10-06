@@ -12,6 +12,7 @@ import {
 import { useLanguageStore } from '../services/languageStore';
 import { useAuthStore } from '../services/authStore';
 import { MatrixLibrary } from '../components/MatrixLibrary';
+import { LessonMatrixProposal } from '../components/LessonMatrixProposal';
 import { describeMatrix, parseMatrixData, normalizeGrade, editableMatrixSections, MATRIX_PURPOSES, MATRIX_STATUSES } from '../../shared/matrixCatalog';
 import { generateDocxBlob, generateCombinedLatex } from '../utils/matrixExportUtils';
 
@@ -33,6 +34,8 @@ export const ExamGenerator: React.FC = () => {
     const [selectedGrade, setSelectedGrade] = useState(2);
     const [selectedSubject, setSelectedSubject] = useState('D');
     const [activeTab, setActiveTab] = useState<QuestionType>('TN');
+    const [matrixScope, setMatrixScope] = useState<'LESSON' | 'FORM'>('LESSON');
+    const [proposalUnit, setProposalUnit] = useState<number | null>(null);
     const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
     
     const [expanded, setExpanded] = useState<Set<string>>(new Set());
@@ -189,6 +192,7 @@ export const ExamGenerator: React.FC = () => {
             TL: rawMatrix.TL || {}
         };
         setMatrix(loadedMatrix);
+        setMatrixScope(Object.values(loadedMatrix).some(section => Object.keys(section).some(key => key.endsWith('-*'))) ? 'LESSON' : 'FORM');
 
         const settings = parsed?.settings || {};
         if (settings) {
@@ -385,7 +389,7 @@ export const ExamGenerator: React.FC = () => {
     };
 
     const updateCount = (chapterId: string, level: 'N'|'H'|'V'|'C', valStr: string, max: number) => {
-        const val = Math.min(parseInt(valStr) || 0, max);
+        const val = Math.max(0, Math.min(parseInt(valStr) || 0, max));
         setMatrix(prev => {
             const next = { ...prev, [activeTab]: { ...prev[activeTab] } };
             if (!next[activeTab][chapterId]) {
@@ -497,6 +501,7 @@ export const ExamGenerator: React.FC = () => {
 
     return (
         <div className="w-full h-full flex gap-3 overflow-hidden p-0.5">
+            {proposalUnit !== null && <LessonMatrixProposal unitId={proposalUnit} onClose={() => setProposalUnit(null)} onApply={(name, data) => { handleSelectMatrix({ id: null, name, matrix_data: data }); setShowSaveModal(true); }}/>}
             {/* LEFT: SAVED LIST (TREE VIEW) */}
             {isSidebarCollapsed ? (
                 <div className="w-12 flex flex-col items-center py-3 bg-white rounded-2xl border border-slate-200 shadow-sm shrink-0 transition-all duration-200 gap-3">
@@ -802,6 +807,12 @@ export const ExamGenerator: React.FC = () => {
                         })}
                     </div>
 
+                    <div className="p-3 bg-indigo-50/50 border-b space-y-2">
+                        <div className="flex gap-2">
+                            {(['LESSON', 'FORM'] as const).map(scope => <button key={scope} onClick={() => setMatrixScope(scope)} className={`px-3 py-2 rounded-lg text-xs font-semibold ${matrixScope === scope ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600'}`}>{scope === 'LESSON' ? 'Theo bài · Ngẫu nhiên dạng' : 'Theo từng dạng'}</button>)}
+                        </div>
+                        <p className="text-xs text-slate-600">Nhập số câu ở mỗi mức độ cho từng bài. Hệ thống ưu tiên các dạng khác nhau; chỉ lặp dạng khi số câu vượt số dạng có sẵn. Hai cách cấu hình được lưu riêng và cộng vào tổng số câu.</p>
+                    </div>
                     {/* TREE CONTENT: Bảng nhập liệu số câu theo mức độ */}
                     <div className="flex-1 overflow-y-auto custom-scrollbar p-0 bg-white">
                         {loading ? (
@@ -838,13 +849,13 @@ export const ExamGenerator: React.FC = () => {
 
                                                     return (
                                                         <div key={u.id} className="border-b border-slate-50 last:border-0">
-                                                            <button 
+                                                            <div className="flex items-center pr-3"><button
                                                                 onClick={() => toggleExpand(unitKey)} 
                                                                 className={`w-full flex items-center gap-3 px-8 py-2.5 text-xs font-bold text-left transition-colors ${isUnitExpanded ? 'text-indigo-700 bg-indigo-50/40' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100'}`}
                                                             >
                                                                 {isUnitExpanded ? <ChevronDown size={13}/> : <ChevronRight size={13}/>}
                                                                 <span className="flex items-center gap-2"><Layers size={13} className="text-slate-400"/> {dispUName}</span>
-                                                            </button>
+                                                            </button>{(user?.role === 'ADMIN' || user?.role === 'TEACHER') && <button onClick={() => setProposalUnit(u.id)} className="shrink-0 flex gap-1 items-center text-xs font-semibold text-indigo-600 bg-indigo-50 rounded-lg px-2 py-2" title="AI đề xuất ma trận tự luyện cho bài này"><Sparkles size={14}/>AI đề xuất</button>}</div>
                                                             
                                                             {isUnitExpanded && (
                                                                 <div className="bg-white pl-4">
@@ -859,7 +870,10 @@ export const ExamGenerator: React.FC = () => {
                                                                         </div>
                                                                     </div>
                                                                     
-                                                                    {mergeTypes(u.types).map(typeItem => {
+                                                                    {(matrixScope === 'FORM' ? mergeTypes(u.types) : [{ count_id: '*', description: 'Toàn bài · chọn ngẫu nhiên, ưu tiên đa dạng dạng câu', stats: { [activeTab]: mergeTypes(u.types).reduce((total, item) => {
+                                                                        for (const level of ['N', 'H', 'V', 'C']) total[level] += Number(item.stats?.[activeTab]?.[level]) || 0;
+                                                                        return total;
+                                                                    }, { N: 0, H: 0, V: 0, C: 0 } as Record<string, number>) } }]).map(typeItem => {
                                                                         const key = `${dbGradeId}-${selectedSubject}-${c.num}-${u.num}-${typeItem.count_id}`;
                                                                         const stats = typeItem.stats?.[activeTab] || {N:0,H:0,V:0,C:0};
                                                                         const counts = matrix[activeTab]?.[key] || {N:0,H:0,V:0,C:0};

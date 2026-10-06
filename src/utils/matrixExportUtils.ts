@@ -91,7 +91,7 @@ const parseKey = (key: string) => {
         sub: parts[1],
         chap: Number(parts[2]),
         unit: Number(parts[3]),
-        count: parts.length >= 5 ? Number(parts[4]) : 1
+        count: parts[4] === '*' ? '*' : parts.length >= 5 ? Number(parts[4]) : 1
     };
 };
 
@@ -178,7 +178,7 @@ const aggregateData = (treeData: MatrixTreeNode[], matrixInput: any) => {
                 desc: `Dạng toán số ${parsed.count}`,
                 competencies: [] as string[]
             };
-            const meta = metaFromMap || fallbackMeta;
+            const meta = parsed.count === '*' ? { ...(metaFromMap || fallbackMeta), desc: 'Toàn bài · ngẫu nhiên dạng' } : metaFromMap || fallbackMeta;
             const rowKey = `${parsed.cls}-${parsed.sub}-${parsed.chap}-${parsed.unit}`;
             
             if (!rowMap.has(rowKey)) {

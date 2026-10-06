@@ -767,7 +767,7 @@ export const OnlineExam: React.FC = () => {
                     const items = Object.entries(rawData).map(([key, levels]) => {
                         const parts = key.split('-');
                         if(parts.length < 5) return null;
-                        return { cls: parseInt(parts[0]), sub: parts[1], chap: parseInt(parts[2]), unit: parseInt(parts[3]), count: parseInt(parts[4]), levels: levels };
+                        return { cls: parseInt(parts[0]), sub: parts[1], chap: parseInt(parts[2]), unit: parseInt(parts[3]), count: parts[4] === '*' ? '*' : parseInt(parts[4]), levels: levels };
                     }).filter((item: any) => {
                         if (!item || !item.levels) return false;
                         const l = item.levels as Record<string, number>;

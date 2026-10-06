@@ -4,6 +4,14 @@ Vào **Ma trận / Tạo đề**. Danh sách bên trái được tổ chức the
 
 ## Phân loại
 
+### Ma trận tự luyện theo bài
+
+Trong màn hình Ma trận, chọn **Theo bài · Ngẫu nhiên dạng** để nhập số câu Nhận biết, Thông hiểu, Vận dụng, Vận dụng cao cho mỗi bài ở từng phần TN/TF/KQ/TL, không cần chọn dạng ID6. Chế độ **Theo từng dạng** vẫn dùng được cho ma trận cũ; hai nhóm cấu hình cộng vào tổng số câu.
+
+Giáo viên bấm **AI đề xuất** cạnh bài học, kiểm tra số câu, thời gian, điểm rồi áp dụng vào màn hình Ma trận và xác nhận lưu. Đề xuất thay nội dung đang mở bằng một ma trận mới của bài được chọn, không tự ghi đè ma trận đã lưu.
+
+Khi tạo đề hoặc làm bài online, hệ thống ưu tiên chọn mỗi dạng một câu trước khi quay vòng và không chọn trùng câu trong đề. Khi số câu vượt số dạng sẵn có, dạng có thể xuất hiện lại. Nếu không đủ câu đúng bài, loại và mức độ, hệ thống báo thiếu thay vì lấy câu từ bài khác. Xuất Word/LaTeX hiển thị **Toàn bài · ngẫu nhiên dạng**.
+
 - Khối 10/11/12 là khối đối tượng làm đề, không nhất thiết là toàn bộ khối kiến thức trong đề.
 - Đề tốt nghiệp có cả kiến thức 11 và 12 có thể đặt đối tượng Khối 12; thẻ ma trận vẫn hiển thị cả hai khối kiến thức.
 - Chọn **Liên khối** khi dùng chung cho nhiều khối.

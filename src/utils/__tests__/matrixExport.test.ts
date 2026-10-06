@@ -1,7 +1,14 @@
 import { describe, it, expect } from 'vitest';
 import { generateDocxBlob, generateCombinedLatex } from '../matrixExportUtils';
+import { prepareMatrixPayload } from '../matrixUtils';
 
 describe('Matrix Export Test', () => {
+    it('preserves lesson wildcard through online payload and export', async () => {
+        const matrix = { TN: { '2-D-1-1-*': { N: 2, H: 1, V: 0, C: 0 } }, TF: {}, KQ: {}, TL: {} };
+        expect(prepareMatrixPayload({ matrix }).TN[0].count).toBe('*');
+        expect(generateCombinedLatex([], matrix)).toContain('ngẫu nhiên dạng');
+        expect((await generateDocxBlob([], matrix, 'COMBINED')).size).toBeGreaterThan(1000);
+    });
     const mockTreeData: any = [
         {
             grade: 2,
