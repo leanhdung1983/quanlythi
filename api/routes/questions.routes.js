@@ -16,6 +16,7 @@ import {
     clearCache 
 } from '../core.js';
 import { inspectQuestionId, normalizeId6, normalizeQuestionSource, questionTimestampChanged } from '../id6.js';
+import { requireLearningUnit } from '../learningAccess.js';
 import { synchronizeQuestionEdit } from '../examRegrade.js';
 
 const router = express.Router();
@@ -165,6 +166,7 @@ router.get('/units', cacheMiddleware(300), async (req, res) => {
 router.get('/units/:unit_id/practice', async (req, res) => {
     try {
         const { unit_id } = req.params;
+        await requireLearningUnit(req, unit_id);
         const questions = await query(`
             SELECT q.*, l.code as level_code, qt.code as type_code
             FROM questions q
@@ -222,7 +224,7 @@ router.get('/units/:unit_id/practice', async (req, res) => {
         selected = selected.sort(() => 0.5 - Math.random());
         res.json({ success: true, data: selected });
     } catch(e) {
-        res.status(500).json({ error: e.message });
+        res.status(e.status || 500).json({ error: e.message });
     }
 });
 

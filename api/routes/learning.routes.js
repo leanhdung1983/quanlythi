@@ -1,26 +1,14 @@
 import express from 'express';
 import { query, isSelfOrAdmin, requireAdmin } from '../core.js';
+import { requireLearningUnit, learningError } from '../learningAccess.js';
 
 const router = express.Router();
 
 router.get('/lesson-sections', async (req, res) => {
     try {
         const { unit_id } = req.query;
-        const user_id = req.user.id;
-        
-        if (user_id && unit_id) {
-            const [user] = await query("SELECT role, is_pro FROM users WHERE id = ?", [user_id]);
-            if (user && user.role === 'STUDENT' && !user.is_pro) {
-                // Check if this unit is the first unit in its chapter
-                const [unit] = await query("SELECT chapter_id, unit_number FROM units WHERE id = ?", [unit_id]);
-                if (unit) {
-                    const [firstUnit] = await query("SELECT id FROM units WHERE chapter_id = ? ORDER BY unit_number ASC LIMIT 1", [unit.chapter_id]);
-                    if (firstUnit && firstUnit.id != unit_id) {
-                        return res.status(403).json({ error: "Tài khoản miễn phí chỉ được học bài đầu tiên của mỗi chương. Vui lòng nâng cấp Pro để học toàn bộ." });
-                    }
-                }
-            }
-        }
+        if (unit_id) await requireLearningUnit(req, unit_id);
+        else if (req.user.role === 'STUDENT') throw learningError(400, 'Chọn bài học trước khi tải nội dung.');
         
         let sql = "SELECT * FROM lesson_sections";
         const params = [];
@@ -31,7 +19,7 @@ router.get('/lesson-sections', async (req, res) => {
         sql += " ORDER BY order_index ASC";
         const rows = await query(sql, params);
         res.json({ success: true, data: rows });
-    } catch(e) { res.status(500).json({ error: e.message }); }
+    } catch(e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
 router.post('/admin/lesson-sections', async (req, res) => {
@@ -75,13 +63,17 @@ router.post('/user/lesson-progress', async (req, res) => {
     try {
         const { section_id, is_completed, score } = req.body;
         const user_id = req.user.id;
+        if (!Number.isSafeInteger(Number(section_id)) || Number(section_id) < 1 || ![true,false,0,1].includes(is_completed) || !Number.isFinite(Number(score ?? 0)) || Number(score ?? 0) < 0 || Number(score ?? 0) > 10) throw learningError(400, 'Tiến độ hoặc điểm học không hợp lệ.');
+        const [section] = await query('SELECT unit_id FROM lesson_sections WHERE id=?', [section_id]);
+        if (!section) throw learningError(404, 'Mục học không tồn tại.');
+        await requireLearningUnit(req, section.unit_id);
         await query(`
             INSERT INTO user_lesson_progress (user_id, section_id, is_completed, score) 
             VALUES (?, ?, ?, ?)
             ON DUPLICATE KEY UPDATE is_completed = VALUES(is_completed), score = VALUES(score)
-        `, [user_id, section_id, is_completed, score]);
+        `, [user_id, section_id, is_completed, Number(score ?? 0)]);
         res.json({ success: true });
-    } catch(e) { res.status(500).json({ error: e.message }); }
+    } catch(e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
 export default router;

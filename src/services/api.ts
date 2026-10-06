@@ -35,6 +35,9 @@ const handleResponse = async (response: Response, endpoint: string) => {
 };
 
 export const apiService = {
+    async learningHub(endpoint: string, body?: Record<string, unknown>, method = 'POST') {
+        return handleResponse(await fetch(`${API_URL}/learning${endpoint}`, body ? { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {}), `/learning${endpoint}`);
+    },
     async lessonAuthoring(endpoint: string, body?: Record<string, unknown>, method = 'POST', signal?: AbortSignal) {
         const response = await fetch(`${API_URL}/lesson-authoring${endpoint}`, body ? { method, signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { method: 'GET', signal });
         return handleResponse(response, `/lesson-authoring${endpoint}`);
@@ -152,7 +155,7 @@ export const apiService = {
         const r = await handleResponse(res, `/user/lesson-progress/${userId}`);
         return r.data;
     },
-    async updateUserLessonProgress(data: { user_id: number, section_id: number, is_completed: boolean, score: number }) {
+    async updateUserLessonProgress(data: { user_id?: number, section_id: number, is_completed: boolean, score: number }) {
         const res = await fetch(`${API_URL}/user/lesson-progress`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },

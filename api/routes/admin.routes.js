@@ -12,7 +12,8 @@ import {
     getGeminiApiKeys,
     generateWithFallback,
     parseGeminiError,
-    seedDatabase
+    seedDatabase,
+    clearCache
 } from '../core.js';
 
 const router = express.Router();
@@ -198,6 +199,7 @@ router.post('/admin/chapters', async (req, res) => {
         }
 
         await query("INSERT INTO chapters (grade_id, subject_id, chapter_number, name) VALUES (?, ?, ?, ?)", [grade_id, subject_id, chapter_number, name]);
+        await clearCache('/api/chapters*');
         res.json({ success: true });
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
@@ -223,6 +225,7 @@ router.post('/admin/units', async (req, res) => {
         if (!requireAdmin(req, res)) return;
         const { chapter_id, unit_number, name } = req.body;
         await query("INSERT INTO units (chapter_id, unit_number, name) VALUES (?, ?, ?)", [chapter_id, unit_number, name]);
+        await clearCache('/api/units*');
         res.json({ success: true });
     } catch(e) { res.status(500).json({ error: e.message }); }
 });

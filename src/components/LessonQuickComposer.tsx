@@ -16,7 +16,7 @@ const template = (name: string): Draft => ({ title: name, blocks: [
     { ...newBlock('EXAMPLE'), content: 'Đề bài:\n...\n\nCác bước giải:\n1. ...\n2. ...\n\nKết luận:\n...' },
     { ...newBlock('NOTE'), content: 'Lỗi thường gặp: ...\n\nCách kiểm tra: ...' }
 ] });
-export const LessonQuickComposer: React.FC<{ unit: Unit; userId: number; matrices: SavedMatrix[]; onClose: () => void; onPublished: () => Promise<void> }> = ({ unit, userId, matrices, onClose, onPublished }) => {
+export const LessonQuickComposer: React.FC<{ unit: Unit; userId: number; matrices: SavedMatrix[]; onClose: () => void; onPublished: () => Promise<void>; embedded?: boolean }> = ({ unit, userId, matrices, onClose, onPublished, embedded = false }) => {
     const unitName = unit.unit_name || unit.name;
     const storageKey = `lesson-composer:v1:${userId}:${unit.id}`;
     const [draft, setDraft] = useState<Draft>(() => template(unitName));
@@ -146,7 +146,7 @@ export const LessonQuickComposer: React.FC<{ unit: Unit; userId: number; matrice
             {b.type === 'PRACTICE' && <p className="text-sm text-slate-500">Luyện tập từ ma trận: {matrices.find(m => m.id === Number(b.matrix_id))?.name || 'Chưa chọn ma trận'}. Học sinh làm trực tiếp trong bài học sau khi xuất bản.</p>}
         </article>;
     });
-    return <div className="fixed inset-0 z-50 bg-slate-950/60 p-2 md:p-5 flex items-center justify-center"><section role="dialog" aria-modal="true" aria-label="Soạn bài nhanh" className="relative w-full max-w-7xl h-[94vh] flex flex-col bg-slate-50 rounded-2xl shadow-2xl overflow-hidden">
+    return <div className={embedded ? "h-full min-h-0 flex" : "fixed inset-0 z-50 bg-slate-950/60 p-2 md:p-5 flex items-center justify-center"}><section role={embedded ? undefined : "dialog"} aria-modal={embedded ? undefined : true} aria-label="Soạn bài nhanh" className={`relative w-full flex flex-col bg-slate-50 overflow-hidden ${embedded ? "h-full rounded-2xl border border-slate-200" : "max-w-7xl h-[94vh] rounded-2xl shadow-2xl"}`}>
         <header className="bg-white border-b p-4 flex justify-between gap-4 items-start"><div><h2 className="text-xl font-bold flex items-center gap-2"><Sparkles className="text-indigo-600"/>Soạn bài nhanh</h2><p className="text-sm text-slate-500 mt-1">{unitName} · Bản nháp riêng → kiểm tra → xuất bản</p></div><button aria-label="Đóng trình soạn bài" disabled={!!busy} onClick={() => { if (!dirty) onClose(); else setConfirmation({ message: 'Bản nháp chưa được lưu lên máy chủ. Đóng trình soạn bài?', action: onClose }); }} className="p-2 rounded-lg hover:bg-slate-100"><X/></button></header>
         {(error || notice) && <div role={error ? 'alert' : 'status'} className={`px-5 py-3 text-sm ${error ? 'bg-rose-50 text-rose-700' : 'bg-emerald-50 text-emerald-800'}`}>{error || notice}</div>}
         {busy.startsWith('AI') && <div className="px-5 py-2 bg-indigo-50 text-indigo-700 flex justify-between items-center text-xs"><span>AI chỉ tạo đề xuất, không tự lưu hoặc xuất bản. Có thể dừng bất kỳ lúc nào.</span><button onClick={() => aiController.current?.abort()} className="border border-indigo-300 bg-white px-3 py-1 rounded-lg font-bold">Dừng AI</button></div>}
