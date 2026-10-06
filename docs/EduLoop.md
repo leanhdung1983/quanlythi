@@ -1,0 +1,62 @@
+# Bàn giao EduLoop AI / QuanLyThi Adaptive
+
+EduLoop được tích hợp vào hệ thống hiện có mà không đổi tên nội bộ hoặc viết lại các luồng cũ.
+
+## Đã tích hợp
+- Trang mới /#/eduloop, menu “EduLoop · Kỹ năng” trên desktop và mobile.
+- Learning Gap Map theo lớp hoặc học sinh, nhóm ID6 với chương, bài, dạng/kỹ năng và mức độ; hiển thị số lượt, tỷ lệ đúng, số học sinh cần ôn và các bài/câu làm bằng chứng. Dùng description trong id6_metadata nếu có; dạng ID6 là đại diện kỹ năng, chưa phải ontology kỹ năng độc lập.
+- Chỉ dùng bài COMPLETED có snapshot questions/answers. Chuẩn hóa KQ theo bộ chấm hiện có, TF có tín dụng từng phần; loại TL chưa chấm, dữ liệu JSON lỗi và ID6 thiếu. Dưới 3 lượt: chưa đủ mẫu. Đề xuất ưu tiên dạng dưới 70%, tối đa 4 dạng và 10 câu, không trộn ngẫu nhiên vào kế hoạch duyệt. Mỗi câu có lý do và tối đa 20 minh chứng gần nhất.
+- Giáo viên chọn lớp/học sinh, tạo đề xuất PENDING, đọc lý do rồi APPROVED/REJECTED kèm ghi chú. Lưu người tạo, người duyệt, mốc duyệt và baseline. Quyết định đã lưu không bị ghi đè; muốn điều chỉnh cần tạo đề xuất mới. Kế hoạch tự động dựa trên quy tắc minh chứng, không cần Gemini API key.
+- Học sinh tải kế hoạch APPROVED và làm bài trong AdaptiveTest hiện có. Backend kiểm tra chủ sở hữu, lớp đã duyệt, trạng thái duyệt và câu hỏi hiện còn được phép dùng. Nếu nội dung/ID6 thay đổi sau khi tạo kế hoạch, yêu cầu tạo và duyệt lại.
+- Progress Tracking theo ID6 trước/sau thời điểm duyệt, số mẫu mỗi phía và chênh lệch điểm phần trăm; chỉ tính delta khi mỗi phía có ít nhất 3 lượt. Đây là so sánh quan sát, không chứng minh tác động nhân quả. Bao gồm mọi bài hoàn thành cùng ID6, không chỉ bài EduLoop. Mốc thời gian lấy created_at của bài thi (thời điểm tạo phiên).
+- Endpoint adaptive cũ vẫn hoạt động, giữ trường success/data/ai_analysis; thêm evidence và approval. Sửa nhận diện TF/KQ để nhất quán bộ chấm; đánh dấu câu ngẫu nhiên không có bằng chứng. Giữ phần nhận xét Gemini cũ; nhận xét đó là gợi ý cần giáo viên xem xét.
+- IRTAnalysis và difficulty_index/discrimination_index hiện có được giữ. Audit chưa thấy CAT/theta thực; kế hoạch mới không quảng bá tỷ lệ đúng thành năng lực IRT.
+
+## File sửa
+- api/index.js — gắn router mới dưới middleware phiên hiện có.
+- api/routes/ai.routes.js — nhận recommendation_id tùy chọn; bổ sung bằng chứng adaptive cũ và chấm đúng TF/KQ.
+- src/App.tsx — route /eduloop.
+- src/components/Layout.tsx — menu mới.
+- src/pages/AdaptiveTest.tsx — tải kế hoạch duyệt, hiển thị lý do, liên kết tiến độ; bỏ số liệu demo cố định.
+- src/services/api.ts — nối API EduLoop và tham số đề xuất tùy chọn.
+
+## File thêm
+- api/eduloop.js — phân tích, nhóm ID6 và lựa chọn câu hỏi.
+- api/routes/eduloop.routes.js — phân quyền, đề xuất, quyết định và tiến độ.
+- api/eduloop.test.js; api/eduloop.routes.test.js — kiểm thử minh chứng và quyền duyệt.
+- src/pages/EduLoop.tsx
+- migrations/20261006_eduloop.sql
+- scripts/migrate-eduloop.mjs
+- docs/EduLoop.md — bản hướng dẫn này trong project.
+
+## Chạy
+Trong thư mục project, cấu hình kết nối DB đang dùng vào .env (tham khảo .env.example): DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME. Không nhập mật khẩu vào chat.
+
+```powershell
+cd C:\Users\HKC\Desktop\quanlythi
+node scripts/migrate-eduloop.mjs
+npm run dev
+```
+
+Migration chỉ CREATE TABLE IF NOT EXISTS eduloop_recommendations; không ALTER/DROP bảng cũ, không backfill kết quả. Chạy lại an toàn; cần quyền CREATE và REFERENCES trên DB hiện tại. Script không import core.js nên không chạy seed ngoài ý muốn. Nếu chưa migration, dữ liệu đề xuất trả thông báo cần migration; ôn tập cũ và Gap Map từ bảng cũ vẫn hoạt động.
+
+Mở http://localhost:3000/#/eduloop (hoặc port đã cấu hình). Giáo viên chọn lớp và học sinh → Tải bản đồ → Tạo đề xuất → đọc minh chứng → Duyệt. Học sinh vào EduLoop → Ôn tập kế hoạch đã duyệt → nộp qua bộ chấm cũ → xem tiến độ. Hạn mức bắt đầu bài thi của tài khoản miễn phí vẫn áp dụng theo hệ thống cũ. Tải câu từ kế hoạch giáo viên duyệt không trừ review_count của tự luyện.
+
+```powershell
+npm test
+npm run build
+```
+
+## Kiểm chứng và giới hạn
+- Toàn bộ bộ kiểm thử: 200 tests/31 files đã qua, gồm 8 kiểm thử EduLoop trước lần tinh chỉnh cuối; kết quả cuối xem VERIFICATION.md.
+- TypeScript + Vite production build đã qua.
+- Runtime production server/import: GET /api/ping = 200; GET / = 200; GET /api/eduloop/map chưa đăng nhập = 401. Server kiểm tra đã tự dừng.
+- MySQL có phản hồi nhưng từ chối root không mật khẩu; project không có .env. Chưa chạy migration thành công, chưa kiểm chứng luồng đăng nhập → duyệt → nộp với DB thật. Không có thay đổi DB nào được xác nhận.
+- Bộ kiểm thử API dùng dữ liệu giả, không thay thế kiểm tra trên DB triển khai. Không tuyên bố triển khai production hoàn tất.
+- Hiện đọc toàn bộ lịch sử thuộc phạm vi lớp/học sinh; với dữ liệu lớn cần thêm phân trang/tiền tổng hợp sau khi đo thực tế.
+- Không sửa API/schema cũ. Gỡ lớp mới bằng cách gỡ route/menu mới và tham số tùy chọn; giữ bảng mới để bảo toàn nhật ký duyệt. Không cần migration ngược phá hủy dữ liệu.
+
+## Bản online Render
+Người dùng xác nhận bản online: https://quanlythi.onrender.com. render.yaml cấu hình build npm ci && npm run build, start npm start và health check /api/ping. DB_HOST, DB_USER, DB_PASSWORD được cấu hình ngoài source (sync: false), không thể lấy từ URL website. Công cụ đọc web không truy cập được trang trong lượt kiểm tra này; không kết luận website ngừng hoạt động.
+
+Để đưa thay đổi lên bản online: đưa các file source đã sửa lên repo liên kết với Render bằng quy trình deploy đang dùng, rồi chạy node scripts/migrate-eduloop.mjs trong môi trường có cùng biến DB_* (hoặc chạy nội dung migrations/20261006_eduloop.sql bằng công cụ DB của nhà cung cấp). Có thể chạy migration trước khi deploy vì chỉ thêm bảng. Chưa push/commit/deploy trong lượt này; bản online chưa được xác nhận có EduLoop. Cấu hình DB thật là thông tin còn thiếu để xác minh migration và luồng đăng nhập đầy đủ.

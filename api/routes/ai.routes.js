@@ -11,6 +11,9 @@ import { normalizeId6, extractSourceId, injectCanonicalId, requiresAiIdReview, v
 import { normalizeExTestOutput } from '../exTest.js';
 import { convertPdfToExTest } from '../pdfToExTest.js';
 
+import { approvedPractice } from './eduloop.routes.js';
+import { correctness, buildGapMap } from '../eduloop.js';
+
 const router = express.Router();
 
 router.post('/ai/convert-document', async (req, res) => {
@@ -547,7 +550,8 @@ Nếu đề bài là dạng ${type}, hãy sinh câu hỏi theo đúng định d�
 
 router.post('/adaptive/generate', async (req, res) => {
     try {
-        const { limit = 10 } = req.body;
+        const limit = Math.min(30, Math.max(1, Number.parseInt(req.body.limit, 10) || 10));
+        if (req.body.recommendation_id) return res.json(await approvedPractice(req));
         const user_id = req.user.id;
         
         // Check limit for non-pro student
@@ -568,7 +572,7 @@ router.post('/adaptive/generate', async (req, res) => {
         }
         
         // 1. Find questions user has failed
-        const results = await query("SELECT result_detail FROM exam_results WHERE user_id = ? AND status = 'COMPLETED'", [user_id]);
+        const results = await query("SELECT id, user_id, status, created_at, result_detail FROM exam_results WHERE user_id = ? AND status = 'COMPLETED'", [user_id]);
         const failedIds = new Set();
         
         results.forEach(r => {
@@ -577,14 +581,8 @@ router.post('/adaptive/generate', async (req, res) => {
                 const { questions, answers } = detail;
                 if (questions && answers) {
                     questions.forEach(q => {
-                        let isCorrect = false;
-                        const userAns = answers[q.id];
-                        if (q.type === 'TN') {
-                            const correctOpt = q.options?.find(o => o.isCorrect);
-                            if (correctOpt && userAns === correctOpt.id) isCorrect = true;
-                        } else if (q.type === 'KQ') {
-                            if (userAns && q.correctAnswer && userAns.toString().trim() === q.correctAnswer.toString().trim()) isCorrect = true;
-                        }
+                        const value = correctness(q, answers[q.id]);
+                        const isCorrect = value === null || value === 1;
                         if (!isCorrect) failedIds.add(q.id);
                     });
                 }
@@ -652,8 +650,15 @@ Dựa vào nội dung trên, hãy phân tích ngắn gọn (tối đa 4 câu) v�
             questions = [...questions, ...randomQs];
         }
 
-        res.json({ success: true, data: questions, ai_analysis });
-    } catch (e) { res.status(500).json({ error: parseGeminiError(e) }); }
+        const historyMap = buildGapMap(results);
+        const evidence = questions.map(q => {
+            const skill = historyMap.skills.find(s => s.key === normalizeId6(q.id_full));
+            return { question_id: q.id, skill: normalizeId6(q.id_full) || null,
+                reason: skill ? 'Cùng ID6 đã làm: mức đúng ' + skill.rate + '% trên ' + skill.attempts + ' lượt.' : 'Câu luyện tập bổ sung ngẫu nhiên; chưa có bằng chứng lỗ hổng cho dạng này.',
+                evidence: skill?.evidence || [], confidence: skill?.confidence || 'INSUFFICIENT' };
+        });
+        res.json({ success: true, data: questions, ai_analysis, evidence, approval: { status: 'SELF_PRACTICE' } });
+    } catch (e) { res.status(e.status || (e.code === 'ER_NO_SUCH_TABLE' ? 503 : 500)).json({ error: e.code === 'ER_NO_SUCH_TABLE' ? 'Chưa chạy migration EduLoop.' : parseGeminiError(e) }); }
 });
 
 export default router;

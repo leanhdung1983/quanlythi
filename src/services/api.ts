@@ -35,6 +35,15 @@ const handleResponse = async (response: Response, endpoint: string) => {
 };
 
 export const apiService = {
+    async eduLoop(endpoint: string, values: Record<string, unknown> = {}, method = 'GET') {
+        const params = new URLSearchParams();
+        for (const [key, value] of Object.entries(values)) if (value !== '' && value != null) params.set(key, String(value));
+        const url = API_URL + '/eduloop' + endpoint + (method === 'GET' && params.size ? '?' + params.toString() : '');
+        return handleResponse(await fetch(url, method === 'GET' ? {} : { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(values) }), endpoint);
+    },
+    async eduLoopClasses() { return handleResponse(await fetch(API_URL + '/classes'), '/classes'); },
+    async eduLoopStudents(classId: string) { return handleResponse(await fetch(API_URL + '/classes/' + encodeURIComponent(classId) + '/students'), '/classes/students'); },
+
     async fetchStats() {
         const res = await fetch(`${API_URL}/stats`); 
         const result = await handleResponse(res, '/stats'); 
@@ -514,9 +523,9 @@ export const apiService = {
         const response = await fetch(`${API_URL}/irt/analysis`);
         return await handleResponse(response, '/irt/analysis');
     },
-    async generateAdaptiveTest(_user_id: number, limit?: number) {
+    async generateAdaptiveTest(_user_id: number, limit?: number, recommendationId?: string) {
         void _user_id;
-        const response = await fetch(`${API_URL}/adaptive/generate`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ limit }) });
+        const response = await fetch(`${API_URL}/adaptive/generate`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ limit, recommendation_id: recommendationId }) });
         return await handleResponse(response, '/adaptive/generate');
     },
     async aiExplain(question_latex: string, user_answer_latex: string, correct_answer_latex: string) {

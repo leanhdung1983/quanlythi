@@ -176,6 +176,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             <SidebarItem to="/" icon={LayoutDashboard} label={t('dashboard')} isCompact={isCompact} />
                             <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} isCompact={isCompact} />
                             <SidebarItem to="/adaptive" icon={Zap} label="Ôn tập Adaptive" isCompact={isCompact} />
+                            <SidebarItem to="/eduloop" icon={Target} label="EduLoop · Kỹ năng" isCompact={isCompact} />
                             <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" isCompact={isCompact} />
                             <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" isCompact={isCompact} />
                             
@@ -269,6 +270,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         <SidebarItem to="/" icon={LayoutDashboard} label={t('dashboard')} onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/adaptive" icon={Zap} label="Ôn tập Adaptive" onClick={() => setIsMobileMenuOpen(false)}/>
+                        <SidebarItem to="/eduloop" icon={Zap} label="EduLoop · Kỹ năng" onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" onClick={() => setIsMobileMenuOpen(false)}/>
                         

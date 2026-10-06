@@ -1,6 +1,7 @@
 
 import React, { useState, useEffect, useCallback } from 'react';
 import { apiService } from '../services/api';
+import { useSearchParams, Link } from 'react-router-dom';
 import { useAuthStore } from '../services/authStore';
 import { 
     Zap, Brain, Target, ArrowRight, Loader2, 
@@ -15,6 +16,8 @@ import { parseQuestionContent, shuffleArray } from '../utils/latexParser';
 
 export const AdaptiveTest: React.FC = () => {
     const { user } = useAuthStore();
+    const [searchParams] = useSearchParams();
+    const recommendationId = searchParams.get('recommendation_id') || undefined;
     const [questions, setQuestions] = useState<OnlineQuestion[]>([]);
     const [aiAnalysis, setAiAnalysis] = useState<string>('');
     const [step, setStep] = useState<'intro' | 'generating' | 'ready' | 'taking' | 'result' | 'review'>('intro');
@@ -111,15 +114,16 @@ export const AdaptiveTest: React.FC = () => {
         if (!user) return;
         setStep('generating');
         try {
-            const res = await apiService.generateAdaptiveTest(user.id);
+            const res = await apiService.generateAdaptiveTest(user.id, 10, recommendationId);
             if (res.success) {
                 const parsed = res.data.map((q: OnlineQuestion) => parseQuestionContent(q));
                 setQuestions(parsed);
-                setAiAnalysis(res.ai_analysis || '');
+                setAiAnalysis([res.ai_analysis || '', ...(res.evidence || []).map((item: { question_id: number; reason: string }) => 'Câu #' + item.question_id + ': ' + item.reason)].filter(Boolean).join('\n'));
                 setStep('ready');
             }
         } catch (e) {
             console.error(e);
+            setDialog({ isOpen: true, title: 'Không tạo được đề ôn tập', message: e instanceof Error ? e.message : 'Vui lòng thử lại.', isAlert: true });
             setStep('intro');
         }
     };
@@ -128,7 +132,7 @@ export const AdaptiveTest: React.FC = () => {
         if (!user) return;
         try {
             const session = await apiService.startExamSession({
-                exam_title: 'Ôn tập Adaptive',
+                exam_title: recommendationId ? 'Ôn tập Adaptive · EduLoop #' + recommendationId : 'Ôn tập Adaptive',
                 questions,
                 duration_seconds: questions.length * 2 * 60
             });
@@ -836,6 +840,7 @@ export const AdaptiveTest: React.FC = () => {
                     </div>
                     <h2 className="text-3xl font-black text-slate-800 mb-2">Hoàn thành!</h2>
                     <p className="text-slate-400 text-sm mb-8">Bạn đã hoàn thành bài ôn tập cá nhân hóa.</p>
+                    <Link to="/eduloop" className="text-indigo-600 underline">Xem bản đồ kỹ năng & tiến độ</Link>
                     
                     <div className="bg-slate-50 rounded-3xl p-8 mb-8 border border-slate-100">
                         <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Điểm số của bạn</div>
@@ -899,10 +904,10 @@ export const AdaptiveTest: React.FC = () => {
                         <Zap size={48} fill="currentColor"/>
                     </div>
                     <h1 className="text-4xl font-black text-slate-800 tracking-tight">
-                        Lộ trình Ôn tập Cá nhân hóa
+                        {recommendationId ? 'Kế hoạch đã được giáo viên duyệt #' + recommendationId : 'Lộ trình Ôn tập Cá nhân hóa'}
                     </h1>
                     <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                        Hệ thống AI sẽ phân tích các bài thi gần đây của bạn, tìm ra các lỗ hổng kiến thức (Dạng bài ID6) và tự động tạo đề thi khắc phục điểm yếu.
+                        {recommendationId ? 'Kế hoạch gồm các câu hỏi cùng ID6, kèm bằng chứng và quyết định của giáo viên. Nhấn tải để kiểm tra trạng thái duyệt hiện tại.' : 'Hệ thống tìm các dạng ID6 từng làm sai và tạo bài tự luyện. Xem EduLoop để theo dõi minh chứng và nhận kế hoạch giáo viên duyệt.'}
                     </p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mt-12">
@@ -919,7 +924,7 @@ export const AdaptiveTest: React.FC = () => {
                         <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
                             <div className="text-amber-500 mb-2"><Zap size={24}/></div>
                             <h3 className="font-bold text-slate-800 mb-1">Tăng tốc</h3>
-                            <p className="text-xs text-slate-500">Tiết kiệm 70% thời gian so với ôn tập đại trà.</p>
+                            <p className="text-xs text-slate-500">Theo dõi kết quả qua từng lần ôn tập.</p>
                         </div>
                     </div>
 
@@ -927,7 +932,7 @@ export const AdaptiveTest: React.FC = () => {
                         onClick={generateTest}
                         className="mt-8 px-8 py-4 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-1 transition-all flex items-center gap-3 mx-auto text-lg"
                     >
-                        Bắt đầu Phân tích & Tạo đề <ArrowRight size={20}/>
+                        {recommendationId ? 'Tải kế hoạch đã duyệt' : 'Bắt đầu Phân tích & Tạo đề'} <ArrowRight size={20}/>
                     </button>
                 </div>
             )}
@@ -943,10 +948,10 @@ export const AdaptiveTest: React.FC = () => {
                     <h2 className="text-2xl font-bold text-slate-800">Đang phân tích dữ liệu học tập...</h2>
                     <div className="max-w-xs mx-auto space-y-3">
                         <div className="flex items-center gap-3 text-sm text-emerald-600 font-medium">
-                            <CheckCircle2 size={16}/> Đã quét lịch sử thi (3 bài gần nhất)
+                            <CheckCircle2 size={16}/> Đang đọc dữ liệu bài thi và kế hoạch ôn tập
                         </div>
                         <div className="flex items-center gap-3 text-sm text-emerald-600 font-medium">
-                            <CheckCircle2 size={16}/> Đã xác định 4 dạng bài yếu
+                            <CheckCircle2 size={16}/> Đang xác định các dạng bài cần ôn
                         </div>
                         <div className="flex items-center gap-3 text-sm text-slate-400 animate-pulse">
                             <RefreshCw size={16} className="animate-spin"/> Đang truy xuất ngân hàng câu hỏi...
