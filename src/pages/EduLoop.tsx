@@ -1,4 +1,4 @@
-import React, { lazy, Suspense, useCallback, useEffect, useState } from 'react';
+import React, { lazy, Suspense, useCallback, useEffect, useRef, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MathRenderer } from '../components/MathRenderer';
 import { LessonSection } from '../types';
@@ -23,6 +23,14 @@ export const EduLoop: React.FC = () => {
     const [lessons, setLessons] = useState<LessonSection[]>([]);
     const [lessonBusy, setLessonBusy] = useState(false);
     const [lessonError, setLessonError] = useState('');
+    const learningActionsRef = useRef<HTMLDivElement>(null);
+    const lessonRequestRef = useRef(0);
+    useEffect(() => {
+        if (learningSkill && !practice) {
+            learningActionsRef.current?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            learningActionsRef.current?.focus({ preventScroll: true });
+        }
+    }, [learningSkill, practice]);
     const [proposalUnitId, setProposalUnitId] = useState<number | null>(null);
     const teacher = user?.role === 'TEACHER' || user?.role === 'ADMIN';
     const [classes, setClasses] = useState<{ id: number; name: string }[]>([]);
@@ -78,12 +86,13 @@ export const EduLoop: React.FC = () => {
         finally { setBusy(false); }
     };
     const openLearning = async (skill: Skill) => {
+        const requestId = ++lessonRequestRef.current;
         setLearningSkill(skill); setLessons([]); setLessonError('');
-        if (!skill.unit_id) { setLessonError('Kỹ năng chưa được liên kết với bài học trong chương trình.'); return; }
+        if (!skill.unit_id) { setLessonBusy(false); setLessonError('Kỹ năng chưa được liên kết với bài học trong chương trình. Bạn vẫn có thể ôn đúng dạng này bằng nút phía trên.'); return; }
         setLessonBusy(true);
-        try { setLessons(await apiService.fetchLessonSections(skill.unit_id)); }
-        catch (e) { setLessonError(e instanceof Error ? e.message : 'Không tải được bài học.'); }
-        finally { setLessonBusy(false); }
+        try { const data = await apiService.fetchLessonSections(skill.unit_id); if (requestId === lessonRequestRef.current) setLessons(data); }
+        catch (e) { if (requestId === lessonRequestRef.current) setLessonError(e instanceof Error ? e.message : 'Không tải được bài học.'); }
+        finally { if (requestId === lessonRequestRef.current) setLessonBusy(false); }
     };
     const returnToMap = () => {
         setPractice(null); setParams({}); void load();
@@ -124,6 +133,10 @@ export const EduLoop: React.FC = () => {
         <button className={`${buttonClass} bg-indigo-600 text-white hover:bg-indigo-700 lg:ml-auto shadow-sm`} disabled={busy || (teacher && !classId)} onClick={load}>{busy ? <Loader2 size={16} className="animate-spin"/> : <RefreshCw size={16}/>} {busy ? 'Đang xử lý...' : 'Cập nhật bản đồ'}</button></div>
         {message && <div role={error ? 'alert' : 'status'} className={`rounded-xl px-4 py-3 text-xs leading-5 flex items-start gap-2 ${error ? 'bg-rose-50 text-rose-700 border border-rose-100' : 'bg-indigo-50/70 text-indigo-700'}`}><ShieldCheck size={16} className="shrink-0 mt-0.5"/>{message}</div>}
         {!teacher && <section className="bg-white rounded-2xl border border-indigo-100 p-5 flex flex-col sm:flex-row gap-4 sm:items-center"><div className="flex-1"><h2 className="font-bold">Ôn tập Adaptive trong EduLoop</h2><p className="text-sm text-slate-500 mt-1">Tự luyện từ lịch sử làm bài, hoặc chọn kế hoạch giáo viên đã duyệt bên dưới.</p></div><button onClick={() => setPractice({})} className={`${buttonClass} bg-indigo-600 text-white`}>Bắt đầu tự ôn tập<ArrowRight size={16}/></button></section>}
+        {learningSkill && <div ref={learningActionsRef} tabIndex={-1} className="scroll-mt-4 rounded-2xl bg-emerald-50 border border-emerald-200 p-5 flex flex-col sm:flex-row gap-4 sm:items-center">
+            <div className="flex-1"><p className="font-bold text-emerald-900">Ôn đúng dạng: {learningSkill.label}</p><p className="mt-1 text-sm text-emerald-700">Mã {learningSkill.key} · Mức {learningSkill.level}. Bài ôn chỉ lấy câu thuộc mã dạng này, không trộn dạng khác.</p>{teacher && <p className="mt-1 text-xs text-emerald-700">Giáo viên làm thử trên tài khoản của mình; không ghi bài làm cho học sinh đang xem.</p>}</div>
+            <button onClick={() => setPractice({ skillKey: learningSkill.key })} className={`${buttonClass} bg-emerald-600 text-white hover:bg-emerald-700 shrink-0`}><BookOpen size={17}/>{teacher ? 'Làm thử đúng dạng này' : 'Bắt đầu ôn đúng dạng này'}<ArrowRight size={16}/></button>
+        </div>}
         {learningSkill && <section className="rounded-2xl border border-indigo-100 bg-white p-5 space-y-4"><div className="flex items-start gap-3"><BookOpen className="text-indigo-600"/><div className="flex-1"><h2 className="font-bold">{learningSkill.unit_name} · {learningSkill.label}</h2><p className="text-xs text-slate-500 mt-2">{learningSkill.chapter_name} → {learningSkill.unit_name} → {learningSkill.label}</p></div><button aria-label="Đóng bài học" onClick={() => setLearningSkill(null)}><X size={20}/></button></div><div className="flex flex-wrap gap-2">{skills.filter(s => s.key !== learningSkill.key && s.unit_id && s.unit_id === learningSkill.unit_id).map(s => <button key={s.key} className="rounded-xl bg-indigo-50 text-indigo-700 px-3 py-2 text-xs" onClick={() => void openLearning(s)}>{s.label} · Mức {s.level}</button>)}</div><p className="text-xs text-slate-400">Các kỹ năng liên quan cùng bài học; đây là quan hệ trong chương trình, chưa phải quan hệ tiên quyết.</p>{lessonBusy ? <p role="status">Đang tải bài học…</p> : lessonError ? <p role="alert" className="text-sm text-rose-600">{lessonError}</p> : lessons.length ? lessons.map(l => <article key={l.id} className="rounded-xl bg-slate-50 p-4"><h3 className="font-semibold mb-3">{l.title}</h3>{l.content && <MathRenderer content={l.content} hideToolbar/>}{l.video_url && /^https:\/\//i.test(l.video_url) && <a className="inline-block mt-3 text-sm text-indigo-600" href={l.video_url} target="_blank" rel="noopener noreferrer">Xem video bài học ↗</a>}{l.interactive_html && <iframe title={l.title} sandbox="allow-scripts" srcDoc={l.interactive_html} className="mt-3 w-full min-h-[400px] border rounded-xl"/>}<button className="mt-3 text-xs text-indigo-600" onClick={async () => { try { await apiService.updateUserLessonProgress({ user_id: user!.id, section_id: l.id, is_completed: true, score: 0 }); setMessage(`Đã ghi nhận học xong: ${l.title}`); } catch (e) { setError(true); setMessage(e instanceof Error ? e.message : 'Không lưu được tiến độ.'); } }}>Đánh dấu đã học</button></article>) : <p className="text-sm text-slate-500">Bài này chưa có nội dung học. Bạn vẫn có thể luyện câu hỏi cùng kỹ năng.</p>}{!teacher && <button className={`${buttonClass} bg-emerald-600 text-white`} onClick={() => setPractice({ skillKey: learningSkill.key })}>Ôn tập sau khi học<ArrowRight size={16}/></button>}</section>}
         <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">{[{ label: 'Kỹ năng đã ghi nhận', value: skills.length, icon: Layers3, color: 'bg-indigo-50 text-indigo-600', caption: 'Từ minh chứng bài làm' }, { label: 'Kỹ năng cần củng cố', value: weakSkills.length, icon: Target, color: 'bg-amber-50 text-amber-600', caption: 'Tỷ lệ đúng dưới 70%' }, { label: 'Kỹ năng đạt từ 70%', value: readySkills.length, icon: CheckCircle2, color: 'bg-emerald-50 text-emerald-600', caption: 'Có ít nhất 3 lượt làm' }, { label: 'Kế hoạch chờ duyệt', value: plans.filter(p => p.status === 'PENDING').length, icon: ClipboardCheck, color: 'bg-sky-50 text-sky-600', caption: 'Đang chờ giáo viên xem xét' }].map(stat => <div key={stat.label} className="rounded-2xl bg-white border border-slate-200/70 p-4 sm:p-5"><div className="flex justify-between items-center gap-2"><span className="text-xs font-medium text-slate-500">{stat.label}</span><div className={`p-2 rounded-xl ${stat.color}`}><stat.icon size={17}/></div></div><p className="mt-3 text-3xl font-bold tracking-tight">{loaded ? stat.value : '—'}</p><p className="mt-2 text-[11px] text-slate-400">{stat.caption}</p></div>)}</div>
         <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start"><section className="min-w-0 rounded-2xl border border-slate-200/70 bg-white overflow-hidden shadow-sm"><div className="px-6 pt-6 pb-4"><div className="flex gap-3 items-center"><div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl"><Target size={20}/></div><div><h2 className="font-bold text-lg">Bản đồ kỹ năng</h2><p className="text-xs text-slate-400 mt-1">Learning Gap Map · Nhìn rõ từng khoảng trống</p></div></div><div className="mt-5 flex flex-col sm:flex-row gap-3 justify-between"><div className="flex flex-wrap gap-1 rounded-xl bg-slate-50 p-1">{[{ id: 'ALL', label: 'Tất cả' }, { id: 'WEAK', label: 'Cần củng cố' }, { id: 'INSUFFICIENT', label: 'Chưa đủ mẫu' }].map(f => <button key={f.id} onClick={() => setSkillFilter(f.id)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${skillFilter === f.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>{f.label}</button>)}</div><div className="relative"><Search size={15} className="absolute left-3 top-3 text-slate-400"/><input aria-label="Tìm kỹ năng" value={search} onChange={e => setSearch(e.target.value)} placeholder="Tìm kỹ năng…" className="w-full sm:w-44 border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 text-xs"/></div></div></div>{table(visibleSkills)}<div className="px-6 py-4 border-t border-slate-100 text-[11px] leading-5 text-slate-400">Kỹ năng được nhóm theo dạng ID6. Tỷ lệ đúng phản ánh bài làm quan sát, không phải điểm năng lực IRT.</div></section>

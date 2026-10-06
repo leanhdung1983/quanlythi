@@ -910,10 +910,10 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                         <Zap size={48} fill="currentColor"/>
                     </div>
                     <h1 className="text-4xl font-black text-slate-800 tracking-tight">
-                        {recommendationId ? 'Kế hoạch đã được giáo viên duyệt #' + recommendationId : 'Lộ trình Ôn tập Cá nhân hóa'}
+                        {recommendationId ? 'Kế hoạch đã được giáo viên duyệt #' + recommendationId : skillKey ? 'Ôn tập đúng dạng ' + skillKey : 'Lộ trình Ôn tập Cá nhân hóa'}
                     </h1>
                     <p className="text-lg text-slate-600 max-w-2xl mx-auto leading-relaxed">
-                        {recommendationId ? 'Kế hoạch gồm các câu hỏi cùng ID6, kèm bằng chứng và quyết định của giáo viên. Nhấn tải để kiểm tra trạng thái duyệt hiện tại.' : 'Hệ thống tìm các dạng ID6 từng làm sai và tạo bài tự luyện. Xem EduLoop để theo dõi minh chứng và nhận kế hoạch giáo viên duyệt.'}
+                        {recommendationId ? 'Kế hoạch gồm các câu hỏi cùng ID6, kèm bằng chứng và quyết định của giáo viên. Nhấn tải để kiểm tra trạng thái duyệt hiện tại.' : skillKey ? `Bài ôn tập chỉ gồm câu hỏi thuộc dạng ${skillKey} vừa chọn. Tải câu hỏi, kiểm tra đề rồi bắt đầu làm bài. Nếu ngân hàng chưa có câu được phép dùng, hệ thống sẽ thông báo để giáo viên bổ sung.` : 'Hệ thống tìm các dạng ID6 từng làm sai và tạo bài tự luyện. Xem EduLoop để theo dõi minh chứng và nhận kế hoạch giáo viên duyệt.'}
                     </p>
                     
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mt-12">
@@ -938,7 +938,7 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                         onClick={generateTest}
                         className="mt-8 px-8 py-4 bg-indigo-600 text-white font-black rounded-2xl shadow-xl shadow-indigo-200 hover:bg-indigo-700 hover:-translate-y-1 transition-all flex items-center gap-3 mx-auto text-lg"
                     >
-                        {recommendationId ? 'Tải kế hoạch đã duyệt' : 'Bắt đầu Phân tích & Tạo đề'} <ArrowRight size={20}/>
+                        {recommendationId ? 'Tải kế hoạch đã duyệt' : skillKey ? 'Tải câu hỏi đúng dạng này' : 'Bắt đầu Phân tích & Tạo đề'} <ArrowRight size={20}/>
                     </button>
                 </div>
             )}
