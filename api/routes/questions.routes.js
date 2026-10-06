@@ -170,8 +170,8 @@ router.get('/units/:unit_id/practice', async (req, res) => {
             FROM questions q
             JOIN levels l ON q.level_id = l.id
             JOIN question_types qt ON q.type_id = qt.id
-            WHERE q.unit_id = ?
-        `, [unit_id]);
+            WHERE q.unit_id = ? AND (q.is_public=1 OR q.created_by=? OR ?='ADMIN')
+        `, [unit_id, req.user.id, req.user.role]);
         
         const pool_N_H_TN = questions.filter(q => q.type_code === 'TN' && ['N', 'H'].includes(q.level_code));
         const pool_V_C_TN = questions.filter(q => q.type_code === 'TN' && ['V', 'C'].includes(q.level_code));

@@ -1,5 +1,6 @@
 import mysql from 'mysql2/promise';
 import crypto from 'crypto';
+import { readFile } from 'node:fs/promises';
 import { GoogleGenAI } from "@google/genai";
 import { sanitizeCompiledSvg } from './svgImage.js';
 import { classifyGeminiFailure, cooldownForFailure, orderAvailableAttempts } from './geminiResilience.js';
@@ -315,11 +316,13 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
     const quotaFailuresByKey = new Map();
     const exhaustedKeys = new Set();
     for (const attempt of ordered.attempts) {
+        if (requestConfig.abortSignal?.aborted) throw Object.assign(new Error('Đã dừng yêu cầu AI.'), { status: 504 });
         if (disabledKeys.has(attempt.keyIndex) || disabledModels.has(attempt.model)) continue;
         const client = aiInstances[attempt.keyIndex];
         try {
             return await client.models.generateContent({ model: attempt.model, contents, config: requestConfig });
         } catch (error) {
+            if (requestConfig.abortSignal?.aborted) throw Object.assign(new Error('Đã dừng yêu cầu AI.'), { status: 504 });
             lastError = error;
             const failure = classifyGeminiFailure(error);
             const cooldown = cooldownForFailure(failure);
@@ -859,6 +862,7 @@ export async function seedDatabase() {
                 CONSTRAINT fk_lesson_unit FOREIGN KEY (unit_id) REFERENCES units(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `).catch(e => console.log("Migration notice (lesson_sections):", e.message));
+        await pool.query(await readFile(new URL('../migrations/20261006_lesson_authoring.sql', import.meta.url), 'utf8'));
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS user_lesson_progress (

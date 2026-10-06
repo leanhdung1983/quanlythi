@@ -163,6 +163,7 @@ export interface Question {
 // --- ONLINE EXAM TYPES ---
 
 export interface SavedMatrix {
+    is_public?: boolean | number;
     created_by?: number | null;
     creator_name?: string | null;
     id: number;

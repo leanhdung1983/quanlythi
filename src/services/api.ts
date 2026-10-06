@@ -35,6 +35,10 @@ const handleResponse = async (response: Response, endpoint: string) => {
 };
 
 export const apiService = {
+    async lessonAuthoring(endpoint: string, body?: Record<string, unknown>, method = 'POST', signal?: AbortSignal) {
+        const response = await fetch(`${API_URL}/lesson-authoring${endpoint}`, body ? { method, signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : { method: 'GET', signal });
+        return handleResponse(response, `/lesson-authoring${endpoint}`);
+    },
     async eduLoop(endpoint: string, values: Record<string, unknown> = {}, method = 'GET') {
         const params = new URLSearchParams();
         for (const [key, value] of Object.entries(values)) if (value !== '' && value != null) params.set(key, String(value));

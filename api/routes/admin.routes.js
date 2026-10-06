@@ -171,56 +171,9 @@ router.post('/admin/ai/generate-curriculum', async (req, res) => {
     }
 });
 
-router.post('/admin/ai/generate-lesson-sections', async (req, res) => {
-    try {
-        if (!requireAdmin(req, res)) return;
-        const { unit_id, unit_name, chapter_name, gradeCode, subjectCode } = req.body;
-        
-        const apiKey = await getGeminiApiKey(req.user?.id);
-        const ai = new GoogleGenAI({ apiKey: apiKey, httpOptions: { headers: { 'User-Agent': 'aistudio-build' } } });
-        const subjectName = subjectCode === 'T' ? 'Toán' : subjectCode === 'V' ? 'Văn' : subjectCode;
-        
-        const prompt = `Viết nội dung bài học chi tiết và CHÍNH XÁC TUYỆT ĐỐI cho bài học: "${unit_name}" nằm trong chương "${chapter_name}" của môn ${subjectName} lớp ${gradeCode}.
-LƯU Ý QUAN TRỌNG: Nội dung bắt buộc phải đúng trọng tâm của bài "${unit_name}". Không viết lan man sang bài khác (ví dụ: nếu là bài tập hợp thì chỉ viết về tập hợp, không viết về mệnh đề).
-
-Yêu cầu tạo 2 phần (sections) theo thứ tự:
-1. Lý thuyết: 
-   - Giải thích cặn kẽ Lý thuyết cho TRÚNG bài "${unit_name}".
-   - Quy tắc định dạng (RẤT QUAN TRỌNG):
-     + CHỈ sử dụng Markdown tiêu chuẩn để định dạng bố cục (dùng #, ##, **đậm**, *nghiêng*).
-     + TUYỆT ĐỐI KHÔNG SỬ DỤNG các lệnh định dạng LaTeX như \\Large, \\huge, \\vspace, \\section, \\textbf, \\textit, v.v.
-     + CHỈ sử dụng LaTeX cho biểu thức, công thức toán học và đặt giữa 2 dấu $ (ví dụ: $x^2 + y^2 = r^2$) hoặc $$ cho biểu thức block.
-2. Luyện tập tương tác cơ bản: 
-   - Một đoạn mã HTML sinh động, có Tailwind (qua cdn: https://cdn.tailwindcss.com) và JS chạy luyện tập TƯƠNG TÁC liên quan trực tiếp đến bài "${unit_name}".
-   - Trả về đúng chuỗi mã HTML (full code <!DOCTYPE html...), ứng dụng chạy độc lập. Khi người dùng làm đúng 1 câu thì gọi: window.parent.postMessage({ type: 'LESSON_COMPLETE', score: 1 }, '*');
-
-Đối với mỗi phần, cần có title, nội dung dạng Markdown. (Interactive html chỉ dành cho phần 2). Không cần điền video_url.
-Yêu cầu trả về mảng JSON hợp lệ gồm danh sách các Object: [{ "order_index": 1, "title": "Tiêu đề", "content": "Nội dung markdown (KHÔNG CHỨA LỆNH vspace, Large, section...)", "interactive_html": "Mã HTML (nếu có)" }]`;
-
-        const response = await generateWithFallback(ai, prompt, {
-            responseMimeType: "application/json"
-        });
-
-        let responseText = typeof response.text === 'function' ? response.text() : String(response.text || "[]");
-        responseText = responseText.replace(/^```json\n?|```$/g, '').trim();
-        const sections = JSON.parse(responseText);
-
-        for (const sec of sections) {
-            await query("INSERT INTO lesson_sections (unit_id, title, content, video_url, interactive_html, order_index) VALUES (?, ?, ?, ?, ?, ?)", [
-                unit_id,
-                sec.title,
-                sec.content || '',
-                '',
-                sec.interactive_html || '',
-                sec.order_index
-            ]);
-        }
-
-        res.json({ success: true, count: sections.length });
-    } catch(e) { 
-        console.error("AI Gen Section Error:", e);
-        res.status(500).json({ error: parseGeminiError(e) }); 
-    }
+router.post('/admin/ai/generate-lesson-sections', (req, res) => {
+    if (!requireTeacherOrAdmin(req, res)) return;
+    res.status(410).json({ error: 'Chức năng đã chuyển sang Soạn bài nhanh. Hãy mở bản nháp, kiểm tra rồi xuất bản.' });
 });
 
 // 4. Admin Chapter, Unit & Lesson Section CRUD

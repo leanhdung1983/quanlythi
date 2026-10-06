@@ -1,16 +1,18 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { apiService } from '../services/api';
 import { Chapter, Unit, LessonSection, UserLessonProgress, SavedMatrix } from '../types';
 import { useAuthStore } from '../services/authStore';
 import { ChevronRight, PlayCircle, Code, CheckCircle, Save, FileText, BookOpen, Trash2 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
-import { MathRenderer } from '../components/MathRenderer';
-import { DynamicPractice } from '../components/DynamicPractice';
+import { LessonContent } from '../components/LessonContent';
+import { LessonPractice as DynamicPractice } from '../components/LessonPractice';
 import { LessonMatrixProposal } from '../components/LessonMatrixProposal';
+import { LessonQuickComposer } from '../components/LessonQuickComposer';
 
 export const Learning: React.FC = () => {
     const { user } = useAuthStore();
     const [proposalUnitId, setProposalUnitId] = useState<number | null>(null);
+    const [composerUnit, setComposerUnit] = useState<Unit | null>(null);
     const [chapters, setChapters] = useState<Chapter[]>([]);
     const [units, setUnits] = useState<Unit[]>([]);
     
@@ -24,6 +26,7 @@ export const Learning: React.FC = () => {
     const [sections, setSections] = useState<LessonSection[]>([]);
     const [progress, setProgress] = useState<UserLessonProgress[]>([]);
     const [activeSection, setActiveSection] = useState<LessonSection | null>(null);
+    const interactiveFrame = useRef<HTMLIFrameElement>(null);
     
     // UI state
     const [loading, setLoading] = useState(false);
@@ -205,37 +208,7 @@ export const Learning: React.FC = () => {
         setLoading(false);
     };
 
-    const handleGenerateLesson = async (unit: Unit, chapter: Chapter) => {
-        setLoading(true);
-        try {
-            await apiService.generateLessonSections(unit.id, unit.name, chapter.chapter_name, selectedGradeId.toString(), selectedSubject);
-            if (selectedUnit?.id === unit.id) {
-                // refresh current lesson sections
-                const updated = await apiService.fetchLessonSections(unit.id, user?.id);
-                
-                const practiceSection: LessonSection = {
-                    id: -999,
-                    unit_id: selectedUnit.id,
-                    title: 'Bài tập vận dụng',
-                    content: '',
-                    video_url: '',
-                    interactive_html: '',
-                    order_index: 999,
-                    created_at: new Date().toISOString(),
-                    isVirtual: true
-                };
-                setSections([...updated, practiceSection]);
-                if (updated.length > 0) setActiveSection(updated[0]);
-                else setActiveSection(practiceSection);
-
-            }
-            alert("Tạo nội dung bài học thành công!");
-        } catch(e: any) {
-            console.error('Failed to generate lesson', e);
-            alert(`Lỗi khi tạo nội dung: ${e.message || 'Lỗi không xác định'}`);
-        }
-        setLoading(false);
-    };
+    const handleGenerateLesson = (unit: Unit) => setComposerUnit(unit);
 
     const grades = [10, 11, 12];
     const subjects = [{id: 'T', name: 'Toán'}, {id: 'V', name: 'Ngữ Văn'}, {id: 'L', name: 'Vật Lý'}, {id: 'H', name: 'Hóa Học'}, {id: 'B', name: 'Sinh Học'}, {id: 'E', name: 'Tiếng Anh'}];
@@ -244,15 +217,15 @@ export const Learning: React.FC = () => {
     // IFrame message listener to capture progress from interactive HTML
     useEffect(() => {
         const handleMessage = (event: MessageEvent) => {
-            // Very simple protocol: If iframe sends { type: 'LESSON_COMPLETE', score: number }
-            if (event.data?.type === 'LESSON_COMPLETE') {
-                if (activeSection) {
+            // Accept completion only from the currently displayed legacy activity.
+            if (event.data?.type === 'LESSON_COMPLETE' && event.source === interactiveFrame.current?.contentWindow) {
+                if (activeSection && !activeSection.isVirtual && activeSection.id > 0) {
                     if (!user) return;
                     apiService.updateUserLessonProgress({
                         user_id: user.id,
                         section_id: activeSection.id,
                         is_completed: true,
-                        score: event.data.score || 0
+                        score: Number.isFinite(Number(event.data.score)) ? Math.max(0, Math.min(10, Number(event.data.score))) : 0
                     }).then(() => {
                         apiService.fetchUserLessonProgress(user.id).then(setProgress);
                     });
@@ -266,6 +239,7 @@ export const Learning: React.FC = () => {
 
     return (
         <div className="h-full flex flex-col sm:flex-row bg-slate-50 overflow-hidden text-slate-800">
+            {isTeacher && composerUnit && user && <LessonQuickComposer key={composerUnit.id} unit={composerUnit} userId={user.id} matrices={savedMatrices} onClose={() => setComposerUnit(null)} onPublished={async () => { await handleSelectUnit(composerUnit); }}/>}
             {isTeacher && proposalUnitId && <LessonMatrixProposal unitId={proposalUnitId} onClose={() => setProposalUnitId(null)} onSaved={() => { void apiService.fetchSavedMatrices().then(setSavedMatrices).catch(console.error); }}/>}
             {/* LEFT SIDEBAR: BROWSER */}
             <div className={`w-full sm:w-80 bg-white border-r border-slate-200 shadow-sm flex flex-col shrink-0 transition-transform ${selectedUnit ? 'hidden sm:flex' : 'flex'}`}>
@@ -469,7 +443,7 @@ export const Learning: React.FC = () => {
                                         onClick={() => {
                                             const activeChapter = chapters.find(c => c.id === selectedUnit?.chapter_id);
                                             if (selectedUnit && activeChapter) {
-                                                handleGenerateLesson(selectedUnit, activeChapter);
+                                                handleGenerateLesson(selectedUnit);
                                             }
                                         }}
                                         disabled={loading}
@@ -480,10 +454,10 @@ export const Learning: React.FC = () => {
                                                 <div className="w-4 h-4 rounded-full border-2 border-purple-600 border-t-transparent animate-spin"></div>
                                                 Đang viết nội dung...
                                             </>
-                                        ) : "Tạo Nội Dung Bằng AI"}
+                                        ) : "Soạn bài nhanh · AI"}
                                     </button>
                                     <button 
-                                        onClick={() => setEditingSection({ title: 'Mục Mới', content: '', video_url: '', interactive_html: '', isVirtual: false, matrix_id: null })}
+                                        onClick={() => setComposerUnit(selectedUnit)}
                                         className="bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-4 py-2 rounded-xl text-sm font-bold flex items-center gap-2 transition-colors"
                                     >
                                         + Thêm Mục
@@ -530,7 +504,7 @@ export const Learning: React.FC = () => {
                                     <div className="max-w-4xl mx-auto space-y-6">
                                         
                                         {/* Teacher Controls */}
-                                        {isTeacher && (
+                                        {user?.role === 'ADMIN' && !activeSection.isVirtual && (
                                             <div className="bg-white p-3 rounded-xl border border-slate-200 flex justify-end gap-2 shadow-sm">
                                                 <button onClick={() => setEditingSection(activeSection)} className="text-sm font-medium text-slate-600 hover:text-blue-600 px-3 py-1">Sửa mục này</button>
                                                 <button onClick={() => handleDeleteSection(activeSection.id)} className="text-sm font-medium text-red-500 hover:text-red-700 px-3 py-1">Xoá mục này</button>
@@ -542,10 +516,11 @@ export const Learning: React.FC = () => {
                                         {/* Theory Content */}
                                         {activeSection.content && (
                                             <div className="bg-white rounded-3xl p-6 shadow-sm border border-slate-200">
-                                                <MathRenderer content={activeSection.content} hideToolbar />
+                                                <LessonContent content={activeSection.content}/>
                                             </div>
                                         )}
                                         
+                                        {!isTeacher && !activeSection.isVirtual && !activeSection.matrix_id && sections.some(s => s.isVirtual) && <button onClick={() => setActiveSection(sections.find(s => s.isVirtual)!)} className="bg-indigo-600 text-white rounded-xl px-5 py-3 font-bold text-sm">Học xong · Luyện tập ngay</button>}
                                         {/* Video Embed */}
                                         {activeSection.video_url && (
                                             <div className="bg-black rounded-2xl overflow-hidden aspect-video shadow-xl border border-slate-800/20">
@@ -567,6 +542,7 @@ export const Learning: React.FC = () => {
                                                 </div>
                                                 <div className="w-full min-h-[500px]">
                                                     <iframe 
+                                                        ref={interactiveFrame}
                                                         srcDoc={activeSection.interactive_html}
                                                         className="w-full h-[600px] border-none"
                                                         sandbox="allow-scripts"
@@ -582,7 +558,7 @@ export const Learning: React.FC = () => {
                                         )}
                                         
                                         {/* Student Manual Completion (Fallback) */}
-                                        {!isTeacher && (
+                                        {!isTeacher && !activeSection.isVirtual && (
                                             <div className="flex justify-center pt-8 pb-12">
                                                 <button 
                                                     onClick={() => handleProgressUpdate(activeSection.id, true)}

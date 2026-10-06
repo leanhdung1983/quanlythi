@@ -1,9 +1,9 @@
 import express from 'express';
-import { query, isSelfOrAdmin, cacheMiddleware } from '../core.js';
+import { query, isSelfOrAdmin, requireAdmin } from '../core.js';
 
 const router = express.Router();
 
-router.get('/lesson-sections', cacheMiddleware(300), async (req, res) => {
+router.get('/lesson-sections', async (req, res) => {
     try {
         const { unit_id } = req.query;
         const user_id = req.user.id;
@@ -35,6 +35,7 @@ router.get('/lesson-sections', cacheMiddleware(300), async (req, res) => {
 });
 
 router.post('/admin/lesson-sections', async (req, res) => {
+    if (!requireAdmin(req, res)) return;
     try {
         const { unit_id, title, content, video_url, interactive_html, order_index, matrix_id } = req.body;
         await query("INSERT INTO lesson_sections (unit_id, title, content, video_url, interactive_html, order_index, matrix_id) VALUES (?, ?, ?, ?, ?, ?, ?)", 
@@ -44,6 +45,7 @@ router.post('/admin/lesson-sections', async (req, res) => {
 });
 
 router.put('/admin/lesson-sections/:id', async (req, res) => {
+    if (!requireAdmin(req, res)) return;
     try {
         const { title, content, video_url, interactive_html, order_index, matrix_id } = req.body;
         await query("UPDATE lesson_sections SET title = ?, content = ?, video_url = ?, interactive_html = ?, order_index = ?, matrix_id = ? WHERE id = ?", 
@@ -53,6 +55,7 @@ router.put('/admin/lesson-sections/:id', async (req, res) => {
 });
 
 router.delete('/admin/lesson-sections/:id', async (req, res) => {
+    if (!requireAdmin(req, res)) return;
     try {
         await query("DELETE FROM user_lesson_progress WHERE section_id = ?", [req.params.id]);
         await query("DELETE FROM lesson_sections WHERE id = ?", [req.params.id]);
