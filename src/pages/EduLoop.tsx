@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { apiService } from '../services/api';
 import { useAuthStore } from '../services/authStore';
+import { ArrowRight, BookOpen, CheckCircle2, ChevronRight, ClipboardCheck, GraduationCap, Layers3, Loader2, RefreshCw, Search, ShieldCheck, Sparkles, Target, TrendingUp, Users, X } from 'lucide-react';
 
 type Skill = { key: string; label: string; chapter_name: string; unit_name: string; level: string;
     rate: number; attempts: number; students: number; weak_students: number; confidence: string;
@@ -23,17 +24,22 @@ export const EduLoop: React.FC = () => {
     const [message, setMessage] = useState('');
     const [busy, setBusy] = useState(false);
     const [note, setNote] = useState('');
+    const [search, setSearch] = useState('');
+    const [skillFilter, setSkillFilter] = useState('ALL');
+    const [loaded, setLoaded] = useState(false);
+    const [error, setError] = useState(false);
     const filters = teacher ? { class_id: classId, student_id: studentId } : {};
     const load = useCallback(async () => {
         if (teacher && !classId) return;
-        setBusy(true); setMessage(''); setProgress(null);
+        setBusy(true); setMessage(''); setError(false); setProgress(null);
         try {
             const map = await apiService.eduLoop('/map', teacher ? { class_id: classId, student_id: studentId } : {});
             setSkills(map.data.skills);
             const list = await apiService.eduLoop('/recommendations', teacher ? { class_id: classId, student_id: studentId } : {});
             setPlans(list.data);
+            setLoaded(true);
             setMessage(`${map.result_count} bài đã hoàn thành; ${map.data.skipped} câu thiếu ID6/đáp án hoặc chưa chấm được bỏ qua.`);
-        } catch (e) { setSkills([]); setPlans([]); setMessage(e instanceof Error ? e.message : 'Không tải được dữ liệu.'); }
+        } catch (e) { setError(true); setSkills([]); setPlans([]); setMessage(e instanceof Error ? e.message : 'Không tải được dữ liệu.'); }
         finally { setBusy(false); }
     }, [teacher, classId, studentId]);
     useEffect(() => {
@@ -41,7 +47,7 @@ export const EduLoop: React.FC = () => {
     }, [teacher]);
     useEffect(() => {
         let active = true;
-        setStudentId(''); setStudents([]); setSkills([]); setPlans([]); setProgress(null);
+        setStudentId(''); setStudents([]); setSkills([]); setPlans([]); setProgress(null); setLoaded(false); setMessage('');
         if (classId) apiService.eduLoopStudents(classId).then(r => {
             if (active) setStudents(r.data.filter((s: { status: string }) => s.status === 'APPROVED'));
         }).catch(e => { if (active) setMessage(e.message); });
@@ -51,61 +57,66 @@ export const EduLoop: React.FC = () => {
     const mutate = async (path: string, body: Record<string, unknown>) => {
         setBusy(true);
         try { await apiService.eduLoop(path, body, 'POST'); await load(); }
-        catch (e) { setMessage(e instanceof Error ? e.message : 'Không lưu được.'); }
+        catch (e) { setError(true); setMessage(e instanceof Error ? e.message : 'Không lưu được.'); }
         finally { setBusy(false); }
     };
     const showProgress = async (id: number) => {
         setBusy(true);
         try { const r = await apiService.eduLoop(`/recommendations/${id}/progress`); setProgress(r.data.skills); setMessage(r.note); }
-        catch (e) { setMessage(e instanceof Error ? e.message : 'Không tải được tiến độ.'); }
+        catch (e) { setError(true); setMessage(e instanceof Error ? e.message : 'Không tải được tiến độ.'); }
         finally { setBusy(false); }
     };
-    const table = (rows: Skill[], compare = false) => <div className="overflow-x-auto bg-white rounded-xl border">
-        <table className="w-full text-sm text-left"><thead><tr className="bg-indigo-50">
-            <th className="p-3">Chương / Bài / Kỹ năng / Mức độ</th><th className="p-3">Minh chứng</th>
-            <th className="p-3">{compare ? 'Trước → Sau' : 'Mức đúng'}</th><th className="p-3">{compare ? 'Thay đổi' : 'Học sinh'}</th>
+    const weakSkills = skills.filter(s => s.confidence !== 'INSUFFICIENT' && s.rate < 70);
+    const readySkills = skills.filter(s => s.confidence !== 'INSUFFICIENT' && s.rate >= 70);
+    const visibleSkills = skills.filter(s => (skillFilter === 'ALL' || (skillFilter === 'WEAK' ? s.confidence !== 'INSUFFICIENT' && s.rate < 70 : s.confidence === 'INSUFFICIENT'))
+        && `${s.label} ${s.chapter_name} ${s.unit_name} ${s.key}`.toLowerCase().includes(search.toLowerCase()));
+    const buttonClass = 'inline-flex items-center justify-center gap-2 rounded-xl px-4 py-3 text-sm font-semibold transition-colors disabled:opacity-40';
+    const table = (rows: Skill[], compare = false) => <div className="overflow-x-auto">
+        <table className="w-full min-w-[680px] text-sm text-left"><thead><tr className="bg-slate-50/80 text-[11px] uppercase tracking-wider text-slate-500">
+            <th className="px-6 py-4 font-semibold">Kỹ năng & phạm vi kiến thức</th><th className="px-5 py-4 font-semibold">Minh chứng</th>
+            <th className="px-5 py-4 font-semibold">{compare ? 'Trước → Sau' : 'Tỷ lệ đúng'}</th><th className="px-5 py-4 font-semibold">{compare ? 'Thay đổi' : 'Cần ôn tập'}</th>
         </tr></thead><tbody>{rows.map(s => <tr key={s.key} className="border-t">
-            <td className="p-3">{s.chapter_name} / {s.unit_name}<br/><b>{s.label}</b> · {s.level}<br/>{s.key}</td>
-            <td className="p-3">{s.attempts} lượt
-                <details><summary className="cursor-pointer">Xem bằng chứng</summary>{s.evidence.map((e, i) =>
-                    <div key={i}>Bài #{e.result_id} · Câu #{e.question_id} · {new Date(e.date).toLocaleDateString('vi-VN')} · {Math.round(e.credit * 100)}%</div>)}</details>
-            </td><td className="p-3">{compare ? `${s.before.rate ?? '—'}% (${s.before.n}) → ${s.after.rate ?? '—'}% (${s.after.n})` :
-                <>{s.rate}% {s.confidence === 'INSUFFICIENT' && <span>· Chưa đủ mẫu</span>}</>}</td>
-            <td className="p-3">{compare ? s.delta === null ? 'Chưa đủ 3 lượt mỗi phía' : `${s.delta > 0 ? '+' : ''}${s.delta} điểm %` : `${s.weak_students}/${s.students} cần ôn`}</td>
-        </tr>)}</tbody></table>{!rows.length && <p className="p-4">Chưa có minh chứng phù hợp.</p>}
+            <td className="px-6 py-5"><p className="text-xs text-slate-500 mb-1">{s.chapter_name} · {s.unit_name}</p><p className="font-semibold text-slate-800">{s.label}</p><div className="flex gap-2 mt-2"><span className="rounded-md bg-indigo-50 px-2 py-1 text-[10px] font-bold text-indigo-600">Mức {s.level}</span><span className="py-1 text-[10px] font-mono text-slate-400">{s.key}</span></div></td>
+            <td className="px-5 py-5 text-slate-600"><span className="font-semibold">{s.attempts}</span> lượt
+                <details className="mt-2 max-w-xs"><summary className="cursor-pointer text-xs text-indigo-600 hover:text-indigo-800">Xem minh chứng</summary><div className="mt-3 space-y-2 rounded-xl bg-slate-50 p-3">{s.evidence.map((e, i) =>
+                    <div className="text-xs leading-relaxed" key={i}>Bài #{e.result_id} · Câu #{e.question_id}<br/><span className="text-slate-400">{new Date(e.date).toLocaleDateString('vi-VN')} · Đúng {Math.round(e.credit * 100)}%</span></div>)}</div></details>
+            </td><td className="px-5 py-5">{compare ? <div className="font-semibold text-slate-700">{s.before.rate ?? '—'}% → {s.after.rate ?? '—'}%<p className="text-xs text-slate-400 font-normal mt-1">{s.before.n} lượt trước · {s.after.n} lượt sau</p></div> :
+                <div className="min-w-[110px]"><div className="flex justify-between text-sm font-bold mb-2"><span className={s.confidence === 'INSUFFICIENT' ? 'text-slate-500' : s.rate < 70 ? 'text-amber-600' : 'text-emerald-600'}>{s.rate}%</span></div><div className="h-1.5 rounded-full bg-slate-100 overflow-hidden"><div className={`h-full rounded-full ${s.confidence === 'INSUFFICIENT' ? 'bg-slate-300' : s.rate < 70 ? 'bg-amber-400' : 'bg-emerald-400'}`} style={{ width: `${Math.max(0, Math.min(100, s.rate))}%` }}/></div>{s.confidence === 'INSUFFICIENT' && <p className="text-[10px] mt-2 text-slate-400">Chưa đủ mẫu</p>}</div>}</td>
+            <td className="px-5 py-5">{compare ? s.delta === null ? <span className="text-xs text-slate-400">Cần 3 lượt mỗi phía</span> : <span className={`font-bold ${s.delta >= 0 ? 'text-emerald-600' : 'text-amber-600'}`}>{s.delta > 0 ? '+' : ''}{s.delta} điểm %</span> : <span className={`rounded-lg px-2.5 py-1.5 text-xs font-semibold ${s.weak_students > 0 ? 'bg-amber-50 text-amber-700' : 'bg-emerald-50 text-emerald-700'}`}>{s.weak_students}/{s.students} học sinh</span>}</td>
+        </tr>)}</tbody></table>{!rows.length && <div className="flex flex-col items-center py-16 px-6 text-center"><div className="rounded-2xl bg-slate-50 p-4 mb-4"><Search className="text-slate-300" size={28}/></div><p className="font-semibold text-slate-700">{loaded ? 'Chưa có kỹ năng phù hợp' : 'Bản đồ kỹ năng đang chờ bạn'}</p><p className="text-sm text-slate-400 mt-2 max-w-sm">{loaded ? 'Thử thay đổi bộ lọc hoặc bổ sung bài làm đã hoàn thành.' : teacher ? 'Chọn lớp và tải dữ liệu để khám phá những kỹ năng học sinh cần ôn tập.' : 'Hoàn thành bài thi để bắt đầu xây dựng bản đồ kỹ năng của bạn.'}</p></div>}
     </div>;
-    return <div className="p-6 space-y-5 overflow-auto h-full">
-        <h1 className="text-2xl font-bold">EduLoop AI / QuanLyThi Adaptive</h1>
-        <p>AI đề xuất – Giáo viên quyết định – Học sinh tiến bộ. Kỹ năng hiện được biểu diễn bằng dạng ID6; tỷ lệ đúng không phải điểm năng lực IRT.</p>
+    return <div className="h-full overflow-auto bg-[#f6f8fc] text-slate-800"><div className="mx-auto max-w-[1440px] px-4 py-6 sm:px-6 lg:px-8 space-y-6">
+        <header className="relative overflow-hidden rounded-[28px] bg-[#172554] p-6 sm:p-8 text-white"><div className="pointer-events-none absolute -right-20 -top-24 h-80 w-80 rounded-full border-[50px] border-white/5"/><div className="pointer-events-none absolute right-48 -bottom-32 h-64 w-64 rounded-full bg-indigo-400/10"/><div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-8"><div><div className="inline-flex items-center gap-2 rounded-full border border-indigo-300/20 bg-white/5 px-3 py-1.5 text-[11px] font-semibold tracking-wide text-indigo-200"><Sparkles size={13}/> KHÔNG GIAN HỌC TẬP THÍCH ỨNG</div><h1 className="mt-4 text-3xl sm:text-4xl font-bold tracking-tight">EduLoop <span className="text-cyan-300">AI</span></h1><p className="mt-3 max-w-lg text-sm leading-6 text-indigo-100/75">Hiểu từng kỹ năng. Ôn tập đúng trọng tâm.<br/>Một vòng học tập tốt hơn, bắt đầu từ minh chứng thực tế.</p></div><div className="grid grid-cols-3 gap-3 lg:gap-6">{[{ icon: Search, label: 'Phân tích', text: 'Từ bài làm' }, { icon: ShieldCheck, label: 'Định hướng', text: 'Giáo viên duyệt' }, { icon: TrendingUp, label: 'Tiến bộ', text: 'Theo kỹ năng' }].map((step, i) => <div key={step.label} className="relative rounded-2xl bg-white/5 border border-white/10 px-3 py-4 sm:px-5"><step.icon size={20} className="text-cyan-300 mb-3"/><p className="font-semibold text-sm">{step.label}</p><p className="text-[11px] text-indigo-200/65 mt-1">{step.text}</p>{i < 2 && <ChevronRight size={14} className="absolute -right-3 top-1/2 text-indigo-300/50"/>}</div>)}</div></div></header>
+        <div className="flex flex-col sm:flex-row gap-4 sm:items-end justify-between"><div><h2 className="text-xl font-bold tracking-tight">{teacher ? 'Tổng quan học tập' : 'Hành trình học tập của bạn'}</h2><p className="text-sm text-slate-500 mt-1">{teacher ? 'Theo dõi lớp học và cá nhân hóa kế hoạch cho từng học sinh.' : 'Khám phá điểm mạnh và những kỹ năng cần luyện tập thêm.'}</p></div><span className="inline-flex items-center gap-2 text-xs text-slate-500"><span className="h-2 w-2 rounded-full bg-emerald-400"/>Dữ liệu từ bài đã hoàn thành</span></div>
+        <div className="rounded-2xl bg-white border border-slate-200/70 p-4 sm:p-5 flex flex-col lg:flex-row lg:items-end gap-4 shadow-sm">
         {teacher && <div className="flex flex-wrap gap-3">
-            <select aria-label="Lớp" className="border rounded p-2" value={classId} onChange={e => setClassId(e.target.value)}>
+            <label className="flex-1 min-w-[180px] text-xs font-semibold text-slate-500">Lớp học<select aria-label="Lớp" className="mt-2 block w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-3 text-sm text-slate-700" value={classId} onChange={e => setClassId(e.target.value)}>
                 <option value="">Chọn lớp</option>{classes.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-            </select>
-            <select aria-label="Học sinh" className="border rounded p-2" value={studentId} onChange={e => { setStudentId(e.target.value); setSkills([]); setPlans([]); setProgress(null); }}>
+            </select></label>
+            <label className="flex-1 min-w-[180px] text-xs font-semibold text-slate-500">Học sinh<select aria-label="Học sinh" disabled={!classId || busy} className="mt-2 block w-full border border-slate-200 bg-slate-50 rounded-xl px-3 py-3 text-sm text-slate-700 disabled:opacity-50" value={studentId} onChange={e => { setStudentId(e.target.value); setSkills([]); setPlans([]); setProgress(null); setLoaded(false); setMessage(''); }}>
                 <option value="">Toàn lớp</option>{students.map(s => <option key={s.id} value={s.id}>{s.full_name}</option>)}
-            </select>
+            </select></label>
         </div>}
-        <button className="bg-indigo-600 text-white rounded px-4 py-2 disabled:opacity-50" disabled={busy || (teacher && !classId)} onClick={load}>{busy ? 'Đang xử lý...' : 'Tải bản đồ & đề xuất'}</button>
-        <p role="status">{message}</p>
-        <h2 className="text-lg font-bold">Learning Gap Map</h2>{table(skills)}
-        {teacher && <div className="space-y-2">
-            <button disabled={busy || !studentId || !classId} className="bg-indigo-600 text-white rounded px-4 py-2 disabled:opacity-50" onClick={() => mutate('/recommendations', filters)}>Tạo đề xuất chờ duyệt</button>
-            <p>Ưu tiên dạng có ít nhất 3 lượt và mức đúng dưới 70%. Không bổ sung câu ngẫu nhiên vào kế hoạch giáo viên duyệt.</p>
-            <textarea aria-label="Ghi chú quyết định" className="border rounded p-2 w-full" placeholder="Ghi chú của giáo viên khi duyệt / từ chối" value={note} maxLength={2000} onChange={e => setNote(e.target.value)} />
-        </div>}
-        <h2 className="text-lg font-bold">Đề xuất & phê duyệt</h2>
-        {!plans.length && <p>Chưa có đề xuất.</p>}
-        {plans.map(p => <article key={p.id} className="border rounded-xl bg-white p-4 space-y-3">
-            <h3 className="font-bold">#{p.id} · Học sinh #{p.student_id} · {({ PENDING: 'Chờ duyệt', APPROVED: 'Đã duyệt', REJECTED: 'Đã từ chối' } as Record<string, string>)[p.status]}</h3>
-            {p.payload.map(item => <p key={item.question_id}>Câu #{item.question_id}: {item.reason}</p>)}
-            {p.decision_note && <p>Giáo viên: {p.decision_note}</p>}
+        {!teacher && <div className="flex-1 flex items-center gap-3"><div className="bg-indigo-50 rounded-xl p-3 text-indigo-600"><GraduationCap size={22}/></div><div><p className="text-sm font-semibold">{user?.full_name || 'Không gian cá nhân'}</p><p className="text-xs text-slate-400 mt-1">Bản đồ được xây dựng từ kết quả của bạn</p></div></div>}
+        <button className={`${buttonClass} bg-indigo-600 text-white hover:bg-indigo-700 lg:ml-auto shadow-sm`} disabled={busy || (teacher && !classId)} onClick={load}>{busy ? <Loader2 size={16} className="animate-spin"/> : <RefreshCw size={16}/>} {busy ? 'Đang xử lý...' : 'Cập nhật bản đồ'}</button></div>
+        {message && <div role={error ? 'alert' : 'status'} className={`rounded-xl px-4 py-3 text-xs leading-5 flex items-start gap-2 ${error ? 'bg-rose-50 text-rose-700 border border-rose-100' : 'bg-indigo-50/70 text-indigo-700'}`}><ShieldCheck size={16} className="shrink-0 mt-0.5"/>{message}</div>}
+        <div className="grid grid-cols-2 xl:grid-cols-4 gap-3 sm:gap-4">{[{ label: 'Kỹ năng đã ghi nhận', value: skills.length, icon: Layers3, color: 'bg-indigo-50 text-indigo-600', caption: 'Từ minh chứng bài làm' }, { label: 'Kỹ năng cần củng cố', value: weakSkills.length, icon: Target, color: 'bg-amber-50 text-amber-600', caption: 'Tỷ lệ đúng dưới 70%' }, { label: 'Kỹ năng đạt từ 70%', value: readySkills.length, icon: CheckCircle2, color: 'bg-emerald-50 text-emerald-600', caption: 'Có ít nhất 3 lượt làm' }, { label: 'Kế hoạch chờ duyệt', value: plans.filter(p => p.status === 'PENDING').length, icon: ClipboardCheck, color: 'bg-sky-50 text-sky-600', caption: 'Đang chờ giáo viên xem xét' }].map(stat => <div key={stat.label} className="rounded-2xl bg-white border border-slate-200/70 p-4 sm:p-5"><div className="flex justify-between items-center gap-2"><span className="text-xs font-medium text-slate-500">{stat.label}</span><div className={`p-2 rounded-xl ${stat.color}`}><stat.icon size={17}/></div></div><p className="mt-3 text-3xl font-bold tracking-tight">{loaded ? stat.value : '—'}</p><p className="mt-2 text-[11px] text-slate-400">{stat.caption}</p></div>)}</div>
+        <div className="grid grid-cols-1 xl:grid-cols-[minmax(0,1fr)_340px] gap-6 items-start"><section className="min-w-0 rounded-2xl border border-slate-200/70 bg-white overflow-hidden shadow-sm"><div className="px-6 pt-6 pb-4"><div className="flex gap-3 items-center"><div className="p-2.5 bg-indigo-50 text-indigo-600 rounded-xl"><Target size={20}/></div><div><h2 className="font-bold text-lg">Bản đồ kỹ năng</h2><p className="text-xs text-slate-400 mt-1">Learning Gap Map · Nhìn rõ từng khoảng trống</p></div></div><div className="mt-5 flex flex-col sm:flex-row gap-3 justify-between"><div className="flex flex-wrap gap-1 rounded-xl bg-slate-50 p-1">{[{ id: 'ALL', label: 'Tất cả' }, { id: 'WEAK', label: 'Cần củng cố' }, { id: 'INSUFFICIENT', label: 'Chưa đủ mẫu' }].map(f => <button key={f.id} onClick={() => setSkillFilter(f.id)} className={`rounded-lg px-3 py-2 text-xs font-semibold transition-colors ${skillFilter === f.id ? 'bg-white text-indigo-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}>{f.label}</button>)}</div><div className="relative"><Search size={15} className="absolute left-3 top-3 text-slate-400"/><input aria-label="Tìm kỹ năng" value={search} onChange={e => setSearch(e.target.value)} placeholder="Tìm kỹ năng…" className="w-full sm:w-44 border border-slate-200 rounded-xl pl-9 pr-3 py-2.5 text-xs"/></div></div></div>{table(visibleSkills)}<div className="px-6 py-4 border-t border-slate-100 text-[11px] leading-5 text-slate-400">Kỹ năng được nhóm theo dạng ID6. Tỷ lệ đúng phản ánh bài làm quan sát, không phải điểm năng lực IRT.</div></section>
+        <aside className="space-y-4">{teacher && <section className="rounded-2xl bg-white border border-slate-200/70 p-5"><div className="flex gap-3 items-center"><div className="rounded-xl bg-indigo-50 p-2.5 text-indigo-600"><Sparkles size={20}/></div><h2 className="font-bold">Kế hoạch cá nhân hóa</h2></div><p className="mt-4 text-sm text-slate-500 leading-6">Chọn một học sinh để tạo kế hoạch ôn tập từ những kỹ năng cần củng cố.</p><div className="my-4 rounded-xl bg-slate-50 p-3 text-xs text-slate-500 leading-5">Ưu tiên kỹ năng dưới 70%, có ít nhất 3 lượt làm. Mỗi câu ôn tập đi kèm lý do và minh chứng.</div><button disabled={busy || !studentId || !classId} className={`${buttonClass} w-full bg-indigo-600 text-white hover:bg-indigo-700`} onClick={() => mutate('/recommendations', filters)}><Sparkles size={16}/>Tạo đề xuất chờ duyệt</button><label className="block mt-5 text-xs font-semibold text-slate-600">Ghi chú của giáo viên<textarea aria-label="Ghi chú quyết định" className="mt-2 border border-slate-200 bg-slate-50 rounded-xl p-3 w-full min-h-[100px] resize-y text-xs font-normal leading-5" placeholder="Nhận xét khi duyệt hoặc từ chối kế hoạch…" value={note} maxLength={2000} onChange={e => setNote(e.target.value)}/></label></section>}<section className="rounded-2xl bg-gradient-to-br from-indigo-50 to-sky-50 border border-indigo-100/60 p-5"><BookOpen size={24} className="text-indigo-500"/><h3 className="font-bold mt-3">Mỗi đề xuất đều có căn cứ</h3><p className="text-xs leading-6 text-slate-500 mt-2">Giáo viên xem xét minh chứng trước khi duyệt. Học sinh luyện tập theo kế hoạch và theo dõi sự thay đổi qua từng kỹ năng.</p><div className="mt-4 flex items-center gap-2 text-xs font-semibold text-indigo-600"><ShieldCheck size={15}/>Giáo viên luôn quyết định</div></section></aside></div>
+        <section><div className="flex justify-between items-center mb-4"><div><h2 className="text-xl font-bold">{teacher ? 'Đề xuất & phê duyệt' : 'Kế hoạch ôn tập'}</h2><p className="mt-1 text-sm text-slate-500">{teacher ? 'Xem minh chứng, lựa chọn hướng ôn tập phù hợp.' : 'Bắt đầu từ kế hoạch giáo viên đã duyệt cho bạn.'}</p></div><span className="rounded-full bg-white border border-slate-200 px-3 py-1 text-xs text-slate-500">{plans.length} kế hoạch</span></div><div className="grid grid-cols-1 md:grid-cols-2 2xl:grid-cols-3 gap-4">
+        {!plans.length && <div className="col-span-full rounded-2xl border border-dashed border-slate-300 bg-white/60 px-6 py-10 text-center"><ClipboardCheck size={28} className="mx-auto text-slate-300 mb-3"/><p className="font-semibold text-slate-600">Chưa có kế hoạch ôn tập</p><p className="text-sm text-slate-400 mt-2">{teacher ? 'Chọn học sinh và tạo đề xuất để bắt đầu vòng học tập mới.' : 'Kế hoạch sẽ xuất hiện khi giáo viên tạo đề xuất cho bạn.'}</p></div>}
+        {plans.map(p => <article key={p.id} className="rounded-2xl border border-slate-200/70 bg-white p-5 flex flex-col gap-4 shadow-sm">
+            <div className="flex justify-between items-center"><span className="text-[11px] font-semibold text-slate-400 tracking-wide">KẾ HOẠCH #{p.id}</span><span className={`rounded-full px-2.5 py-1 text-[11px] font-bold ${p.status === 'APPROVED' ? 'bg-emerald-50 text-emerald-700' : p.status === 'REJECTED' ? 'bg-rose-50 text-rose-600' : 'bg-amber-50 text-amber-700'}`}>{({ PENDING: 'Chờ duyệt', APPROVED: 'Đã duyệt', REJECTED: 'Đã từ chối' } as Record<string, string>)[p.status]}</span></div><div><h3 className="font-bold flex items-center gap-2"><Users size={16} className="text-indigo-400"/>{students.find(s => s.id === p.student_id)?.full_name || (teacher ? `Học sinh #${p.student_id}` : 'Kế hoạch dành cho bạn')}</h3><p className="text-xs text-slate-400 mt-2">{p.payload.length} câu hỏi · Ôn tập theo minh chứng</p></div>
+            <div className="space-y-3 max-h-60 overflow-auto pr-1">{p.payload.map((item, i) => <div key={item.question_id} className="flex gap-3"><span className="shrink-0 h-6 w-6 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center text-[10px] font-bold">{i + 1}</span><div><p className="text-xs font-semibold text-slate-700">Câu #{item.question_id}</p><p className="text-xs leading-5 text-slate-500 mt-1">{item.reason}</p></div></div>)}</div>
+            {p.decision_note && <p className="rounded-xl bg-slate-50 p-3 text-xs text-slate-500 leading-5"><span className="font-semibold">Giáo viên: </span>{p.decision_note}</p>}
             {teacher && p.status === 'PENDING' && <div className="flex gap-3">
-                <button disabled={busy} className="text-green-700 underline" onClick={() => mutate(`/recommendations/${p.id}/decision`, { status: 'APPROVED', note })}>Duyệt kế hoạch</button>
-                <button disabled={busy} className="text-red-700 underline" onClick={() => mutate(`/recommendations/${p.id}/decision`, { status: 'REJECTED', note })}>Từ chối</button>
+                <button disabled={busy} className={`${buttonClass} flex-1 bg-emerald-600 text-white hover:bg-emerald-700`} onClick={() => mutate(`/recommendations/${p.id}/decision`, { status: 'APPROVED', note })}><CheckCircle2 size={15}/>Duyệt kế hoạch</button>
+                <button disabled={busy} className={`${buttonClass} bg-slate-50 text-slate-500 hover:bg-rose-50 hover:text-rose-600`} onClick={() => mutate(`/recommendations/${p.id}/decision`, { status: 'REJECTED', note })}><X size={15}/>Từ chối</button>
             </div>}
-            {!teacher && p.status === 'APPROVED' && <Link className="text-indigo-700 underline" to={`/adaptive?recommendation_id=${p.id}`}>Ôn tập kế hoạch đã duyệt</Link>}
-            {p.status === 'APPROVED' && <button disabled={busy} className="text-indigo-700 underline block" onClick={() => showProgress(p.id)}>Xem tiến độ trước – sau</button>}
-        </article>)}
-        {progress && <section className="space-y-3"><h2 className="font-bold">Tiến độ theo kỹ năng</h2>{table(progress, true)}</section>}
-    </div>;
+            {!teacher && p.status === 'APPROVED' && <Link className={`${buttonClass} bg-indigo-600 text-white hover:bg-indigo-700`} to={`/adaptive?recommendation_id=${p.id}`}>Bắt đầu ôn tập<ArrowRight size={16}/></Link>}
+            {p.status === 'APPROVED' && <button disabled={busy} className="mt-auto inline-flex gap-2 items-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 pt-3 border-t border-slate-100" onClick={() => showProgress(p.id)}><TrendingUp size={16}/>Xem tiến độ trước – sau<ArrowRight size={14} className="ml-auto"/></button>}
+        </article>)}</div></section>
+        {progress && <section className="rounded-2xl border border-slate-200 bg-white overflow-hidden"><div className="p-6 flex gap-3 items-center"><TrendingUp size={22} className="text-emerald-500"/><div><h2 className="font-bold text-lg">Tiến độ theo kỹ năng</h2><p className="text-xs text-slate-400 mt-1">So sánh trước và sau khi kế hoạch được duyệt</p></div><button aria-label="Đóng tiến độ" onClick={() => setProgress(null)} className="ml-auto rounded-lg p-2 text-slate-400 hover:bg-slate-50"><X size={18}/></button></div>{table(progress, true)}</section>}
+        <footer className="text-center text-[11px] text-slate-400 py-2">EduLoop AI · Minh chứng dẫn đường, giáo viên định hướng, học sinh tiến bộ.</footer>
+    </div></div>;
 };

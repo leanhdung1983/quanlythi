@@ -51,7 +51,7 @@ npm run build
 - Toàn bộ bộ kiểm thử: 200 tests/31 files đã qua, gồm 8 kiểm thử EduLoop trước lần tinh chỉnh cuối; kết quả cuối xem VERIFICATION.md.
 - TypeScript + Vite production build đã qua.
 - Runtime production server/import: GET /api/ping = 200; GET / = 200; GET /api/eduloop/map chưa đăng nhập = 401. Server kiểm tra đã tự dừng.
-- MySQL có phản hồi nhưng từ chối root không mật khẩu; project không có .env. Chưa chạy migration thành công, chưa kiểm chứng luồng đăng nhập → duyệt → nộp với DB thật. Không có thay đổi DB nào được xác nhận.
+- Ngày 06/10/2026: kết nối thành công DB TiDB từ `.env`, chạy migration EduLoop thành công hai lần. Đã xác nhận bảng `eduloop_recommendations` có đủ 11 cột, chỉ mục và 4 khóa ngoại theo migration; bảng hiện có 0 đề xuất. Không in thông tin bí mật từ `.env`. Toàn bộ 200 kiểm thử/31 file đã qua. Chưa kiểm chứng luồng đăng nhập → duyệt → nộp với DB thật.
 - Bộ kiểm thử API dùng dữ liệu giả, không thay thế kiểm tra trên DB triển khai. Không tuyên bố triển khai production hoàn tất.
 - Hiện đọc toàn bộ lịch sử thuộc phạm vi lớp/học sinh; với dữ liệu lớn cần thêm phân trang/tiền tổng hợp sau khi đo thực tế.
 - Không sửa API/schema cũ. Gỡ lớp mới bằng cách gỡ route/menu mới và tham số tùy chọn; giữ bảng mới để bảo toàn nhật ký duyệt. Không cần migration ngược phá hủy dữ liệu.
@@ -59,4 +59,4 @@ npm run build
 ## Bản online Render
 Người dùng xác nhận bản online: https://quanlythi.onrender.com. render.yaml cấu hình build npm ci && npm run build, start npm start và health check /api/ping. DB_HOST, DB_USER, DB_PASSWORD được cấu hình ngoài source (sync: false), không thể lấy từ URL website. Công cụ đọc web không truy cập được trang trong lượt kiểm tra này; không kết luận website ngừng hoạt động.
 
-Để đưa thay đổi lên bản online: đưa các file source đã sửa lên repo liên kết với Render bằng quy trình deploy đang dùng, rồi chạy node scripts/migrate-eduloop.mjs trong môi trường có cùng biến DB_* (hoặc chạy nội dung migrations/20261006_eduloop.sql bằng công cụ DB của nhà cung cấp). Có thể chạy migration trước khi deploy vì chỉ thêm bảng. Chưa push/commit/deploy trong lượt này; bản online chưa được xác nhận có EduLoop. Cấu hình DB thật là thông tin còn thiếu để xác minh migration và luồng đăng nhập đầy đủ.
+Để đưa thay đổi lên bản online: đưa các file source đã sửa lên repo liên kết với Render bằng quy trình deploy đang dùng. Migration đã chạy thành công trên DB cấu hình trong `.env` ngày 06/10/2026; cần bảo đảm Render sử dụng cùng DB. Chưa push/commit/deploy trong lượt kiểm tra DB này; bản online chưa được xác nhận có EduLoop, và luồng đăng nhập đầy đủ trên DB thật chưa được kiểm chứng.
