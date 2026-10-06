@@ -105,6 +105,10 @@ export const apiService = {
         });
         return await handleResponse(res, '/admin/ai/generate-curriculum');
     },
+    async proposeLessonMatrix(unitId: number) {
+        const res = await fetch(`${API_URL}/admin/ai/lesson-matrix`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ unit_id: unitId }) });
+        return await handleResponse(res, '/admin/ai/lesson-matrix');
+    },
     async generateLessonSections(unit_id: number, unit_name: string, chapter_name: string, gradeCode: string, subjectCode: string) {
         const res = await fetch(`${API_URL}/admin/ai/generate-lesson-sections`, {
             method: 'POST',

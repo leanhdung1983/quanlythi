@@ -6,9 +6,11 @@ import { ChevronRight, PlayCircle, Code, CheckCircle, Save, FileText, BookOpen, 
 import { motion, AnimatePresence } from 'motion/react';
 import { MathRenderer } from '../components/MathRenderer';
 import { DynamicPractice } from '../components/DynamicPractice';
+import { LessonMatrixProposal } from '../components/LessonMatrixProposal';
 
 export const Learning: React.FC = () => {
     const { user } = useAuthStore();
+    const [proposalUnitId, setProposalUnitId] = useState<number | null>(null);
     const [chapters, setChapters] = useState<Chapter[]>([]);
     const [units, setUnits] = useState<Unit[]>([]);
     
@@ -264,6 +266,7 @@ export const Learning: React.FC = () => {
 
     return (
         <div className="h-full flex flex-col sm:flex-row bg-slate-50 overflow-hidden text-slate-800">
+            {isTeacher && proposalUnitId && <LessonMatrixProposal unitId={proposalUnitId} onClose={() => setProposalUnitId(null)} onSaved={() => { void apiService.fetchSavedMatrices().then(setSavedMatrices).catch(console.error); }}/>}
             {/* LEFT SIDEBAR: BROWSER */}
             <div className={`w-full sm:w-80 bg-white border-r border-slate-200 shadow-sm flex flex-col shrink-0 transition-transform ${selectedUnit ? 'hidden sm:flex' : 'flex'}`}>
                 <div className="p-4 border-b border-slate-100 shrink-0">
@@ -461,6 +464,7 @@ export const Learning: React.FC = () => {
                             
                             {isTeacher && (
                                 <div className="flex gap-2">
+                                    <button onClick={() => setProposalUnitId(selectedUnit.id)} className="bg-indigo-600 text-white px-4 py-2 rounded-xl text-sm font-bold">AI đề xuất ma trận</button>
                                     <button 
                                         onClick={() => {
                                             const activeChapter = chapters.find(c => c.id === selectedUnit?.chapter_id);

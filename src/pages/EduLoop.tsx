@@ -2,6 +2,7 @@ import React, { lazy, Suspense, useCallback, useEffect, useState } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { MathRenderer } from '../components/MathRenderer';
 import { LessonSection } from '../types';
+import { LessonMatrixProposal } from '../components/LessonMatrixProposal';
 const AdaptivePractice = lazy(() => import('./AdaptiveTest').then(m => ({ default: m.AdaptiveTest })));
 import { apiService } from '../services/api';
 import { useAuthStore } from '../services/authStore';
@@ -22,6 +23,7 @@ export const EduLoop: React.FC = () => {
     const [lessons, setLessons] = useState<LessonSection[]>([]);
     const [lessonBusy, setLessonBusy] = useState(false);
     const [lessonError, setLessonError] = useState('');
+    const [proposalUnitId, setProposalUnitId] = useState<number | null>(null);
     const teacher = user?.role === 'TEACHER' || user?.role === 'ADMIN';
     const [classes, setClasses] = useState<{ id: number; name: string }[]>([]);
     const [classId, setClassId] = useState('');
@@ -140,6 +142,8 @@ export const EduLoop: React.FC = () => {
             {p.status === 'APPROVED' && <button disabled={busy} className="mt-auto inline-flex gap-2 items-center text-xs font-semibold text-indigo-600 hover:text-indigo-800 pt-3 border-t border-slate-100" onClick={() => showProgress(p.id)}><TrendingUp size={16}/>Xem tiến độ trước – sau<ArrowRight size={14} className="ml-auto"/></button>}
         </article>)}</div></section>
         {progress && <section className="rounded-2xl border border-slate-200 bg-white overflow-hidden"><div className="p-6 flex gap-3 items-center"><TrendingUp size={22} className="text-emerald-500"/><div><h2 className="font-bold text-lg">Tiến độ theo kỹ năng</h2><p className="text-xs text-slate-400 mt-1">So sánh trước và sau khi kế hoạch được duyệt</p></div><button aria-label="Đóng tiến độ" onClick={() => setProgress(null)} className="ml-auto rounded-lg p-2 text-slate-400 hover:bg-slate-50"><X size={18}/></button></div>{table(progress, true)}</section>}
+        {teacher && learningSkill?.unit_id && <button className={`${buttonClass} bg-indigo-600 text-white`} onClick={() => setProposalUnitId(learningSkill.unit_id!)}><Sparkles size={16}/>AI đề xuất ma trận cho bài {learningSkill.unit_name}</button>}
+        {teacher && proposalUnitId && <LessonMatrixProposal unitId={proposalUnitId} onClose={() => setProposalUnitId(null)}/>}
         <footer className="text-center text-[11px] text-slate-400 py-2">EduLoop AI · Minh chứng dẫn đường, giáo viên định hướng, học sinh tiến bộ.</footer>
     </div></div>;
 };

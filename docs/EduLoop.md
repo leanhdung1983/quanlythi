@@ -30,6 +30,12 @@ EduLoop được tích hợp vào hệ thống hiện có mà không đổi tên
 - docs/EduLoop.md — bản hướng dẫn này trong project.
 
 ## Chạy
+### AI đề xuất ma trận bài học
+
+Giáo viên mở bài trong Học trực tuyến → AI đề xuất ma trận; hoặc mở Học lại trong EduLoop rồi chọn AI đề xuất ma trận cho bài đó. Cần cấu hình Gemini API Key. AI đọc nội dung bài học và số câu được phép dùng theo ID6, loại TN/TF/KQ và mức N/H/V/C; đề xuất được kiểm tra để không vượt số câu sẵn có hoặc đưa dạng ngoài bài vào ma trận.
+
+Giáo viên chỉnh tên, số câu, thời gian và tổng điểm các phần (tổng bằng 10), rồi chọn Đã kiểm tra · Lưu ma trận. Trước bước này không ghi dữ liệu. Ma trận được lưu vào thư viện hiện có với nguồn bài học; không tự thay ma trận đã giao hoặc tự giao cho lớp. Bài chưa có câu hỏi phù hợp hoặc chưa có API Key sẽ báo rõ thay vì tạo dữ liệu giả.
+
 Trong thư mục project, cấu hình kết nối DB đang dùng vào .env (tham khảo .env.example): DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME. Không nhập mật khẩu vào chat.
 
 ```powershell
