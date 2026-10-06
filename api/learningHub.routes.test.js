@@ -15,6 +15,7 @@ vi.mock("./core.js", () => ({
   generateHash: vi.fn(), normalizeLatex: vi.fn(), sanitizeSvg: vi.fn(), resolveHierarchyIds: vi.fn(),
   getGradeDigitSQL: () => '0', clearCache: vi.fn(),
   cacheMiddleware: () => (_req, _res, next) => next(),
+  getGeminiApiKey: vi.fn(), getGeminiApiKeys: vi.fn(), generateWithFallback: vi.fn(), parseGeminiError: vi.fn(), seedDatabase: vi.fn(),
   requireAdmin: (req, res) =>
     req.user.role === "ADMIN" ||
     (res.status(403).json({ error: "Forbidden" }), false),
@@ -22,12 +23,14 @@ vi.mock("./core.js", () => ({
     req.user.role === "ADMIN" || Number(id) === req.user.id,
   query: async (sql, params = []) => {
     calls.push({ sql, params });
+    if (sql.startsWith('SELECT id FROM grades')) return [{ id: 111 }];
+    if (sql.startsWith('SELECT id FROM subjects')) return [{ id: 5 }];
     if (sql.includes('FROM questions q')) return [{ id: 31, type_code: 'TN', level_code: 'N' }];
     if (sql.includes("FROM users")) return [{ is_pro: pro }];
     if (sql.includes("COALESCE(content.section_count"))
       return [
-        { id: 1, first_in_chapter: 1 },
-        { id: 2, first_in_chapter: 0 },
+        { id: 1, first_in_chapter: 1, grade_code: '1' },
+        { id: 2, first_in_chapter: 0, grade_code: '1' },
       ];
     if (sql.startsWith("SELECT id,chapter_id"))
       return Number(params[0]) === 99
@@ -65,6 +68,7 @@ beforeAll(async () => {
   const { default: hub } = await import("./routes/learningHub.routes.js");
     const { default: legacy } = await import("./routes/learning.routes.js");
     const { default: questions } = await import('./routes/questions.routes.js');
+    const { default: admin } = await import('./routes/admin.routes.js');
   const app = express();
   app.use(express.json());
   app.use((req, _res, next) => {
@@ -74,6 +78,7 @@ beforeAll(async () => {
     app.use(hub);
     app.use(legacy);
     app.use(questions);
+    app.use(admin);
   server = await new Promise((resolve) => {
     const instance = app.listen(0, "127.0.0.1", () => resolve(instance));
   });
@@ -99,6 +104,18 @@ const request = (path, body, method = "POST") =>
       : {},
   );
 describe("rebuilt learning hub", () => {
+  it('creates grade 11 chapters against the existing legacy grade instead of duplicating it', async () => {
+    role = 'ADMIN';
+    expect((await request('/admin/chapters', { gradeCode: '11', subjectCode: 'D', chapter_number: 8, name: 'Chương mới' })).status).toBe(200);
+    expect(calls.find(c => c.sql.startsWith('SELECT id FROM grades')).params).toEqual(['1', '11', '1']);
+    expect(writes).toHaveLength(1);
+    expect(writes[0].params).toEqual([111, 5, 8, 'Chương mới']);
+  });
+  it('rejects chapter creation outside grades 6–12 before accessing the database', async () => {
+    role = 'ADMIN';
+    for (const gradeCode of ['5', '13']) expect((await request('/admin/chapters', { gradeCode, subjectCode: 'D', chapter_number: 1, name: 'Sai lớp' })).status).toBe(400);
+    expect(calls).toHaveLength(0); expect(writes).toHaveLength(0);
+  });
   it('gates direct practice access and keeps the public/owner question filter', async () => {
     expect((await request('/units/2/practice')).status).toBe(403);
     expect(calls.some(c => c.sql.includes('FROM questions q'))).toBe(false);
@@ -112,6 +129,7 @@ describe("rebuilt learning hub", () => {
   it("marks only the first lesson free even with a string-valued Pro flag", async () => {
     const free = await (await request("/learning/catalog")).json();
     expect(free.data.map((u) => u.accessible)).toEqual([true, false]);
+    expect(free.data.map(u => u.grade_code)).toEqual(['11', '11']);
     pro = 1;
     expect(
       (await (await request("/learning/catalog")).json()).data.every(

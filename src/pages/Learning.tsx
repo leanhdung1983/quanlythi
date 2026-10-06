@@ -45,6 +45,7 @@ import { LessonMatrixProposal } from "../components/LessonMatrixProposal";
 import { LearningSectionEditor } from "../components/LearningSectionEditor";
 import { youtubeEmbed } from "../../shared/lessonAuthoring";
 import { normalizeGrade } from "../../shared/matrixCatalog";
+import { LEARNING_GRADES, normalizeLearningCatalog } from '../../shared/learningGrades';
 
 type Resume = { unitId: number; sectionId: number | null; updatedAt: number };
 type Panel = "STUDY" | "PRACTICE";
@@ -128,7 +129,7 @@ export const Learning: React.FC = () => {
         admin ? apiService.fetchChapters() : Promise.resolve([]),
       ]);
       if (token !== catalogToken.current) return;
-      setCatalog(data.data);
+      setCatalog(normalizeLearningCatalog(data.data));
       setChapters(
         hierarchy.map((c) => ({
           ...c,
@@ -351,9 +352,7 @@ export const Learning: React.FC = () => {
     return () => window.removeEventListener("message", listener);
   }, [activeId, panel, markComplete]);
 
-  const grades = [...new Set(catalog.map((u) => String(u.grade_code)))].sort(
-    (a, b) => Number(a) - Number(b),
-  );
+  const grades = LEARNING_GRADES.map(String);
   const subjects = [
     ...new Map(
       catalog
@@ -1278,7 +1277,7 @@ export const Learning: React.FC = () => {
                     onChange={(e) => setManageGrade(e.target.value)}
                     className={chip + " block w-full mt-1"}
                   >
-                    {["6", "7", "8", "9", "10", "11", "12"].map((g) => (
+                    {grades.map((g) => (
                       <option key={g} value={g}>
                         Lớp {g}
                       </option>

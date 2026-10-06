@@ -1,6 +1,7 @@
 import express from 'express';
 import bcrypt from 'bcryptjs';
 import crypto from 'crypto';
+import { learningStorageGrade } from '../../shared/learningGrades.js';
 import { GoogleGenAI } from "@google/genai";
 import { 
     pool,
@@ -182,11 +183,14 @@ router.post('/admin/chapters', async (req, res) => {
     try {
         if (!requireAdmin(req, res)) return;
         const { gradeCode, subjectCode, chapter_number, name } = req.body;
+        const storageGrade = learningStorageGrade(gradeCode);
+        if (storageGrade === null) return res.status(400).json({ error: 'Hệ thống chỉ hỗ trợ lớp 6 đến lớp 12.' });
         
-        const gRows = await query("SELECT id FROM grades WHERE code = ?", [gradeCode]);
+        const gRows = await query("SELECT id FROM grades WHERE code IN (?, ?) ORDER BY CASE WHEN code=? THEN 0 ELSE 1 END LIMIT 1", [storageGrade, String(Number(gradeCode) <= 2 ? Number(gradeCode) + 10 : Number(gradeCode)), storageGrade]);
         let grade_id = gRows?.[0]?.id;
         if (!grade_id) {
-            const resG = await query("INSERT INTO grades (code, name) VALUES (?, ?)", [gradeCode, `Lớp ${gradeCode}`]);
+            const actualGrade = Number(storageGrade) <= 2 ? Number(storageGrade) + 10 : Number(storageGrade);
+            const resG = await query("INSERT INTO grades (code, name) VALUES (?, ?)", [storageGrade, `Lớp ${actualGrade}`]);
             grade_id = resG.insertId;
         }
 

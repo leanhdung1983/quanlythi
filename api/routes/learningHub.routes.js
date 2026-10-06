@@ -1,5 +1,6 @@
 import express from "express";
 import { query } from "../core.js";
+import { normalizeLearningCatalog } from '../../shared/learningGrades.js';
 import {
   requireLearningUnit,
   canEditLearningSection,
@@ -29,7 +30,7 @@ router.get("/learning/catalog", async (req, res) => {
     );
     res.json({
       success: true,
-      data: rows.map((row) => ({
+      data: normalizeLearningCatalog(rows).map((row) => ({
         ...row,
         accessible:
           req.user.role !== "STUDENT" ||

@@ -8,6 +8,7 @@
 - Nút EduLoop mở luồng ôn cá nhân/adaptive hiện có; không tạo thêm bộ adaptive riêng.
 - Giáo viên: Studio giáo viên → chọn bài → soạn theo mẫu hoặc nhờ AI → kiểm tra → lưu nháp riêng → xuất bản. Có thể sửa văn bản các mục mình đã xuất bản; quản trị viên sửa nội dung dùng chung.
 - Quản trị viên thêm chương/bài vào cấu trúc hiện có. Mã lớp cũ 0/1/2 được hiển thị đúng thành 10/11/12.
+- Bộ lọc luôn có đúng lớp 6–12, không phụ thuộc lớp đã có bài hay chưa. Thư viện chuẩn hóa cả mã lớp cũ và mới, sắp xếp theo lớp thật và không hiển thị lớp ngoài phạm vi. Khi thêm chương, dùng lại bản ghi lớp hiện có, ưu tiên mã ID6 cũ để không tạo lớp trùng.
 
 ## Dữ liệu và quyền
 

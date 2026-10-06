@@ -2,6 +2,7 @@
 import "dotenv/config";
 import mysql from "mysql2/promise";
 import { readFile } from "node:fs/promises";
+import { normalizeLearningCatalog } from '../shared/learningGrades.js';
 const cloud =
   process.env.DB_HOST && !/localhost|127\.0\.0\.1/.test(process.env.DB_HOST);
 const db = await mysql.createConnection({
@@ -42,6 +43,8 @@ try {
     JSON.stringify({
       ok: true,
       catalog_units: catalog.length,
+      units_by_stored_grade: catalog.reduce((counts, unit) => { counts[unit.grade_code] = (counts[unit.grade_code] || 0) + 1; return counts; }, {}),
+      units_by_display_grade: normalizeLearningCatalog(catalog).reduce((counts, unit) => { counts[unit.grade_code] = (counts[unit.grade_code] || 0) + 1; return counts; }, {}),
       query_ms: Math.round(performance.now() - started),
       counts: counts[0],
       missing_names: catalog.filter(
