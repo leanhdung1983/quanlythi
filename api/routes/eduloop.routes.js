@@ -31,7 +31,7 @@ async function evidence(classId, studentId) {
         return Array.isArray(qs) ? qs.filter(Boolean).map(q => Number(q.id)).filter(positive) : [];
     }))];
     const bank = ids.length ? await query(`SELECT q.id, q.legacy_full_id, q.competencies, m.description,
-        u.name AS unit_name, c.name AS chapter_name FROM questions q
+        u.name AS unit_name, u.id AS unit_id, c.id AS chapter_id, c.name AS chapter_name FROM questions q
         LEFT JOIN id6_metadata m ON m.id_full = q.legacy_full_id
         LEFT JOIN units u ON u.id = q.unit_id LEFT JOIN chapters c ON c.id = u.chapter_id
         WHERE q.id IN (?)`, [ids]) : [];

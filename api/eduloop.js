@@ -39,7 +39,7 @@ export function buildGapMap(results, bank = [], splitAt = null) {
             const key = id.normalized;
             if (!groups.has(key)) groups.set(key, { key, ...id,
                 label: meta.description || `Dạng ${id.count}`, chapter_name: meta.chapter_name || `Chương ${id.chapter}`,
-                unit_name: meta.unit_name || `Bài ${id.unit}`, competencies: json(meta.competencies, []),
+                unit_name: meta.unit_name || `Bài ${id.unit}`, unit_id: meta.unit_id || null, chapter_id: meta.chapter_id || null, competencies: json(meta.competencies, []),
                 attempts: 0, credit: 0, students: new Set(), weakStudents: new Map(), evidence: [], before: [], after: [] });
             const g = groups.get(key);
             g.attempts++; g.credit += value; g.students.add(result.user_id);

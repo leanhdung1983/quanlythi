@@ -22,7 +22,6 @@ const AdminUsers = lazy(() => import('./pages/AdminUsers').then(module => ({ def
 const AdminSourceViewer = lazy(() => import('./pages/AdminSourceViewer').then(module => ({ default: module.AdminSourceViewer })));
 const IRTAnalysis = lazy(() => import('./pages/IRTAnalysis').then(module => ({ default: module.IRTAnalysis })));
 const EduLoop = lazy(() => import('./pages/EduLoop').then(module => ({ default: module.EduLoop })));
-const AdaptiveTest = lazy(() => import('./pages/AdaptiveTest').then(module => ({ default: module.AdaptiveTest })));
 const Learning = lazy(() => import('./pages/Learning').then(module => ({ default: module.Learning })));
 const ClassManagement = lazy(() => import('./pages/ClassManagement').then(module => ({ default: module.ClassManagement })));
 const ManualSocialPlanner = lazy(() => import('./pages/ManualSocialPlanner').then(module => ({ default: module.ManualSocialPlanner })));
@@ -173,7 +172,7 @@ const App: React.FC = () => {
             <Route path="/online-exam" element={<AuthGuard><OnlineExam /></AuthGuard>} />
             <Route path="/irt" element={<TeacherGuard><IRTAnalysis /></TeacherGuard>} />
             <Route path="/eduloop" element={<AuthGuard><EduLoop /></AuthGuard>} />
-            <Route path="/adaptive" element={<AuthGuard><AdaptiveTest /></AuthGuard>} />
+            <Route path="/adaptive" element={<AuthGuard><EduLoop /></AuthGuard>} />
             <Route path="/learning" element={<AuthGuard><Learning /></AuthGuard>} />
             <Route path="/classes" element={<AuthGuard><ClassManagement /></AuthGuard>} />
             

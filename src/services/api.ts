@@ -523,9 +523,9 @@ export const apiService = {
         const response = await fetch(`${API_URL}/irt/analysis`);
         return await handleResponse(response, '/irt/analysis');
     },
-    async generateAdaptiveTest(_user_id: number, limit?: number, recommendationId?: string) {
+    async generateAdaptiveTest(_user_id: number, limit?: number, recommendationId?: string, skillKey?: string) {
         void _user_id;
-        const response = await fetch(`${API_URL}/adaptive/generate`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ limit, recommendation_id: recommendationId }) });
+        const response = await fetch(`${API_URL}/adaptive/generate`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ limit, recommendation_id: recommendationId, skill_key: skillKey }) });
         return await handleResponse(response, '/adaptive/generate');
     },
     async aiExplain(question_latex: string, user_answer_latex: string, correct_answer_latex: string) {

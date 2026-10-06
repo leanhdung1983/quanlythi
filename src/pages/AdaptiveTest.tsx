@@ -14,10 +14,11 @@ import { MathRenderer } from '../components/MathRenderer';
 import { checkKQAnswer } from '../utils/gradeHelper';
 import { parseQuestionContent, shuffleArray } from '../utils/latexParser';
 
-export const AdaptiveTest: React.FC = () => {
+export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: string; onReturn?: () => void }> = ({ recommendationId: selectedRecommendation, skillKey, onReturn }) => {
     const { user } = useAuthStore();
     const [searchParams] = useSearchParams();
-    const recommendationId = searchParams.get('recommendation_id') || undefined;
+    const recommendationId = selectedRecommendation || searchParams.get('recommendation_id') || undefined;
+    const progressKey = `eduloop_progress_${user?.id || 'guest'}_${recommendationId || skillKey || 'adaptive'}`;
     const [questions, setQuestions] = useState<OnlineQuestion[]>([]);
     const [aiAnalysis, setAiAnalysis] = useState<string>('');
     const [step, setStep] = useState<'intro' | 'generating' | 'ready' | 'taking' | 'result' | 'review'>('intro');
@@ -66,26 +67,28 @@ export const AdaptiveTest: React.FC = () => {
                 timeLeft,
                 currentQIdx,
                 currentExamSessionId,
+                ownerId: user?.id, recommendationId, skillKey,
                 startTime: Date.now()
             };
             try {
-                localStorage.setItem('adaptive_test_progress', JSON.stringify(state));
+                localStorage.setItem(progressKey, JSON.stringify(state));
             } catch (e) {
                 console.error("LocalStorage save failed", e);
             }
         } else if (step === 'intro' || step === 'result') {
             if (step === 'result') {
-                localStorage.removeItem('adaptive_test_progress');
+                localStorage.removeItem(progressKey);
             }
         }
     }, [step, questions, answers, timeLeft, currentQIdx, currentExamSessionId]);
 
     // Resume Check on Mount
     useEffect(() => {
-        const saved = localStorage.getItem('adaptive_test_progress');
+        const saved = localStorage.getItem(progressKey);
         if (saved && step === 'intro') {
             try {
                 const state = JSON.parse(saved);
+                if (state.ownerId !== user?.id || state.recommendationId !== recommendationId || state.skillKey !== skillKey) return;
                 if (Date.now() - state.startTime < 4 * 60 * 60 * 1000) {
                     showConfirm(
                         "Tiếp tục bài ôn tập?",
@@ -99,13 +102,13 @@ export const AdaptiveTest: React.FC = () => {
                             setStep('taking');
                         },
                         () => {
-                            localStorage.removeItem('adaptive_test_progress');
+                            localStorage.removeItem(progressKey);
                         }
                     );
                 }
             } catch (e) {
                 console.error("Error resuming adaptive test", e);
-                localStorage.removeItem('adaptive_test_progress');
+                localStorage.removeItem(progressKey);
             }
         }
     }, [step]);
@@ -114,7 +117,7 @@ export const AdaptiveTest: React.FC = () => {
         if (!user) return;
         setStep('generating');
         try {
-            const res = await apiService.generateAdaptiveTest(user.id, 10, recommendationId);
+            const res = await apiService.generateAdaptiveTest(user.id, 10, recommendationId, skillKey);
             if (res.success) {
                 const parsed = res.data.map((q: OnlineQuestion) => parseQuestionContent(q));
                 setQuestions(parsed);
@@ -140,6 +143,7 @@ export const AdaptiveTest: React.FC = () => {
             setCurrentExamSessionId(session.id);
         } catch (error) {
             console.error(error);
+            setDialog({ isOpen: true, title: 'Chưa bắt đầu được bài ôn', message: error instanceof Error ? error.message : 'Vui lòng thử lại.', isAlert: true });
             return;
         }
         setAnswers({});
@@ -173,7 +177,8 @@ export const AdaptiveTest: React.FC = () => {
                 duration_seconds: (questions.length * 2 * 60) - timeLeft,
                 answers
             });
-            setScore(Number.isFinite(Number(result?.score)) ? Number(result.score) : Math.round(totalPoints * 100) / 100);
+            if (!result?.success || !Number.isFinite(Number(result.score))) throw new Error('Máy chủ chưa xác nhận kết quả. Vui lòng nộp lại.');
+            setScore(Number(result.score));
             setCurrentExamSessionId(null);
             setStep('result');
         } catch (error) {
@@ -209,10 +214,11 @@ export const AdaptiveTest: React.FC = () => {
         const handleVisibilityChange = () => {
             if (document.visibilityState === 'hidden' && step === 'taking') {
                 const state = {
-                    questions, answers, timeLeft, currentQIdx,
+                    questions, answers, timeLeft, currentQIdx, currentExamSessionId,
+                    ownerId: user?.id, recommendationId, skillKey,
                     startTime: Date.now()
                 };
-                try { localStorage.setItem('adaptive_test_progress', JSON.stringify(state)); } catch(e) { console.error(e); }
+                try { localStorage.setItem(progressKey, JSON.stringify(state)); } catch(e) { console.error(e); }
             }
         };
 
@@ -232,7 +238,7 @@ export const AdaptiveTest: React.FC = () => {
             window.removeEventListener('pagehide', handleVisibilityChange);
             window.removeEventListener('beforeunload', handleBeforeUnload);
         };
-    }, [step, questions, answers, timeLeft, currentQIdx]);
+    }, [step, questions, answers, timeLeft, currentQIdx, currentExamSessionId, user?.id, recommendationId, skillKey]);
 
     const formatTime = (s: number) => {
         const m = Math.floor(s / 60);
@@ -840,7 +846,7 @@ export const AdaptiveTest: React.FC = () => {
                     </div>
                     <h2 className="text-3xl font-black text-slate-800 mb-2">Hoàn thành!</h2>
                     <p className="text-slate-400 text-sm mb-8">Bạn đã hoàn thành bài ôn tập cá nhân hóa.</p>
-                    <Link to="/eduloop" className="text-indigo-600 underline">Xem bản đồ kỹ năng & tiến độ</Link>
+                    {onReturn ? <button onClick={onReturn} className="text-indigo-600 underline">Cập nhật bản đồ kỹ năng & tiến độ</button> : <Link to="/eduloop" className="text-indigo-600 underline">Xem bản đồ kỹ năng & tiến độ</Link>}
                     
                     <div className="bg-slate-50 rounded-3xl p-8 mb-8 border border-slate-100">
                         <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Điểm số của bạn</div>

@@ -571,6 +571,19 @@ router.post('/adaptive/generate', async (req, res) => {
             }
         }
         
+        if (req.body.skill_key) {
+            const skill = normalizeId6(req.body.skill_key);
+            if (!skill) return res.status(400).json({ error: 'Kỹ năng không hợp lệ.' });
+            const questions = await query(`SELECT q.id, q.legacy_full_id AS id_full, q.content_latex,
+                q.content_latex_original AS original_latex, q.content_latex AS raw_latex, qt.code AS type
+                FROM questions q JOIN question_types qt ON qt.id = q.type_id
+                WHERE q.legacy_full_id = ? AND qt.code IN ('TN','TF','KQ')
+                AND (q.is_public = 1 OR q.created_by = ?) ORDER BY RAND() LIMIT ?`, [skill, user_id, limit]);
+            if (!questions.length) return res.status(422).json({ error: 'Chưa có câu hỏi được phép sử dụng cho kỹ năng này.' });
+            return res.json({ success: true, data: questions, ai_analysis: `Luyện tập tập trung kỹ năng ${skill}.`,
+                evidence: [], approval: { status: 'SELF_PRACTICE' } });
+        }
+
         // 1. Find questions user has failed
         const results = await query("SELECT id, user_id, status, created_at, result_detail FROM exam_results WHERE user_id = ? AND status = 'COMPLETED'", [user_id]);
         const failedIds = new Set();

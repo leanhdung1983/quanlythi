@@ -4,6 +4,13 @@ const q = { id: 1, id_full: '2D1H1-1', type: 'TN', options: [{ id: 'A', isCorrec
 const result = (id, answer, date = '2026-10-01T00:00:00Z') => ({ id, user_id: 7, status: 'COMPLETED', created_at: date,
     result_detail: { questions: [q], answers: { 1: answer } } });
 describe('EduLoop evidence', () => {
+    it('links observed skills to actual curriculum units without inventing prerequisites', () => {
+        const skill = buildGapMap([result(1, 'A')], [{ id: 1, unit_id: 8, chapter_id: 2, unit_name: 'Hàm số' }]).skills[0];
+        expect(skill.unit_id).toBe(8);
+        expect(skill.chapter_id).toBe(2);
+        expect(skill.unit_name).toBe('Hàm số');
+        expect(buildGapMap([result(1, 'A')]).skills[0].unit_id).toBeNull();
+    });
     it('uses normalized KQ and partial TF; does not mark ungraded essays wrong', () => {
         expect(correctness({ type: 'KQ', correctAnswer: '1.5;2' }, '1,5')).toBe(1);
         expect(correctness({ type: 'TF', options: [{ id: 'a', isCorrect: true }, { id: 'b', isCorrect: false }] }, { a: true })).toBe(.5);
