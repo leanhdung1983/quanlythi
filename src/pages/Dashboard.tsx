@@ -248,7 +248,7 @@ export const Dashboard: React.FC = () => {
 
     if (user?.role === 'STUDENT') {
         return (
-            <div className="home-student h-full w-full overflow-y-auto custom-scrollbar pr-2 pb-20 relative">
+            <div className="home-student w-full pb-12 relative">
                 <MathBackground />
                 <div className="relative z-10 space-y-8 p-1">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
@@ -327,15 +327,15 @@ export const Dashboard: React.FC = () => {
     const getGradeCount = (name: string) => (stats.classDistribution || []).find((c: any) => c.name === name)?.count || 0;
     const gradeTotal = ['Lớp 10', 'Lớp 11', 'Lớp 12'].reduce((sum, name) => sum + getGradeCount(name), 0);
     return (
-        <div className="home-studio h-full overflow-y-auto custom-scrollbar">
+        <div className="home-studio">
             {showUpgrade && <FreeUpgradeModal onClose={() => setShowUpgrade(false)} role={user?.role || 'TEACHER'} />}
             <header className="home-heading">
-                <div><p className="home-eyebrow">KHÔNG GIAN LÀM VIỆC</p><h1>Chào {user?.full_name || user?.username} <span className="home-greeting">✦</span></h1><p>Mọi ý tưởng cho một tiết học hay, bắt đầu từ đây.</p></div>
+                <div><p className="home-eyebrow">TỔNG QUAN KHÔNG GIAN LÀM VIỆC</p><h1>Chào {user?.full_name || user?.username} <span className="home-greeting">✦</span></h1><p>Quản lý nội dung, chuẩn bị đề thi và theo dõi chất lượng trong một không gian.</p></div>
                 <div className="home-date"><Clock size={16}/>{new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
             </header>
             <section className="home-launch">
-                <div className="home-launch-copy"><span className="home-pill"><span/> EXAMHUB · DẠY HỌC CÓ HỆ THỐNG</span><h2>Từ câu hỏi hay.<br/>Đến đề thi chất lượng.</h2><p>Tập trung vào chuyên môn. ExamHub giúp bạn tổ chức nội dung, xây dựng đề thi và theo dõi chất lượng ngân hàng câu hỏi.</p><div className="home-launch-links"><NavLink to="/questions" className="home-primary"><Plus size={18}/>Thêm câu hỏi<ArrowRight size={17}/></NavLink><NavLink to="/assign-id" className="home-secondary">Gán ID tự động<ArrowRight size={17}/></NavLink></div></div>
-                <div className="home-illustration" aria-hidden="true"><div className="home-orbit orbit-one"/><div className="home-orbit orbit-two"/><div className="home-sheet"><div className="home-sheet-top"><span className="home-sheet-icon"><FileQuestion size={24}/></span><span>NGÂN HÀNG CÂU HỎI<small>Nội dung được tổ chức rõ ràng</small></span></div><div className="home-sheet-lines"><i/><i/><i/></div><div className="home-sheet-tags"><span>Nhận biết</span><span>Thông hiểu</span><span>Vận dụng</span></div><div className="home-sheet-bottom"><CheckCircle2 size={18}/><span>Sẵn sàng cho đề thi tiếp theo</span></div></div><div className="home-floating"><Layers size={22}/><div>Ma trận đề thi<small>Cấu trúc rõ. Đề thi chuẩn.</small></div><span>↗</span></div><span className="home-decoration">✦</span></div>
+                <div className="home-launch-copy"><span className="home-pill"><span/> EXAMHUB WORKSPACE</span><h2>Một nơi để chuẩn bị<br/>mọi bài kiểm tra.</h2><p>Từ ngân hàng câu hỏi đến ma trận đề thi, bắt đầu công việc hôm nay theo cách của bạn.</p><div className="home-launch-links"><NavLink to="/questions" className="home-primary"><Plus size={18}/>Thêm câu hỏi<ArrowRight size={17}/></NavLink><NavLink to="/assign-id" className="home-secondary">Gán ID tự động<ArrowRight size={17}/></NavLink></div></div>
+                <div className="home-launch-workflow"><p className="home-eyebrow">QUY TRÌNH CHUYÊN MÔN</p><NavLink to="/questions"><span className="home-workflow-icon"><FileQuestion size={22}/></span><div><strong>Tổ chức ngân hàng câu hỏi</strong><p>Tập hợp và quản lý nội dung theo bài, dạng.</p></div><ArrowRight size={18}/></NavLink><NavLink to="/exam"><span className="home-workflow-icon"><Layers size={22}/></span><div><strong>Xây dựng ma trận đề thi</strong><p>Chọn cấu trúc phù hợp với mục tiêu đánh giá.</p></div><ArrowRight size={18}/></NavLink><NavLink to="/irt"><span className="home-workflow-icon"><BarChart3 size={22}/></span><div><strong>Theo dõi chất lượng câu hỏi</strong><p>Phân tích dữ liệu sau mỗi lần tổ chức thi.</p></div><ArrowRight size={18}/></NavLink></div>
             </section>
             <div className="home-metrics">
                 <StatCard title="Tổng câu hỏi" value={stats.totalQuestions} icon={FileQuestion} color="blue" trend={'+' + (stats.recentQuestions?.length || 0) + ' mới'}/>
