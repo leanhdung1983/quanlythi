@@ -188,7 +188,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                                     <SidebarGroup title={t('data_mgmt')} isCompact={isCompact}>
                                         <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} isCompact={isCompact} />
                                         <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} isCompact={isCompact} />
-                                        <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" isCompact={isCompact} />
+                                        {isAdmin && <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" isCompact={isCompact} />}
                                         <SidebarItem to="/irt" icon={Target} label="Phân tích IRT" isCompact={isCompact} />
                                     </SidebarGroup>
 
@@ -281,7 +281,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                                 <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">Quản lý</div>
                                 <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} onClick={() => setIsMobileMenuOpen(false)}/>
-                                <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" onClick={() => setIsMobileMenuOpen(false)}/>
+                                {isAdmin && <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" onClick={() => setIsMobileMenuOpen(false)}/>}
                                 <SidebarItem to="/irt" icon={Target} label="Phân tích IRT" onClick={() => setIsMobileMenuOpen(false)}/>
                                 
                                 <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">Công cụ</div>

@@ -64,7 +64,7 @@ export function injectCanonicalId(source, id) {
 }
 
 // Format structural blocks without splitting math groups or commands in comments.
-export function formatQuestionLayout(source) {
+export function formatQuestionLayout(source, { fillEmptySolution = true } = {}) {
     const edits = [];
     let depth = 0;
     const skipSpace = index => {
@@ -105,7 +105,7 @@ export function formatQuestionLayout(source) {
                     end = n + 1 === count ? group.end : skipSpace(group.end);
                 }
                 if (groups.length === count) {
-                    const text = count === 1 ? `${header}{\n${groups[0] || 'nội dung lời giải'}\n}`
+                    const text = count === 1 ? `${header}{\n${groups[0] || (fillEmptySolution ? 'nội dung lời giải' : '')}\n}`
                         : `${header}\n${groups.map(content => `{${content}}`).join('\n')}`;
                     edits.push({ start: i, end, text: `\n${text}\n` });
                     i = end - 1;

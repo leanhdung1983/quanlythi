@@ -144,8 +144,8 @@ router.post('/admin/tikz-jobs/:id/progress', async (req, res) => {
     const id = jobId(req.params.id);
     const { token, afterId, synced = 0, failed = 0, scanned = 1 } = req.body;
     if (!id || !tokenValid(token) || !Number.isSafeInteger(afterId) || afterId < 0
-        || !Number.isSafeInteger(synced) || synced < 0 || synced > 100
-        || !Number.isSafeInteger(failed) || failed < 0 || failed > 100
+        || !Number.isSafeInteger(synced) || synced < 0 || synced > 10000
+        || !Number.isSafeInteger(failed) || failed < 0 || failed > 10000
         || !Number.isSafeInteger(scanned) || scanned < 0 || scanned > 100) {
         return res.status(400).json({ error: 'Tiến độ không hợp lệ.' });
     }
@@ -196,6 +196,8 @@ router.post('/admin/tikz-jobs/:id/finish', async (req, res) => {
     try {
         const finished = await withTransaction(async conn => {
             const [rows] = await conn.query('SELECT status, lease_token FROM tikz_render_jobs WHERE id = ? FOR UPDATE', [id]);
+            // Repeating a finish after a lost response is a no-op for an ADMIN.
+            if (rows.length && rows[0].status === status) return true;
             if (!rows.length || rows[0].lease_token !== token || !['RUNNING', 'CANCEL_REQUESTED'].includes(rows[0].status)) return false;
             if (rows[0].status === 'CANCEL_REQUESTED' && status === 'COMPLETED') return false;
             await conn.query('UPDATE tikz_render_jobs SET status = ?, error_message = ?, heartbeat_at = NOW(), lease_token = NULL WHERE id = ?', [status, String(error).slice(0, 1000) || null, id]);

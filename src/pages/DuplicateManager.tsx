@@ -17,6 +17,11 @@ export const DuplicateManager: React.FC = () => {
     const [jobId, setJobId] = useState<number | null>(null);
     const [progress, setProgress] = useState(0);
     const [rehashing, setRehashing] = useState(false);
+    const [scanned, setScanned] = useState(false);
+    const [pending, setPending] = useState(0);
+    const [rehashCount, setRehashCount] = useState(0);
+    const groupKey = (group: Question[]) => Math.min(...group.map(q => q.id));
+    const busy = loading || processing || rehashing;
     
     // State to track which ID is selected as "Keeper" for each group
     const [selections, setSelections] = useState<Record<number, number>>({});
@@ -38,7 +43,7 @@ export const DuplicateManager: React.FC = () => {
         const validIds = group.filter(q => validIdRegex.test(q.id_full || ''));
         if (validIds.length > 0) {
             // Sub-priority: Most used (used_count)
-            validIds.sort((a, b) => (b.used_count || 0) - (a.used_count || 0));
+            validIds.sort((a, b) => (b.used_count || 0) - (a.used_count || 0) || a.id - b.id);
             // Sub-sub-priority: Oldest (created_at) - implied by lower ID usually
             return validIds[0].id;
         }
@@ -62,13 +67,18 @@ export const DuplicateManager: React.FC = () => {
             if (res && res.groups) {
                 const foundGroups: Question[][] = res.groups;
                 setGroups(foundGroups);
+                setPending(res.pending || 0);
+                setScanned(true);
                 
                 // Auto-select the best candidate to keep for each group
-                const initialSelections: Record<number, number> = {};
-                foundGroups.forEach((group, idx) => {
-                    initialSelections[idx] = determineBestCandidate(group);
+                setSelections(previous => {
+                    const initialSelections: Record<number, number> = {};
+                    foundGroups.forEach(group => {
+                        const key = groupKey(group);
+                        initialSelections[key] = group.some(q => q.id === previous[key]) ? previous[key] : determineBestCandidate(group);
+                    });
+                    return initialSelections;
                 });
-                setSelections(initialSelections);
             }
         } catch (e) {
             console.error(e);
@@ -83,6 +93,7 @@ export const DuplicateManager: React.FC = () => {
             const interval = setInterval(async () => {
                 try {
                     const res = await apiService.fetchJobStatus(jobId);
+                    if (!res.success || !res.data) throw new Error('Không đọc được trạng thái tác vụ.');
                     if (res.success) {
                         setProgress(res.data.progress);
                         if (res.data.status === 'COMPLETED') {
@@ -95,7 +106,10 @@ export const DuplicateManager: React.FC = () => {
                             alert("Lỗi tác vụ: " + res.data.error_message);
                         }
                     }
-                } catch (e) { console.error(e); }
+                } catch (e) {
+                    setJobId(null); setProcessing(false);
+                    alert('Không thể đọc tiến độ tác vụ. Hãy bấm Xem kết quả hoặc quét lại để kết nối với tác vụ đang chạy.');
+                }
             }, 2000);
             return () => clearInterval(interval);
         }
@@ -109,21 +123,27 @@ export const DuplicateManager: React.FC = () => {
             const res = await apiService.createJob('DUPLICATE_SCAN', user.id);
             if (res.success) {
                 setJobId(res.jobId);
-            }
+            } else throw new Error('Không thể tạo tác vụ quét.');
         } catch (e) {
             console.error(e);
             setProcessing(false);
+            alert('Không thể bắt đầu quét: ' + (e as Error).message);
         }
     };
 
     const rehashQuestions = async () => {
         setRehashing(true);
+        setRehashCount(0);
         try {
-            const res = await apiService.rehashQuestions();
-            if (res.success) {
-                alert(`Đã băm xong ${res.count} câu hỏi mới.`);
-                scanDuplicates();
+            let count = 0;
+            while (true) {
+                const res = await apiService.rehashQuestions();
+                if (!res.success) throw new Error('Không thể đồng bộ mã băm.');
+                count += res.count; setRehashCount(count);
+                if (res.done) break;
             }
+            alert(`Đã đồng bộ mã băm ${count} câu hỏi.`);
+            await scanDuplicates();
         } catch (e) {
             console.error(e);
             alert("Lỗi khi băm dữ liệu.");
@@ -138,26 +158,28 @@ export const DuplicateManager: React.FC = () => {
 
     const resolveGroup = async (groupIdx: number) => {
         const group = groups[groupIdx];
-        const keepId = selections[groupIdx];
+        if (busy || !group) return;
+        const keepId = selections[groupKey(group)];
+        if (!group.some(q => q.id === keepId)) return alert('Hãy chọn câu cần giữ lại trước khi xử lý.');
         const deleteIds = group.filter(q => q.id !== keepId).map(q => q.id);
 
         if (deleteIds.length === 0) return;
 
-        // Optimistic UI update
-        const backupGroups = [...groups];
-        setGroups(prev => prev.filter((_, i) => i !== groupIdx));
-
+        if (!confirm(`Giữ câu #${keepId} và xoá vĩnh viễn ${deleteIds.length} câu còn lại trong nhóm này?`)) return;
+        setProcessing(true);
         try {
-            await apiService.bulkDeleteQuestions(deleteIds, user?.id);
+            await apiService.resolveDuplicates([{ keepId, ids: group.map(q => q.id) }]);
+            await scanDuplicates();
         } catch (e: unknown) {
             alert("Lỗi xoá: " + (e as Error).message);
-            setGroups(backupGroups); // Revert on error
-        }
+        } finally { setProcessing(false); }
     };
 
     const resolveAll = async () => {
+        if (busy) return;
+        if (groups.some(group => !group.some(q => q.id === selections[groupKey(group)]))) return alert('Mỗi nhóm cần có một câu được chọn giữ lại.');
         const totalToDelete = groups.reduce((acc, group, idx) => {
-            const keepId = selections[idx];
+            const keepId = selections[groupKey(group)];
             return acc + group.filter(q => q.id !== keepId).length;
         }, 0);
 
@@ -167,52 +189,39 @@ export const DuplicateManager: React.FC = () => {
 
         setProcessing(true);
         try {
-            // Collect all IDs to delete
-            let allDeleteIds: number[] = [];
-            groups.forEach((group, idx) => {
-                const keepId = selections[idx];
-                const ids = group.filter(q => q.id !== keepId).map(q => q.id);
-                allDeleteIds = [...allDeleteIds, ...ids];
-            });
-
-            // Chunk requests if too many
-            const chunkSize = 500;
-            for (let i = 0; i < allDeleteIds.length; i += chunkSize) {
-                const chunk = allDeleteIds.slice(i, i + chunkSize);
-                await apiService.bulkDeleteQuestions(chunk, user?.id);
-            }
-
-            alert(`Đã xử lý xong! Dọn dẹp ${allDeleteIds.length} câu hỏi rác.`);
-            scanDuplicates(); // Refresh
+            const result = await apiService.resolveDuplicates(groups.map(group => ({ keepId: selections[groupKey(group)], ids: group.map(q => q.id) })));
+            alert(`Đã xử lý xong ${result.deleted} câu hỏi trùng lặp.`);
+            await scanDuplicates();
         } catch (e: unknown) {
             alert("Lỗi xử lý hàng loạt: " + (e as Error).message);
+            await scanDuplicates();
         } finally {
             setProcessing(false);
         }
     };
 
     return (
-        <div className="h-full flex flex-col space-y-4 min-w-[800px]">
+        <div className="h-full flex flex-col space-y-4 min-w-0">
             {/* Header */}
-            <div className="flex justify-between items-center shrink-0">
+            <div className="flex flex-wrap gap-4 justify-between items-center shrink-0">
                 <div>
                     <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2">
                         <Copy className="text-orange-500"/> Quản lý Trùng lặp
                     </h1>
                     <p className="text-xs text-slate-500">Phát hiện và xử lý các câu hỏi có nội dung LaTeX giống nhau.</p>
                 </div>
-                <div className="flex gap-2">
+                <div className="flex flex-wrap gap-2">
                     <button 
                         onClick={rehashQuestions} 
                         disabled={loading || processing || rehashing}
                         className="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 flex items-center gap-2 shadow-sm transition-all"
                     >
                         {rehashing ? <Loader2 size={16} className="animate-spin text-indigo-500"/> : <Zap size={16} className="text-indigo-500"/>} 
-                        {rehashing ? 'Đang băm...' : 'Đồng bộ Mã băm'}
+                        {rehashing ? `Đang băm (${rehashCount})...` : 'Đồng bộ Mã băm'}
                     </button>
                     <button 
                         onClick={startScanJob} 
-                        disabled={loading || processing}
+                        disabled={busy}
                         className="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 flex items-center gap-2 shadow-sm transition-all"
                     >
                         {processing ? <Loader2 size={16} className="animate-spin text-orange-500"/> : <RefreshCw size={16}/>} 
@@ -220,7 +229,7 @@ export const DuplicateManager: React.FC = () => {
                     </button>
                     <button 
                         onClick={scanDuplicates} 
-                        disabled={loading || processing}
+                        disabled={busy}
                         className="px-4 py-2 bg-white border border-slate-300 text-slate-700 font-bold rounded-lg hover:bg-slate-50 flex items-center gap-2 shadow-sm transition-all"
                     >
                         {loading ? <Loader2 size={16} className="animate-spin"/> : <RefreshCw size={16}/>} Xem kết quả
@@ -228,7 +237,7 @@ export const DuplicateManager: React.FC = () => {
                     {groups.length > 0 && (
                         <button 
                             onClick={resolveAll}
-                            disabled={processing}
+                            disabled={busy}
                             className="px-5 py-2 bg-red-600 text-white font-bold rounded-lg hover:bg-red-700 flex items-center gap-2 shadow-md transition-all active:scale-95 disabled:opacity-50"
                         >
                             {processing ? <Loader2 size={18} className="animate-spin"/> : <Trash2 size={18}/>}
@@ -237,6 +246,8 @@ export const DuplicateManager: React.FC = () => {
                     )}
                 </div>
             </div>
+            {pending > 0 && <p className="text-sm bg-amber-50 text-amber-800 border border-amber-200 p-3 rounded-lg">Có {pending.toLocaleString()} câu chưa đồng bộ mã băm. Hãy đồng bộ hoặc quét tác vụ nền để có kết quả đầy đủ.</p>}
+            {groups.length > 0 && <p className="text-xs text-slate-500">Hiển thị tối đa 500 nhóm mỗi lượt. Sau khi xử lý, tải kết quả mới để xem các nhóm tiếp theo. Chọn câu giữ lại và kiểm tra nội dung trước khi xoá.</p>}
 
             {/* Content */}
             <div className="flex-1 bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden flex flex-col">
@@ -250,15 +261,15 @@ export const DuplicateManager: React.FC = () => {
                         <div className="p-6 bg-green-50 rounded-full">
                             <CheckCircle2 size={64} className="text-green-500"/>
                         </div>
-                        <h3 className="text-xl font-bold text-slate-700">Tuyệt vời!</h3>
-                        <p>Không tìm thấy câu hỏi trùng lặp nào trong CSDL.</p>
+                        <h3 className="text-xl font-bold text-slate-700">{!scanned ? 'Sẵn sàng kiểm tra trùng lặp' : pending > 0 ? 'Cần đồng bộ dữ liệu' : 'Không tìm thấy câu trùng'}</h3>
+                        <p className="text-center px-4">{!scanned ? 'Bấm Quét tác vụ nền để kiểm tra toàn bộ ngân hàng câu hỏi.' : pending > 0 ? 'Kết quả hiện tại chưa bao gồm các câu chưa đồng bộ.' : 'Không tìm thấy nhóm có nội dung LaTeX giống nhau trong dữ liệu đã đồng bộ.'}</p>
                     </div>
                 ) : (
                     <div className="flex-1 overflow-y-auto p-6 bg-slate-50/50 custom-scrollbar space-y-6">
                         {paginatedGroups.map((group, pIdx) => {
                             const idx = (currentPage - 1) * itemsPerPage + pIdx;
                             return (
-                                <div key={idx} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2">
+                                <div key={groupKey(group)} className="bg-white rounded-xl border border-slate-200 shadow-sm overflow-hidden animate-in fade-in slide-in-from-bottom-2">
                                     {/* Group Header */}
                                     <div className="px-4 py-3 bg-slate-100/50 border-b border-slate-100 flex justify-between items-center">
                                         <div className="flex items-center gap-2">
@@ -267,6 +278,7 @@ export const DuplicateManager: React.FC = () => {
                                         </div>
                                         <button 
                                             onClick={() => resolveGroup(idx)}
+                                            disabled={busy}
                                             className="text-xs bg-white border border-slate-300 hover:border-red-300 hover:text-red-600 px-3 py-1.5 rounded-lg font-bold shadow-sm transition-colors flex items-center gap-1"
                                         >
                                             <Trash2 size={12}/> Xoá các câu thừa
@@ -278,7 +290,7 @@ export const DuplicateManager: React.FC = () => {
                                         <div className="md:w-1/2 p-4 border-b md:border-b-0 md:border-r border-slate-100 bg-slate-50/30">
                                             <p className="text-[10px] font-bold text-slate-400 uppercase mb-2">Nội dung trùng lặp:</p>
                                             <div className="text-sm text-slate-800 max-h-48 overflow-y-auto custom-scrollbar">
-                                                <MathRenderer content={group[0].original_latex || group[0].raw_latex} mode="all" isExTest={true} />
+                                                <MathRenderer content={(group.find(q => q.id === selections[groupKey(group)]) || group[0]).original_latex || (group.find(q => q.id === selections[groupKey(group)]) || group[0]).raw_latex} mode="all" isExTest={true} />
                                             </div>
                                         </div>
 
@@ -294,17 +306,15 @@ export const DuplicateManager: React.FC = () => {
                                                 </thead>
                                                 <tbody className="divide-y divide-slate-50">
                                                     {group.map(q => {
-                                                        const isSelected = selections[idx] === q.id;
+                                                        const isSelected = selections[groupKey(group)] === q.id;
                                                         return (
                                                             <tr 
                                                                 key={q.id} 
-                                                                onClick={() => handleKeepSelection(idx, q.id)}
+                                                                onClick={() => !busy && handleKeepSelection(groupKey(group), q.id)}
                                                                 className={`cursor-pointer transition-colors ${isSelected ? 'bg-green-50' : 'hover:bg-slate-50'}`}
                                                             >
                                                                 <td className="p-3 text-center">
-                                                                    <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center mx-auto transition-all ${isSelected ? 'border-green-500 bg-green-500 text-white' : 'border-slate-300'}`}>
-                                                                        {isSelected && <CheckCircle2 size={12}/>}
-                                                                    </div>
+                                                                    <input type="radio" name={`keeper-${groupKey(group)}`} aria-label={`Giữ lại câu #${q.id}`} checked={isSelected} disabled={busy} onChange={() => handleKeepSelection(groupKey(group), q.id)} className="w-4 h-4 accent-green-600"/>
                                                                 </td>
                                                                 <td className="p-3">
                                                                     <div className="flex items-center gap-2">

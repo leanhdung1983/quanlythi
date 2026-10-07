@@ -5,6 +5,7 @@ import { GoogleGenAI } from "@google/genai";
 import { sanitizeCompiledSvg } from './svgImage.js';
 import { classifyGeminiFailure, cooldownForFailure, orderAvailableAttempts } from './geminiResilience.js';
 import { resolveGeminiModels } from './geminiModels.js';
+import { pendingDuplicateSql, updateDuplicateFingerprint } from './duplicateFingerprint.js';
 import { cacheMiddleware, clearCache } from '../redis.js';
 
 // Re-export cache helpers
@@ -601,7 +602,7 @@ export async function seedDatabase() {
             console.log("Migration notice (questions refactor):", e.message);
         }
 
-        for (const column of ['layout_normalization_version INT NOT NULL DEFAULT 0', 'layout_normalization_hash CHAR(64) NULL']) {
+        for (const column of ['layout_normalization_version INT NOT NULL DEFAULT 0', 'layout_normalization_hash CHAR(64) NULL', 'duplicate_hash_version INT NOT NULL DEFAULT 0']) {
             try { await pool.query(`ALTER TABLE questions ADD COLUMN ${column}`); }
             catch (error) { if (error.code !== 'ER_DUP_FIELDNAME' && error.errno !== 1060) throw error; }
         }
@@ -1017,7 +1018,7 @@ export async function processBackgroundJobs() {
 
         try {
             if (job.job_type === 'DUPLICATE_SCAN') {
-                const [{ total }] = await query("SELECT COUNT(*) as total FROM questions WHERE is_duplicate_checked = FALSE OR content_hash IS NULL");
+                const [{ total }] = await query(`SELECT COUNT(*) as total FROM questions WHERE ${pendingDuplicateSql}`);
                 const totalUnchecked = total || 0;
                 let processed = 0;
                 let hasMore = true;
@@ -1034,17 +1035,14 @@ export async function processBackgroundJobs() {
                 }
 
                 while (hasMore) {
-                    const unchecked = await query("SELECT id, content_latex FROM questions WHERE is_duplicate_checked = FALSE OR content_hash IS NULL LIMIT 2000");
+                    const unchecked = await query(`SELECT id, content_latex, content_latex_original FROM questions WHERE ${pendingDuplicateSql} ORDER BY id LIMIT 200`);
                     if (unchecked.length === 0) {
                         hasMore = false;
                         break;
                     }
 
                     for (const q of unchecked) {
-                        const normalized = normalizeLatex(q.content_latex);
-                        const hash = crypto.createHash('sha256').update(normalized).digest('hex');
-                        await query("UPDATE questions SET content_hash = ?, is_duplicate_checked = TRUE WHERE id = ?", [hash, q.id]);
-                        processed++;
+                        processed += await updateDuplicateFingerprint(query, q);
                     }
 
                     const progress = Math.min(99, Math.floor((processed / totalUnchecked) * 100));

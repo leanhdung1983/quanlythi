@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { svgImageSource } from '../utils/svgImageSource';
 import { apiService } from '../services/api';
 import { Loader2, Search, Eye, Copy, Check, Code, Image as ImageIcon, X, Database, Wand2, Save } from 'lucide-react';
@@ -82,15 +82,21 @@ export const AdminSourceViewer: React.FC = () => {
     const [jobError, setJobError] = useState<string | null>(null);
     const [tikzFailures, setTikzFailures] = useState<TikzFailure[]>([]);
     const [selectedFailure, setSelectedFailure] = useState<TikzFailure | null>(null);
+    const refreshingJob = useRef(false);
     const activeJob = Boolean(job && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(job.status));
 
     const refreshFailures = async () => setTikzFailures(await apiService.fetchTikzFailures() || []);
 
     const refreshJob = async () => {
-        const result = await apiService.fetchTikzJobStatus();
-        setJob(result.job || null);
-        setWorkerOnline(Boolean(result.worker));
-        await refreshFailures();
+        if (refreshingJob.current) return;
+        refreshingJob.current = true;
+        try {
+            const result = await apiService.fetchTikzJobStatus();
+            setJob(result.job || null);
+            setWorkerOnline(Boolean(result.worker));
+            await refreshFailures();
+            setJobError(null);
+        } finally { refreshingJob.current = false; }
     };
 
     useEffect(() => {
@@ -336,7 +342,7 @@ export const AdminSourceViewer: React.FC = () => {
                 <div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
                     <div>
                         <h2 className="text-lg font-black text-slate-800">Quét và biên dịch SVG bằng máy local</h2>
-                        <p className="text-sm text-slate-500">Worker chỉ nhận các câu có hình đang thiếu hoặc chưa dựng SVG; nếu biên dịch lỗi, AI sẽ sửa TikZ một lần rồi biên dịch và kiểm tra an toàn lại trước khi lưu.</p>
+                        <p className="text-sm text-slate-500">Tự động xử lý các hình còn thiếu SVG, lưu tiến độ sau từng câu và tiếp tục khi kết nối phục hồi. Hình biên dịch lỗi được ghi riêng để không chặn các câu tiếp theo.</p>
                         <p className={`mt-2 text-xs font-bold ${workerOnline ? 'text-emerald-700' : 'text-amber-700'}`}>
                             Worker: {workerOnline ? 'Đang kết nối' : 'Chưa kết nối — công việc sẽ chờ máy local'}
                         </p>
@@ -367,7 +373,7 @@ export const AdminSourceViewer: React.FC = () => {
                 {job?.stale && <p className="mt-3 text-xs font-bold text-red-700">Lô đã mất heartbeat quá 10 phút. Có thể bấm “Khởi động lại lô bị treo”.</p>}
                 {job?.errorMessage && <p className="mt-3 text-xs text-red-700">{job.errorMessage}</p>}
                 {jobError && <p className="mt-3 text-xs text-red-700">{jobError}</p>}
-                <p className="mt-4 text-xs text-slate-500">Khởi động một lần <code>python scripts/tikz_local_worker.py --url URL_RENDER --daemon</code> trên máy có TeX. SVG được tối ưu và hỗ trợ tối đa 24 MB; AI không được lưu trực tiếp mà luôn phải qua biên dịch và bộ lọc an toàn.</p>
+                <p className="mt-4 text-xs text-slate-500">Có thể đóng trang web trong khi biên dịch; hãy giữ máy local và worker đang chạy. Khi mất mạng, worker tự kết nối lại và tiếp tục từ tiến độ đã lưu. SVG chỉ được cập nhật sau khi biên dịch và kiểm tra an toàn thành công.</p>
             </section>
 
             <section className="mb-8 rounded-3xl border border-red-200 bg-white p-6 shadow-sm">

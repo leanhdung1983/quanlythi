@@ -410,6 +410,10 @@ export const apiService = {
         const response = await fetch(`${API_URL}/duplicates/find`);
         return await handleResponse(response, '/duplicates/find');
     },
+    async resolveDuplicates(groups: { keepId: number; ids: number[] }[]) {
+        const response = await fetch(`${API_URL}/duplicates/resolve`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ groups }) });
+        return await handleResponse(response, '/duplicates/resolve');
+    },
     async rehashQuestions() {
         const response = await fetch(`${API_URL}/duplicates/rehash`, { method: 'POST' });
         return await handleResponse(response, '/duplicates/rehash');

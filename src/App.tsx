@@ -168,7 +168,7 @@ const App: React.FC = () => {
             <Route path="/assign-id" element={<TeacherGuard><IdAssigner /></TeacherGuard>} />
             <Route path="/exam" element={<AuthGuard><ExamGenerator /></AuthGuard>} />
             <Route path="/converter" element={<AuthGuard><Converter /></AuthGuard>} />
-            <Route path="/duplicates" element={<AuthGuard><DuplicateManager /></AuthGuard>} />
+            <Route path="/duplicates" element={<AdminGuard><DuplicateManager /></AdminGuard>} />
             <Route path="/online-exam" element={<AuthGuard><OnlineExam /></AuthGuard>} />
             <Route path="/irt" element={<TeacherGuard><IRTAnalysis /></TeacherGuard>} />
             <Route path="/eduloop" element={<AuthGuard><EduLoop /></AuthGuard>} />

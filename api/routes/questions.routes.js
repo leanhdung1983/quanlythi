@@ -1,5 +1,4 @@
 import express from 'express';
-import crypto from 'crypto';
 import { 
     pool,
     query, 
@@ -8,7 +7,6 @@ import {
     requireTeacherOrAdmin, 
     canManageQuestion,
     generateHash,
-    normalizeLatex,
     sanitizeSvg,
     resolveHierarchyIds,
     getGradeDigitSQL,
@@ -19,6 +17,7 @@ import { inspectQuestionId, normalizeId6, normalizeQuestionSource, questionTimes
 import { requireLearningUnit } from '../learningAccess.js';
 import { synchronizeQuestionEdit } from '../examRegrade.js';
 import { normalizeQuestionBatch, SOURCE_LAYOUT_VERSION, sourceLayoutHash } from '../questionNormalization.js';
+import { pendingDuplicateSql, updateDuplicateFingerprint, groupExactDuplicates, resolveDuplicateGroups } from '../duplicateFingerprint.js';
 
 const router = express.Router();
 
@@ -633,53 +632,57 @@ router.get('/tree-data', cacheMiddleware(300), async (req, res) => {
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
+router.post('/duplicates/resolve', async (req, res) => {
+    if (!requireAdmin(req, res)) return;
+    const conn = await pool.getConnection();
+    try {
+        await conn.beginTransaction();
+        const deleted = await resolveDuplicateGroups(conn, req.body.groups);
+        await conn.commit();
+        await clearCache('/api/questions*');
+        res.json({ success: true, deleted });
+    } catch (error) {
+        await conn.rollback();
+        res.status(error.status || 500).json({ error: error.message });
+    } finally { conn.release(); }
+});
+
 router.get('/duplicates/find', async (req, res) => {
     try {
         if (!requireAdmin(req, res)) return;
         const dupQuestions = await query(`
-            SELECT q.id, q.legacy_full_id as id_full, q.content_latex as raw_latex, q.content_latex_original as original_latex, q.used_count, q.content_hash
+            SELECT q.id, q.legacy_full_id as id_full, q.content_latex as raw_latex, q.content_latex_original as original_latex,
+                q.used_count, q.content_hash, q.created_at, qt.code AS q_type
             FROM questions q
             JOIN (
                 SELECT content_hash 
                 FROM questions 
-                WHERE content_hash IS NOT NULL 
-                GROUP BY content_hash 
+                WHERE content_hash IS NOT NULL AND is_duplicate_checked = TRUE AND duplicate_hash_version = 1
+                GROUP BY content_hash
                 HAVING COUNT(*) > 1
+                ORDER BY content_hash
                 LIMIT 500
             ) dup ON q.content_hash = dup.content_hash
+            LEFT JOIN question_types qt ON qt.id = q.type_id
+            WHERE q.is_duplicate_checked = TRUE AND q.duplicate_hash_version = 1
             ORDER BY q.content_hash, q.id ASC
         `);
 
-        const groupsMap = {};
-        dupQuestions.forEach(q => {
-            if (!groupsMap[q.content_hash]) {
-                groupsMap[q.content_hash] = [];
-            }
-            groupsMap[q.content_hash].push({
-                id: q.id,
-                id_full: q.id_full,
-                raw_latex: q.raw_latex,
-                used_count: q.used_count,
-                q_type: 'TN'
-            });
-        });
-
-        res.json({ success: true, groups: Object.values(groupsMap) });
+        const [[pending]] = await pool.query(`SELECT COUNT(*) AS count FROM questions WHERE ${pendingDuplicateSql}`);
+        res.json({ success: true, groups: groupExactDuplicates(dupQuestions), pending: Number(pending.count) });
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
 
 router.post('/duplicates/rehash', async (req, res) => {
     try {
         if (!requireAdmin(req, res)) return;
-        const rows = await query("SELECT id, content_latex FROM questions WHERE is_duplicate_checked = FALSE OR content_hash IS NULL");
+        const rows = await query(`SELECT id, content_latex, content_latex_original FROM questions WHERE ${pendingDuplicateSql} ORDER BY id LIMIT 200`);
         let count = 0;
         for (const row of rows) {
-            const normalized = normalizeLatex(row.content_latex);
-            const hash = crypto.createHash('sha256').update(normalized).digest('hex');
-            await query("UPDATE questions SET content_hash = ?, is_duplicate_checked = TRUE WHERE id = ?", [hash, row.id]);
-            count++;
+            count += await updateDuplicateFingerprint(query, row);
         }
-        res.json({ success: true, count });
+        const [[remaining]] = await pool.query(`SELECT COUNT(*) AS count FROM questions WHERE ${pendingDuplicateSql}`);
+        res.json({ success: true, count, remaining: Number(remaining.count), done: Number(remaining.count) === 0 });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 

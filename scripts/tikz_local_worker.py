@@ -8,6 +8,7 @@ import argparse
 from collections import OrderedDict
 from concurrent.futures import ThreadPoolExecutor, TimeoutError as FutureTimeout
 import getpass
+import http.client
 import json
 import os
 from pathlib import Path
@@ -17,6 +18,7 @@ import subprocess
 import sys
 import tempfile
 import time
+import threading
 import uuid
 from http.cookiejar import CookieJar
 from urllib.error import HTTPError, URLError
@@ -34,11 +36,12 @@ LATEX_TEMPLATE = r"""
 \documentclass[tikz,border=2pt]{standalone}
 \usepackage[utf8]{vietnam}
 \usepackage{amsmath,amssymb,amsfonts}
+\usepackage[hidelinks]{hyperref}
 \usepackage[dvipsnames,svgnames,x11names]{xcolor}
 \usepackage{pgfplots,tkz-tab,tkz-euclide,tikz-3dplot}
 \usepackage{ex_test}
 \pgfplotsset{compat=1.15}
-\usetikzlibrary{arrows,arrows.meta,calc,intersections,angles,quotes,shapes,snakes,decorations.pathreplacing,decorations.pathmorphing,backgrounds,positioning,patterns}
+\usetikzlibrary{arrows,arrows.meta,calc,intersections,angles,quotes,shapes,trees,snakes,decorations.pathreplacing,decorations.pathmorphing,decorations.markings,backgrounds,positioning,patterns}
 \providecommand{\skipInterval}{0.5cm}
 \definecolor{roofRedSide}{RGB}{194,55,50}
 \definecolor{roofRedBottom}{RGB}{145,33,30}
@@ -53,6 +56,13 @@ LATEX_TEMPLATE = r"""
 """
 
 
+class ApiError(RuntimeError):
+    def __init__(self, message, status=None, retryable=False):
+        super().__init__(message)
+        self.status = status
+        self.retryable = retryable
+
+
 class AdminApi:
     def __init__(self, base_url):
         parsed = urlparse(base_url)
@@ -62,18 +72,23 @@ class AdminApi:
         self.opener = build_opener(HTTPCookieProcessor(CookieJar()))
 
     def request(self, method, path, data=None):
-        payload = json.dumps(data).encode("utf-8") if data is not None else None
+        payload = json.dumps(data, ensure_ascii=False).encode("utf-8") if data is not None else None
         for attempt in range(4):
             request = Request(
                 self.base_url + path, data=payload, method=method,
                 headers={"Content-Type": "application/json", "Accept": "application/json"},
             )
             try:
-                with self.opener.open(request, timeout=45) as response:
-                    return json.loads(response.read().decode("utf-8"))
+                with self.opener.open(request, timeout=180 if path.endswith('/ai-fix') else 45) as response:
+                    result = json.loads(response.read().decode("utf-8"))
+                    if not isinstance(result, dict):
+                        raise ValueError('API không trả về đối tượng JSON hợp lệ.')
+                    return result
             except HTTPError as error:
                 text = error.read().decode("utf-8", errors="replace")
-                if error.code in (429, 502, 503, 504) and attempt < 3:
+                error.close()
+                retryable = error.code in (408, 429) or error.code >= 500
+                if retryable and attempt < 3:
                     retry_after = error.headers.get("Retry-After", "")
                     delay = int(retry_after) if retry_after.isdigit() else 2 ** (attempt + 1)
                     time.sleep(min(60, max(1, delay)))
@@ -83,12 +98,12 @@ class AdminApi:
                     message = body.get("error") or body.get("message") or text
                 except ValueError:
                     message = text[:300]
-                raise RuntimeError(f"HTTP {error.code}: {message}") from error
-            except URLError as error:
+                raise ApiError(f"HTTP {error.code}: {message}", status=error.code, retryable=retryable) from error
+            except (URLError, TimeoutError, ConnectionError, http.client.HTTPException, OSError, ValueError) as error:
                 if attempt < 3:
                     time.sleep(2 ** (attempt + 1))
                     continue
-                raise RuntimeError(f"Không thể kết nối API Render: {error.reason}") from error
+                raise ApiError(f"Không thể kết nối API Render: {getattr(error, 'reason', error)}", retryable=True) from error
 
     def login(self):
         username = input("Tên đăng nhập quản trị: ").strip()
@@ -114,24 +129,63 @@ def validate_svg_references(svg):
         raise RuntimeError("SVG thiếu định nghĩa nét chữ/hình: " + ", ".join(missing[:5]))
 
 
-def compile_svg(source, timeout):
+def run_tool(command, work, timeout, environment=None, cancel_event=None):
+    """Bound the whole TeX process tree, including font-generation children."""
+    options = {"start_new_session": True} if os.name != "nt" else {
+        "creationflags": subprocess.CREATE_NO_WINDOW | subprocess.CREATE_NEW_PROCESS_GROUP,
+    }
+    with (work / "tool-output.log").open("wb") as output:
+        process = subprocess.Popen(command, cwd=work, env=environment, stdout=output,
+                                   stderr=subprocess.STDOUT, **options)
+        try:
+            deadline = time.monotonic() + timeout
+            while True:
+                if cancel_event and cancel_event.is_set():
+                    raise InterruptedError('Biên dịch đã dừng theo yêu cầu.')
+                remaining = deadline - time.monotonic()
+                if remaining <= 0:
+                    raise subprocess.TimeoutExpired(command, timeout)
+                try:
+                    process.wait(timeout=min(1, remaining))
+                    break
+                except subprocess.TimeoutExpired:
+                    continue
+        except BaseException:
+            if os.name == "nt":
+                subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"],
+                               stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL,
+                               timeout=10, creationflags=subprocess.CREATE_NO_WINDOW, check=False)
+            else:
+                import signal
+                try:
+                    os.killpg(process.pid, signal.SIGKILL)
+                except ProcessLookupError:
+                    pass
+            process.wait(timeout=10)
+            raise
+    with (work / "tool-output.log").open("rb") as output:
+        output.seek(max(0, output.seek(0, 2) - 8000))
+        tail = output.read()
+    return subprocess.CompletedProcess(command, process.returncode, tail)
+
+
+def compile_svg(source, timeout, cancel_event=None):
     if not EX_TEST_STYLE.is_file():
         raise RuntimeError(f"Thiếu bộ style ex_test: {EX_TEST_STYLE}")
     if not shutil.which("pdflatex"):
         raise RuntimeError("Không tìm thấy pdflatex trong PATH.")
     if not shutil.which("dvisvgm") and not shutil.which("pdf2svg"):
         raise RuntimeError("Cần dvisvgm hoặc pdf2svg trong PATH.")
-    with tempfile.TemporaryDirectory(prefix="id6_tikz_") as directory:
+    with tempfile.TemporaryDirectory(prefix="id6_tikz_", ignore_cleanup_errors=True) as directory:
         work = Path(directory)
         shutil.copy2(EX_TEST_STYLE, work / "ex_test.sty")
         (work / "drawing.tex").write_text(LATEX_TEMPLATE.replace("%CONTENT%", source), encoding="utf-8")
         environment = os.environ.copy()
         environment.update({"openin_any": "p", "openout_any": "p", "shell_escape": "f"})
-        latex = subprocess.run(
+        latex = run_tool(
             ["pdflatex", "-no-shell-escape", "-halt-on-error", "-file-line-error",
              "-interaction=nonstopmode", "drawing.tex"],
-            cwd=work, env=environment, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-            timeout=timeout, check=False,
+            work, timeout, environment, cancel_event,
         )
         pdf = work / "drawing.pdf"
         if latex.returncode or not pdf.is_file():
@@ -149,10 +203,11 @@ def compile_svg(source, timeout):
         errors = []
         converted = False
         for command in commands:
-            conversion = subprocess.run(
-                command, cwd=work, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
-                timeout=timeout, check=False,
-            )
+            try:
+                conversion = run_tool(command, work, timeout, cancel_event=cancel_event)
+            except subprocess.TimeoutExpired:
+                errors.append(f"{command[0]} quá thời gian {timeout}s")
+                continue
             if conversion.returncode == 0 and svg.is_file():
                 converted = True
                 break
@@ -168,6 +223,46 @@ def compile_svg(source, timeout):
         return result
 
 
+class WorkerHeartbeat:
+    def __init__(self, api, job, interval=15):
+        self.api, self.job, self.interval = api, job, interval
+        self.stop_event = threading.Event()
+        self.cancelled = threading.Event()
+        self.error = None
+        self.thread = None
+
+    def start(self):
+        if self.job:
+            self.thread = threading.Thread(target=self._run, name="tikz-heartbeat", daemon=True)
+            self.thread.start()
+
+    def _run(self):
+        while not self.stop_event.wait(self.interval):
+            try:
+                if self.job.get("workerId"):
+                    self.api.request("POST", "/api/admin/tikz-worker/heartbeat", {"workerId": self.job["workerId"]})
+                result = self.api.request("POST", "/api/admin/tikz-jobs/{}/heartbeat".format(self.job["id"]), {"token": self.job["token"]})
+                if result["status"] == "CANCEL_REQUESTED":
+                    self.cancelled.set()
+            except ApiError as error:
+                if error.status in (401, 403, 409):
+                    self.error = error
+                    self.cancelled.set()
+                    return
+            except (RuntimeError, OSError):
+                pass
+
+    def check(self):
+        if self.error:
+            raise self.error
+        return not self.cancelled.is_set()
+
+    def stop(self):
+        self.stop_event.set()
+        if self.thread:
+            self.thread.join(timeout=1)
+
+
 def run_worker(args, api=None, job=None):
     if api is None:
         api = AdminApi(args.url)
@@ -180,15 +275,22 @@ def run_worker(args, api=None, job=None):
     compiled = OrderedDict()
     cache_limit = max(4, getattr(args, "workers", 1) * 4)
     executor = ThreadPoolExecutor(max_workers=max(1, getattr(args, "workers", 1)))
+    heartbeat = WorkerHeartbeat(api, job)
+    heartbeat.start()
 
     def save_report():
         if outcomes:
             report = Path(args.report)
-            report.parent.mkdir(parents=True, exist_ok=True)
-            report.write_text(json.dumps(outcomes, ensure_ascii=False, indent=2), encoding="utf-8")
-            print(f"Báo cáo lỗi: {report}")
+            try:
+                report.parent.mkdir(parents=True, exist_ok=True)
+                report.write_text(json.dumps(outcomes, ensure_ascii=False, indent=2), encoding="utf-8")
+                print(f"Báo cáo lỗi: {report}")
+            except OSError as error:
+                print(f"Không ghi được báo cáo local, vẫn tiếp tục xử lý: {error}")
 
     def job_heartbeat():
+        if not heartbeat.check():
+            return False
         if not job:
             return True
         response = api.request("POST", f"/api/admin/tikz-jobs/{job['id']}/heartbeat", {"token": job["token"]})
@@ -200,6 +302,7 @@ def run_worker(args, api=None, job=None):
                 "token": job["token"], "afterId": question_id,
                 "synced": synced - synced_before, "failed": failed - failed_before,
             })
+            job["afterId"] = max(job["afterId"], question_id)
 
     def job_checkpoint(question_id):
         if job and question_id > 0:
@@ -207,11 +310,14 @@ def run_worker(args, api=None, job=None):
                 "token": job["token"], "afterId": question_id,
                 "synced": 0, "failed": 0, "scanned": 0,
             })
+            job["afterId"] = max(job["afterId"], question_id)
 
     def remember_compiled(hash_value, svg):
         compiled[hash_value] = svg
         compiled.move_to_end(hash_value)
         while len(compiled) > cache_limit:
+            compiled.popitem(last=False)
+        while len(compiled) > 1 and sum(len(value.encode('utf-8')) for value in compiled.values()) > 64_000_000:
             compiled.popitem(last=False)
 
     def wait_for_compile(future):
@@ -229,6 +335,9 @@ def run_worker(args, api=None, job=None):
         page = api.request("GET", "/api/admin/tikz-audit?" + urlencode({
             "afterId": cursor, "limit": args.limit, "actionable": 1,
         }))
+        if not heartbeat.check():
+            save_report()
+            return "CANCELLED"
         # TeX processes are independent. Start the unique drawings in this page
         # in a small rolling window. Do not queue the whole page: completed SVGs
         # may be very large and futures would otherwise retain all of them in RAM.
@@ -251,7 +360,7 @@ def run_worker(args, api=None, job=None):
                     hash_value, source = next(source_queue)
                 except StopIteration:
                     break
-                futures[hash_value] = executor.submit(compile_svg, source, args.timeout)
+                futures[hash_value] = executor.submit(compile_svg, source, args.timeout, heartbeat.cancelled)
 
         fill_compile_window()
         for question in page["data"]:
@@ -305,7 +414,7 @@ def run_worker(args, api=None, job=None):
                         if hash_value not in compiled:
                             future = futures.pop(hash_value, None)
                             try:
-                                svg_result = wait_for_compile(future) if future else compile_svg(image["source"], args.timeout)
+                                svg_result = wait_for_compile(future) if future else compile_svg(image["source"], args.timeout, heartbeat.cancelled)
                             finally:
                                 fill_compile_window()
                             remember_compiled(hash_value, svg_result)
@@ -318,17 +427,32 @@ def run_worker(args, api=None, job=None):
                     synced += 1
                     print(f"[ĐÃ LƯU] {label}")
                 except InterruptedError:
+                    heartbeat.check()
                     save_report()
                     return "CANCELLED"
-                except (RuntimeError, subprocess.TimeoutExpired) as error:
+                except ApiError as error:
+                    if error.retryable or error.status in (401, 403):
+                        raise
+                    # Upload errors must never be mistaken for a TeX failure.
+                    failed += 1
+                    outcomes.append({"id": question["id"], "hash": hash_value, "error": str(error)[:1000]})
+                    print(f"[KHÔNG LƯU] {label}: {error}")
+                    try:
+                        api.request("POST", "/api/admin/tikz-audit/failure", {"questionId": question["id"], "hash": hash_value, "error": str(error)[:1000]})
+                    except ApiError as report_error:
+                        if report_error.retryable or report_error.status in (401, 403):
+                            raise
+                except (RuntimeError, subprocess.TimeoutExpired, OSError) as error:
                     message = str(error)[:1000]
+                    repair_stage = 'ai'
                     try:
                         repaired = api.request("POST", "/api/admin/tikz-audit/ai-fix", {
                             "questionId": question["id"], "hash": hash_value, "error": message,
                         })
                         fixed_svg = wait_for_compile(executor.submit(
-                            compile_svg, repaired["fixedSource"], args.timeout,
+                            compile_svg, repaired["fixedSource"], args.timeout, heartbeat.cancelled,
                         ))
+                        repair_stage = 'sync'
                         api.request("POST", "/api/admin/tikz-audit/sync", {
                             "questionId": question["id"], "hash": hash_value, "svg": fixed_svg,
                         })
@@ -336,7 +460,15 @@ def run_worker(args, api=None, job=None):
                         synced += 1
                         print(f"[AI ĐÃ SỬA VÀ LƯU] {label}")
                         continue
-                    except (RuntimeError, subprocess.TimeoutExpired, KeyError) as ai_error:
+                    except InterruptedError:
+                        heartbeat.check()
+                        save_report()
+                        return "CANCELLED"
+                    except ApiError as ai_error:
+                        if ai_error.status in (401, 403) or (ai_error.retryable and (ai_error.status != 502 or repair_stage == 'sync')):
+                            raise
+                        message = f"{message} | AI sửa thất bại: {str(ai_error)}"[:1000]
+                    except (RuntimeError, subprocess.TimeoutExpired, KeyError, OSError) as ai_error:
                         message = f"{message} | AI sửa thất bại: {str(ai_error)}"[:1000]
                     failed += 1
                     outcomes.append({"id": question["id"], "hash": hash_value, "error": message})
@@ -345,7 +477,9 @@ def run_worker(args, api=None, job=None):
                         api.request("POST", "/api/admin/tikz-audit/failure", {
                             "questionId": question["id"], "hash": hash_value, "error": message,
                         })
-                    except RuntimeError as report_error:
+                    except ApiError as report_error:
+                        if report_error.retryable or report_error.status in (401, 403):
+                            raise
                         print(f"[KHÔNG LƯU ĐƯỢC BÁO CÁO] {report_error}")
             job_progress(question["id"], synced_before, failed_before)
         if args.max_questions and scanned >= args.max_questions:
@@ -360,10 +494,52 @@ def run_worker(args, api=None, job=None):
         cursor = page["afterId"]
         print(f"Đã quét {scanned} câu, đồng bộ {synced} hình, lỗi {failed}.")
     finally:
-        executor.shutdown(wait=False, cancel_futures=True)
+        heartbeat.cancelled.set()
+        heartbeat.stop()
+        executor.shutdown(wait=True, cancel_futures=True)
+        save_report()
     print(f"HOÀN TẤT: quét {scanned} câu, đồng bộ {synced} hình, lỗi {failed}.")
     save_report()
     return "COMPLETED"
+
+
+def process_claimed_job(args, api, claimed):
+    """Transient outages never close a job; reload its persisted cursor on every retry."""
+    attempt = 0
+    while True:
+        try:
+            remote = api.request('GET', '/api/admin/tikz-jobs/{}'.format(claimed['id']))['job']
+            if remote['status'] in ('COMPLETED', 'CANCELLED', 'FAILED'):
+                return remote['status']
+            claimed['afterId'] = remote['afterId']
+            status = run_worker(args, api=api, job=claimed)
+            if status == 'COMPLETED':
+                beat = api.request('POST', '/api/admin/tikz-jobs/{}/heartbeat'.format(claimed['id']), {'token': claimed['token']})
+                if beat['status'] == 'CANCEL_REQUESTED':
+                    status = 'CANCELLED'
+            api.request('POST', '/api/admin/tikz-jobs/{}/finish'.format(claimed['id']), {
+                'token': claimed['token'], 'status': status,
+            })
+            return status
+        except ApiError as error:
+            if error.status == 409:
+                print('Lô đã đổi worker hoặc nhận lệnh dừng; tải lại trạng thái trước khi nhận lô tiếp theo.')
+                return 'LEASE_LOST'
+            if error.status == 401:
+                print('Phiên quản trị đã hết hạn. Đăng nhập lại để tiếp tục từ điểm đã lưu.')
+                api.login()
+            elif not error.retryable:
+                raise
+            attempt += 1
+            delay = min(60, 5 * attempt)
+            print(f"[LÔ #{claimed['id']}] Tạm mất kết nối, thử lại sau {delay}s từ điểm đã lưu: {error}")
+            time.sleep(delay)
+        except Exception as error:
+            # A malformed page or a permanent local configuration error must be visible.
+            api.request('POST', '/api/admin/tikz-jobs/{}/finish'.format(claimed['id']), {
+                'token': claimed['token'], 'status': 'FAILED', 'error': str(error)[:1000],
+            })
+            raise
 
 
 def run_daemon(args):
@@ -378,33 +554,12 @@ def run_daemon(args):
             api.request("POST", "/api/admin/tikz-worker/heartbeat", {"workerId": worker_id})
             claimed = api.request("POST", "/api/admin/tikz-worker/claim", {"workerId": worker_id})["job"]
             if claimed:
+                claimed['workerId'] = worker_id
                 print(f"[LÔ #{claimed['id']}] Bắt đầu từ ID câu hỏi {claimed['afterId']}.")
-                last_error = None
-                for resume_attempt in range(3):
-                    try:
-                        status = run_worker(args, api=api, job=claimed)
-                        api.request("POST", f"/api/admin/tikz-jobs/{claimed['id']}/finish", {
-                            "token": claimed["token"], "status": status,
-                        })
-                        last_error = None
-                        break
-                    except Exception as error:
-                        last_error = error
-                        print(f"[LÔ #{claimed['id']}] Mất kết nối/tạm lỗi, tiếp tục lần {resume_attempt + 2}/3: {error}")
-                        if "HTTP 401" in str(error):
-                            api.login()
-                        time.sleep(min(15, 3 * (resume_attempt + 1)))
-                if last_error is not None:
-                    print(f"[LÔ #{claimed['id']}] Dừng sau 3 lần tiếp tục: {last_error}")
-                    try:
-                        api.request("POST", f"/api/admin/tikz-jobs/{claimed['id']}/finish", {
-                            "token": claimed["token"], "status": "FAILED", "error": str(last_error)[:1000],
-                        })
-                    except RuntimeError as finish_error:
-                        print(f"Không cập nhật được trạng thái lô: {finish_error}")
+                process_claimed_job(args, api, claimed)
             else:
                 time.sleep(10)
-        except RuntimeError as error:
+        except Exception as error:
             print(f"Worker không kết nối được: {error}")
             if "HTTP 401" in str(error):
                 api.login()

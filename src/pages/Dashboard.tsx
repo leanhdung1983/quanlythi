@@ -1,5 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
+import '../styles/home.css';
 import { apiService } from '../services/api';
 import { PieChart, Pie, Cell, Tooltip, ResponsiveContainer } from 'recharts';
 import { 
@@ -247,13 +248,13 @@ export const Dashboard: React.FC = () => {
 
     if (user?.role === 'STUDENT') {
         return (
-            <div className="h-full w-full overflow-y-auto custom-scrollbar pr-2 pb-20 relative">
+            <div className="home-student h-full w-full overflow-y-auto custom-scrollbar pr-2 pb-20 relative">
                 <MathBackground />
                 <div className="relative z-10 space-y-8 p-1">
                     <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                         <div>
                             <div className="inline-flex items-center gap-2 px-3 py-1 bg-white border border-indigo-100 rounded-full shadow-sm mb-2">
-                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">Hệ thống Toán học ID6</span>
+                                <span className="text-[10px] font-bold uppercase tracking-wider text-slate-500">ExamHub · Không gian học tập</span>
                             </div>
                             <h1 className="text-3xl md:text-4xl font-black text-slate-800 tracking-tight flex items-center gap-3">
                                 Xin chào, <span className="text-indigo-600">{user.full_name || user.username}</span>!
@@ -324,269 +325,36 @@ export const Dashboard: React.FC = () => {
     }
 
     const getGradeCount = (name: string) => (stats.classDistribution || []).find((c: any) => c.name === name)?.count || 0;
-    const count10 = getGradeCount('Lớp 10');
-    const count11 = getGradeCount('Lớp 11');
-    const count12 = getGradeCount('Lớp 12');
-    const totalByGrade = count10 + count11 + count12; 
-
+    const gradeTotal = ['Lớp 10', 'Lớp 11', 'Lớp 12'].reduce((sum, name) => sum + getGradeCount(name), 0);
     return (
-        <div className="dashboard-page h-full w-full overflow-y-auto custom-scrollbar pr-2 pb-12 relative">
-            <MathBackground />
-            
-            <div className="relative z-10 space-y-6 p-1">
-                {/* 1. Header */}
-                <section className="dashboard-hero relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 md:px-8 md:py-8 text-white shadow-xl shadow-slate-200">
-                    <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-indigo-500/25 blur-3xl" />
-                    <div className="absolute bottom-0 left-1/3 h-32 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
-                    <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    <div className="max-w-2xl">
-                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/10 border border-white/10 rounded-full mb-3">
-                            <span className="relative flex h-2 w-2">
-                              <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                              <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
-                            </span>
-                            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">ExamHub · Không gian giáo dục</span>
-                        </div>
-                        <h1 className="text-3xl md:text-4xl font-black tracking-tight">
-                            Chào {user?.full_name || user?.username},
-                            <span className="block text-indigo-300 mt-1">hôm nay bạn muốn làm gì?</span>
-                        </h1>
-                        <p className="text-slate-400 font-medium mt-3 flex items-center gap-2">
-                            <Clock size={14}/> {new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}
-                        </p>
-                    </div>
-                    <div className="flex flex-col sm:flex-row lg:flex-col xl:flex-row gap-3 shrink-0">
-                        <NavLink to="/assign-id" className="group bg-indigo-500 text-white px-5 py-3 rounded-xl font-bold hover:bg-indigo-400 transition-all flex items-center justify-center gap-2 shadow-lg shadow-indigo-950/30">
-                            <Tag size={19}/><span>Gán ID tự động</span><ArrowRight size={16} className="group-hover:translate-x-1 transition-transform"/>
-                        </NavLink>
-                        <NavLink to="/questions" className="group bg-white/10 text-white px-5 py-3 rounded-xl font-bold border border-white/15 hover:bg-white/15 transition-all flex items-center justify-center gap-2">
-                            <Plus size={19} className="group-hover:rotate-90 transition-transform"/><span>Thêm câu hỏi</span>
-                        </NavLink>
-                    </div>
-                    </div>
-                </section>
-
-                {/* 2. Stats Grid (Bento Box Style) */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    <StatCard 
-                        title="Tổng câu hỏi" 
-                        value={stats.totalQuestions} 
-                        icon={FileQuestion} 
-                        color="blue"
-                        trend={`+${stats.recentQuestions?.length || 0} mới`}
-                    />
-                    <StatCard 
-                        title="Mã ID6 (Dạng)" 
-                        value={stats.totalMetadata} 
-                        icon={Tag} 
-                        color="purple"
-                        trend="Định nghĩa chuẩn"
-                    />
-                    <StatCard 
-                        title="Chuyên đề & Bài" 
-                        value={stats.totalUnits} 
-                        icon={BookOpen} 
-                        color="emerald"
-                        trend={`${stats.totalChapters} Chương`}
-                    />
-                    <StatCard 
-                        title="Độ phủ trung bình" 
-                        value={Math.round(stats.totalQuestions / (stats.totalMetadata || 1))} 
-                        icon={Layers} 
-                        color="amber"
-                        trend="Câu / Dạng"
-                    />
-                </div>
-
-                {/* 3. Main Content: Charts & Actions */}
-                <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-                    
-                    {/* Left: Cognitive Level Chart */}
-                    <div className="lg:col-span-2 bg-white p-6 md:p-7 rounded-2xl border border-slate-200/80 shadow-sm relative overflow-hidden">
-                        <div className="flex items-center justify-between mb-6 relative z-10">
-                            <div>
-                                <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                    <BrainCircuit className="text-indigo-500" /> Mức độ nhận thức
-                                </h3>
-                                <p className="text-xs text-slate-400 mt-1">Phân bố câu hỏi theo độ khó ID6</p>
-                            </div>
-                            <div className="bg-slate-50 px-3 py-1 rounded-lg text-xs font-bold text-slate-500 border border-slate-200">
-                                Tổng: {stats.totalQuestions}
-                            </div>
-                        </div>
-
-                        <div className="flex flex-col md:flex-row gap-8 items-center relative z-10">
-                            {/* Chart */}
-                            <div className="w-full md:w-1/2 h-[280px] relative">
-                                <ResponsiveContainer width="100%" height="100%">
-                                    <PieChart>
-                                        <Pie
-                                            data={pieData}
-                                            cx="50%"
-                                            cy="50%"
-                                            innerRadius={65}
-                                            outerRadius={100}
-                                            paddingAngle={6}
-                                            dataKey="value"
-                                            cornerRadius={8} // Soft corners
-                                            stroke="none"
-                                        >
-                                            {pieData.map((entry: any, index: number) => (
-                                                <Cell key={`cell-${index}`} fill={entry.color} />
-                                            ))}
-                                        </Pie>
-                                        <Tooltip 
-                                            contentStyle={{
-                                                backgroundColor: 'rgba(255, 255, 255, 0.95)', 
-                                                borderRadius: '16px', 
-                                                border: 'none', 
-                                                boxShadow: '0 10px 30px -5px rgba(0,0,0,0.1)',
-                                                padding: '12px 16px'
-                                            }}
-                                            itemStyle={{ color: '#1e293b', fontWeight: 'bold', fontSize: '12px' }}
-                                            formatter={(value: number) => [`${value} câu`, '']}
-                                        />
-                                    </PieChart>
-                                </ResponsiveContainer>
-                                {/* Center Text */}
-                                <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-                                    <div className="text-center bg-white/80 backdrop-blur-sm p-4 rounded-full shadow-sm">
-                                        <div className="text-3xl font-black text-slate-800">{pieData.length}</div>
-                                        <div className="text-[10px] uppercase font-bold text-slate-400 tracking-widest">Mức độ</div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            {/* Custom Legend (No more overlapping lines) */}
-                            <div className="w-full md:w-1/2 grid grid-cols-1 gap-3">
-                                {pieData.map((item: any) => (
-                                    <div key={item.name} className="flex items-center justify-between p-3 rounded-2xl hover:bg-slate-50 transition-colors border border-transparent hover:border-slate-100 group">
-                                        <div className="flex items-center gap-3">
-                                            <div className="w-3 h-10 rounded-full" style={{ backgroundColor: item.color }}></div>
-                                            <div>
-                                                <div className="text-xs font-bold text-slate-400 uppercase tracking-wider">{item.id}</div>
-                                                <div className="font-bold text-slate-700">{item.name}</div>
-                                            </div>
-                                        </div>
-                                        <div className="text-right">
-                                            <div className="font-black text-slate-800 text-lg">{item.value}</div>
-                                            <div className="text-[10px] font-bold text-slate-400">
-                                                {Math.round((item.value / (stats.totalQuestions || 1)) * 100)}%
-                                            </div>
-                                        </div>
-                                    </div>
-                                ))}
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Right: Grade Distribution */}
-                    <div className="bg-white p-6 md:p-7 rounded-2xl border border-slate-200/80 shadow-sm flex flex-col">
-                        <div className="mb-6">
-                            <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                                <GraduationCap className="text-indigo-500" /> Phân bố khối lớp
-                            </h3>
-                            <p className="text-xs text-slate-400 mt-1">Tỷ lệ câu hỏi theo chương trình</p>
-                        </div>
-                        
-                        <div className="flex-1 flex flex-col justify-center space-y-2">
-                            <GradeProgressBar label="Lớp 12" count={count12} total={totalByGrade} colorClass="bg-indigo-500" />
-                            <GradeProgressBar label="Lớp 11" count={count11} total={totalByGrade} colorClass="bg-blue-500" />
-                            <GradeProgressBar label="Lớp 10" count={count10} total={totalByGrade} colorClass="bg-sky-400" />
-                        </div>
-
-                        <div className="mt-8 pt-6 border-t border-slate-100">
-                            <div className="flex flex-col gap-3">
-                                <h4 className="text-xs font-bold text-slate-400 uppercase tracking-widest flex items-center gap-2">
-                                    <Zap size={14} className="text-amber-500"/> Thao tác nhanh
-                                </h4>
-                                <QuickActionCard 
-                                    to="/exam" 
-                                    title="Tạo Ma Trận Đề" 
-                                    desc="Sinh đề ngẫu nhiên từ cấu trúc" 
-                                    icon={Sigma} 
-                                    color="bg-purple-500"
-                                />
-                                <QuickActionCard 
-                                    to="/assign-id" 
-                                    title="Gán ID tự động" 
-                                    desc="Chuẩn hóa file LaTeX và dữ liệu" 
-                                    icon={FunctionSquare} 
-                                    color="bg-rose-500"
-                                />
-                                <QuickActionCard 
-                                    to="/adaptive" 
-                                    title="Ôn tập Adaptive" 
-                                    desc="Học tập cá nhân hóa với AI" 
-                                    icon={Zap} 
-                                    color="bg-amber-500"
-                                />
-                                <QuickActionCard 
-                                    to="/irt" 
-                                    title="Phân tích IRT" 
-                                    desc="Đánh giá độ khó thực tế" 
-                                    icon={Target} 
-                                    color="bg-indigo-500"
-                                />
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                {/* 4. Recent Activity */}
-                <div className="bg-white rounded-2xl border border-slate-200/80 shadow-sm overflow-hidden">
-                    <div className="p-6 md:p-8 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
-                         <h3 className="text-xl font-bold text-slate-800 flex items-center gap-2">
-                            <Clock className="text-blue-500"/> Hoạt động gần đây
-                         </h3>
-                         <NavLink to="/questions" className="text-xs font-bold bg-white text-indigo-600 px-4 py-2 rounded-xl border border-indigo-100 hover:bg-indigo-50 transition-colors shadow-sm">
-                            Xem tất cả
-                         </NavLink>
-                    </div>
-                    <div className="overflow-x-auto">
-                        <table className="w-full text-left">
-                            <thead className="bg-slate-50 text-slate-400 text-[10px] uppercase font-bold tracking-widest">
-                                <tr>
-                                    <th className="p-5 pl-8">ID Code</th>
-                                    <th className="p-5">Loại</th>
-                                    <th className="p-5 text-right pr-8">Thời gian</th>
-                                </tr>
-                            </thead>
-                            <tbody className="text-sm divide-y divide-slate-50">
-                                {stats.recentQuestions && stats.recentQuestions.length > 0 ? (
-                                    stats.recentQuestions.map((q: any) => (
-                                        <tr key={q.id} className="hover:bg-indigo-50/30 transition-colors group">
-                                            <td className="p-5 pl-8">
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-8 h-8 rounded-lg bg-slate-100 text-slate-500 flex items-center justify-center font-bold text-xs group-hover:bg-indigo-500 group-hover:text-white transition-colors">
-                                                        {q.id}
-                                                    </div>
-                                                    <span className="font-mono font-bold text-slate-700">{q.id_full || 'NO-ID'}</span>
-                                                </div>
-                                            </td>
-                                            <td className="p-5">
-                                                <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-bold bg-emerald-50 text-emerald-600 border border-emerald-100">
-                                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span> Active
-                                                </span>
-                                            </td>
-                                            <td className="p-5 text-right pr-8 text-slate-400 font-medium font-mono text-xs">
-                                                {new Date(q.created_at).toLocaleString('vi-VN')}
-                                            </td>
-                                        </tr>
-                                    ))
-                                ) : (
-                                    <tr>
-                                        <td colSpan={3} className="p-12 text-center text-slate-400">
-                                            <BarChart3 size={32} className="mx-auto mb-2 opacity-20"/>
-                                            Chưa có dữ liệu
-                                        </td>
-                                    </tr>
-                                )}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
+        <div className="home-studio h-full overflow-y-auto custom-scrollbar">
+            {showUpgrade && <FreeUpgradeModal onClose={() => setShowUpgrade(false)} role={user?.role || 'TEACHER'} />}
+            <header className="home-heading">
+                <div><p className="home-eyebrow">KHÔNG GIAN LÀM VIỆC</p><h1>Chào {user?.full_name || user?.username} <span className="home-greeting">✦</span></h1><p>Mọi ý tưởng cho một tiết học hay, bắt đầu từ đây.</p></div>
+                <div className="home-date"><Clock size={16}/>{new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
+            </header>
+            <section className="home-launch">
+                <div className="home-launch-copy"><span className="home-pill"><span/> EXAMHUB · DẠY HỌC CÓ HỆ THỐNG</span><h2>Từ câu hỏi hay.<br/>Đến đề thi chất lượng.</h2><p>Tập trung vào chuyên môn. ExamHub giúp bạn tổ chức nội dung, xây dựng đề thi và theo dõi chất lượng ngân hàng câu hỏi.</p><div className="home-launch-links"><NavLink to="/questions" className="home-primary"><Plus size={18}/>Thêm câu hỏi<ArrowRight size={17}/></NavLink><NavLink to="/assign-id" className="home-secondary">Gán ID tự động<ArrowRight size={17}/></NavLink></div></div>
+                <div className="home-illustration" aria-hidden="true"><div className="home-orbit orbit-one"/><div className="home-orbit orbit-two"/><div className="home-sheet"><div className="home-sheet-top"><span className="home-sheet-icon"><FileQuestion size={24}/></span><span>NGÂN HÀNG CÂU HỎI<small>Nội dung được tổ chức rõ ràng</small></span></div><div className="home-sheet-lines"><i/><i/><i/></div><div className="home-sheet-tags"><span>Nhận biết</span><span>Thông hiểu</span><span>Vận dụng</span></div><div className="home-sheet-bottom"><CheckCircle2 size={18}/><span>Sẵn sàng cho đề thi tiếp theo</span></div></div><div className="home-floating"><Layers size={22}/><div>Ma trận đề thi<small>Cấu trúc rõ. Đề thi chuẩn.</small></div><span>↗</span></div><span className="home-decoration">✦</span></div>
+            </section>
+            <div className="home-metrics">
+                <StatCard title="Tổng câu hỏi" value={stats.totalQuestions} icon={FileQuestion} color="blue" trend={'+' + (stats.recentQuestions?.length || 0) + ' mới'}/>
+                <StatCard title="Mã ID6 (Dạng)" value={stats.totalMetadata} icon={Tag} color="purple" trend="Định nghĩa chuẩn"/>
+                <StatCard title="Chuyên đề & Bài" value={stats.totalUnits} icon={BookOpen} color="emerald" trend={stats.totalChapters + ' Chương'}/>
+                <StatCard title="Độ phủ trung bình" value={Math.round(stats.totalQuestions / (stats.totalMetadata || 1))} icon={Layers} color="amber" trend="Câu / Dạng"/>
             </div>
+            <section className="home-tools"><div className="home-section-heading"><div><p className="home-eyebrow">BẮT ĐẦU NHANH</p><h2>Công cụ của bạn</h2></div><span>Từ chuẩn bị nội dung đến đánh giá</span></div><div className="home-tool-grid">
+                <QuickActionCard to="/exam" title="Tạo Ma Trận Đề" desc="Sinh đề ngẫu nhiên từ cấu trúc" icon={Sigma} color="bg-purple-500"/>
+                <QuickActionCard to="/assign-id" title="Gán ID tự động" desc="Chuẩn hóa file LaTeX và dữ liệu" icon={FunctionSquare} color="bg-rose-500"/>
+                <QuickActionCard to="/adaptive" title="Ôn tập Adaptive" desc="Học tập cá nhân hóa với AI" icon={Zap} color="bg-amber-500"/>
+                <QuickActionCard to="/irt" title="Phân tích IRT" desc="Đánh giá độ khó thực tế" icon={Target} color="bg-indigo-500"/>
+            </div></section>
+            <div className="home-analytics">
+                <section className="home-panel"><div className="home-section-heading"><div><h2>Mức độ nhận thức</h2><p>Phân bố câu hỏi theo độ khó ID6</p></div><BrainCircuit size={20}/></div><div className="home-cognition"><div className="home-chart"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={pieData} cx="50%" cy="50%" innerRadius={72} outerRadius={95} paddingAngle={4} dataKey="value" cornerRadius={5} stroke="none">{pieData.map((entry: any, index: number) => <Cell key={index} fill={entry.color}/>)}</Pie><Tooltip formatter={(value: number) => [value + ' câu', '']} contentStyle={{borderRadius:12,border:'1px solid #e7eceb'}}/></PieChart></ResponsiveContainer><div className="home-chart-center"><strong>{pieData.length}</strong><span>Mức độ</span></div></div><div className="home-legend">{pieData.map((item: any) => <div key={item.id}><span className="home-legend-dot" style={{background:item.color}}/><span>{item.name}</span><strong>{item.value.toLocaleString()}</strong><small>{Math.round(item.value / (stats.totalQuestions || 1) * 100)}%</small></div>)}</div></div></section>
+                <section className="home-panel home-grades"><div className="home-section-heading"><div><h2>Phân bố khối lớp</h2><p>Tỷ lệ câu hỏi theo chương trình</p></div><GraduationCap size={20}/></div><div className="home-grade-bars"><GradeProgressBar label="Lớp 12" count={getGradeCount('Lớp 12')} total={gradeTotal} colorClass="bg-emerald-600"/><GradeProgressBar label="Lớp 11" count={getGradeCount('Lớp 11')} total={gradeTotal} colorClass="bg-teal-400"/><GradeProgressBar label="Lớp 10" count={getGradeCount('Lớp 10')} total={gradeTotal} colorClass="bg-amber-400"/></div><p className="home-grade-total"><BookOpen size={16}/><strong>{gradeTotal.toLocaleString()}</strong> câu hỏi trong chương trình</p></section>
+            </div>
+            <section className="home-panel home-recent"><div className="home-section-heading"><div><h2>Hoạt động gần đây</h2><p>Các câu hỏi mới trong ngân hàng</p></div><NavLink to="/questions">Xem tất cả <ArrowRight size={16}/></NavLink></div><div className="overflow-x-auto"><table className="w-full text-left"><thead><tr><th>ID Code</th><th>Loại</th><th className="text-right">Thời gian</th></tr></thead><tbody>{stats.recentQuestions?.length ? stats.recentQuestions.map((q: any) => <tr key={q.id}><td><span className="home-row-icon"><FileQuestion size={17}/></span><span className="font-mono font-semibold">{q.id_full || 'NO-ID'}</span><small className="home-row-id">#{q.id}</small></td><td><span className="home-status"><span/> Active</span></td><td className="text-right text-slate-500">{new Date(q.created_at).toLocaleString('vi-VN')}</td></tr>) : <tr><td colSpan={3} className="text-center text-slate-400 py-12"><BarChart3 size={24} className="mx-auto mb-2"/>Chưa có dữ liệu</td></tr>}</tbody></table></div></section>
+            <footer className="home-footer">ExamHub<span>Ngân hàng câu hỏi & Tổ chức thi</span></footer>
         </div>
     );
 };

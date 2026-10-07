@@ -396,6 +396,7 @@ router.post('/jobs', async (req, res) => {
     try {
         if (!requireTeacherOrAdmin(req, res)) return;
         const { job_type } = req.body;
+        if (job_type === 'DUPLICATE_SCAN' && !requireAdmin(req, res)) return;
         const user_id = req.user.id;
         if (!['DUPLICATE_SCAN', 'LATEX_NORM', 'AI_GEN'].includes(job_type)) return res.status(400).json({ error: 'Loại tác vụ không hợp lệ.' });
         
