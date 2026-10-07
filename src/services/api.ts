@@ -439,6 +439,12 @@ export const apiService = {
         });
         return await handleResponse(response, '/questions/normalize/preview');
     },
+    async normalizeAllQuestions(cursor = 0) {
+        const response = await fetch(`${API_URL}/questions/normalize/all`, {
+            method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ cursor })
+        });
+        return await handleResponse(response, '/questions/normalize/all');
+    },
     async confirmQuestionReview(changes: unknown[]) {
         const response = await fetch(`${API_URL}/questions/review/confirm`, {
             method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ changes })

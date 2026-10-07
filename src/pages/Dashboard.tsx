@@ -17,7 +17,7 @@ import { X, Lock, Check } from 'lucide-react';
 // --- Styled Components ---
 
 const MathBackground = () => (
-    <div className="absolute inset-0 z-0 pointer-events-none opacity-40" 
+    <div className="absolute inset-0 z-0 pointer-events-none opacity-15"
          style={{ 
              backgroundImage: 'radial-gradient(#cbd5e1 1px, transparent 1px)', 
              backgroundSize: '20px 20px' 
@@ -110,7 +110,7 @@ const StatCard = ({ title, value, icon: Icon, color, trend }: { title: string, v
     const styleClass = colorMap[color] || colorMap['blue'];
 
     return (
-        <div className="bg-white p-5 rounded-2xl border border-slate-200/80 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all duration-200 group relative overflow-hidden">
+        <div className="dashboard-stat bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm hover:border-indigo-200 hover:shadow-md transition-all duration-200 group relative overflow-hidden">
             <div className={`absolute top-0 right-0 p-4 opacity-10 transition-transform group-hover:scale-110 duration-500`}>
                 <Icon size={100} className="text-current" />
             </div>
@@ -135,13 +135,13 @@ const StatCard = ({ title, value, icon: Icon, color, trend }: { title: string, v
 };
 
 const QuickActionCard = ({ to, title, desc, icon: Icon, color }: { to: string, title: string, desc: string, icon: React.ElementType, color: string }) => (
-    <NavLink to={to} className="flex items-center gap-4 p-3.5 bg-white rounded-xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all group">
+    <NavLink to={to} className="dashboard-action flex items-center gap-4 p-5 bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md hover:border-indigo-200 transition-all group">
         <div className={`w-14 h-14 rounded-2xl flex items-center justify-center shrink-0 ${color} text-white shadow-md group-hover:scale-110 transition-transform`}>
             <Icon size={24} />
         </div>
         <div className="flex-1 min-w-0">
             <h4 className="font-bold text-slate-800 text-sm group-hover:text-indigo-600 transition-colors">{title}</h4>
-            <p className="text-xs text-slate-400 truncate mt-0.5">{desc}</p>
+            <p className="text-xs text-slate-500 leading-relaxed mt-1">{desc}</p>
         </div>
         <div className="bg-slate-50 rounded-full p-2 text-slate-300 group-hover:bg-indigo-50 group-hover:text-indigo-500 transition-colors">
             <ArrowRight size={16} />
@@ -330,12 +330,12 @@ export const Dashboard: React.FC = () => {
     const totalByGrade = count10 + count11 + count12; 
 
     return (
-        <div className="h-full w-full overflow-y-auto custom-scrollbar pr-2 pb-20 relative">
+        <div className="dashboard-page h-full w-full overflow-y-auto custom-scrollbar pr-2 pb-12 relative">
             <MathBackground />
             
             <div className="relative z-10 space-y-6 p-1">
                 {/* 1. Header */}
-                <section className="relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 md:px-8 md:py-8 text-white shadow-xl shadow-slate-200">
+                <section className="dashboard-hero relative overflow-hidden rounded-3xl bg-slate-950 px-6 py-7 md:px-8 md:py-8 text-white shadow-xl shadow-slate-200">
                     <div className="absolute -right-20 -top-24 h-64 w-64 rounded-full bg-indigo-500/25 blur-3xl" />
                     <div className="absolute bottom-0 left-1/3 h-32 w-64 rounded-full bg-cyan-400/10 blur-3xl" />
                     <div className="relative flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -345,7 +345,7 @@ export const Dashboard: React.FC = () => {
                               <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                               <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                             </span>
-                            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">Không gian quản lý ID6</span>
+                            <span className="text-[10px] font-bold uppercase tracking-[0.18em] text-slate-300">ExamHub · Không gian giáo dục</span>
                         </div>
                         <h1 className="text-3xl md:text-4xl font-black tracking-tight">
                             Chào {user?.full_name || user?.username},

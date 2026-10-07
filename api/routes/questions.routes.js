@@ -18,6 +18,7 @@ import {
 import { inspectQuestionId, normalizeId6, normalizeQuestionSource, questionTimestampChanged } from '../id6.js';
 import { requireLearningUnit } from '../learningAccess.js';
 import { synchronizeQuestionEdit } from '../examRegrade.js';
+import { normalizeQuestionBatch, SOURCE_LAYOUT_VERSION, sourceLayoutHash } from '../questionNormalization.js';
 
 const router = express.Router();
 
@@ -792,6 +793,23 @@ router.get('/questions/id-review', async (req, res) => {
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
 
+router.post('/questions/normalize/all', async (req, res) => {
+    if (!requireTeacherOrAdmin(req, res)) return;
+    const cursor = req.body.cursor ?? 0;
+    if (!Number.isSafeInteger(cursor) || cursor < 0) return res.status(400).json({ error: 'Vị trí chuẩn hoá không hợp lệ.' });
+    const conn = await pool.getConnection();
+    try {
+        await conn.beginTransaction();
+        const result = await normalizeQuestionBatch(conn, { cursor, userId: req.user.id, isAdmin: isAdmin(req) });
+        await conn.commit();
+        if (result.changed) await clearCache('/api/questions*');
+        res.json({ success: true, ...result });
+    } catch (error) {
+        await conn.rollback();
+        res.status(500).json({ error: error.message });
+    } finally { conn.release(); }
+});
+
 router.post('/questions/normalize/preview', async (req, res) => {
     try {
         if (!requireTeacherOrAdmin(req, res)) return;
@@ -854,8 +872,8 @@ router.post('/questions/review/confirm', async (req, res) => {
                 [id, normalized.source, meta.unit_id, meta.level_id, hash, row.id]);
             if (change.change_type === 'SOURCE_NORMALIZATION') {
                 const renderStatus = /\\begin\s*\{\s*(?:tikzpicture|tkz-tab|tkz-euclide)\s*\}/i.test(normalized.source) ? 0 : 2;
-                await conn.query('UPDATE questions SET content_latex_original = ?, is_tikz_rendered = ? WHERE id = ?',
-                    [normalized.source, renderStatus, row.id]);
+                await conn.query('UPDATE questions SET content_latex_original = ?, is_tikz_rendered = ?, layout_normalization_version = ?, layout_normalization_hash = ? WHERE id = ?',
+                    [normalized.source, renderStatus, SOURCE_LAYOUT_VERSION, sourceLayoutHash(normalized.source), row.id]);
             }
             const grading = await synchronizeQuestionEdit(conn, row, normalized.source);
             regraded += grading.regraded;

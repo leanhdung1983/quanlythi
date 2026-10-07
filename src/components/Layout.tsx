@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { 
     LayoutDashboard, FileText, GraduationCap, FileCode, Tag, 
     Wand2, MonitorPlay, ChevronDown, Menu, X, LogOut, 
@@ -12,6 +12,7 @@ import { useLanguageStore } from '../services/languageStore';
 import { useAuthStore } from '../services/authStore';
 import { UserFeedbackForm, AdminFeedbackViewer } from './Feedback';
 import { apiService } from '../services/api';
+import { APP_NAME, APP_TAGLINE } from '../config/brand';
 
 interface SidebarItemProps {
     to: string;
@@ -26,9 +27,9 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, isCompact }: SidebarItemP
     to={to}
     onClick={onClick}
     className={({ isActive }) =>
-      `flex items-center gap-3 px-3 py-2.5 my-0.5 mx-2 rounded-lg transition-all duration-200 group relative overflow-visible ${
+      `app-nav-item flex items-center gap-3 px-3 py-2.5 my-0.5 mx-2 rounded-lg transition-all duration-200 group relative overflow-visible ${
         isActive
-          ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200'
+          ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200 is-active'
           : 'text-slate-500 hover:bg-slate-100 hover:text-indigo-700'
       }`
     }
@@ -66,6 +67,9 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const [isHovered, setIsHovered] = useState(false);
   
   const navigate = useNavigate();
+  const location = useLocation();
+  const pageTitles: Record<string, string> = { '/': 'Tổng quan', '/questions': 'Ngân hàng câu hỏi', '/exam': 'Ma trận đề thi', '/online-exam': 'Thi trực tuyến', '/assign-id': 'Gán ID câu hỏi', '/metadata': 'Danh mục ID6', '/classes': 'Lớp học', '/learning': 'Học trực tuyến', '/eduloop': 'EduLoop · Kỹ năng', '/converter': 'Chuyển đổi tài liệu', '/duplicates': 'Câu hỏi trùng lặp', '/irt': 'Phân tích IRT', '/errors': 'Quản lý lỗi', '/profile': 'Hồ sơ cá nhân', '/admin': 'Quản trị người dùng', '/admin/source': 'Mã nguồn & SVG', '/admin/social': 'Nội dung Facebook' };
+  const pageTitle = pageTitles[location.pathname] || APP_NAME;
 
   const handleLogout = () => { 
     sessionStorage.removeItem('admin_feedback_notified');
@@ -110,11 +114,11 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
   // Trang xác thực cần một canvas riêng, không hiển thị điều hướng của ứng dụng.
   if (!user) {
-    return <main className="min-h-screen bg-slate-50 font-sans">{children}</main>;
+    return <main className="app-auth min-h-screen bg-slate-50 font-sans">{children}</main>;
   }
 
   return (
-    <div className="flex h-screen bg-[#f8fafc] overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-700">
+    <div className="app-shell flex h-screen bg-[#f8fafc] overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-700">
         
         {/* --- PLACEHOLDER (Desktop only) --- 
             Giữ chỗ khoảng trắng 80px (w-20) khi Sidebar ở chế độ Fixed/Collapsed 
@@ -130,7 +134,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
                 className={`
-                    hidden md:flex flex-col bg-white border-r border-slate-200/80 shadow-lg shadow-slate-200/30 z-50 
+                    app-sidebar hidden md:flex flex-col bg-white border-r border-slate-200/80 shadow-lg shadow-slate-200/30 z-50
                     transition-all duration-300 ease-in-out h-full
                     ${isCollapsed ? 'fixed left-0 top-0 bottom-0' : 'relative'} 
                     ${isExpanded ? 'w-64' : 'w-[72px]'}
@@ -143,8 +147,8 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             <GraduationCap size={26} />
                         </div>
                         <div className="whitespace-nowrap">
-                            <span className="font-extrabold text-slate-800 text-xl tracking-tight block leading-none">ID6<span className="text-indigo-600">.Pro</span></span>
-                            <span className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">Question Bank</span>
+                            <span className="font-extrabold text-slate-800 text-xl tracking-tight block leading-none">{APP_NAME}</span>
+                            <span className="text-[10px] font-medium text-slate-400 block mt-1">Không gian giáo dục</span>
                         </div>
                     </div>
                     
@@ -262,7 +266,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <div className="fixed inset-0 z-50 md:hidden bg-slate-900/50 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
                 <div className="absolute left-0 top-0 h-full w-72 bg-white shadow-2xl flex flex-col animate-in slide-in-from-left duration-200" onClick={e => e.stopPropagation()}>
                     <div className="h-16 flex items-center px-6 border-b border-slate-100 justify-between">
-                        <span className="font-extrabold text-slate-800 text-xl">ID6.Pro</span>
+                        <span className="font-extrabold text-slate-800 text-xl">{APP_NAME}</span>
                         <button onClick={() => setIsMobileMenuOpen(false)} className="text-slate-400 hover:text-slate-600"><X size={24}/></button>
                     </div>
                     <div className="flex-1 overflow-y-auto p-4 space-y-1">
@@ -311,18 +315,23 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 <header className="md:hidden h-16 bg-white/95 backdrop-blur border-b border-slate-200 flex items-center px-4 justify-between shrink-0 z-20">
                     <div className="flex items-center gap-2">
                         <div className="bg-indigo-600 text-white p-1.5 rounded-lg"><GraduationCap size={20}/></div>
-                        <span className="font-bold text-slate-800 text-lg">ID6.Pro</span>
+                        <span className="font-bold text-slate-800 text-lg">{APP_NAME}</span>
                     </div>
                     <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg"><Menu size={24}/></button>
                 </header>
             )}
 
+            {!hideLayout && <header className="app-topbar hidden md:flex items-center justify-between gap-4 px-7 py-4 shrink-0">
+                <div className="min-w-0"><div className="flex items-center gap-2 text-xs text-slate-400"><span>{APP_NAME}</span><ChevronRight size={12}/><span className="text-slate-600">{pageTitle}</span></div><p className="text-xs text-slate-400 mt-1">{APP_TAGLINE}</p></div>
+                <div className="flex items-center gap-3"><div className="text-right"><p className="text-sm font-semibold text-slate-700">{user.full_name || user.username}</p><p className="text-xs text-slate-400">{isAdmin ? 'Quản trị viên' : isTeacher ? 'Giáo viên' : 'Học sinh'}</p></div><div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700 font-bold border border-indigo-100">{(user.full_name || user.username || 'E').charAt(0).toUpperCase()}</div></div>
+            </header>}
+
             {/* Content Container */}
             <div className="flex-1 overflow-hidden relative z-0">
                 {/* Background decorative elements */}
                 <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-indigo-50/40 to-transparent pointer-events-none -z-10"></div>
-                <div className={`flex-1 h-full overflow-auto custom-scrollbar ${hideLayout ? 'p-0' : 'p-4 md:p-7'}`}>
-                    <div className={`${hideLayout ? 'w-full' : 'max-w-[1600px] mx-auto'} h-full flex flex-col`}>
+                <div className={`flex-1 h-full overflow-auto custom-scrollbar ${hideLayout ? 'p-0' : 'app-workspace p-4 md:p-7'}`}>
+                    <div className={`${hideLayout ? 'w-full' : 'max-w-[1800px] mx-auto'} h-full flex flex-col`}>
                         {children}
                     </div>
                 </div>

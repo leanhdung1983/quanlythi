@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { parseTexFile } from '../services/parser';
 import { extractTextFromDocx } from '../services/docxService';
 import { apiService } from '../services/api';
@@ -83,6 +83,44 @@ export const QuestionBank: React.FC = () => {
     const [normalizationScope, setNormalizationScope] = useState<'selected' | 'page' | 'filtered'>('page');
     const [normalizationPreview, setNormalizationPreview] = useState<NormalizationPreview[] | null>(null);
     const [normalizing, setNormalizing] = useState(false);
+    const bulkStop = useRef(false);
+    const bulkActive = useRef(false);
+    const [bulkRunning, setBulkRunning] = useState(false);
+    const [bulkProgress, setBulkProgress] = useState({ scanned: 0, changed: 0, unchanged: 0, failed: 0, total: 0, done: false, message: '' });
+    useEffect(() => () => { bulkStop.current = true; }, []);
+
+    const normalizeDatabase = async () => {
+        if (bulkActive.current || normalizing) return;
+        bulkActive.current = true;
+        bulkStop.current = false;
+        setBulkRunning(true);
+        setShowNormalization(true);
+        setNormalizationPreview(null);
+        let cursor = 0;
+        const progress = { scanned: 0, changed: 0, unchanged: 0, failed: 0, total: 0, done: false, message: '' };
+        setBulkProgress({ ...progress });
+        try {
+            while (!bulkStop.current) {
+                const batch = await apiService.normalizeAllQuestions(cursor);
+                progress.scanned += batch.scanned;
+                progress.changed += batch.changed;
+                progress.unchanged += batch.unchanged;
+                progress.failed += (batch.failures || []).length;
+                progress.total = Math.max(progress.total, progress.scanned + batch.remaining);
+                progress.done = batch.done;
+                progress.message = batch.done ? 'Đã hoàn tất. Các câu đã chuẩn hoá sẽ được bỏ qua ở lần chạy sau.' : 'Đang chuẩn hoá dữ liệu trong database…';
+                setBulkProgress({ ...progress });
+                if (batch.done) break;
+                if (batch.cursor <= cursor) throw new Error('Không thể chuyển sang đợt tiếp theo.');
+                cursor = batch.cursor;
+            }
+            if (bulkStop.current && !progress.done) setBulkProgress({ ...progress, message: 'Đã dừng sau đợt hiện tại. Chạy lại sẽ bỏ qua các câu đã hoàn tất.' });
+            await loadQuestions();
+            setSelectedQ(null);
+        } catch (error: any) {
+            setBulkProgress({ ...progress, message: `Chưa hoàn tất: ${error.message}. Có thể chạy lại để tiếp tục các câu chưa chuẩn hoá.` });
+        } finally { bulkActive.current = false; setBulkRunning(false); }
+    };
 
     const previewNormalization = async () => {
         const targets = normalizationScope === 'selected' ? (selectedQ ? [selectedQ] : [])
@@ -793,9 +831,13 @@ export const QuestionBank: React.FC = () => {
     };
 
     return (
-        <div className="h-full flex flex-col min-h-0 bg-white relative">
+        <div className="question-bank-page page-panel h-full flex flex-col min-h-0 bg-white relative">
+            <div className="question-bank-heading flex items-center justify-between gap-4 px-5 py-4 shrink-0 border-b border-slate-100">
+                <div><p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-indigo-500 mb-1">Thư viện nội dung</p><h1 className="text-xl font-bold tracking-tight text-slate-800">Ngân hàng câu hỏi</h1></div>
+                <div className="rounded-full bg-indigo-50 border border-indigo-100 px-3 py-1.5 text-xs font-semibold text-indigo-700">{questions.length.toLocaleString()} câu đã tải</div>
+            </div>
             {/* Top Bar: Filters */}
-            <div className="shrink-0 bg-slate-100 p-2 border-b border-slate-200 grid grid-cols-10 gap-2 items-end">
+            <div className="question-bank-filters shrink-0 bg-slate-50 p-4 border-b border-slate-100 grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-10 gap-3 items-end">
                 <div className="col-span-1">
                     <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lọc</label>
                     <div className="relative">
@@ -964,7 +1006,7 @@ export const QuestionBank: React.FC = () => {
 
             {/* Bottom Bar */}
             <div className="shrink-0 bg-slate-100 p-2 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
-                <div className="flex gap-1">
+                <div className="question-bank-actions flex gap-2 max-w-full overflow-x-auto pb-1">
                     <button onClick={() => setShowUserGuide(true)} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-slate-600">
                         <Info size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">HDSD</span>
                     </button>
@@ -975,7 +1017,12 @@ export const QuestionBank: React.FC = () => {
                         <Sparkles size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">AI ID</span>
                     </button>
                     {(user?.role === 'ADMIN' || user?.role === 'TEACHER') && (
-                        <button onClick={() => { setNormalizationScope(selectedQ ? 'selected' : 'page'); setNormalizationPreview(null); setShowNormalization(true); }} disabled={loading || inlineEditId !== null || inlineEditSaving} className="flex flex-col items-center justify-center min-w-16 h-10 px-2 bg-emerald-50 border border-emerald-200 rounded shadow-sm hover:bg-emerald-100 text-emerald-700 disabled:opacity-50" title={inlineEditId !== null ? 'Lưu hoặc huỷ chỉnh sửa câu hỏi trước khi chuẩn hoá' : 'Chuẩn hoá mã nguồn câu hỏi và xem trước khi lưu'}>
+                        <button onClick={normalizeDatabase} disabled={loading || inlineEditId !== null || normalizing || bulkRunning} className="flex items-center gap-2 px-3 h-10 bg-emerald-600 text-white rounded-lg font-semibold text-xs shadow-sm hover:bg-emerald-700 disabled:opacity-50" title={user?.role === 'ADMIN' ? 'Tự động chuẩn hoá toàn bộ câu hỏi trong database' : 'Tự động chuẩn hoá toàn bộ câu hỏi thuộc quyền quản lý'}>
+                            {bulkRunning ? <Loader2 size={16} className="animate-spin"/> : <Database size={16}/>} Chuẩn hoá toàn bộ
+                        </button>
+                    )}
+                    {(user?.role === 'ADMIN' || user?.role === 'TEACHER') && (
+                        <button onClick={() => { setNormalizationScope(selectedQ ? 'selected' : 'page'); setNormalizationPreview(null); setShowNormalization(true); }} disabled={loading || inlineEditId !== null || inlineEditSaving || bulkRunning} className="flex flex-col items-center justify-center min-w-16 h-10 px-2 bg-emerald-50 border border-emerald-200 rounded shadow-sm hover:bg-emerald-100 text-emerald-700 disabled:opacity-50" title={inlineEditId !== null ? 'Lưu hoặc huỷ chỉnh sửa câu hỏi trước khi chuẩn hoá' : 'Chuẩn hoá mã nguồn câu hỏi và xem trước khi lưu'}>
                             <CheckCircle2 size={14}/><span className="text-[8px] font-bold uppercase mt-0.5">Chuẩn hoá</span>
                         </button>
                     )}
@@ -1406,18 +1453,30 @@ export const QuestionBank: React.FC = () => {
                     <div role="dialog" aria-modal="true" aria-labelledby="normalization-title" className="bg-white rounded-2xl shadow-xl w-full max-w-5xl max-h-[90vh] flex flex-col overflow-hidden">
                         <div className="p-4 border-b flex items-center justify-between">
                             <h2 id="normalization-title" className="text-lg font-bold text-slate-800">Chuẩn hoá câu hỏi</h2>
-                            <button aria-label="Đóng" disabled={normalizing} onClick={() => setShowNormalization(false)} className="p-2 hover:bg-slate-100 rounded disabled:opacity-50"><X size={20}/></button>
+                            <button aria-label="Đóng" disabled={normalizing || bulkRunning} onClick={() => setShowNormalization(false)} className="p-2 hover:bg-slate-100 rounded disabled:opacity-50"><X size={20}/></button>
                         </div>
                         <div className="p-4 border-b space-y-3">
+                            <div className="rounded-xl border border-emerald-200 bg-emerald-50 p-4 space-y-3" aria-live="polite">
+                                <div className="flex flex-wrap items-center justify-between gap-3">
+                                    <div><h3 className="font-semibold text-emerald-900">Chuẩn hoá toàn bộ {user?.role === 'ADMIN' ? 'database' : 'câu hỏi của bạn'}</h3><p className="text-xs text-emerald-800 mt-1">Tự động chạy theo từng đợt, kể cả câu chưa tải. Chỉ xử lý lại câu đã sửa nội dung hoặc chưa được đánh dấu chuẩn hoá.</p></div>
+                                    {bulkRunning ? <button onClick={() => { bulkStop.current = true; }} className="px-3 py-2 rounded-lg border border-emerald-300 text-xs font-semibold">Dừng sau đợt hiện tại</button>
+                                        : <button onClick={normalizeDatabase} disabled={normalizing || bulkRunning} className="px-4 py-2 rounded-lg bg-emerald-700 text-white text-sm font-semibold disabled:opacity-50">{bulkProgress.scanned && !bulkProgress.done ? 'Tiếp tục chuẩn hoá' : 'Chuẩn hoá toàn bộ'}</button>}
+                                </div>
+                                {(bulkRunning || bulkProgress.message) && <>
+                                    <div role="progressbar" aria-label="Tiến độ chuẩn hoá" aria-valuemin={0} aria-valuemax={bulkProgress.total || 1} aria-valuenow={bulkProgress.scanned} className="h-2 rounded-full bg-emerald-100 overflow-hidden"><div className="h-full bg-emerald-600 transition-all" style={{ width: `${bulkProgress.total ? Math.min(100, bulkProgress.scanned / bulkProgress.total * 100) : bulkProgress.done ? 100 : 0}%` }}/></div>
+                                    <p className="text-sm text-emerald-900">Đã kiểm tra {bulkProgress.scanned.toLocaleString()} / {bulkProgress.total.toLocaleString()} · Đã sửa {bulkProgress.changed.toLocaleString()} · Đúng chuẩn {bulkProgress.unchanged.toLocaleString()} · Cần kiểm tra {bulkProgress.failed.toLocaleString()}</p>
+                                    <p className="text-xs text-emerald-800">{bulkProgress.message || 'Đang lấy đợt câu hỏi đầu tiên…'}</p>
+                                </>}
+                            </div>
                             <p className="text-sm text-slate-600">Chuẩn hoá dòng ID, tách từng lựa chọn và phần lời giải ra dòng riêng. Lời giải trống được điền “nội dung lời giải” để bổ sung sau.</p>
                             <div className="flex flex-wrap items-center gap-3">
                                 <label htmlFor="normalization-scope" className="text-sm font-semibold">Phạm vi</label>
-                                <select id="normalization-scope" value={normalizationScope} disabled={normalizing} onChange={e => { setNormalizationScope(e.target.value as typeof normalizationScope); setNormalizationPreview(null); }} className="border rounded-lg px-3 py-2 text-sm">
+                                <select id="normalization-scope" value={normalizationScope} disabled={normalizing || bulkRunning} onChange={e => { setNormalizationScope(e.target.value as typeof normalizationScope); setNormalizationPreview(null); }} className="border rounded-lg px-3 py-2 text-sm">
                                     <option value="selected" disabled={!selectedQ}>Câu đang chọn</option>
                                     <option value="page">Trang hiện tại ({currentQuestions.length} câu)</option>
                                     <option value="filtered">Danh sách đã tải theo bộ lọc ({questions.length} câu)</option>
                                 </select>
-                                <button onClick={previewNormalization} disabled={normalizing} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-semibold text-sm disabled:opacity-50 flex items-center gap-2">
+                                <button onClick={previewNormalization} disabled={normalizing || bulkRunning} className="bg-emerald-600 text-white px-4 py-2 rounded-lg font-semibold text-sm disabled:opacity-50 flex items-center gap-2">
                                     {normalizing && <Loader2 size={16} className="animate-spin"/>} Xem trước
                                 </button>
                             </div>
@@ -1441,8 +1500,8 @@ export const QuestionBank: React.FC = () => {
                             )}
                         </div>
                         <div className="p-4 border-t flex justify-end gap-3">
-                            <button disabled={normalizing} onClick={() => setShowNormalization(false)} className="px-4 py-2 border rounded-lg text-sm disabled:opacity-50">Đóng</button>
-                            <button onClick={saveNormalization} disabled={normalizing || !normalizationPreview?.some(item => item.changed)} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold disabled:opacity-50">Lưu chuẩn hoá</button>
+                            <button disabled={normalizing || bulkRunning} onClick={() => setShowNormalization(false)} className="px-4 py-2 border rounded-lg text-sm disabled:opacity-50">Đóng</button>
+                            <button onClick={saveNormalization} disabled={normalizing || bulkRunning || !normalizationPreview?.some(item => item.changed)} className="px-4 py-2 bg-emerald-600 text-white rounded-lg text-sm font-semibold disabled:opacity-50">Lưu chuẩn hoá</button>
                         </div>
                     </div>
                 </div>

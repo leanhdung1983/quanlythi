@@ -6,10 +6,105 @@ html {
   color-scheme: light; 
 }
 
-body { 
+body {
   background-color: #f8fafc; 
   margin: 0; 
   overflow-x: hidden; 
+}
+
+/* ExamHub: shared visual language. Exam-taking screens retain their own styles. */
+:root {
+  --hub-ink: #18243c;
+  --hub-muted: #64748b;
+  --hub-line: #e4e9f2;
+  --hub-accent: #5550df;
+  --hub-canvas: #f4f6fb;
+  --hub-shadow: 0 4px 24px -12px rgba(25, 43, 77, .18);
+}
+.app-shell {
+  background: var(--hub-canvas);
+  color: var(--hub-ink);
+  height: 100dvh;
+}
+.app-sidebar {
+  border-right-color: var(--hub-line);
+  box-shadow: 6px 0 30px -18px rgba(37, 49, 79, .18);
+}
+.app-nav-item {
+  min-height: 44px;
+  border-radius: 12px;
+}
+.app-nav-item span { font-weight: 600; letter-spacing: 0; }
+.app-nav-item.is-active {
+  background: linear-gradient(115deg, #5d57eb, #4540bf);
+  box-shadow: 0 5px 12px -6px rgba(79, 70, 229, .6);
+}
+.app-topbar {
+  background: rgba(255, 255, 255, .76);
+  border-bottom: 1px solid rgba(228, 233, 242, .85);
+  backdrop-filter: blur(16px);
+}
+.app-workspace {
+  padding: clamp(16px, 2.2vw, 34px);
+  background: radial-gradient(ellipse at 95% 0%, rgba(224, 231, 255, .45), transparent 50%);
+}
+.app-workspace h1 { letter-spacing: -.035em; font-weight: 700; }
+.app-workspace :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
+  border-color: #dce3ee;
+  border-radius: 10px;
+  transition: border-color .16s, box-shadow .16s;
+}
+.app-workspace :where(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus {
+  border-color: #8985f0;
+  box-shadow: 0 0 0 3px rgba(85, 80, 223, .09);
+}
+.app-workspace :where(button, a) { touch-action: manipulation; }
+.app-workspace :where(table) { font-variant-numeric: tabular-nums; }
+.app-workspace :where(th) { letter-spacing: .025em; font-weight: 600; }
+.app-workspace :where(td) { line-height: 1.6; }
+.app-workspace :where(.bg-white.rounded-xl, .bg-white.rounded-2xl, .bg-white.rounded-3xl) {
+  border-color: var(--hub-line);
+  box-shadow: var(--hub-shadow);
+}
+.page-panel {
+  border: 1px solid var(--hub-line);
+  border-radius: 22px;
+  box-shadow: var(--hub-shadow);
+  isolation: isolate;
+}
+.question-bank-heading { background: linear-gradient(110deg, #fff, #f8f9ff); border-radius: 22px 22px 0 0; }
+.question-bank-filters label { font-size: 11px; font-weight: 600; letter-spacing: .02em; }
+.question-bank-filters :where(input, select) { min-height: 36px; font-size: 12px; box-shadow: none; }
+.question-bank-actions > button { min-height: 42px; min-width: 54px; flex-shrink: 0; border-radius: 10px; }
+.question-bank-actions > button span { font-size: 9px; font-weight: 600; letter-spacing: .02em; }
+.question-bank-actions > button svg { width: 16px; height: 16px; }
+.dashboard-hero {
+  background: linear-gradient(120deg, #172442 0%, #25274d 65%, #38315b 100%);
+  padding: clamp(26px, 3.5vw, 52px);
+  border: 1px solid rgba(255, 255, 255, .12);
+  box-shadow: 0 16px 35px -22px rgba(28, 34, 75, .45);
+}
+.dashboard-hero h1 { font-size: clamp(26px, 2.5vw, 40px); line-height: 1.28; }
+.dashboard-stat { min-height: 174px; }
+.dashboard-stat > div:first-child { opacity: .035; }
+.dashboard-stat h3 { font-weight: 700; font-size: 32px; }
+.dashboard-stat p { font-weight: 500; color: #64748b; }
+.dashboard-action { min-height: 96px; }
+.dashboard-action h4 { font-size: 15px; }
+.dashboard-action:hover, .dashboard-stat:hover { transform: translateY(-2px); }
+.app-auth { background: radial-gradient(ellipse at 15% 10%, #e8eaff, transparent 50%), radial-gradient(ellipse at 85% 90%, #e2f3ee, transparent 45%), #f6f8fc; }
+.metadata-page { min-width: 0; }
+@media (max-width: 767px) {
+  .app-workspace { padding: 12px; }
+  .question-bank-filters { max-height: 32dvh; overflow-y: auto; padding: 12px; }
+  .question-bank-heading { padding: 14px; }
+  .question-bank-heading h1 { font-size: 18px; }
+  .page-panel { border-radius: 18px; }
+  .dashboard-hero { padding: 24px; border-radius: 22px; }
+  .dashboard-stat { padding: 18px; min-height: 152px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .app-shell *, .app-auth * { animation-duration: .01ms !important; animation-iteration-count: 1 !important; transition-duration: .01ms !important; scroll-behavior: auto !important; }
 }
 
 button, a, input, select, textarea { 

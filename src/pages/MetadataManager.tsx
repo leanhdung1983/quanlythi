@@ -378,7 +378,7 @@ export const MetadataManager: React.FC = () => {
     );
 
     return (
-        <div className="h-full flex flex-col space-y-4 min-w-[1024px]">
+        <div className="metadata-page h-full flex flex-col space-y-4 min-w-0">
             {/* Header Area */}
             <div className="flex justify-between items-center shrink-0 px-2 bg-white p-3 rounded-2xl shadow-sm border border-slate-100">
                 <div>

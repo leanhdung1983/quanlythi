@@ -114,7 +114,7 @@ export const Login: React.FC = () => {
     };
 
     return (
-        <div className="relative flex min-h-screen items-center justify-center overflow-hidden bg-slate-50 p-4 sm:p-6">
+        <div className="login-page relative flex min-h-screen items-center justify-center overflow-hidden p-4 sm:p-6">
             <div className="absolute -left-32 -top-32 h-80 w-80 rounded-full bg-indigo-200/40 blur-3xl" aria-hidden="true" />
             <div className="absolute -bottom-32 -right-32 h-80 w-80 rounded-full bg-sky-200/40 blur-3xl" aria-hidden="true" />
             <div className="relative w-full max-w-md rounded-2xl border border-slate-200/80 bg-white p-6 shadow-[0_20px_60px_-30px_rgba(15,23,42,0.35)] transition-all duration-300 sm:p-8">
@@ -124,7 +124,7 @@ export const Login: React.FC = () => {
                         <GraduationCap size={30}/>
                     </div>
                     <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-                        {view === 'LOGIN' && 'Đăng Nhập ID6.Pro'}
+                        {view === 'LOGIN' && 'Đăng nhập ExamHub'}
                         {view === 'REGISTER' && 'Đăng Ký Tài Khoản'}
                         {view === 'FORGOT' && 'Quên Mật Khẩu'}
                     </h1>

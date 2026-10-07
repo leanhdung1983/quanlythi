@@ -601,6 +601,11 @@ export async function seedDatabase() {
             console.log("Migration notice (questions refactor):", e.message);
         }
 
+        for (const column of ['layout_normalization_version INT NOT NULL DEFAULT 0', 'layout_normalization_hash CHAR(64) NULL']) {
+            try { await pool.query(`ALTER TABLE questions ADD COLUMN ${column}`); }
+            catch (error) { if (error.code !== 'ER_DUP_FIELDNAME' && error.errno !== 1060) throw error; }
+        }
+
         await pool.query(`
             CREATE TABLE IF NOT EXISTS question_revisions (
                 id BIGINT AUTO_INCREMENT PRIMARY KEY,
