@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
 import {
     extractTikzBlocks, inspectTikzQuestion, inspectTikzStructure, isActionableTikzAudit,
-    replaceRenderedBlock, tikzHash,
+    replaceRenderedBlock, tikzHash, activeTikzFailures,
 } from './tikzAudit.js';
 
 const block = '\\begin{tikzpicture}\\draw (0,0)--(1,1);\\end{tikzpicture}';
@@ -53,8 +53,23 @@ describe('TikZ audit', () => {
     it('distinguishes other image formats from questions without drawings', () => {
         expect(inspectTikzQuestion(question('\\includegraphics{a.pdf}', null, 2)).status).toBe('OTHER_IMAGE');
     });
-    it('reconciles a placeholder with an existing SVG when the stored state is stale', () => {
-        expect(inspectTikzQuestion(question(`[TIKZ_HASH:${hash}]`, block, 0), new Set([hash])).status).toBe('PENDING');
+    it('skips an existing SVG even when the stored state is stale', () => {
+        const audit = inspectTikzQuestion(question(`[TIKZ_HASH:${hash}]`, block, 0), new Set([hash]));
+        expect(audit.status).toBe('READY');
+        expect(isActionableTikzAudit(audit)).toBe(false);
+    });
+    it('skips questions with no current TikZ even when an old drawing remains in original source', () => {
+        expect(isActionableTikzAudit(inspectTikzQuestion(question('Question only', block)))).toBe(false);
+        expect(isActionableTikzAudit(inspectTikzQuestion(question('\\includegraphics{a.pdf}')))).toBe(false);
+    });
+    it('refresh only returns failures for drawings still needing work', () => {
+        const rows = [
+            {questionId:1,hash,contentLatex:`[TIKZ_HASH:${hash}]`,originalLatex:block,isTikzRendered:0},
+            {questionId:2,hash,contentLatex:'No image',originalLatex:block,isTikzRendered:2},
+            {questionId:3,hash,contentLatex:block,originalLatex:block,isTikzRendered:0},
+        ];
+        expect(activeTikzFailures(rows,new Set([hash])).map(row=>row.questionId)).toEqual([3]);
+        expect(activeTikzFailures(rows,new Set()).map(row=>row.questionId)).toEqual([1,3]);
     });
     it('does not call a multi-image question complete while one drawing is raw or its SVG is absent', () => {
         const second = '\\begin{tikzpicture}\\draw (2,2);\\end{tikzpicture}';

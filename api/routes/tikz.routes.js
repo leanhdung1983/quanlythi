@@ -6,7 +6,7 @@ import { MAX_SVG_BYTES } from '../svgImage.js';
 import { normalizeAiTikzFix } from '../tikzAiFix.js';
 import {
     extractTikzBlocks, extractSvgReferences, inspectTikzQuestion, inspectTikzStructure,
-    isActionableTikzAudit, replaceRenderedBlock,
+    isActionableTikzAudit, replaceRenderedBlock, activeTikzFailures,
 } from '../tikzAudit.js';
 
 const router = express.Router();
@@ -16,18 +16,33 @@ const placeholders = hashes => hashes.map(() => '?').join(',');
 router.get('/admin/tikz-failures', async (req, res) => {
     if (!requireAdmin(req, res)) return;
     try {
-        const [rows] = await pool.query(`
-            SELECT f.question_id AS questionId, f.tikz_hash AS hash, f.error_message AS error,
-                   f.updated_at AS updatedAt, q.legacy_full_id AS idFull,
-                   q.content_latex AS contentLatex, q.content_latex_original AS originalLatex,
-                   q.is_tikz_rendered AS isTikzRendered
-            FROM tikz_render_failures f
-            JOIN questions q ON q.id = f.question_id
-            ORDER BY f.updated_at DESC, f.question_id ASC
-            LIMIT 500
-        `);
+        const active = [];
+        let offset = 0;
+        // Filter before applying the visible limit, so stale recent failures
+        // cannot hide older drawings that still need repair.
+        while (active.length < 500) {
+            const [rows] = await pool.query(`
+                SELECT f.question_id AS questionId, f.tikz_hash AS hash, f.error_message AS error,
+                       f.updated_at AS updatedAt, q.legacy_full_id AS idFull,
+                       q.content_latex AS contentLatex, q.content_latex_original AS originalLatex,
+                       q.is_tikz_rendered AS isTikzRendered
+                FROM tikz_render_failures f
+                JOIN questions q ON q.id = f.question_id
+                ORDER BY f.updated_at DESC, f.question_id ASC
+                LIMIT 500 OFFSET ?
+            `, [offset]);
+            const hashes = [...new Set(rows.map(row => row.hash))];
+            const existing = new Set();
+            if (hashes.length) {
+                const [images] = await pool.query(`SELECT tikz_hash FROM question_images WHERE tikz_hash IN (${placeholders(hashes)})`, hashes);
+                for (const image of images) existing.add(image.tikz_hash.toLowerCase());
+            }
+            active.push(...activeTikzFailures(rows, existing));
+            if (rows.length < 500) break;
+            offset += rows.length;
+        }
         res.set('Cache-Control', 'private, no-store');
-        res.json({ success: true, data: rows });
+        res.json({ success: true, data: active.slice(0, 500) });
     } catch (error) {
         console.error('[TIKZ AUDIT] Failure list failed:', error);
         res.status(500).json({ error: 'Không thể tải danh sách hình biên dịch lỗi.' });
@@ -42,7 +57,12 @@ router.get('/admin/tikz-audit', async (req, res) => {
         const actionableOnly = req.query.actionable === '1';
         // Filter at the database instead of sending every ID6 question to the
         // local worker. A plain ID marker is not evidence of a drawing.
-        const drawingMarkerSql = `(
+        const drawingMarkerSql = actionableOnly ? `(
+            LOCATE('tikzpicture', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('tkz-tab', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('tkz-euclide', COALESCE(content_latex, '')) > 0 OR
+            LOCATE('[TIKZ_HASH:', COALESCE(content_latex, '')) > 0
+        )` : `(
             LOCATE('tikzpicture', COALESCE(content_latex, '')) > 0 OR
             LOCATE('tkz-tab', COALESCE(content_latex, '')) > 0 OR
             LOCATE('tkz-euclide', COALESCE(content_latex, '')) > 0 OR

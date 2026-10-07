@@ -68,6 +68,47 @@ class LocalWorkerJobTests(unittest.TestCase):
     def tearDown(self):
         self.tmp.cleanup()
 
+    def test_slow_first_image_does_not_idle_the_other_compile_thread(self):
+        api = FakeApi()
+        original = api.request
+        def request(method, path, data=None):
+            if method == 'GET' and path.startswith('/api/admin/tikz-audit?'):
+                return {'data': [
+                    {'id': i, 'status': 'PENDING', 'images': [
+                        {'hash': str(i) * 64, 'source': str(i), 'needsAction': True, 'exists': False}
+                    ]} for i in range(1, 4)
+                ], 'hasMore': False, 'afterId': 3}
+            return original(method, path, data)
+        api.request = request
+        third_started = threading.Event()
+        def compile(source, *_args):
+            if source == '1':
+                if not third_started.wait(3):
+                    raise AssertionError('Second thread did not start the third image')
+            if source == '3':
+                third_started.set()
+            return '<svg></svg>'
+        with patch('scripts.tikz_local_worker.compile_svg', side_effect=compile):
+            self.assertEqual(run_worker(self.args, api=api, job=self.job), 'COMPLETED')
+        self.assertTrue(third_started.is_set())
+        self.assertEqual(len(api.syncs), 3)
+        self.assertEqual(api.failures, [])
+
+    def test_skips_ready_and_no_drawing_questions(self):
+        api = FakeApi()
+        original = api.request
+        def request(method, path, data=None):
+            result = original(method, path, data)
+            if method == 'GET' and path.startswith('/api/admin/tikz-audit?'):
+                result['data'][0]['status'] = 'READY'
+                result['data'][1]['status'] = 'NO_TIKZ'
+            return result
+        api.request = request
+        with patch('scripts.tikz_local_worker.compile_svg') as compile:
+            self.assertEqual(run_worker(self.args, api=api, job=self.job), 'COMPLETED')
+        compile.assert_not_called()
+        self.assertEqual(api.syncs, [])
+
     def test_advances_cursor_after_each_question_and_reuses_compiled_svg(self):
         api = FakeApi()
         with patch("scripts.tikz_local_worker.compile_svg", return_value="<svg></svg>") as compile_svg:

@@ -63,8 +63,7 @@ export function inspectTikzQuestion(question, existingHashes = new Set()) {
     const images = [...items.values()].map(item => ({
         ...item,
         exists: existingHashes.has(item.hash),
-        needsAction: item.raw || !existingHashes.has(item.hash)
-            || (item.placeholder && Number(question.is_tikz_rendered) !== 1),
+        needsAction: item.raw || !existingHashes.has(item.hash),
     }));
     const missingSource = images.some(item => !item.exists && !item.source);
     const pending = images.some(item => item.needsAction);
@@ -91,7 +90,14 @@ export function inspectTikzQuestion(question, existingHashes = new Set()) {
 
 export function isActionableTikzAudit(audit) {
     return audit.images.some(image => image.needsAction)
-        || ['MALFORMED_SOURCE', 'SOURCE_MISMATCH', 'OTHER_IMAGE'].includes(audit.status);
+        || audit.status === 'MALFORMED_SOURCE';
+}
+
+export function activeTikzFailures(rows, existingHashes) {
+    return rows.filter(row => inspectTikzQuestion({
+        id: row.questionId, content_latex: row.contentLatex,
+        content_latex_original: row.originalLatex, is_tikz_rendered: row.isTikzRendered,
+    }, existingHashes).images.some(image => image.hash === row.hash.toLowerCase() && image.needsAction));
 }
 
 export function replaceRenderedBlock(content, hash) {

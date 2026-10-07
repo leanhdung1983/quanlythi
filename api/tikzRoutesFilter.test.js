@@ -2,8 +2,9 @@ import express from 'express';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
 let calls = [];
+let queryResults = [];
 vi.mock('./core.js', () => ({
-    pool: { query: vi.fn(async (sql, params) => { calls.push({ sql, params }); return [[]]; }) },
+    pool: { query: vi.fn(async (sql, params) => { calls.push({ sql, params }); return [queryResults.shift() || []]; }) },
     requireAdmin: () => true, sanitizeSvg: value => value, generateHash: () => 'hash', clearCache: vi.fn(),
 }));
 
@@ -14,7 +15,7 @@ beforeAll(async () => {
     server = await new Promise(resolve => { const instance = app.listen(0, '127.0.0.1', () => resolve(instance)); });
     base = `http://127.0.0.1:${server.address().port}/api/admin/tikz-audit`;
 });
-beforeEach(() => { calls = []; });
+beforeEach(() => { calls = []; queryResults = []; });
 afterAll(() => server?.close());
 
 describe('TikZ audit candidate filtering', () => {
@@ -28,5 +29,19 @@ describe('TikZ audit candidate filtering', () => {
         expect((await fetch(`${base}?actionable=1&afterId=10&limit=25`)).status).toBe(200);
         expect(calls[0].sql).not.toContain('is_tikz_rendered <> 1');
         expect(calls[0].params).toEqual([10, 26]);
+        expect(calls[0].sql).not.toContain("LOCATE('tikzpicture', COALESCE(content_latex_original");
+    });
+    it('finds active failures beyond a full page of obsolete failures', async () => {
+        const hash = 'a'.repeat(64);
+        queryResults = [
+            Array.from({ length: 500 }, (_, i) => ({ questionId: i + 1, hash, contentLatex: 'No drawing' })),
+            [],
+            [{ questionId: 501, hash, contentLatex: `[TIKZ_HASH:${hash}]` }],
+            [],
+        ];
+        const response = await fetch(base.replace('tikz-audit', 'tikz-failures'));
+        expect(response.status).toBe(200);
+        expect((await response.json()).data.map(row => row.questionId)).toEqual([501]);
+        expect(calls[2].params).toEqual([500]);
     });
 });

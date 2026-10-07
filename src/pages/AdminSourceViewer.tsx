@@ -81,11 +81,33 @@ export const AdminSourceViewer: React.FC = () => {
     const [jobBusy, setJobBusy] = useState(false);
     const [jobError, setJobError] = useState<string | null>(null);
     const [tikzFailures, setTikzFailures] = useState<TikzFailure[]>([]);
+    const [failuresLoading, setFailuresLoading] = useState(false);
+    const [failuresError, setFailuresError] = useState<string | null>(null);
+    const [failuresUpdatedAt, setFailuresUpdatedAt] = useState<string | null>(null);
+    const failuresRequest = useRef<Promise<void> | null>(null);
     const [selectedFailure, setSelectedFailure] = useState<TikzFailure | null>(null);
     const refreshingJob = useRef(false);
     const activeJob = Boolean(job && ['QUEUED', 'RUNNING', 'CANCEL_REQUESTED'].includes(job.status));
 
-    const refreshFailures = async () => setTikzFailures(await apiService.fetchTikzFailures() || []);
+    const refreshFailures = () => {
+        if (failuresRequest.current) return failuresRequest.current;
+        setFailuresLoading(true);
+        setFailuresError(null);
+        const request = (async () => {
+            try {
+                setTikzFailures(await apiService.fetchTikzFailures() || []);
+                setFailuresUpdatedAt(new Date().toLocaleTimeString('vi-VN'));
+            } catch (error: any) {
+                setFailuresError(error.message || 'Không thể tải danh sách lỗi.');
+                throw error;
+            } finally {
+                setFailuresLoading(false);
+                failuresRequest.current = null;
+            }
+        })();
+        failuresRequest.current = request;
+        return request;
+    };
 
     const refreshJob = async () => {
         if (refreshingJob.current) return;
@@ -94,7 +116,7 @@ export const AdminSourceViewer: React.FC = () => {
             const result = await apiService.fetchTikzJobStatus();
             setJob(result.job || null);
             setWorkerOnline(Boolean(result.worker));
-            await refreshFailures();
+            await refreshFailures().catch(() => undefined);
             setJobError(null);
         } finally { refreshingJob.current = false; }
     };
@@ -379,9 +401,10 @@ export const AdminSourceViewer: React.FC = () => {
             <section className="mb-8 rounded-3xl border border-red-200 bg-white p-6 shadow-sm">
                 <div className="flex items-center justify-between gap-4">
                     <div><h2 className="text-lg font-black text-slate-800">Các câu biên dịch hình bị lỗi</h2><p className="text-sm text-slate-500">SVG lỗi không được lưu. Sửa mã TikZ, lưu câu hỏi rồi chạy biên dịch lại.</p></div>
-                    <button type="button" onClick={() => refreshFailures().catch(error => setJobError(error.message))} className="rounded-xl border px-4 py-2 text-sm font-bold">Làm mới</button>
+                    <button type="button" onClick={() => refreshFailures().catch(() => undefined)} disabled={failuresLoading} className="rounded-xl border px-4 py-2 text-sm font-bold flex items-center gap-2 disabled:opacity-60">{failuresLoading && <Loader2 size={16} className="animate-spin"/>}{failuresLoading ? 'Đang tải...' : 'Làm mới'}</button>
                 </div>
-                {tikzFailures.length === 0 ? <p className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-700">Không có lỗi biên dịch đang chờ sửa.</p> : <div className="mt-4 max-h-96 space-y-3 overflow-y-auto">
+                <div aria-live="polite">{failuresError && <p className="mt-3 text-sm text-red-700">{failuresError}</p>}{failuresUpdatedAt && <p className="mt-2 text-xs text-slate-500">Cập nhật lúc {failuresUpdatedAt} · {tikzFailures.length} hình còn lỗi. Làm mới chỉ tải lại danh sách; để biên dịch lại, bấm Quét và biên dịch.</p>}</div>
+                {tikzFailures.length === 0 ? <p className="mt-4 rounded-xl bg-emerald-50 p-4 text-sm font-semibold text-emerald-700">{failuresUpdatedAt ? 'Không có lỗi biên dịch đang chờ sửa.' : failuresLoading ? 'Đang tải danh sách lỗi...' : 'Chưa tải được danh sách lỗi.'}</p> : <div className="mt-4 max-h-96 space-y-3 overflow-y-auto">
                     {tikzFailures.map(failure => <div key={`${failure.questionId}-${failure.hash}`} className="rounded-2xl border border-red-100 bg-red-50/40 p-4"><div className="flex flex-col gap-3 md:flex-row md:items-start md:justify-between"><div className="min-w-0">
                         <p className="font-bold text-slate-800">Câu #{failure.questionId} — {failure.idFull || 'Chưa có ID6'}</p><p className="mt-1 font-mono text-[10px] text-slate-500">Hình: {failure.hash}</p>
                         <pre className="mt-2 whitespace-pre-wrap break-words rounded-xl bg-white p-3 text-xs text-red-700">{failure.error}</pre><p className="mt-1 text-[10px] text-slate-400">Ghi nhận: {new Date(failure.updatedAt).toLocaleString('vi-VN')}</p>

@@ -273,8 +273,11 @@ def run_worker(args, api=None, job=None):
     # SVGs can be tens of MB. Keep only a small LRU instead of retaining the
     # entire database run in RAM (which previously made long jobs crash).
     compiled = OrderedDict()
-    cache_limit = max(4, getattr(args, "workers", 1) * 4)
-    executor = ThreadPoolExecutor(max_workers=max(1, getattr(args, "workers", 1)))
+    workers = max(1, getattr(args, "workers", 4))
+    cache_limit = max(4, workers * 4)
+    executor = ThreadPoolExecutor(max_workers=workers)
+    spool_directory = tempfile.TemporaryDirectory(prefix='tikz_svg_batch_', ignore_cleanup_errors=True)
+    spool = Path(spool_directory.name)
     heartbeat = WorkerHeartbeat(api, job)
     heartbeat.start()
 
@@ -330,40 +333,43 @@ def run_worker(args, api=None, job=None):
                     future.cancel()
                     raise InterruptedError("Công việc đã được yêu cầu dừng.")
 
+    def compile_to_file(hash_value, source):
+        svg = compile_svg(source, args.timeout, heartbeat.cancelled)
+        path = spool / (hash_value + '.svg')
+        path.write_text(svg, encoding='utf-8')
+        return path
+
     try:
       while True:
+        for cached_file in spool.glob('*.svg'):
+            cached_file.unlink()
         page = api.request("GET", "/api/admin/tikz-audit?" + urlencode({
             "afterId": cursor, "limit": args.limit, "actionable": 1,
         }))
         if not heartbeat.check():
             save_report()
             return "CANCELLED"
-        # TeX processes are independent. Start the unique drawings in this page
-        # in a small rolling window. Do not queue the whole page: completed SVGs
-        # may be very large and futures would otherwise retain all of them in RAM.
+        # Queue each unique drawing once. Completed futures retain only paths,
+        # allowing other lanes to keep working while the first drawing is slow.
+        # The spool is cleared per page, and SVG text stays in the bounded LRU.
         futures = {}
         source_queue = []
         if args.apply:
             remaining = args.max_questions - scanned if args.max_questions else len(page["data"])
             for question in page["data"][:remaining]:
+                if question['status'] in ('READY', 'NO_TIKZ', 'MALFORMED_SOURCE'):
+                    continue
                 for image in question["images"]:
                     hash_value = image["hash"]
                     if (image["needsAction"] and not image["exists"] and image["source"]
                             and hash_value not in compiled
                             and all(queued[0] != hash_value for queued in source_queue)):
                         source_queue.append((hash_value, image["source"]))
-        source_queue = iter(source_queue)
-
-        def fill_compile_window():
-            while len(futures) < max(1, getattr(args, "workers", 1)):
-                try:
-                    hash_value, source = next(source_queue)
-                except StopIteration:
-                    break
-                futures[hash_value] = executor.submit(compile_svg, source, args.timeout, heartbeat.cancelled)
-
-        fill_compile_window()
+        for hash_value, source in source_queue:
+            futures[hash_value] = executor.submit(compile_to_file, hash_value, source)
         for question in page["data"]:
+            if question['status'] in ('READY', 'NO_TIKZ'):
+                continue
             if args.max_questions and scanned >= args.max_questions:
                 break
             if not job_heartbeat():
@@ -413,10 +419,12 @@ def run_worker(args, api=None, job=None):
                     if not image["exists"]:
                         if hash_value not in compiled:
                             future = futures.pop(hash_value, None)
-                            try:
-                                svg_result = wait_for_compile(future) if future else compile_svg(image["source"], args.timeout, heartbeat.cancelled)
-                            finally:
-                                fill_compile_window()
+                            if future:
+                                svg_result = wait_for_compile(future).read_text(encoding='utf-8')
+                            elif (spool / (hash_value + '.svg')).is_file():
+                                svg_result = (spool / (hash_value + '.svg')).read_text(encoding='utf-8')
+                            else:
+                                svg_result = compile_svg(image["source"], args.timeout, heartbeat.cancelled)
                             remember_compiled(hash_value, svg_result)
                         else:
                             compiled.move_to_end(hash_value)
@@ -497,6 +505,7 @@ def run_worker(args, api=None, job=None):
         heartbeat.cancelled.set()
         heartbeat.stop()
         executor.shutdown(wait=True, cancel_futures=True)
+        spool_directory.cleanup()
         save_report()
     print(f"HOÀN TẤT: quét {scanned} câu, đồng bộ {synced} hình, lỗi {failed}.")
     save_report()
@@ -571,10 +580,10 @@ if __name__ == "__main__":
     parser.add_argument("--url", required=True, help="URL dịch vụ Render, ví dụ https://quanlythi.onrender.com")
     parser.add_argument("--apply", action="store_true", help="Cho phép lưu SVG và cập nhật database; mặc định chỉ kiểm kê.")
     parser.add_argument("--daemon", action="store_true", help="Chờ nút trên web và tự xử lý lô công việc bằng TeX local.")
-    parser.add_argument("--limit", type=int, default=100, choices=range(1, 101), metavar="1..100")
+    parser.add_argument("--limit", type=int, default=25, choices=range(1, 101), metavar="1..100")
     parser.add_argument("--timeout", type=int, default=90, help="Thời gian tối đa cho mỗi bước biên dịch (giây).")
-    parser.add_argument("--workers", type=int, default=2, choices=range(1, 5), metavar="1..4",
-                        help="Số hình biên dịch song song; mặc định 2 để tăng tốc mà không làm quá tải máy.")
+    parser.add_argument("--workers", type=int, default=4, choices=range(1, 9), metavar="1..8",
+                        help="Số hình biên dịch song song; mặc định 4, có thể tăng đến 8 nếu máy đủ tài nguyên.")
     parser.add_argument("--max-questions", type=int, default=0, help="Dừng sau N câu để chạy thử.")
     parser.add_argument("--report", default=str(PROJECT_ROOT / "output" / "tikz_worker_errors.json"))
     arguments = parser.parse_args()
