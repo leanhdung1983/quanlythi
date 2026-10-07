@@ -26,6 +26,15 @@ beforeEach(() => {
 });
 const decision = status => fetch(base + '/eduloop/recommendations/1/decision', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ status, note: 'Teacher review' }) });
 describe('EduLoop authorization and approval', () => {
+    it('offers real practice forms without requiring or inventing student history', async () => {
+        const response = await fetch(base + '/eduloop/practice-catalog');
+        expect(response.status).toBe(200);
+        const result = await response.json();
+        expect(result.data[0].key).toBe('2-D-1-1-1');
+        expect(result.data[0].available).toBe(1);
+        expect(result.data[0]).not.toHaveProperty('rate');
+        expect(result.data[0]).not.toHaveProperty('attempts');
+    });
     it('allows self map, blocks other student and unmanaged class', async () => {
         expect((await fetch(base + '/eduloop/map')).status).toBe(200);
         expect((await fetch(base + '/eduloop/map?student_id=8')).status).toBe(403);

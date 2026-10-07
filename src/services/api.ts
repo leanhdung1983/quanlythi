@@ -112,9 +112,22 @@ export const apiService = {
         });
         return await handleResponse(res, '/admin/ai/generate-curriculum');
     },
-    async proposeLessonMatrix(unitId: number) {
-        const res = await fetch(`${API_URL}/admin/ai/lesson-matrix`, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ unit_id: unitId }) });
-        return await handleResponse(res, '/admin/ai/lesson-matrix');
+    async proposeLessonMatrix(unitId: number, options: { total_questions?: number; scope?: string; difficulty?: string; use_ai?: boolean } = {}, signal?: AbortSignal) {
+        const controller = new AbortController();
+        const stop = () => controller.abort();
+        if (signal?.aborted) stop();
+        else signal?.addEventListener('abort', stop, { once: true });
+        const timer = setTimeout(stop, 55000);
+        try {
+            const res = await fetch(`${API_URL}/admin/ai/lesson-matrix`, { method: 'POST', signal: controller.signal, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ unit_id: unitId, ...options }) });
+            return await handleResponse(res, '/admin/ai/lesson-matrix');
+        } catch (error) {
+            if (controller.signal.aborted && !signal?.aborted) throw new Error('Yêu cầu quá thời gian chờ. Thử lại hoặc chọn Tự phân bổ theo ngân hàng.');
+            throw error;
+        } finally {
+            clearTimeout(timer);
+            signal?.removeEventListener('abort', stop);
+        }
     },
     async generateLessonSections(unit_id: number, unit_name: string, chapter_name: string, gradeCode: string, subjectCode: string) {
         const res = await fetch(`${API_URL}/admin/ai/generate-lesson-sections`, {
@@ -546,8 +559,15 @@ export const apiService = {
     },
     async generateAdaptiveTest(_user_id: number, limit?: number, recommendationId?: string, skillKey?: string) {
         void _user_id;
-        const response = await fetch(`${API_URL}/adaptive/generate`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ limit, recommendation_id: recommendationId, skill_key: skillKey }) });
-        return await handleResponse(response, '/adaptive/generate');
+        const controller = new AbortController();
+        const timer = setTimeout(() => controller.abort(), 45000);
+        try {
+            const response = await fetch(`${API_URL}/adaptive/generate`, { method: 'POST', signal: controller.signal, headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ limit, recommendation_id: recommendationId, skill_key: skillKey }) });
+            return await handleResponse(response, '/adaptive/generate');
+        } catch (e) {
+            if (controller.signal.aborted) throw new Error('Tải câu hỏi quá thời gian chờ. Hãy kiểm tra kết nối và thử lại.');
+            throw e;
+        } finally { clearTimeout(timer); }
     },
     async aiExplain(question_latex: string, user_answer_latex: string, correct_answer_latex: string) {
         const response = await fetch(`${API_URL}/ai/explain`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ question_latex, user_answer_latex, correct_answer_latex }) });

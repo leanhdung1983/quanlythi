@@ -30,6 +30,16 @@ EduLoop được tích hợp vào hệ thống hiện có mà không đổi tên
 - docs/EduLoop.md — bản hướng dẫn này trong project.
 
 ## Chạy
+### Học sinh mới và ôn theo dạng
+
+Học sinh chưa có lịch sử vẫn được chọn khối lớp, bài học và từng dạng có câu hỏi trong mục **Bắt đầu ôn từng dạng của bài**. Danh sách chỉ là gợi ý theo chương trình; không tạo tỷ lệ đúng, minh chứng hay kết luận năng lực giả. Sau khi nộp bài, kết quả thực tế được đưa vào bản đồ kỹ năng.
+
+`GET /api/eduloop/practice-catalog` đọc ngân hàng chung đã đăng nhập, cùng phạm vi dữ liệu với `/questions` và tạo đề thi. Không dùng `is_public` để loại ngân hàng nhập cũ vì cờ này hiện mặc định 0. Không cập nhật cờ công khai hay dữ liệu câu hỏi trong database.
+
+`POST /api/adaptive/generate` nhận mã kỹ năng ID6 (giữ đúng mức độ) hoặc khóa dạng `2-D-1-1-1` (gộp các mức trong cùng dạng). Truy vấn nhận mã cũ/khối 10–12, sau đó xác nhận lại phạm vi bằng bộ chuẩn hóa ID6. Chỉ dùng TN/TF/KQ, không chèn câu từ dạng khác khi thiếu. Nếu chưa có lịch sử và chưa chọn dạng, API yêu cầu chọn dạng thay vì tạo bài ngẫu nhiên không có căn cứ. Việc tải câu không phụ thuộc Gemini.
+
+Tài khoản miễn phí vẫn có hạn mức hai lượt tự ôn mỗi ngày. Chỉ ghi nhận lượt sau khi có đề hợp lệ; yêu cầu sai mã, không có câu hoặc yêu cầu chọn dạng không bị trừ. Phép cập nhật hạn mức có điều kiện để xử lý các yêu cầu đồng thời. Lượt đã bị trừ bởi phiên bản cũ không được tự sửa vì không có nhật ký đủ để xác định từng lần thất bại. Kế hoạch giáo viên duyệt giữ nguyên kiểm tra chủ sở hữu, thành viên lớp và trạng thái duyệt.
+
 ### AI đề xuất ma trận bài học
 
 Giáo viên mở bài trong Học trực tuyến → AI đề xuất ma trận; hoặc mở Học lại trong EduLoop rồi chọn AI đề xuất ma trận cho bài đó. Cần cấu hình Gemini API Key. AI đọc nội dung bài học và số câu được phép dùng theo ID6, loại TN/TF/KQ và mức N/H/V/C; đề xuất được kiểm tra để không vượt số câu sẵn có hoặc đưa dạng ngoài bài vào ma trận.

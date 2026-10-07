@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { generateDocxBlob, generateCombinedLatex } from '../matrixExportUtils';
+import { generateDocxBlob, generateCombinedLatex, generateSpecMatrixData, generateMatrixData } from '../matrixExportUtils';
 import { prepareMatrixPayload } from '../matrixUtils';
 
 describe('Matrix Export Test', () => {
@@ -46,6 +46,33 @@ describe('Matrix Export Test', () => {
         const blob = await generateDocxBlob(mockTreeData, matrix, 'COMBINED');
         expect(blob).toBeDefined();
         expect(blob.size).toBeGreaterThan(1000);
+    });
+
+    it('expands lesson counts by real form capacity without changing the saved selection', () => {
+        const tree = structuredClone(mockTreeData);
+        tree[0].subjects[0].chapters[0].units[0].types[0].stats = { TN: { N: 3, H: 1 } };
+        tree[0].subjects[0].chapters[0].units[0].types[1].stats = { TN: { N: 2, H: 2 } };
+        const matrix = { TN: { '2-D-1-1-*': { N: 3, H: 2, V: 0, C: 0 }, '2-D-1-1-1': { N: 2, H: 0, V: 0, C: 0 } }, TF: {}, KQ: {}, TL: {} };
+        const original = JSON.stringify(matrix);
+        const rows = generateSpecMatrixData(tree, matrix);
+        expect(rows.filter(r => r.description.includes('dự kiến'))).toHaveLength(2);
+        expect(rows.reduce((n, r) => n + r.TN.N, 0)).toBe(5);
+        expect(rows.reduce((n, r) => n + r.TN.H, 0)).toBe(2);
+        const firstForm = rows.filter(r => r.description.includes('bảng biến thiên'));
+        expect(firstForm.reduce((n, r) => n + r.TN.N, 0)).toBe(3);
+        expect(generateMatrixData(tree, matrix)[0].unitName).toContain('Dạng bài:');
+        expect(generateCombinedLatex(tree, matrix)).toContain('Mỗi lượt tạo đề vẫn chọn dạng ngẫu nhiên');
+        expect(JSON.stringify(matrix)).toBe(original);
+    });
+
+    it('keeps unallocatable counts visible rather than inventing available forms', () => {
+        const tree = structuredClone(mockTreeData);
+        tree[0].subjects[0].chapters[0].units[0].types[0].stats = { TN: { N: 1 } };
+        const matrix = { TN: { '12-D-1-1-*': { N: 3, H: 0, V: 0, C: 0 } } };
+        const rows = generateSpecMatrixData(tree, matrix);
+        expect(rows.reduce((n, r) => n + r.TN.N, 0)).toBe(3);
+        expect(rows.find(r => r.description.includes('chưa đủ dữ liệu'))?.TN.N).toBe(2);
+        expect(rows.find(r => r.description.includes('bảng biến thiên'))?.TN.N).toBe(1);
     });
 
     it('should generate Word Blob from nested matrix_data (as in ExamGenerator state & DB)', async () => {

@@ -13,8 +13,11 @@ import { OnlineQuestion, QuestionType } from '../types';
 import { MathRenderer } from '../components/MathRenderer';
 import { checkKQAnswer } from '../utils/gradeHelper';
 import { parseQuestionContent, shuffleArray } from '../utils/latexParser';
+import { PracticeCatalog } from '../components/PracticeCatalog';
 
-export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: string; onReturn?: () => void }> = ({ recommendationId: selectedRecommendation, skillKey, onReturn }) => {
+export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: string; onReturn?: () => void }> = ({ recommendationId: selectedRecommendation, skillKey: initialSkillKey, onReturn }) => {
+    const [skillKey, setSkillKey] = useState(initialSkillKey);
+    const [needsSelection, setNeedsSelection] = useState(false);
     const { user } = useAuthStore();
     const [searchParams] = useSearchParams();
     const recommendationId = selectedRecommendation || searchParams.get('recommendation_id') || undefined;
@@ -118,7 +121,10 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
         setStep('generating');
         try {
             const res = await apiService.generateAdaptiveTest(user.id, 10, recommendationId, skillKey);
+            if (res.needs_selection) { setNeedsSelection(true); setStep('intro'); return; }
+            if (!res.success) throw new Error(res.error || 'Không tải được câu hỏi ôn tập. Vui lòng thử lại.');
             if (res.success) {
+                if (!Array.isArray(res.data) || !res.data.length) throw new Error('Chưa có câu hỏi phù hợp. Hãy chọn dạng khác để ôn tập.');
                 const parsed = res.data.map((q: OnlineQuestion) => parseQuestionContent(q));
                 setQuestions(parsed);
                 setAiAnalysis([res.ai_analysis || '', ...(res.evidence || []).map((item: { question_id: number; reason: string }) => 'Câu #' + item.question_id + ': ' + item.reason)].filter(Boolean).join('\n'));
@@ -919,7 +925,7 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-left mt-12">
                         <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
                             <div className="text-indigo-500 mb-2"><Brain size={24}/></div>
-                            <h3 className="font-bold text-slate-800 mb-1">Phân tích AI</h3>
+                            <h3 className="font-bold text-slate-800 mb-1">Từ minh chứng bài làm</h3>
                             <p className="text-xs text-slate-500">Dò tìm các dạng bài bạn thường xuyên làm sai.</p>
                         </div>
                         <div className="p-4 bg-white rounded-xl border border-slate-200 shadow-sm">
@@ -943,6 +949,7 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                 </div>
             )}
 
+            {step === 'intro' && needsSelection && <PracticeCatalog beginner onSelect={key => { setSkillKey(key); setNeedsSelection(false); }}/>}
             {step === 'generating' && (
                 <div className="text-center space-y-6">
                     <div className="relative">
@@ -970,8 +977,8 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                 <div className="w-full space-y-6 animate-in fade-in slide-in-from-bottom-4 duration-500">
                     <div className="flex flex-col md:flex-row justify-between items-start md:items-end gap-4">
                         <div>
-                            <h2 className="text-3xl font-black text-slate-800">Đề thi Khắc phục Điểm yếu</h2>
-                            <p className="text-slate-500">Dựa trên phân tích: Bạn đang gặp khó khăn ở một số dạng bài quan trọng.</p>
+                            <h2 className="text-3xl font-black text-slate-800">{skillKey ? 'Bài ôn tập theo dạng đã chọn' : 'Bài ôn tập theo lịch sử'}</h2>
+                            <p className="text-slate-500">{skillKey ? 'Luyện tập đúng phạm vi; kết quả sẽ giúp cập nhật bản đồ kỹ năng.' : 'Ưu tiên các dạng cần củng cố từ bài làm đã hoàn thành.'}</p>
                         </div>
                         <button 
                             onClick={startExam}
@@ -993,7 +1000,7 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                     </div>
                                 </div>
                                 <div>
-                                    <h3 className="text-lg font-black text-indigo-900 mb-2">Phân tích từ Gia sư AI</h3>
+                                    <h3 className="text-lg font-black text-indigo-900 mb-2">Căn cứ chọn câu hỏi ôn tập</h3>
                                     <div className="text-indigo-800/80 leading-relaxed font-medium whitespace-pre-wrap">
                                         {aiAnalysis}
                                     </div>

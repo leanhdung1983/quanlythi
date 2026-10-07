@@ -1,6 +1,7 @@
 import express from 'express';
 import { query, canManageClass } from '../core.js';
 import { buildGapMap, planPractice, json, questionSignature } from '../eduloop.js';
+import { buildPracticeCatalog, practiceCatalogSql } from '../eduLoopPractice.js';
 
 const router = express.Router();
 const positive = value => Number.isSafeInteger(Number(value)) && Number(value) > 0;
@@ -45,6 +46,16 @@ router.get('/eduloop/map', async (req, res) => {
         await scope(req, class_id, student);
         const { results, bank } = await evidence(class_id, student);
         res.json({ success: true, data: buildGapMap(results, bank), result_count: results.length });
+    } catch (e) { fail(res, e); }
+});
+
+// Uses the same authenticated shared bank as /questions and exam generation.
+// Imported questions have is_public=0, so that flag is not the bank's access rule.
+router.get('/eduloop/practice-catalog', async (req, res) => {
+    try {
+        const rows = await query(practiceCatalogSql);
+        res.set('Cache-Control', 'private, no-store');
+        res.json({ success: true, data: buildPracticeCatalog(rows) });
     } catch (e) { fail(res, e); }
 });
 

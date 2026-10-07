@@ -501,7 +501,7 @@ export const ExamGenerator: React.FC = () => {
 
     return (
         <div className="w-full h-full flex gap-3 overflow-hidden p-0.5">
-            {proposalUnit !== null && <LessonMatrixProposal unitId={proposalUnit} onClose={() => setProposalUnit(null)} onApply={(name, data) => { handleSelectMatrix({ id: null, name, matrix_data: data }); setShowSaveModal(true); }}/>}
+            {proposalUnit !== null && <LessonMatrixProposal unitId={proposalUnit} treeData={treeData} onClose={() => setProposalUnit(null)} onApply={(name, data) => { handleSelectMatrix({ id: null, name, matrix_data: data }); setShowSaveModal(true); }}/>}
             {/* LEFT: SAVED LIST (TREE VIEW) */}
             {isSidebarCollapsed ? (
                 <div className="w-12 flex flex-col items-center py-3 bg-white rounded-2xl border border-slate-200 shadow-sm shrink-0 transition-all duration-200 gap-3">
@@ -566,8 +566,8 @@ export const ExamGenerator: React.FC = () => {
             )}
 
             {/* MIDDLE: BUILDER */}
-            <div className="flex-1 flex flex-col gap-3 min-w-0 h-full overflow-hidden">
-                <div className="flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden flex-1 min-h-0">
+            <div className="flex-1 flex flex-col gap-3 min-w-0 h-full overflow-y-auto custom-scrollbar">
+                <div className="flex flex-col bg-white rounded-2xl border border-slate-200 shadow-sm overflow-hidden shrink-0">
                     {/* Header Controls: 2 Hàng sắc nét, hiện đại */}
                     <div className="p-3.5 border-b border-slate-200/80 bg-slate-50/70 backdrop-blur-md flex flex-col gap-2.5 shrink-0">
                         {/* Hàng 1: Lớp, Môn, Tên ma trận & Thống kê */}
@@ -772,7 +772,7 @@ export const ExamGenerator: React.FC = () => {
                     </div>
 
                     {/* TABS: Phân loại câu hỏi */}
-                    <div className="flex border-b border-slate-200 bg-white px-4 pt-1 shrink-0">
+                    <div className="flex border-b border-slate-200 bg-white px-4 pt-1 shrink-0 overflow-x-auto">
                         {[
                             { id: 'TN', label: 'Phần I: TN 4 Phương Án', icon: ListChecks, color: 'blue' },
                             { id: 'TF', label: 'Phần II: TN Đúng / Sai', icon: CheckSquare, color: 'emerald' },
@@ -785,7 +785,7 @@ export const ExamGenerator: React.FC = () => {
                                 <button 
                                     key={tab.id} 
                                     onClick={() => setActiveTab(tab.id as QuestionType)} 
-                                    className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold border-b-2 transition-all ${
+                                    className={`flex shrink-0 items-center gap-2 px-5 py-2.5 text-sm font-bold border-b-2 transition-all ${
                                         isActive 
                                             ? `border-${tab.color}-600 text-${tab.color}-700 bg-${tab.color}-50/40` 
                                             : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
@@ -814,7 +814,8 @@ export const ExamGenerator: React.FC = () => {
                         <p className="text-xs text-slate-600">Nhập số câu ở mỗi mức độ cho từng bài. Hệ thống ưu tiên các dạng khác nhau; chỉ lặp dạng khi số câu vượt số dạng có sẵn. Hai cách cấu hình được lưu riêng và cộng vào tổng số câu.</p>
                     </div>
                     {/* TREE CONTENT: Bảng nhập liệu số câu theo mức độ */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-0 bg-white">
+                    <div className="h-[clamp(360px,55vh,720px)] shrink-0 overflow-auto custom-scrollbar p-0 bg-white">
+                        <div className="min-w-[680px]">
                         {loading ? (
                             <div className="p-12 text-center flex flex-col items-center justify-center gap-2 text-slate-400">
                                 <Loader2 className="animate-spin text-indigo-600" size={28}/> 
@@ -833,7 +834,7 @@ export const ExamGenerator: React.FC = () => {
                                     <div key={c.id} className="border-b border-slate-100 last:border-0">
                                         <button 
                                             onClick={() => toggleExpand(chapKey)} 
-                                            className={`w-full flex items-center gap-3 px-4 py-3 text-xs font-extrabold uppercase tracking-wider text-left transition-colors ${isChapExpanded ? 'bg-slate-50 text-indigo-700' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
+                                            className={`w-full flex items-center gap-3 px-4 py-4 text-sm font-extrabold uppercase tracking-wide text-left transition-colors ${isChapExpanded ? 'bg-slate-50 text-indigo-700' : 'bg-white text-slate-600 hover:bg-slate-50'}`}
                                         >
                                             {isChapExpanded ? <ChevronDown size={15}/> : <ChevronRight size={15}/>}
                                             <span className="flex items-center gap-2"><FolderOpen size={15} className="text-indigo-500"/> Chương {c.num}. {c.name}</span>
@@ -851,7 +852,7 @@ export const ExamGenerator: React.FC = () => {
                                                         <div key={u.id} className="border-b border-slate-50 last:border-0">
                                                             <div className="flex items-center pr-3"><button
                                                                 onClick={() => toggleExpand(unitKey)} 
-                                                                className={`w-full flex items-center gap-3 px-8 py-2.5 text-xs font-bold text-left transition-colors ${isUnitExpanded ? 'text-indigo-700 bg-indigo-50/40' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100'}`}
+                                                                className={`w-full flex items-center gap-3 px-8 py-3 text-sm font-bold text-left transition-colors ${isUnitExpanded ? 'text-indigo-700 bg-indigo-50/40' : 'text-slate-600 hover:text-indigo-600 hover:bg-slate-100'}`}
                                                             >
                                                                 {isUnitExpanded ? <ChevronDown size={13}/> : <ChevronRight size={13}/>}
                                                                 <span className="flex items-center gap-2"><Layers size={13} className="text-slate-400"/> {dispUName}</span>
@@ -886,7 +887,7 @@ export const ExamGenerator: React.FC = () => {
                                                                                     <span className={`px-1.5 py-0.5 rounded text-[10px] font-mono shrink-0 ${hasSelected ? 'bg-indigo-600 text-white font-bold' : 'bg-slate-100 text-slate-500'}`}>
                                                                                         #{typeItem.count_id}
                                                                                     </span>
-                                                                                    <span className={`leading-snug truncate ${hasSelected ? 'font-bold text-indigo-950' : ''}`} title={typeItem.description}>
+                                                                                    <span className={`leading-relaxed text-sm whitespace-normal break-words ${hasSelected ? 'font-bold text-indigo-950' : ''}`} title={typeItem.description}>
                                                                                         {typeItem.description}
                                                                                     </span>
                                                                                 </div>
@@ -930,6 +931,7 @@ export const ExamGenerator: React.FC = () => {
                                 );
                             })
                         )}
+                        </div>
                     </div>
                 </div>
 

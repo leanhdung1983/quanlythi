@@ -11,8 +11,7 @@ import { normalizeId6, extractSourceId, injectCanonicalId, requiresAiIdReview, v
 import { normalizeExTestOutput } from '../exTest.js';
 import { convertPdfToExTest } from '../pdfToExTest.js';
 
-import { approvedPractice } from './eduloop.routes.js';
-import { correctness, buildGapMap } from '../eduloop.js';
+import adaptivePracticeRoutes from './adaptivePractice.routes.js';
 
 const router = express.Router();
 
@@ -548,130 +547,6 @@ Nếu đề bài là dạng ${type}, hãy sinh câu hỏi theo đúng định d�
     }
 });
 
-router.post('/adaptive/generate', async (req, res) => {
-    try {
-        const limit = Math.min(30, Math.max(1, Number.parseInt(req.body.limit, 10) || 10));
-        if (req.body.recommendation_id) return res.json(await approvedPractice(req));
-        const user_id = req.user.id;
-        
-        // Check limit for non-pro student
-        if (user_id) {
-            const [user] = await query("SELECT role, is_pro FROM users WHERE id = ?", [user_id]);
-            if (user && user.role === 'STUDENT' && !user.is_pro) {
-                const today = new Date().toISOString().split('T')[0];
-                let limitRow = (await query("SELECT * FROM activity_limits WHERE user_id = ? AND activity_date = ?", [user_id, today]))[0];
-                if (!limitRow) {
-                    await query("INSERT INTO activity_limits (user_id, activity_date) VALUES (?, ?)", [user_id, today]);
-                    limitRow = { exam_count: 0, review_count: 0 };
-                }
-                if (limitRow.review_count >= 2) {
-                    return res.status(403).json({ error: "Bạn đã hết lượt ôn tập (Adaptive Test) trong ngày (Tối đa 2 lần)." });
-                }
-                await query("UPDATE activity_limits SET review_count = review_count + 1 WHERE user_id = ? AND activity_date = ?", [user_id, today]);
-            }
-        }
-        
-        if (req.body.skill_key) {
-            const skill = normalizeId6(req.body.skill_key);
-            if (!skill) return res.status(400).json({ error: 'Kỹ năng không hợp lệ.' });
-            const questions = await query(`SELECT q.id, q.legacy_full_id AS id_full, q.content_latex,
-                q.content_latex_original AS original_latex, q.content_latex AS raw_latex, qt.code AS type
-                FROM questions q JOIN question_types qt ON qt.id = q.type_id
-                WHERE q.legacy_full_id = ? AND qt.code IN ('TN','TF','KQ')
-                AND (q.is_public = 1 OR q.created_by = ?) ORDER BY RAND() LIMIT ?`, [skill, user_id, limit]);
-            if (!questions.length) return res.status(422).json({ error: 'Chưa có câu hỏi được phép sử dụng cho kỹ năng này.' });
-            return res.json({ success: true, data: questions, ai_analysis: `Luyện tập tập trung kỹ năng ${skill}.`,
-                evidence: [], approval: { status: 'SELF_PRACTICE' } });
-        }
-
-        // 1. Find questions user has failed
-        const results = await query("SELECT id, user_id, status, created_at, result_detail FROM exam_results WHERE user_id = ? AND status = 'COMPLETED'", [user_id]);
-        const failedIds = new Set();
-        
-        results.forEach(r => {
-            try {
-                const detail = typeof r.result_detail === 'string' ? JSON.parse(r.result_detail) : r.result_detail;
-                const { questions, answers } = detail;
-                if (questions && answers) {
-                    questions.forEach(q => {
-                        const value = correctness(q, answers[q.id]);
-                        const isCorrect = value === null || value === 1;
-                        if (!isCorrect) failedIds.add(q.id);
-                    });
-                }
-            } catch {}
-        });
-
-        let questions = [];
-        let ai_analysis = "Hệ thống chưa tìm thấy dữ liệu làm bài sai gần đây của bạn. Đề ôn tập dưới đây được chọn ngẫu nhiên để bạn luyện tập nhé!";
-
-        if (failedIds.size > 0) {
-            const failedArray = Array.from(failedIds);
-            const placeholders = failedArray.map(() => '?').join(',');
-            
-            const failedQs = await query(`
-                SELECT q.id, q.legacy_full_id as id_full, q.content_latex_original AS original_latex 
-                FROM questions q 
-                WHERE q.id IN (${placeholders})
-            `, failedArray);
-            
-            const formats = [...new Set(failedQs.map(q => q.id_full).filter(Boolean))];
-            
-            if (formats.length > 0) {
-                const formatPlaceholders = formats.map(() => '?').join(',');
-                questions = await query(`
-                    SELECT q.id, q.legacy_full_id as id_full, q.content_latex, q.content_latex_original AS original_latex, q.content_latex AS raw_latex, qt.code as type 
-                    FROM questions q LEFT JOIN question_types qt ON q.type_id = qt.id 
-                    WHERE q.legacy_full_id IN (${formatPlaceholders}) ORDER BY RAND() LIMIT ?
-                `, [...formats, limit]);
-                
-                try {
-                    const apiKeys = await getGeminiApiKeys(req.user?.id);
-                    if (apiKeys && apiKeys.length > 0) {
-                        const prompt = `Bạn là một gia sư AI chuyên Toán. Học sinh vừa làm sai các câu hỏi thuộc các mã dạng bài (ID6) sau: ${formats.join(', ')}.
-Một vài nội dung đề bài làm sai:
-${failedQs.slice(0, 3).map(q => q.original_latex).join('\n---\n')}
-
-Dựa vào nội dung trên, hãy phân tích ngắn gọn (tối đa 4 câu) về lỗi sai hoặc lỗ hổng kiến thức của học sinh, và đưa ra lời khuyên ôn tập cụ thể, dễ hiểu, động viên học sinh. Trả lời trực tiếp bằng tiếng Việt.`;
-                        
-                        const response = await generateWithFallback(apiKeys, prompt);
-                        ai_analysis = response.text;
-                    }
-                } catch (aiErr) {
-                    console.error("AI Analysis failed:", aiErr);
-                    ai_analysis = "Hệ thống nhận thấy bạn cần ôn tập thêm một số dạng bài. Dưới đây là các câu hỏi cùng dạng để bạn luyện tập lại!";
-                }
-            } else {
-                questions = await query(`
-                    SELECT q.id, q.legacy_full_id as id_full, q.content_latex, q.content_latex_original AS original_latex, q.content_latex AS raw_latex, qt.code as type 
-                    FROM questions q LEFT JOIN question_types qt ON q.type_id = qt.id 
-                    WHERE q.id IN (${placeholders}) ORDER BY RAND() LIMIT ?
-                `, [...failedArray, limit]);
-            }
-        }
-
-        // 2. If not enough failed questions, fill with random ones
-        if (questions.length < limit) {
-            const remaining = limit - questions.length;
-            const excludeIds = questions.map(q => q.id);
-            const excludePlaceholders = excludeIds.length > 0 ? `WHERE q.id NOT IN (${excludeIds.map(() => '?').join(',')})` : '';
-            const randomQs = await query(`
-                SELECT q.id, q.legacy_full_id as id_full, q.content_latex, q.content_latex_original AS original_latex, q.content_latex AS raw_latex, qt.code as type 
-                FROM questions q LEFT JOIN question_types qt ON q.type_id = qt.id 
-                ${excludePlaceholders} ORDER BY RAND() LIMIT ?
-            `, [...excludeIds, remaining]);
-            questions = [...questions, ...randomQs];
-        }
-
-        const historyMap = buildGapMap(results);
-        const evidence = questions.map(q => {
-            const skill = historyMap.skills.find(s => s.key === normalizeId6(q.id_full));
-            return { question_id: q.id, skill: normalizeId6(q.id_full) || null,
-                reason: skill ? 'Cùng ID6 đã làm: mức đúng ' + skill.rate + '% trên ' + skill.attempts + ' lượt.' : 'Câu luyện tập bổ sung ngẫu nhiên; chưa có bằng chứng lỗ hổng cho dạng này.',
-                evidence: skill?.evidence || [], confidence: skill?.confidence || 'INSUFFICIENT' };
-        });
-        res.json({ success: true, data: questions, ai_analysis, evidence, approval: { status: 'SELF_PRACTICE' } });
-    } catch (e) { res.status(e.status || (e.code === 'ER_NO_SUCH_TABLE' ? 503 : 500)).json({ error: e.code === 'ER_NO_SUCH_TABLE' ? 'Chưa chạy migration EduLoop.' : parseGeminiError(e) }); }
-});
+router.use(adaptivePracticeRoutes);
 
 export default router;

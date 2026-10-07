@@ -1,9 +1,12 @@
 
 import { MatrixTreeNode } from '../types';
-import { 
+import {
     Document, Packer, Paragraph, Table, TableRow, TableCell, 
     WidthType, BorderStyle, TextRun, AlignmentType, VerticalAlign, HeadingLevel 
 } from 'docx';
+
+const projectedNote = 'Các dòng “phân bổ dự kiến” mô tả cách chia số câu tổng quát theo dạng và số câu hiện có. Mỗi lượt tạo đề vẫn chọn dạng ngẫu nhiên; tổng số câu và mức độ được giữ nguyên. Dòng chưa đủ dữ liệu cần kiểm tra lại ngân hàng.';
+const hasLessonSelection = (input: any) => Object.values(ensureMatrixObject(input)).some(section => Object.keys(section).some(key => key.endsWith('-*')));
 
 interface LevelCounts {
     N: number;
@@ -148,6 +151,47 @@ const buildMetadataMap = (treeData: MatrixTreeNode[]) => {
     return map;
 };
 
+// Only the export is expanded. Saved wildcard selections retain their random
+// form selection for each exam; these counts describe an achievable draft.
+function exportEntries(tree: MatrixTreeNode[], matrix: ReturnType<typeof ensureMatrixObject>, type: 'TN' | 'TF' | 'KQ' | 'TL') {
+    const section = matrix[type];
+    const entries: { key: string; counts: LevelCounts; projected: boolean }[] = [];
+    for (const [key, value] of Object.entries(section)) {
+        const parsed = parseKey(key);
+        if (!parsed || parsed.count !== '*') { entries.push({ key, counts: value, projected: false }); continue; }
+        const grade = tree.find(g => g.grade === parsed.cls || (g.grade < 3 ? g.grade + 10 : g.grade - 10) === parsed.cls);
+        const unit = grade?.subjects.find(s => s.subject === parsed.sub)?.chapters.find(c => c.num === parsed.chap)?.units.find(u => u.num === parsed.unit);
+        const forms = [...(unit?.types || [])].sort((a, b) => a.count_id - b.count_id);
+        const allocation = new Map<number, LevelCounts>();
+        const missing = { N: 0, H: 0, V: 0, C: 0 };
+        for (const level of ['N', 'H', 'V', 'C'] as const) {
+            let remaining = Number(value[level]) || 0;
+            const capacities = forms.map(form => {
+                const fixed = Object.entries(section).reduce((sum, [fixedKey, counts]) => {
+                    const p = parseKey(fixedKey);
+                    const sameGrade = p && (p.cls >= 10 ? p.cls - 10 : p.cls) === (parsed.cls >= 10 ? parsed.cls - 10 : parsed.cls);
+                    return sameGrade && p!.sub === parsed.sub && p!.chap === parsed.chap && p!.unit === parsed.unit && p!.count === form.count_id ? sum + (Number(counts[level]) || 0) : sum;
+                }, 0);
+                return Math.max(0, (Number(form.stats?.[type]?.[level]) || 0) - fixed);
+            });
+            while (remaining > 0 && capacities.some(n => n > 0)) {
+                for (let i = 0; i < forms.length && remaining > 0; i++) {
+                    if (!capacities[i]) continue;
+                    const id = forms[i].count_id;
+                    if (!allocation.has(id)) allocation.set(id, { N: 0, H: 0, V: 0, C: 0 });
+                    allocation.get(id)![level]++;
+                    capacities[i]--; remaining--;
+                }
+            }
+            missing[level] = remaining;
+        }
+        const prefix = key.slice(0, key.lastIndexOf('-') + 1);
+        for (const [id, counts] of allocation) entries.push({ key: prefix + id, counts, projected: true });
+        if (Object.values(missing).some(Boolean)) entries.push({ key, counts: missing, projected: true });
+    }
+    return entries;
+}
+
 const aggregateData = (treeData: MatrixTreeNode[], matrixInput: any) => {
     const metaMap = buildMetadataMap(treeData);
     const rowMap = new Map<string, any>(); 
@@ -157,8 +201,7 @@ const aggregateData = (treeData: MatrixTreeNode[], matrixInput: any) => {
         const typeData = matrix[typeKey] || {};
         if (typeof typeData !== 'object') return;
 
-        Object.entries(typeData).forEach(([key, val]) => {
-            const counts = val as LevelCounts;
+        exportEntries(treeData, matrix, typeKey).forEach(({ key, counts, projected }) => {
             const parsed = parseKey(key);
             if (!parsed) return;
             const total = (counts.N || 0) + (counts.H || 0) + (counts.V || 0) + (counts.C || 0);
@@ -178,7 +221,8 @@ const aggregateData = (treeData: MatrixTreeNode[], matrixInput: any) => {
                 desc: `Dạng toán số ${parsed.count}`,
                 competencies: [] as string[]
             };
-            const meta = parsed.count === '*' ? { ...(metaFromMap || fallbackMeta), desc: 'Toàn bài · ngẫu nhiên dạng' } : metaFromMap || fallbackMeta;
+            const baseMeta = metaFromMap || fallbackMeta;
+            const meta = parsed.count === '*' ? { ...baseMeta, desc: 'Toàn bài · ngẫu nhiên dạng (chưa đủ dữ liệu phân bổ chi tiết)' } : projected ? { ...baseMeta, desc: `${baseMeta.desc} · phân bổ dự kiến` } : baseMeta;
             const rowKey = `${parsed.cls}-${parsed.sub}-${parsed.chap}-${parsed.unit}`;
             
             if (!rowMap.has(rowKey)) {
@@ -193,6 +237,7 @@ const aggregateData = (treeData: MatrixTreeNode[], matrixInput: any) => {
             }
 
             const row = rowMap.get(rowKey);
+            if (projected) row.hasProjected = true;
             row[typeKey].N += (counts.N || 0); 
             row[typeKey].H += (counts.H || 0); 
             row[typeKey].V += (counts.V || 0) + (counts.C || 0);
@@ -201,7 +246,7 @@ const aggregateData = (treeData: MatrixTreeNode[], matrixInput: any) => {
             row.total.H += (counts.H || 0); 
             row.total.V += (counts.V || 0) + (counts.C || 0);
 
-            const detailKey = key;
+            const detailKey = `${key}${projected ? ':projected' : ''}`;
             if (!row.details.has(detailKey)) {
                 row.details.set(detailKey, {
                     chapterName: meta.chapName, 
@@ -232,7 +277,7 @@ export const generateMatrixData = (treeData: MatrixTreeNode[], matrix: any): Mat
         const showChap = r.chapterName !== lastChap;
         lastChap = r.chapterName;
         return {
-            chapterName: showChap ? r.chapterName : "", unitName: r.unitName,
+            chapterName: showChap ? r.chapterName : "", unitName: r.hasProjected ? `${r.unitName}. Dạng bài: ${Array.from(r.details.values()).map((d: any) => d.description).join('; ')}` : r.unitName,
             TN: r.TN, TF: r.TF, KQ: r.KQ, TL: r.TL, total: r.total
         };
     });
@@ -382,7 +427,8 @@ export const generateDocxBlob = async (treeData: MatrixTreeNode[], matrix: any, 
         children.push(createSpecTable(specRows));
     }
 
-    const doc = new Document({ sections: [{ properties: {}, children }] });
+    if (hasLessonSelection(matrix)) children.push(new Paragraph({ text: projectedNote, spacing: { before: 200 } }));
+    const doc = new Document({ sections: [{ properties: { page: { size: { orientation: 'landscape', width: 11906, height: 16838 }, margin: { top: 720, bottom: 720, left: 720, right: 720 } } }, children }] });
     return await Packer.toBlob(doc);
 };
 
@@ -464,6 +510,8 @@ ${generateMatrixLatex(matrixRows)}
 \\newpage
 
 ${generateSpecMatrixLatex(specRows)}
+
+${hasLessonSelection(matrix) ? projectedNote : ''}
 
 \\end{document}
 `;
