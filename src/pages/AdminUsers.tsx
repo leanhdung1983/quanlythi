@@ -7,6 +7,18 @@ import { User } from '../types';
 export const AdminUsers: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [search, setSearch] = useState('');
+    const [planFilter, setPlanFilter] = useState<'ALL' | 'PRO' | 'FREE'>('ALL');
+    const [loadError, setLoadError] = useState('');
+    const [payments, setPayments] = useState<Array<{ transaction_id: string; amount: number; status: string; username?: string; code?: string; reference_code?: string; created_at: string }> | null>(null);
+    const [paymentsLoading, setPaymentsLoading] = useState(false);
+    const [paymentsError, setPaymentsError] = useState('');
+    const loadPayments = async () => {
+        setPaymentsLoading(true);
+        setPaymentsError('');
+        try { const res = await apiService.getPayments(); setPayments(res.data); }
+        catch (error) { setPaymentsError((error as Error).message); }
+        finally { setPaymentsLoading(false); }
+    };
     const [loading, setLoading] = useState(false);
     
     // Edit Modal State
@@ -59,6 +71,7 @@ export const AdminUsers: React.FC = () => {
 
     const loadUsers = async () => {
         setLoading(true);
+        setLoadError('');
         try {
             const data = await apiService.fetchUsers();
             // Ensure all fields exist (tự động tạo field thiếu khi chạy chương trình)
@@ -67,13 +80,14 @@ export const AdminUsers: React.FC = () => {
                 full_name: u.full_name || '',
                 email: u.email || '',
                 school: u.school || '',
-                is_pro: !!u.is_pro,
+                is_pro: Number(u.is_pro) === 1,
                 role: u.role || 'TEACHER',
                 expiry_date: u.expiry_date || null,
                 created_at: u.created_at || new Date().toISOString()
             }));
             setUsers(sanitized);
         } catch {
+            setLoadError('Không tải được danh sách người dùng. Vui lòng thử lại.');
             console.error("Failed to load users");
         } finally {
             setLoading(false);
@@ -182,11 +196,35 @@ export const AdminUsers: React.FC = () => {
         }
     };
 
-    const filtered = users.filter(u => u.username.toLowerCase().includes(search.toLowerCase()) || u.full_name?.toLowerCase().includes(search.toLowerCase()));
+    const isActivePro = (u: User) => u.is_pro && (!u.expiry_date || new Date(u.expiry_date).getTime() > Date.now());
+    const proCount = users.filter(isActivePro).length;
+    const filtered = users.filter(u => {
+        const matchesSearch = [u.username, u.full_name, u.email, u.school].some(value => (value || '').toLowerCase().includes(search.trim().toLowerCase()));
+        return matchesSearch && (planFilter === 'ALL' || (planFilter === 'PRO' ? isActivePro(u) : !isActivePro(u)));
+    });
 
     return (
         <div className="h-full flex flex-col space-y-4 relative">
             <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2"><Shield className="text-red-600"/> Quản trị người dùng</h1>
+            <div className="flex flex-wrap gap-2" aria-label="Lọc theo gói tài khoản">
+                {([{ key: 'ALL', label: 'Tất cả', count: users.length }, { key: 'PRO', label: 'Pro còn hạn', count: proCount }, { key: 'FREE', label: 'Free / Pro hết hạn', count: users.length - proCount }] as const).map(item => (
+                    <button key={item.key} onClick={() => setPlanFilter(item.key)} aria-pressed={planFilter === item.key} className={`px-4 py-2 rounded-lg border text-sm font-bold ${planFilter === item.key ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200'}`}>
+                        {item.label} ({item.count})
+                    </button>
+                ))}
+            </div>
+            {loadError && <p role="alert" className="text-sm text-red-600">{loadError}</p>}
+            <div className="bg-white p-4 rounded-xl border border-slate-200">
+                <div className="flex gap-3 items-center">
+                    <button onClick={loadPayments} disabled={paymentsLoading} className="text-indigo-700 font-bold text-sm">{paymentsLoading ? 'Đang tải...' : 'Xem / làm mới giao dịch Pro'}</button>
+                    {payments && <button onClick={() => setPayments(null)} className="text-sm text-slate-500">Ẩn giao dịch</button>}
+                </div>
+                {paymentsError && <p role="alert" className="text-sm text-red-600">{paymentsError}</p>}
+                {payments && <div className="max-h-64 overflow-auto mt-3"><p className="text-xs text-slate-500 mb-2">200 giao dịch gần nhất. Giao dịch cần đối chiếu không tự động kích hoạt Pro.</p><table className="w-full text-sm text-left">
+                    <thead><tr><th className="p-2">Mã giao dịch / tham chiếu</th><th className="p-2">Người dùng / mã thanh toán</th><th className="p-2">Số tiền</th><th className="p-2">Kết quả</th></tr></thead>
+                    <tbody>{payments.map(p => <tr key={p.transaction_id} className="border-t"><td className="p-2">{p.transaction_id}<div className="text-xs text-slate-500">{p.reference_code}</div></td><td className="p-2">{p.username || 'Chưa xác định'}<div className="text-xs">{p.code}</div></td><td className="p-2">{Number(p.amount).toLocaleString('vi-VN')}đ</td><td className="p-2">{({ PAID: 'Đã kích hoạt Pro', UNMATCHED: 'Không khớp mã', EXPIRED_ORDER: 'Mã hết hạn', AMOUNT_MISMATCH: 'Sai số tiền', ORDER_ALREADY_PAID: 'Mã đã thanh toán', USER_NOT_FOUND: 'Tài khoản đã bị xóa' } as Record<string, string>)[p.status] || p.status}</td></tr>)}</tbody>
+                </table>{payments.length === 0 && <p className="text-sm text-slate-500 p-2">Chưa có giao dịch.</p>}</div>}
+            </div>
             
             <div className="bg-white p-4 rounded-xl border border-slate-200 shadow-sm flex gap-4 items-center">
                 <div className="relative flex-1">
@@ -279,7 +317,7 @@ export const AdminUsers: React.FC = () => {
                                                 onClick={() => handleTogglePro(u.id, u.is_pro)}
                                                 className={`px-3 py-1 rounded-full text-xs font-bold border transition-colors ${u.is_pro ? 'bg-amber-100 text-amber-700 border-amber-200 hover:bg-amber-200' : 'bg-slate-100 text-slate-500 border-slate-200 hover:bg-slate-200'}`}
                                             >
-                                                {u.is_pro ? 'PRO MEMBER' : 'FREE TIER'}
+                                                {isActivePro(u) ? 'PRO MEMBER' : u.is_pro ? 'PRO HẾT HẠN' : 'FREE TIER'}
                                             </button>
                                         </td>
                                         <td className="p-4">

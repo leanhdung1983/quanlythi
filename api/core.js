@@ -1,4 +1,5 @@
 import mysql from 'mysql2/promise';
+import { paymentSchema } from './payments.js';
 import crypto from 'crypto';
 import { readFile } from 'node:fs/promises';
 import { GoogleGenAI } from "@google/genai";
@@ -114,7 +115,7 @@ export async function sessionMiddleware(req, res, next) {
     // Only protect /api/*
     if (!req.path.startsWith('/api/')) return next();
     const publicPaths = ['/api/login', '/api/logout', '/api/register', '/api/forgot-password', '/api/ping'];
-    if (publicPaths.includes(req.path) || (req.method === 'GET' && /^\/api\/images\/[a-f0-9]{64}$/i.test(req.path))) return next();
+    if (publicPaths.includes(req.path) || (req.method === 'POST' && req.path === '/api/payments/sepay/webhook') || (req.method === 'GET' && /^\/api\/images\/[a-f0-9]{64}$/i.test(req.path))) return next();
     try {
         const session = readSession(req);
         if (!session) return res.status(401).json({ error: 'Phiên đăng nhập không hợp lệ hoặc đã hết hạn.' });
@@ -471,6 +472,8 @@ export async function seedDatabase() {
                 created_at DATETIME DEFAULT CURRENT_TIMESTAMP
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `);
+
+        for (const sql of paymentSchema) await pool.query(sql);
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS grades (

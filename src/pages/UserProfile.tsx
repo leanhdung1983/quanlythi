@@ -1,5 +1,5 @@
 
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useAuthStore } from '../services/authStore';
 import { apiService } from '../services/api';
 import { Save, Key, Crown, User as UserIcon, CheckCircle2, QrCode, CalendarClock, Edit2, X, RefreshCw } from 'lucide-react';
@@ -8,6 +8,38 @@ export const UserProfile: React.FC = () => {
     const { user, updateUser } = useAuthStore();
     const [apiKey, setApiKey] = useState(user?.api_key || '');
     const [isSaving, setIsSaving] = useState(false);
+    const [isCheckingPlan, setIsCheckingPlan] = useState(false);
+    const [payment, setPayment] = useState<{ code: string; amount: number; account: string; account_name: string; qr_url: string; status: string; expires_at: string } | null>(null);
+    const [paymentError, setPaymentError] = useState('');
+    const [creatingPayment, setCreatingPayment] = useState(false);
+    useEffect(() => {
+        setPayment(null);
+        setPaymentError('');
+    }, [user?.id]);
+    useEffect(() => {
+        if (!payment || payment.status !== 'PENDING') return;
+        let stopped = false;
+        let timer: ReturnType<typeof setTimeout>;
+        const check = async () => {
+            try {
+                const res = await apiService.getProPaymentOrder(payment.code);
+                if (stopped) return;
+                setPayment(res.data);
+                setPaymentError('');
+                if (res.data.status === 'PAID') {
+                    updateUser({ is_pro: true, expiry_date: res.user.expiry_date });
+                    return;
+                }
+                if (res.data.status !== 'PENDING') return;
+            } catch {
+                if (stopped) return;
+                setPaymentError('Chưa kiểm tra được giao dịch. Hệ thống sẽ thử lại.');
+            }
+            timer = setTimeout(check, 5000);
+        };
+        timer = setTimeout(check, 3000);
+        return () => { stopped = true; clearTimeout(timer); };
+    }, [payment?.code, payment?.status, updateUser]);
     
     // Edit Profile State
     const [isEditing, setIsEditing] = useState(false);
@@ -19,6 +51,13 @@ export const UserProfile: React.FC = () => {
     });
 
     if (!user) return <div>Please login.</div>;
+    const handleCreatePayment = async () => {
+        setCreatingPayment(true);
+        setPaymentError('');
+        try { const res = await apiService.createProPaymentOrder(); setPayment(res.data); }
+        catch (error) { setPaymentError((error as Error).message); }
+        finally { setCreatingPayment(false); }
+    };
 
     const handleSaveKey = async () => {
         setIsSaving(true);
@@ -59,28 +98,21 @@ export const UserProfile: React.FC = () => {
     };
 
     const handleRenewPro = async () => {
-        if(!confirm(`Bạn đã thanh toán gia hạn? Nhấn OK để gửi yêu cầu hệ thống gia hạn ngay lập tức (Demo mode: tự gia hạn).`)) return;
+        setIsCheckingPlan(true);
         try {
-            const res = await apiService.renewPro(user.id);
-            if(res.success && res.new_expiry) {
-                updateUser({ is_pro: true, expiry_date: res.new_expiry });
-                alert("Gia hạn thành công!");
-            }
+            const res = await apiService.getCurrentUser();
+            if (!res.success || !res.user) throw new Error('Không kiểm tra được trạng thái tài khoản. Vui lòng thử lại.');
+            const active = Number(res.user.is_pro) === 1 && (!res.user.expiry_date || new Date(res.user.expiry_date).getTime() > Date.now());
+            updateUser({ is_pro: active, expiry_date: res.user.expiry_date });
+            alert(active ? 'Tài khoản đang sử dụng gói Pro. Hạn sử dụng đã được cập nhật.' : 'Chưa có gói Pro còn hạn. Vui lòng liên hệ quản trị viên để đối chiếu giao dịch MB và kích hoạt.');
         } catch {
-            alert("Lỗi");
+            alert('Không kiểm tra được trạng thái tài khoản. Vui lòng thử lại hoặc đăng nhập lại.');
+        } finally {
+            setIsCheckingPlan(false);
         }
     };
 
-    // Role-based pricing
-    const isTeacher = user.role === 'TEACHER';
-    const amount = isTeacher ? 300000 : 100000;
-    const priceDisplay = isTeacher ? "300.000đ" : "100.000đ";
-    
-    const bankId = 'MB';
-    const accNo = '04567896868';
-    const accName = 'ID6 ADMIN';
-    const content = `ID6PRO ${user.username}`;
-    const qrLink = `https://img.vietqr.io/image/${bankId}-${accNo}-compact.png?amount=${amount}&addInfo=${encodeURIComponent(content)}&accountName=${encodeURIComponent(accName)}`;
+    const priceDisplay = payment ? `${payment.amount.toLocaleString('vi-VN')}đ` : '';
 
     return (
         <div className="max-w-4xl mx-auto py-8 space-y-8">
@@ -208,7 +240,7 @@ export const UserProfile: React.FC = () => {
                             <h2 className="text-3xl font-black mb-4 flex items-center gap-3">
                                 <Crown className="text-yellow-400"/> {user.is_pro ? 'Gia hạn gói PRO' : 'Nâng cấp lên PRO'}
                             </h2>
-                            <p className="text-indigo-200 text-sm mb-4 font-medium">Chi phí ({user.role}): <span className="text-white font-bold text-lg">{priceDisplay} / 1 năm</span></p>
+                            <p className="text-indigo-200 text-sm mb-4 font-medium">{payment ? <>Chi phí: <span className="text-white font-bold text-lg">{priceDisplay} / 1 năm</span></> : 'Tạo mã thanh toán để xem số tiền và tài khoản nhận. Gói Pro có thời hạn 1 năm.'}</p>
                             
                             {user.role === 'STUDENT' ? (
                                 <ul className="space-y-3 mb-6">
@@ -224,24 +256,28 @@ export const UserProfile: React.FC = () => {
                                 </ul>
                             )}
 
-                            <div className="text-sm opacity-90 bg-white/10 p-4 rounded-xl border border-white/20">
+                            {payment && <div className="text-sm opacity-90 bg-white/10 p-4 rounded-xl border border-white/20">
                                 <p className="mb-1 text-xs uppercase text-indigo-300 font-bold">Ngân hàng MB Bank (Quân Đội)</p>
-                                <p className="font-mono text-lg font-bold">04567896868</p>
+                                <p className="font-mono text-lg font-bold">{payment.account}</p>
+                                <p>{payment.account_name}</p>
                                 <p className="mt-2 text-xs uppercase text-indigo-300 font-bold">Nội dung chuyển khoản</p>
-                                <p className="font-mono font-bold text-yellow-300 bg-black/20 p-2 rounded mt-1 inline-block select-all">{content}</p>
-                            </div>
+                                <p className="font-mono font-bold text-yellow-300 bg-black/20 p-2 rounded mt-1 inline-block select-all break-all">{payment.code}</p>
+                            </div>}
                         </div>
                         <div className="flex flex-col items-center gap-4">
-                            <div className="bg-white p-4 rounded-2xl shadow-lg flex flex-col items-center">
-                                <img src={qrLink} alt="QR Code" className="w-48 h-48 object-contain rounded-lg"/>
+                            {payment?.status === 'PENDING' && <div className="bg-white p-4 rounded-2xl shadow-lg flex flex-col items-center">
+                                <img src={payment.qr_url} alt="QR Code" className="w-48 h-48 object-contain rounded-lg"/>
                                 <div className="text-center mt-3 text-slate-800 font-bold text-sm flex items-center justify-center gap-1"><QrCode size={14}/> Quét mã để thanh toán</div>
                                 <div className="text-center mt-1 text-primary-600 font-black text-lg">{priceDisplay}</div>
-                            </div>
-                            {user.is_pro && (
-                                <button onClick={handleRenewPro} className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-50 flex items-center gap-2 w-full justify-center">
-                                    <RefreshCw size={18}/> Xác nhận đã gia hạn
+                            </div>}
+                            {(!payment || payment.status !== 'PENDING') && <button onClick={handleCreatePayment} disabled={creatingPayment} className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold disabled:opacity-50">{creatingPayment ? 'Đang tạo...' : 'Tạo mã thanh toán Pro'}</button>}
+                            {payment?.status === 'PENDING' && <p className="text-sm text-center max-w-xs">Chuyển đúng số tiền và giữ nguyên nội dung. Pro sẽ tự động kích hoạt khi hệ thống nhận xác nhận. Mã có hạn đến {new Date(payment.expires_at).toLocaleString('vi-VN')}.</p>}
+                            {payment?.status === 'PAID' && <p role="status" className="font-bold text-green-200">Thanh toán thành công. Đã cập nhật gói Pro!</p>}
+                            {payment?.status === 'EXPIRED' && <p role="status">Mã đã hết hạn. Vui lòng tạo mã mới; nếu đã chuyển tiền, liên hệ quản trị viên để đối chiếu.</p>}
+                            {paymentError && <p role="alert" className="text-sm text-yellow-200 max-w-xs">{paymentError}</p>}
+                                <button onClick={handleRenewPro} disabled={isCheckingPlan} className="bg-white text-indigo-700 px-6 py-3 rounded-xl font-bold shadow-lg hover:bg-indigo-50 flex items-center gap-2 w-full justify-center disabled:opacity-50">
+                                    <RefreshCw size={18} className={isCheckingPlan ? 'animate-spin' : ''}/> Kiểm tra trạng thái Pro
                                 </button>
-                            )}
                         </div>
                     </div>
                 </div>

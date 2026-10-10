@@ -4,6 +4,7 @@ const rateLimit = rateLimitPkg.default || rateLimitPkg;
 import { sessionMiddleware } from './core.js';
 
 import authRouter from './routes/auth.routes.js';
+import paymentsRouter from './routes/payments.routes.js';
 import aiRouter from './routes/ai.routes.js';
 import classesRouter from './routes/classes.routes.js';
 import examsRouter from './routes/exams.routes.js';
@@ -67,6 +68,7 @@ app.use('/api/login', authLimiter);
 app.use('/api/register', authLimiter);
 app.use('/api/forgot-password', authLimiter);
 app.use('/api', authRouter);
+app.use('/api', paymentsRouter);
 // Only AI endpoints consume the AI quota; background job polling must not.
 app.use('/api/ai', aiLimiter);
 app.use('/api/lesson-authoring/ai', aiLimiter);

@@ -35,6 +35,18 @@ const handleResponse = async (response: Response, endpoint: string) => {
 };
 
 export const apiService = {
+    async createProPaymentOrder() {
+        return handleResponse(await fetch(`${API_URL}/payments/pro/orders`, { method: 'POST' }), '/payments/pro/orders');
+    },
+    async getProPaymentOrder(code: string) {
+        return handleResponse(await fetch(`${API_URL}/payments/pro/orders/${encodeURIComponent(code)}`), '/payments/pro/orders');
+    },
+    async getPayments() {
+        return handleResponse(await fetch(`${API_URL}/admin/payments`), '/admin/payments');
+    },
+    async getCurrentUser() {
+        return handleResponse(await fetch(`${API_URL}/me`), '/me');
+    },
     async learningHub(endpoint: string, body?: Record<string, unknown>, method = 'POST') {
         return handleResponse(await fetch(`${API_URL}/learning${endpoint}`, body ? { method, headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body) } : {}), `/learning${endpoint}`);
     },
