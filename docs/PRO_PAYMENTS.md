@@ -8,7 +8,7 @@
    - `PAYMENT_MB_ACCOUNT`: số tài khoản MB thực tế nhận tiền.
    - `PAYMENT_MB_ACCOUNT_NAME`: tên chủ tài khoản.
    - `SEPAY_WEBHOOK_KEY`: khóa ngẫu nhiên ít nhất 32 ký tự.
-   - `PRO_STUDENT_PRICE=100000`, `PRO_TEACHER_PRICE=300000`: giá theo VND, có thể thay đổi.
+   - `PRO_STUDENT_PRICE=200000`, `PRO_TEACHER_PRICE=300000`: giá theo VND, có thể thay đổi.
 3. Khởi động lại ứng dụng. Hai bảng InnoDB `pro_payment_orders`, `pro_payment_transactions` được tạo lúc khởi động; tài khoản cơ sở dữ liệu cần quyền CREATE TABLE. Có thể chạy SQL ở `migrations/20261010_pro_payments.sql` trước khi khởi động nếu tài khoản ứng dụng không có quyền này.
 4. Trong SePay tạo webhook cho đúng tài khoản MB, sự kiện **Có tiền vào**, URL **https://TEN-MIEN-CUA-BAN/api/payments/sepay/webhook**, xác thực **API Key** với khóa giống `SEPAY_WEBHOOK_KEY`. Header được gửi là `Authorization: Apikey <khóa>`. Nếu lọc mã thanh toán, dùng tiền tố `ID6PRO`.
 5. Thử bằng tài khoản thử nghiệm và giao dịch thử trước khi nhận thanh toán thật. Không gửi giao dịch giả vào hệ thống thật: thông báo đã xác thực có thể kích hoạt Pro.

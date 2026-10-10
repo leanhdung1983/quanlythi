@@ -20,7 +20,7 @@ export function paymentConfig(env = process.env) {
     const key = env.SEPAY_WEBHOOK_KEY || '';
     const account = env.PAYMENT_MB_ACCOUNT || '';
     const accountName = env.PAYMENT_MB_ACCOUNT_NAME || '';
-    const studentPrice = Number(env.PRO_STUDENT_PRICE || 100000);
+    const studentPrice = Number(env.PRO_STUDENT_PRICE || 200000);
     const teacherPrice = Number(env.PRO_TEACHER_PRICE || 300000);
     const enabled = env.PAYMENT_ENABLED === '1' && key.length >= 32 && /^\d{6,30}$/.test(account)
         && !!accountName.trim() && [studentPrice, teacherPrice].every(n => Number.isSafeInteger(n) && n > 0 && n <= 100000000);

@@ -39,6 +39,7 @@ describe('MB automatic Pro payments', () => {
         expect(paymentConfig({}).enabled).toBe(false);
         expect(paymentConfig({ PAYMENT_ENABLED: '1', SEPAY_WEBHOOK_KEY: 'short' }).enabled).toBe(false);
         expect(config.enabled).toBe(true);
+        expect(config.studentPrice).toBe(200000);
         expect(validWebhookKey(`Apikey ${config.key}`, config.key)).toBe(true);
         expect(validWebhookKey('Apikey wrong', config.key)).toBe(false);
         expect(validWebhookKey(undefined, config.key)).toBe(false);
