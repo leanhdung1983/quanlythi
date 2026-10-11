@@ -10,7 +10,7 @@ export const Login: React.FC = () => {
     const [view, setView] = useState<'LOGIN' | 'REGISTER' | 'FORGOT'>('LOGIN');
     
     // Register Form State
-    const [regData, setRegData] = useState({ username: '', password: '', confirmPassword: '', full_name: '', email: '', school: '', role: 'STUDENT', teacher_code: '' });
+    const [regData, setRegData] = useState({ username: '', password: '', confirmPassword: '', full_name: '', email: '', school: '', role: 'STUDENT' });
     
     // Login Form State
     const [loginData, setLoginData] = useState({ username: '', password: '' });
@@ -79,8 +79,7 @@ export const Login: React.FC = () => {
                 full_name: regData.full_name,
                 email: regData.email,
                 school: regData.school,
-                role: regData.role,
-                teacher_code: regData.teacher_code
+                role: regData.role
             });
             setSuccess('Đăng ký thành công! Vui lòng đăng nhập.');
             setTimeout(() => setView('LOGIN'), 2000);
@@ -220,23 +219,6 @@ export const Login: React.FC = () => {
                                 <button type="button" onClick={() => setRegData({...regData, role: 'TEACHER'})} className={`flex-1 py-2 rounded-lg border text-sm font-bold transition-all ${regData.role === 'TEACHER' ? 'bg-primary-50 border-primary-500 text-primary-700' : 'border-slate-200 text-slate-500 bg-white'}`}>Giáo viên</button>
                             </div>
                         </div>
-
-                        {regData.role === 'TEACHER' && (
-                            <div className="animate-in fade-in slide-in-from-top-2">
-                                <label className="text-[10px] font-bold text-amber-600 uppercase mb-1 flex items-center justify-between">
-                                    <span>Mã kích hoạt Giáo viên</span>
-                                    <span className="text-[9px] lowercase font-normal text-slate-400">(do Admin cấp)</span>
-                                </label>
-                                <input 
-                                    type="password" 
-                                    required 
-                                    className="w-full p-2.5 border border-amber-300 bg-amber-50/40 rounded-lg outline-none focus:border-amber-500 text-sm font-mono" 
-                                    placeholder="Nhập mã kích hoạt giáo viên..." 
-                                    value={regData.teacher_code} 
-                                    onChange={e => setRegData({...regData, teacher_code: e.target.value})}
-                                />
-                            </div>
-                        )}
 
                         <button disabled={loading} className="w-full bg-primary-600 text-white py-3 rounded-xl font-bold shadow-lg hover:bg-primary-700 transition-all flex justify-center items-center gap-2 disabled:opacity-70 mt-4">
                             {loading && <Loader2 className="animate-spin" size={18}/>}

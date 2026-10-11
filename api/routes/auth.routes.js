@@ -6,6 +6,7 @@ import {
     signSession, 
     isSelfOrAdmin, 
     requireAdmin,
+    isAdmin,
     SESSION_DURATION_MS 
 } from '../core.js';
 
@@ -57,7 +58,7 @@ router.get('/me', async (req, res) => {
 
 router.post('/register', async (req, res) => {
     try {
-        const { username, password, full_name, email, school } = req.body;
+        const { username, password, full_name, email, school, role } = req.body;
         if (!username || !password) return res.status(400).json({ error: "Tên đăng nhập và mật khẩu là bắt buộc." });
         if (typeof username !== 'string' || !/^[A-Za-z0-9_.-]{3,50}$/.test(username)) {
             return res.status(400).json({ error: "Tên đăng nhập phải có 3-50 ký tự và chỉ gồm chữ, số, dấu chấm, gạch ngang hoặc gạch dưới." });
@@ -69,8 +70,8 @@ router.post('/register', async (req, res) => {
             return res.status(400).json({ error: "Email không hợp lệ." });
         }
 
-        // Đăng ký công khai luôn tạo học sinh. Giáo viên/Quản trị viên chỉ do quản trị viên cấp.
-        const assignedRole = 'STUDENT';
+        // Cho phép đăng ký trực tiếp vai trò Giáo viên hoặc Học sinh (tài khoản mới luôn là gói Free)
+        const assignedRole = role === 'TEACHER' ? 'TEACHER' : 'STUDENT';
         
         const exists = await query("SELECT id FROM users WHERE username = ?", [username]);
         if (exists.length > 0) return res.status(400).json({ error: "Tên đăng nhập đã tồn tại" });
@@ -100,11 +101,46 @@ router.get('/users', async (req, res) => {
     } catch(e) { res.status(500).json({ error: e.message }); } 
 });
 
+router.post('/users', async (req, res) => {
+    try {
+        if (!requireAdmin(req, res)) return;
+        const { username, password, full_name, email, school, role } = req.body;
+        if (!username || !password) return res.status(400).json({ error: "Tên đăng nhập và mật khẩu là bắt buộc." });
+        if (typeof username !== 'string' || !/^[A-Za-z0-9_.-]{3,50}$/.test(username)) {
+            return res.status(400).json({ error: "Tên đăng nhập phải có 3-50 ký tự và chỉ gồm chữ, số, dấu chấm, gạch ngang hoặc gạch dưới." });
+        }
+        if (typeof password !== 'string' || password.length < 6 || password.length > 128) {
+            return res.status(400).json({ error: "Mật khẩu phải có từ 6 đến 128 ký tự." });
+        }
+        if (email && (typeof email !== 'string' || email.length > 100 || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))) {
+            return res.status(400).json({ error: "Email không hợp lệ." });
+        }
+        const assignedRole = ['ADMIN', 'TEACHER', 'STUDENT'].includes(role) ? role : 'TEACHER';
+        const exists = await query("SELECT id FROM users WHERE username = ?", [username]);
+        if (exists.length > 0) return res.status(400).json({ error: "Tên đăng nhập đã tồn tại" });
+
+        const hash = await bcrypt.hash(password, 10);
+        const result = await query(
+            "INSERT INTO users (username, password_hash, full_name, email, school, role) VALUES (?, ?, ?, ?, ?, ?)", 
+            [username, hash, full_name || null, email || null, school || null, assignedRole]
+        );
+        res.json({ success: true, userId: result.insertId, role: assignedRole });
+    } catch (e) { res.status(500).json({ error: e.message }); }
+});
+
 router.put('/users/:id/profile', async (req, res) => {
     try {
         if (!isSelfOrAdmin(req, req.params.id)) return res.status(403).json({ error: 'Bạn không có quyền sửa hồ sơ này.' });
-        const { full_name, email, school, grade_id } = req.body;
-        await query("UPDATE users SET full_name = ?, email = ?, school = ?, grade_id = ? WHERE id = ?", [full_name, email, school, grade_id, req.params.id]);
+        const { full_name, email, school, grade_id, role } = req.body;
+        if (isAdmin(req) && role && ['ADMIN', 'TEACHER', 'STUDENT'].includes(role)) {
+            if (full_name !== undefined || email !== undefined || school !== undefined || grade_id !== undefined) {
+                await query("UPDATE users SET full_name = ?, email = ?, school = ?, grade_id = ?, role = ? WHERE id = ?", [full_name ?? null, email ?? null, school ?? null, grade_id ?? null, role, req.params.id]);
+            } else {
+                await query("UPDATE users SET role = ? WHERE id = ?", [role, req.params.id]);
+            }
+        } else {
+            await query("UPDATE users SET full_name = ?, email = ?, school = ?, grade_id = ? WHERE id = ?", [full_name ?? null, email ?? null, school ?? null, grade_id ?? null, req.params.id]);
+        }
         res.json({ success: true, message: "Updated profile" });
     } catch(e) { res.status(500).json({ error: e.message }); }
 });

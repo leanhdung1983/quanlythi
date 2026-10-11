@@ -8,6 +8,7 @@ export const AdminUsers: React.FC = () => {
     const [users, setUsers] = useState<User[]>([]);
     const [search, setSearch] = useState('');
     const [planFilter, setPlanFilter] = useState<'ALL' | 'PRO' | 'FREE'>('ALL');
+    const [roleFilter, setRoleFilter] = useState<'ALL' | 'TEACHER' | 'STUDENT' | 'ADMIN'>('ALL');
     const [loadError, setLoadError] = useState('');
     const [payments, setPayments] = useState<Array<{ transaction_id: string; amount: number; status: string; username?: string; code?: string; reference_code?: string; created_at: string }> | null>(null);
     const [paymentsLoading, setPaymentsLoading] = useState(false);
@@ -41,11 +42,7 @@ export const AdminUsers: React.FC = () => {
     const handleOpenSettings = async () => {
         try {
             const data = await apiService.getSettings();
-            if (data && data.gemini_api_key) {
-                setGeminiKey(data.gemini_api_key);
-            } else {
-                setGeminiKey('');
-            }
+            setGeminiKey(data?.gemini_api_key || '');
             setShowSettingsModal(true);
         } catch(e: any) {
             alert("Lỗi tải settings: " + e.message);
@@ -196,22 +193,80 @@ export const AdminUsers: React.FC = () => {
         }
     };
 
+    const handleQuickRoleChange = async (userId: number, newRole: User['role']) => {
+        const targetUser = users.find(u => u.id === userId);
+        if (!targetUser || targetUser.role === newRole) return;
+        if (!confirm(`Xác nhận đổi vai trò của "${targetUser.username}" từ ${targetUser.role} sang ${newRole}?`)) return;
+        try {
+            await apiService.updateUserInfo(userId, { role: newRole });
+            await loadUsers();
+        } catch (e: any) {
+            alert("Lỗi đổi vai trò: " + e.message);
+        }
+    };
+
     const isActivePro = (u: User) => u.is_pro && (!u.expiry_date || new Date(u.expiry_date).getTime() > Date.now());
     const proCount = users.filter(isActivePro).length;
+    const teacherCount = users.filter(u => u.role === 'TEACHER').length;
+    const studentCount = users.filter(u => u.role === 'STUDENT').length;
+    const adminCount = users.filter(u => u.role === 'ADMIN').length;
+
     const filtered = users.filter(u => {
         const matchesSearch = [u.username, u.full_name, u.email, u.school].some(value => (value || '').toLowerCase().includes(search.trim().toLowerCase()));
-        return matchesSearch && (planFilter === 'ALL' || (planFilter === 'PRO' ? isActivePro(u) : !isActivePro(u)));
+        const matchesPlan = planFilter === 'ALL' || (planFilter === 'PRO' ? isActivePro(u) : !isActivePro(u));
+        const matchesRole = roleFilter === 'ALL' || u.role === roleFilter;
+        return matchesSearch && matchesPlan && matchesRole;
     });
 
     return (
         <div className="h-full flex flex-col space-y-4 relative">
             <h1 className="text-2xl font-bold text-slate-800 flex items-center gap-2"><Shield className="text-red-600"/> Quản trị người dùng</h1>
-            <div className="flex flex-wrap gap-2" aria-label="Lọc theo gói tài khoản">
-                {([{ key: 'ALL', label: 'Tất cả', count: users.length }, { key: 'PRO', label: 'Pro còn hạn', count: proCount }, { key: 'FREE', label: 'Free / Pro hết hạn', count: users.length - proCount }] as const).map(item => (
-                    <button key={item.key} onClick={() => setPlanFilter(item.key)} aria-pressed={planFilter === item.key} className={`px-4 py-2 rounded-lg border text-sm font-bold ${planFilter === item.key ? 'bg-indigo-600 text-white border-indigo-600' : 'bg-white text-slate-600 border-slate-200'}`}>
-                        {item.label} ({item.count})
-                    </button>
-                ))}
+            
+            <div className="flex flex-wrap items-center justify-between gap-3 bg-white p-3 rounded-xl border border-slate-200">
+                <div className="flex flex-wrap items-center gap-2" aria-label="Lọc theo vai trò">
+                    <span className="text-xs font-bold text-slate-500 mr-1 uppercase">Vai trò:</span>
+                    {([
+                        { key: 'ALL', label: 'Tất cả', count: users.length },
+                        { key: 'TEACHER', label: 'Giáo viên', count: teacherCount },
+                        { key: 'STUDENT', label: 'Học sinh', count: studentCount },
+                        { key: 'ADMIN', label: 'Quản trị viên', count: adminCount },
+                    ] as const).map(item => (
+                        <button 
+                            key={item.key} 
+                            onClick={() => setRoleFilter(item.key)} 
+                            aria-pressed={roleFilter === item.key} 
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all ${
+                                roleFilter === item.key 
+                                    ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' 
+                                    : 'bg-white text-slate-600 border-slate-200 hover:bg-slate-50'
+                            }`}
+                        >
+                            {item.label} ({item.count})
+                        </button>
+                    ))}
+                </div>
+
+                <div className="flex flex-wrap items-center gap-2" aria-label="Lọc theo gói tài khoản">
+                    <span className="text-xs font-bold text-slate-500 mr-1 uppercase">Gói Pro:</span>
+                    {([
+                        { key: 'ALL', label: 'Tất cả gói', count: users.length },
+                        { key: 'PRO', label: 'Pro còn hạn', count: proCount },
+                        { key: 'FREE', label: 'Free / Hết hạn', count: users.length - proCount }
+                    ] as const).map(item => (
+                        <button 
+                            key={item.key} 
+                            onClick={() => setPlanFilter(item.key)} 
+                            aria-pressed={planFilter === item.key} 
+                            className={`px-3 py-1.5 rounded-lg border text-xs font-bold transition-all ${
+                                planFilter === item.key 
+                                    ? 'bg-amber-600 text-white border-amber-600 shadow-sm' 
+                                    : 'bg-white text-slate-500 border-slate-200 hover:bg-slate-50'
+                            }`}
+                        >
+                            {item.label} ({item.count})
+                        </button>
+                    ))}
+                </div>
             </div>
             {loadError && <p role="alert" className="text-sm text-red-600">{loadError}</p>}
             <div className="bg-white p-4 rounded-xl border border-slate-200">
@@ -310,7 +365,24 @@ export const AdminUsers: React.FC = () => {
                                             <div className="text-xs text-slate-400">{u.school}</div>
                                         </td>
                                         <td className="p-4">
-                                            <span className={`px-2 py-1 rounded text-xs font-bold ${u.role === 'ADMIN' ? 'bg-red-100 text-red-700' : u.role === 'TEACHER' ? 'bg-blue-100 text-blue-700' : 'bg-green-100 text-green-700'}`}>{u.role}</span>
+                                            {u.id === 1 ? (
+                                                <span className="px-2.5 py-1 rounded text-xs font-bold bg-red-100 text-red-700 border border-red-200 inline-block">ADMIN</span>
+                                            ) : (
+                                                <select 
+                                                    value={u.role}
+                                                    onChange={(e) => handleQuickRoleChange(u.id, e.target.value as User['role'])}
+                                                    title="Bấm để đổi vai trò tài khoản (TEACHER / STUDENT / ADMIN)"
+                                                    className={`px-2.5 py-1 rounded text-xs font-bold border outline-none cursor-pointer transition-all ${
+                                                        u.role === 'TEACHER' ? 'bg-blue-100 text-blue-700 border-blue-300 hover:bg-blue-200' :
+                                                        u.role === 'ADMIN' ? 'bg-red-100 text-red-700 border-red-300 hover:bg-red-200' :
+                                                        'bg-emerald-100 text-emerald-700 border-emerald-300 hover:bg-emerald-200'
+                                                    }`}
+                                                >
+                                                    <option value="TEACHER">Giáo viên (TEACHER)</option>
+                                                    <option value="STUDENT">Học sinh (STUDENT)</option>
+                                                    <option value="ADMIN">Quản trị (ADMIN)</option>
+                                                </select>
+                                            )}
                                         </td>
                                         <td className="p-4 text-center">
                                             <button 
@@ -447,13 +519,13 @@ export const AdminUsers: React.FC = () => {
                     <div className="bg-white rounded-2xl shadow-xl border border-slate-200 w-full max-w-md overflow-hidden flex flex-col max-h-[90vh]">
                         <div className="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
                             <h3 className="font-bold text-slate-800 flex items-center gap-2"><Settings2 size={18} className="text-blue-500" /> Thiết lập API Gemini</h3>
-                            <button onClick={() => setShowSettingsModal(false)} className="p-2 text-slate-400 hover:text-slate-600 bg-white rounded-lg shadow-sm border border-slate-200">
+                            <button onClick={() => setShowSettingsModal(false)} className="p-2 text-slate-400 hover:text-slate-600 bg-white rounded-lg shadow-sm border border-slate-200 text-xs font-bold">
                                 Đóng
                             </button>
                         </div>
                         <div className="p-4 overflow-y-auto space-y-4">
                             <div>
-                                <label className="block text-xs font-bold text-slate-500 mb-1">Gemini API Key Hệ Thống</label>
+                                <label className="block text-xs font-bold text-slate-600 mb-1">Gemini API Key Hệ Thống</label>
                                 <textarea 
                                     rows={2}
                                     className="w-full p-3 border border-slate-200 rounded-xl outline-none focus:border-blue-500 focus:ring-1 focus:ring-blue-500 transition-all text-xs font-mono"

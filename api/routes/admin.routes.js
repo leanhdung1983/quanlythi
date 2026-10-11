@@ -85,6 +85,9 @@ router.get('/admin/settings', async (req, res) => {
         const rows = await query("SELECT setting_key, setting_value FROM system_settings");
         const settings = {};
         rows.forEach(r => settings[r.setting_key] = r.setting_value);
+        if (!settings.teacher_activation_code) {
+            settings.teacher_activation_code = process.env.TEACHER_ACTIVATION_CODE || 'GV2026';
+        }
         res.json({ success: true, data: settings });
     } catch(e) { res.status(500).json({ error: e.message }); }
 });
