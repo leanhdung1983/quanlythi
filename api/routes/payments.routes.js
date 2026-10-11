@@ -1,6 +1,6 @@
 import express from 'express';
 import { pool, query, requireAdmin } from '../core.js';
-import { paymentConfig, validWebhookKey, parseTransfer, createPaymentOrder, settleTransfer, presentOrder } from '../payments.js';
+import { paymentConfig, paymentDiagnostics, validWebhookKey, parseTransfer, createPaymentOrder, settleTransfer, presentOrder } from '../payments.js';
 
 const router = express.Router();
 
@@ -22,7 +22,11 @@ router.post('/payments/sepay/webhook', async (req, res) => {
 router.post('/payments/pro/orders', async (req, res) => {
     if (!req.user?.id) return res.status(401).json({ error: 'Vui lòng đăng nhập.' });
     const config = paymentConfig();
-    if (!config.enabled) return res.status(503).json({ error: 'Thanh toán tự động chưa được cấu hình. Vui lòng liên hệ quản trị viên.' });
+    if (!config.enabled) {
+        const diag = paymentDiagnostics();
+        const detail = req.user.role === 'ADMIN' && diag.issues.length ? ` (Chi tiết: ${diag.issues.join('; ')})` : '';
+        return res.status(503).json({ error: `Thanh toán tự động chưa được cấu hình. Vui lòng liên hệ quản trị viên.${detail}` });
+    }
     try { res.json({ success: true, data: await createPaymentOrder(pool, req.user.id, config) }); }
     catch (error) { res.status(error.status || 500).json({ error: error.status ? error.message : 'Không tạo được yêu cầu thanh toán.' }); }
 });
@@ -43,7 +47,8 @@ router.get('/admin/payments', async (req, res) => {
         const rows = await query(`SELECT t.*,o.code,u.username FROM pro_payment_transactions t
             LEFT JOIN pro_payment_orders o ON o.id=t.order_id LEFT JOIN users u ON u.id=o.user_id
             ORDER BY t.created_at DESC LIMIT 200`);
-        res.json({ success: true, data: rows, enabled: paymentConfig().enabled });
+        const diag = paymentDiagnostics();
+        res.json({ success: true, data: rows, enabled: diag.enabled, diagnostics: diag.issues });
     } catch { res.status(500).json({ error: 'Không tải được giao dịch.' }); }
 });
 

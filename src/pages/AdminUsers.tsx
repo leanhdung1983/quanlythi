@@ -11,12 +11,19 @@ export const AdminUsers: React.FC = () => {
     const [roleFilter, setRoleFilter] = useState<'ALL' | 'TEACHER' | 'STUDENT' | 'ADMIN'>('ALL');
     const [loadError, setLoadError] = useState('');
     const [payments, setPayments] = useState<Array<{ transaction_id: string; amount: number; status: string; username?: string; code?: string; reference_code?: string; created_at: string }> | null>(null);
+    const [paymentEnabled, setPaymentEnabled] = useState<boolean | null>(null);
+    const [paymentIssues, setPaymentIssues] = useState<string[]>([]);
     const [paymentsLoading, setPaymentsLoading] = useState(false);
     const [paymentsError, setPaymentsError] = useState('');
     const loadPayments = async () => {
         setPaymentsLoading(true);
         setPaymentsError('');
-        try { const res = await apiService.getPayments(); setPayments(res.data); }
+        try { 
+            const res = await apiService.getPayments(); 
+            setPayments(res.data);
+            setPaymentEnabled(res.enabled ?? null);
+            setPaymentIssues(res.diagnostics || []);
+        }
         catch (error) { setPaymentsError((error as Error).message); }
         finally { setPaymentsLoading(false); }
     };
@@ -270,11 +277,34 @@ export const AdminUsers: React.FC = () => {
             </div>
             {loadError && <p role="alert" className="text-sm text-red-600">{loadError}</p>}
             <div className="bg-white p-4 rounded-xl border border-slate-200">
-                <div className="flex gap-3 items-center">
-                    <button onClick={loadPayments} disabled={paymentsLoading} className="text-indigo-700 font-bold text-sm">{paymentsLoading ? 'Đang tải...' : 'Xem / làm mới giao dịch Pro'}</button>
-                    {payments && <button onClick={() => setPayments(null)} className="text-sm text-slate-500">Ẩn giao dịch</button>}
+                <div className="flex flex-wrap gap-3 items-center justify-between">
+                    <div className="flex gap-3 items-center">
+                        <button onClick={loadPayments} disabled={paymentsLoading} className="text-indigo-700 hover:text-indigo-900 font-bold text-sm flex items-center gap-1.5">
+                            <RefreshCw size={14} className={paymentsLoading ? 'animate-spin' : ''}/>
+                            {paymentsLoading ? 'Đang kiểm tra...' : 'Kiểm tra trạng thái & giao dịch Pro'}
+                        </button>
+                        {payments && <button onClick={() => { setPayments(null); setPaymentEnabled(null); }} className="text-sm text-slate-500 hover:text-slate-700">Ẩn</button>}
+                    </div>
+                    {paymentEnabled === true && (
+                        <span className="text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-200 flex items-center gap-1">
+                            <CheckCircle2 size={13}/> Cổng SePay & MB Bank: Đang hoạt động
+                        </span>
+                    )}
+                    {paymentEnabled === false && (
+                        <span className="text-xs font-bold text-amber-700 bg-amber-50 px-2.5 py-1 rounded-full border border-amber-200 flex items-center gap-1">
+                            <AlertOctagon size={13}/> Cổng SePay: Chưa kích hoạt
+                        </span>
+                    )}
                 </div>
-                {paymentsError && <p role="alert" className="text-sm text-red-600">{paymentsError}</p>}
+                {paymentEnabled === false && paymentIssues.length > 0 && (
+                    <div className="mt-3 p-3 bg-amber-50 border border-amber-200 rounded-lg text-xs text-amber-800">
+                        <div className="font-bold mb-1 flex items-center gap-1.5"><AlertOctagon size={14} className="text-amber-600"/> Cổng thanh toán chưa bật do các tham số sau trên Render / server:</div>
+                        <ul className="list-disc list-inside space-y-0.5 font-mono">
+                            {paymentIssues.map((issue, idx) => <li key={idx}>{issue}</li>)}
+                        </ul>
+                    </div>
+                )}
+                {paymentsError && <p role="alert" className="text-sm text-red-600 mt-2">{paymentsError}</p>}
                 {payments && <div className="max-h-64 overflow-auto mt-3"><p className="text-xs text-slate-500 mb-2">200 giao dịch gần nhất. Giao dịch cần đối chiếu không tự động kích hoạt Pro.</p><table className="w-full text-sm text-left">
                     <thead><tr><th className="p-2">Mã giao dịch / tham chiếu</th><th className="p-2">Người dùng / mã thanh toán</th><th className="p-2">Số tiền</th><th className="p-2">Kết quả</th></tr></thead>
                     <tbody>{payments.map(p => <tr key={p.transaction_id} className="border-t"><td className="p-2">{p.transaction_id}<div className="text-xs text-slate-500">{p.reference_code}</div></td><td className="p-2">{p.username || 'Chưa xác định'}<div className="text-xs">{p.code}</div></td><td className="p-2">{Number(p.amount).toLocaleString('vi-VN')}đ</td><td className="p-2">{({ PAID: 'Đã kích hoạt Pro', UNMATCHED: 'Không khớp mã', EXPIRED_ORDER: 'Mã hết hạn', AMOUNT_MISMATCH: 'Sai số tiền', ORDER_ALREADY_PAID: 'Mã đã thanh toán', USER_NOT_FOUND: 'Tài khoản đã bị xóa' } as Record<string, string>)[p.status] || p.status}</td></tr>)}</tbody>

@@ -17,14 +17,31 @@ export const paymentSchema = [
 ];
 
 export function paymentConfig(env = process.env) {
-    const key = env.SEPAY_WEBHOOK_KEY || '';
-    const account = env.PAYMENT_MB_ACCOUNT || '';
-    const accountName = env.PAYMENT_MB_ACCOUNT_NAME || '';
-    const studentPrice = Number(env.PRO_STUDENT_PRICE || 200000);
-    const teacherPrice = Number(env.PRO_TEACHER_PRICE || 300000);
-    const enabled = env.PAYMENT_ENABLED === '1' && key.length >= 32 && /^\d{6,30}$/.test(account)
+    const rawKey = String(env.SEPAY_WEBHOOK_KEY || '').trim().replace(/^["']|["']$/g, '');
+    const key = rawKey;
+    const rawAccount = String(env.PAYMENT_MB_ACCOUNT || '').trim().replace(/^["']|["']$/g, '').replace(/[\s.-]/g, '');
+    const account = rawAccount;
+    const accountName = String(env.PAYMENT_MB_ACCOUNT_NAME || '').trim().replace(/^["']|["']$/g, '');
+    const studentPrice = Number(String(env.PRO_STUDENT_PRICE || 200000).replace(/[.,đ\s"']/g, ''));
+    const teacherPrice = Number(String(env.PRO_TEACHER_PRICE || 300000).replace(/[.,đ\s"']/g, ''));
+    const rawEnabled = String(env.PAYMENT_ENABLED || '').trim().toLowerCase();
+    const isEnabled = rawEnabled === '1' || rawEnabled === 'true' || rawEnabled === 'yes' || rawEnabled === 'on';
+    const enabled = isEnabled && key.length >= 32 && /^\d{6,30}$/.test(account)
         && !!accountName.trim() && [studentPrice, teacherPrice].every(n => Number.isSafeInteger(n) && n > 0 && n <= 100000000);
     return { enabled, key, account, accountName, studentPrice, teacherPrice };
+}
+
+export function paymentDiagnostics(env = process.env) {
+    const cfg = paymentConfig(env);
+    const rawEnabled = String(env.PAYMENT_ENABLED || '').trim().toLowerCase();
+    const isEnabled = rawEnabled === '1' || rawEnabled === 'true' || rawEnabled === 'yes' || rawEnabled === 'on';
+    const issues = [];
+    if (!isEnabled) issues.push(`PAYMENT_ENABLED chưa bật (hiện tại: '${env.PAYMENT_ENABLED || ''}', cần đặt là '1' hoặc 'true')`);
+    if (!cfg.account || !/^\d{6,30}$/.test(cfg.account)) issues.push(`PAYMENT_MB_ACCOUNT không hợp lệ (cần 6-30 số, hiện tại: '${cfg.account || 'trống'}')`);
+    if (!cfg.accountName) issues.push(`PAYMENT_MB_ACCOUNT_NAME còn trống`);
+    if (cfg.key.length < 32) issues.push(`SEPAY_WEBHOOK_KEY quá ngắn (cần tối thiểu 32 ký tự, hiện tại: ${cfg.key.length} ký tự)`);
+    if (![cfg.studentPrice, cfg.teacherPrice].every(n => Number.isSafeInteger(n) && n > 0 && n <= 100000000)) issues.push(`Giá gói PRO_STUDENT_PRICE hoặc PRO_TEACHER_PRICE không hợp lệ`);
+    return { enabled: cfg.enabled, issues };
 }
 
 export function validWebhookKey(header, key) {
