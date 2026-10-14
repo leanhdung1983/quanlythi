@@ -229,11 +229,12 @@ export const ClassManagement = () => {
         }
     };
 
-    const handleJoinClass = async (e: React.FormEvent) => {
-        e.preventDefault();
-        if (!joinCode.trim() || !user) return;
+    const handleJoinClass = async (e?: React.FormEvent, customCode?: string) => {
+        if (e) e.preventDefault();
+        const code = (customCode || joinCode).trim().toUpperCase();
+        if (!code || !user) return;
         try {
-            await apiService.joinClass(user.id, joinCode.trim().toUpperCase());
+            await apiService.joinClass(user.id, code);
             setJoinCode('');
             loadClasses();
             alert('Tham gia lớp học thành công!');
@@ -385,52 +386,55 @@ export const ClassManagement = () => {
                                 </button>
                             </form>
                         ) : (
-                            <form onSubmit={handleJoinClass} className="mb-5 rounded-xl border border-green-200 bg-green-50 p-3">
-                                <label htmlFor="join-class-code" className="mb-1 block text-sm font-bold text-green-800">
-                                    Tìm và tham gia lớp bằng mã
-                                </label>
-                                <p className="mb-3 text-xs text-green-700">Nhập mã lớp do giáo viên cung cấp.</p>
-                                <div className="flex flex-col gap-2 sm:flex-row">
-                                    <input
-                                        id="join-class-code"
-                                        type="text"
-                                        value={joinCode}
-                                        onChange={(e) => setJoinCode(e.target.value)}
-                                        placeholder="Ví dụ: ABC123"
-                                        autoComplete="off"
-                                        className="min-w-0 flex-1 px-3 py-2 border border-green-200 rounded-lg focus:outline-none focus:border-green-500 uppercase bg-white"
-                                    />
-                                    <button type="submit" disabled={!joinCode.trim()} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 font-bold flex items-center justify-center gap-2">
-                                        <KeyRound className="w-4 h-4" />
-                                        Tham gia lớp
-                                    </button>
+                            <>
+                                <form onSubmit={handleJoinClass} className="mb-4 rounded-xl border border-green-200 bg-green-50 p-3">
+                                    <label htmlFor="join-class-code" className="mb-1 block text-sm font-bold text-green-800">
+                                        Tìm và tham gia lớp bằng mã
+                                    </label>
+                                    <p className="mb-3 text-xs text-green-700">Nhập mã lớp do giáo viên cung cấp.</p>
+                                    <div className="flex flex-col gap-2 sm:flex-row">
+                                        <input
+                                            id="join-class-code"
+                                            type="text"
+                                            value={joinCode}
+                                            onChange={(e) => setJoinCode(e.target.value)}
+                                            placeholder="Ví dụ: ABC123"
+                                            autoComplete="off"
+                                            className="min-w-0 flex-1 px-3 py-2 border border-green-200 rounded-lg focus:outline-none focus:border-green-500 uppercase bg-white"
+                                        />
+                                        <button type="submit" disabled={!joinCode.trim()} className="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-50 font-bold flex items-center justify-center gap-2">
+                                            <KeyRound className="w-4 h-4" />
+                                            Tham gia lớp
+                                        </button>
+                                    </div>
+                                </form>
+
+                                <div className="mb-4 rounded-xl border border-indigo-100 bg-indigo-50/60 p-3">
+                                    <p className="text-xs font-bold text-indigo-900 mb-1">Mã đề xuất cho học sinh tự do:</p>
+                                    <p className="text-[11px] text-slate-500 mb-2">Học sinh chưa có mã lớp riêng có thể bấm chọn nhanh khối lớp bên dưới:</p>
+                                    <div className="space-y-2">
+                                        {[
+                                            { label: 'Lớp 10 - Tự do', code: 'THY6TO' },
+                                            { label: 'Lớp 11 - Tự do', code: 'WWHXNV' },
+                                            { label: 'Lớp 12 - Tự do', code: 'W0DBUX' },
+                                        ].map((item) => (
+                                            <div key={item.code} className="flex items-center justify-between p-2.5 rounded-lg bg-white border border-indigo-100 shadow-xs">
+                                                <div>
+                                                    <span className="font-semibold text-xs text-slate-800 block">{item.label}</span>
+                                                    <code className="text-[11px] font-mono font-bold text-indigo-600 bg-indigo-50 px-1.5 py-0.5 rounded">{item.code}</code>
+                                                </div>
+                                                <button
+                                                    type="button"
+                                                    onClick={() => handleJoinClass(undefined, item.code)}
+                                                    className="px-3 py-1 text-xs font-semibold bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors shadow-2xs"
+                                                >
+                                                    Vào lớp
+                                                </button>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
-                            </form>
-<div className="mt-4 space-y-2">
-  <p className="text-sm text-gray-600 font-medium">Bạn có thể tham gia các lớp tự do sau:</p>
-  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-    <div className="p-4 border rounded-lg bg-white shadow-sm flex flex-col items-center">
-      <span className="font-semibold mb-2">Lớp 10 - Tự do</span>
-      <code className="bg-gray-100 px-2 py-1 rounded text-sm">THY6TO</code>
-      <button onClick={() => setJoinCode('THY6TO') && handleJoinClass({ preventDefault: () => {} } as any)} className="mt-2 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
-        Tham gia
-      </button>
-    </div>
-    <div className="p-4 border rounded-lg bg-white shadow-sm flex flex-col items-center">
-      <span className="font-semibold mb-2">Lớp 11 - Tự do</span>
-      <code className="bg-gray-100 px-2 py-1 rounded text-sm">WWHXNV</code>
-      <button onClick={() => setJoinCode('WWHXNV') && handleJoinClass({ preventDefault: () => {} } as any)} className="mt-2 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
-        Tham gia
-      </button>
-    </div>
-    <div className="p-4 border rounded-lg bg-white shadow-sm flex flex-col items-center">
-      <span className="font-semibold mb-2">Lớp 12 - Tự do</span>
-      <code className="bg-gray-100 px-2 py-1 rounded text-sm">W0DBUX</code>
-      <button onClick={() => setJoinCode('W0DBUX') && handleJoinClass({ preventDefault: () => {} } as any)} className="mt-2 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
-        Tham gia</button>
-    </div>
-  </div>
-</div>
+                            </>
                         )}
 
                         <div className="space-y-2 max-h-[500px] overflow-y-auto">
