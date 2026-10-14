@@ -5,7 +5,7 @@ import {
     LayoutDashboard, FileText, GraduationCap, FileCode, Tag, 
     Wand2, MonitorPlay, ChevronDown, Menu, X, LogOut, 
     User, Shield, Copy, Flag, ChevronRight, Layers, Zap, Target,
-    MessageSquare, BookOpen, Users, Send,
+    MessageSquare, BookOpen, Users, Send, HelpCircle,
     LucideIcon
 } from 'lucide-react';
 import { useLanguageStore } from '../services/languageStore';
@@ -68,7 +68,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   
   const navigate = useNavigate();
   const location = useLocation();
-  const pageTitles: Record<string, string> = { '/': 'Tổng quan', '/questions': 'Ngân hàng câu hỏi', '/exam': 'Ma trận đề thi', '/online-exam': 'Thi trực tuyến', '/assign-id': 'Gán ID câu hỏi', '/metadata': 'Danh mục ID6', '/classes': 'Lớp học', '/learning': 'Học trực tuyến', '/eduloop': 'EduLoop · Kỹ năng', '/converter': 'Chuyển đổi tài liệu', '/duplicates': 'Câu hỏi trùng lặp', '/irt': 'Phân tích IRT', '/errors': 'Quản lý lỗi', '/profile': 'Hồ sơ cá nhân', '/admin': 'Quản trị người dùng', '/admin/source': 'Mã nguồn & SVG', '/admin/social': 'Nội dung Facebook' };
+  const pageTitles: Record<string, string> = { '/': 'Tổng quan', '/questions': 'Ngân hàng câu hỏi', '/exam': 'Ma trận đề thi', '/online-exam': 'Thi trực tuyến', '/assign-id': 'Gán ID câu hỏi', '/metadata': 'Danh mục ID6', '/classes': 'Lớp học', '/learning': 'Học trực tuyến', '/eduloop': 'EduLoop · Kỹ năng', '/converter': 'Chuyển đổi tài liệu', '/duplicates': 'Câu hỏi trùng lặp', '/irt': 'Phân tích IRT', '/errors': 'Quản lý lỗi', '/profile': 'Hồ sơ cá nhân', '/guide': 'Hướng dẫn sử dụng', '/user-guide': 'Hướng dẫn sử dụng', '/admin': 'Quản trị người dùng', '/admin/source': 'Mã nguồn & SVG', '/admin/social': 'Nội dung Facebook' };
   const pageTitle = pageTitles[location.pathname] || APP_NAME;
 
   const handleLogout = () => { 
@@ -182,6 +182,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             <SidebarItem to="/eduloop" icon={Target} label="EduLoop · Kỹ năng" isCompact={isCompact} />
                             <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" isCompact={isCompact} />
                             <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" isCompact={isCompact} />
+                            <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" isCompact={isCompact} />
                             
                             {isTeacher && (
                                 <>
@@ -275,6 +276,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         <SidebarItem to="/eduloop" icon={Zap} label="EduLoop · Kỹ năng" onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" onClick={() => setIsMobileMenuOpen(false)}/>
+                        <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" onClick={() => setIsMobileMenuOpen(false)}/>
                         
                         {isTeacher && (
                             <>
@@ -323,7 +325,14 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
             {!hideLayout && <header className="app-topbar hidden md:flex items-center justify-between gap-4 px-7 py-4 shrink-0">
                 <div className="min-w-0"><div className="flex items-center gap-2 text-xs text-slate-400"><span>{APP_NAME}</span><ChevronRight size={12}/><span className="text-slate-600">{pageTitle}</span></div><p className="text-xs text-slate-400 mt-1">{APP_TAGLINE}</p></div>
-                <div className="flex items-center gap-3"><div className="text-right"><p className="text-sm font-semibold text-slate-700">{user.full_name || user.username}</p><p className="text-xs text-slate-400">{isAdmin ? 'Quản trị viên' : isTeacher ? 'Giáo viên' : 'Học sinh'}</p></div><div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700 font-bold border border-indigo-100">{(user.full_name || user.username || 'E').charAt(0).toUpperCase()}</div></div>
+                <div className="flex items-center gap-3">
+                    <NavLink to="/guide" className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50/80 text-indigo-700 hover:bg-indigo-100 transition-colors text-xs font-bold shadow-2xs" title="Xem hướng dẫn sử dụng">
+                        <HelpCircle size={15}/>
+                        <span>Hướng dẫn</span>
+                    </NavLink>
+                    <div className="text-right"><p className="text-sm font-semibold text-slate-700">{user.full_name || user.username}</p><p className="text-xs text-slate-400">{isAdmin ? 'Quản trị viên' : isTeacher ? 'Giáo viên' : 'Học sinh'}</p></div>
+                    <div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700 font-bold border border-indigo-100">{(user.full_name || user.username || 'E').charAt(0).toUpperCase()}</div>
+                </div>
             </header>}
 
             {/* Content Container */}

@@ -25,6 +25,7 @@ const EduLoop = lazy(() => import('./pages/EduLoop').then(module => ({ default: 
 const Learning = lazy(() => import('./pages/Learning').then(module => ({ default: module.Learning })));
 const ClassManagement = lazy(() => import('./pages/ClassManagement').then(module => ({ default: module.ClassManagement })));
 const ManualSocialPlanner = lazy(() => import('./pages/ManualSocialPlanner').then(module => ({ default: module.ManualSocialPlanner })));
+const UserGuide = lazy(() => import('./pages/UserGuide').then(module => ({ default: module.UserGuide })));
 
 const PageLoader = () => (
     <div className="flex items-center justify-center min-h-[60vh]">
@@ -175,6 +176,8 @@ const App: React.FC = () => {
             <Route path="/adaptive" element={<AuthGuard><EduLoop /></AuthGuard>} />
             <Route path="/learning" element={<AuthGuard><Learning /></AuthGuard>} />
             <Route path="/classes" element={<AuthGuard><ClassManagement /></AuthGuard>} />
+            <Route path="/guide" element={<AuthGuard><UserGuide /></AuthGuard>} />
+            <Route path="/user-guide" element={<AuthGuard><UserGuide /></AuthGuard>} />
             
             <Route path="/errors" element={<TeacherGuard><ErrorManager /></TeacherGuard>} />
             
