@@ -406,6 +406,31 @@ export const ClassManagement = () => {
                                     </button>
                                 </div>
                             </form>
+<div className="mt-4 space-y-2">
+  <p className="text-sm text-gray-600 font-medium">Bạn có thể tham gia các lớp tự do sau:</p>
+  <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+    <div className="p-4 border rounded-lg bg-white shadow-sm flex flex-col items-center">
+      <span className="font-semibold mb-2">Lớp 10 - Tự do</span>
+      <code className="bg-gray-100 px-2 py-1 rounded text-sm">THY6TO</code>
+      <button onClick={() => setJoinCode('THY6TO') && handleJoinClass({ preventDefault: () => {} } as any)} className="mt-2 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
+        Tham gia
+      </button>
+    </div>
+    <div className="p-4 border rounded-lg bg-white shadow-sm flex flex-col items-center">
+      <span className="font-semibold mb-2">Lớp 11 - Tự do</span>
+      <code className="bg-gray-100 px-2 py-1 rounded text-sm">WWHXNV</code>
+      <button onClick={() => setJoinCode('WWHXNV') && handleJoinClass({ preventDefault: () => {} } as any)} className="mt-2 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
+        Tham gia
+      </button>
+    </div>
+    <div className="p-4 border rounded-lg bg-white shadow-sm flex flex-col items-center">
+      <span className="font-semibold mb-2">Lớp 12 - Tự do</span>
+      <code className="bg-gray-100 px-2 py-1 rounded text-sm">W0DBUX</code>
+      <button onClick={() => setJoinCode('W0DBUX') && handleJoinClass({ preventDefault: () => {} } as any)} className="mt-2 px-3 py-1 bg-indigo-600 text-white rounded hover:bg-indigo-700 text-sm">
+        Tham gia</button>
+    </div>
+  </div>
+</div>
                         )}
 
                         <div className="space-y-2 max-h-[500px] overflow-y-auto">
