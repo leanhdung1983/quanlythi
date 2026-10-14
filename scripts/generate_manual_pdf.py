@@ -1,0 +1,848 @@
+# -*- coding: utf-8 -*-
+"""
+Script tạo file PDF Hướng Dẫn Sử Dụng Hệ Thống Quản Lý Khảo Thí và Học Tập
+Bao gồm hướng dẫn chi tiết dành cho Học sinh & Giáo viên với hình minh họa/infographic SVG trực quan.
+"""
+
+import os
+import subprocess
+import sys
+
+HTML_CONTENT = """<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<title>Hướng Dẫn Sử Dụng Hệ Thống Quản Lý Khảo Thí Và Học Tập</title>
+<style>
+  @page {
+    size: A4;
+    margin: 14mm 14mm 16mm 14mm;
+    @bottom-right {
+      content: counter(page);
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    color: #1e293b;
+    line-height: 1.55;
+    font-size: 13.5px;
+    margin: 0;
+    padding: 0;
+    background: #ffffff;
+  }
+
+  .page-break {
+    page-break-before: always;
+  }
+
+  .avoid-break {
+    page-break-inside: avoid;
+  }
+
+  /* Cover Page */
+  .cover {
+    min-height: 250mm;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 20mm 10mm 15mm 10mm;
+    text-align: center;
+    background: linear-gradient(145deg, #f8fafc 0%, #e0e7ff 45%, #ede9fe 100%);
+    border-radius: 20px;
+    border: 2px solid #c7d2fe;
+    page-break-after: always;
+  }
+
+  .cover-badge {
+    display: inline-block;
+    background: #4f46e5;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13px;
+    padding: 6px 18px;
+    border-radius: 9999px;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    box-shadow: 0 4px 10px rgba(79, 70, 229, 0.25);
+  }
+
+  .cover-title {
+    font-size: 32px;
+    font-weight: 800;
+    color: #1e1b4b;
+    margin: 20px 0 10px 0;
+    line-height: 1.25;
+  }
+
+  .cover-subtitle {
+    font-size: 18px;
+    font-weight: 600;
+    color: #4338ca;
+    margin-bottom: 25px;
+  }
+
+  .cover-desc {
+    max-width: 650px;
+    margin: 0 auto;
+    font-size: 14px;
+    color: #475569;
+    line-height: 1.6;
+  }
+
+  .cover-meta {
+    margin-top: 40px;
+    display: flex;
+    justify-content: center;
+    gap: 30px;
+  }
+
+  .meta-card {
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 12px 24px;
+    font-size: 12.5px;
+    color: #334155;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+  }
+
+  .meta-card strong {
+    color: #1e293b;
+    display: block;
+    font-size: 14px;
+  }
+
+  /* Headings */
+  h1 {
+    font-size: 22px;
+    color: #1e1b4b;
+    border-bottom: 2.5px solid #4f46e5;
+    padding-bottom: 6px;
+    margin-top: 24px;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  h2 {
+    font-size: 16.5px;
+    color: #312e81;
+    margin-top: 18px;
+    margin-bottom: 10px;
+    border-left: 4px solid #6366f1;
+    padding-left: 10px;
+  }
+
+  h3 {
+    font-size: 14px;
+    color: #1e293b;
+    margin-top: 12px;
+    margin-bottom: 6px;
+  }
+
+  p {
+    margin-top: 4px;
+    margin-bottom: 8px;
+  }
+
+  /* Callouts & Alert Boxes */
+  .callout {
+    border-radius: 10px;
+    padding: 10px 14px;
+    margin: 10px 0;
+    font-size: 12.8px;
+    border-left: 4px solid transparent;
+  }
+
+  .callout-info {
+    background: #eef2ff;
+    border-color: #4f46e5;
+    color: #312e81;
+  }
+
+  .callout-success {
+    background: #f0fdf4;
+    border-color: #16a34a;
+    color: #14532d;
+  }
+
+  .callout-warning {
+    background: #fffbeb;
+    border-color: #f59e0b;
+    color: #78350f;
+  }
+
+  .callout-tip {
+    background: #f5f3ff;
+    border-color: #8b5cf6;
+    color: #4c1d95;
+  }
+
+  /* Step Badge */
+  .step-list {
+    list-style: none;
+    padding-left: 0;
+    margin: 10px 0;
+  }
+
+  .step-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-bottom: 12px;
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 10px 14px;
+  }
+
+  .step-number {
+    background: #4f46e5;
+    color: #ffffff;
+    font-weight: 700;
+    font-size: 13px;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .step-content {
+    flex: 1;
+  }
+
+  .step-title {
+    font-weight: 700;
+    color: #0f172a;
+    font-size: 13.5px;
+    margin-bottom: 3px;
+  }
+
+  /* Table styling */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 10px 0;
+    font-size: 12.5px;
+  }
+
+  th, td {
+    padding: 8px 10px;
+    border: 1px solid #cbd5e1;
+    text-align: left;
+  }
+
+  th {
+    background: #f1f5f9;
+    color: #1e293b;
+    font-weight: 700;
+  }
+
+  tr:nth-child(even) td {
+    background: #f8fafc;
+  }
+
+  /* Mockup Frame */
+  .mockup-card {
+    border: 1.5px solid #cbd5e1;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+    margin: 12px 0 16px 0;
+    overflow: hidden;
+  }
+
+  .mockup-header {
+    background: #f1f5f9;
+    border-bottom: 1px solid #e2e8f0;
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #475569;
+  }
+
+  .mockup-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .mockup-dot {
+    width: 9px;
+    height: 9px;
+    border-radius: 50%;
+  }
+
+  .dot-red { background: #ef4444; }
+  .dot-yellow { background: #f59e0b; }
+  .dot-green { background: #10b981; }
+
+  .mockup-body {
+    padding: 14px;
+  }
+
+  /* Badge Pills */
+  .pill {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 6px;
+    font-size: 11px;
+    font-weight: 700;
+  }
+
+  .pill-code {
+    font-family: Consolas, monospace;
+    font-size: 12.5px;
+    font-weight: 800;
+    background: #eef2ff;
+    color: #4338ca;
+    padding: 2px 7px;
+    border-radius: 6px;
+    border: 1px solid #c7d2fe;
+  }
+
+  .pill-green { background: #dcfce7; color: #15803d; }
+  .pill-amber { background: #fef3c7; color: #b45309; }
+  .pill-red { background: #fee2e2; color: #b91c1c; }
+  .pill-indigo { background: #e0e7ff; color: #4338ca; }
+  .pill-purple { background: #f3e8ff; color: #7e22ce; }
+
+  /* Diagram SVGs */
+  .diagram-container {
+    text-align: center;
+    margin: 14px 0;
+  }
+</style>
+</head>
+<body>
+
+<!-- TRANG BÌA -->
+<div class="cover">
+  <div>
+    <div class="cover-badge">TÀI LIỆU HƯỚNG DẪN CHÍNH THỨC</div>
+    <div class="cover-title">HỆ THỐNG KHẢO THÍ VÀ QUẢN LÝ HỌC TẬP TRỰC TUYẾN</div>
+    <div class="cover-subtitle">Sổ Tay Hướng Dẫn Vận Hành Dành Cho Học Sinh &amp; Giáo Viên</div>
+    <p class="cover-desc">
+      Tài liệu hướng dẫn trực quan, chi tiết từng bước: quy trình đăng ký tham gia lớp học, 
+      làm bài thi trực tuyến, luyện tập thích ứng theo năng lực, tạo ma trận đề thi chuẩn bộ GD&amp;ĐT, 
+      giao bài tập phân tầng và thống kê kết quả học tập tự động.
+    </p>
+  </div>
+
+  <div class="diagram-container">
+    <!-- SVG Minh Họa Tổng Quan Hệ Thống -->
+    <svg width="600" height="200" viewBox="0 0 600 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <!-- Background Card -->
+      <rect x="10" y="10" width="580" height="180" rx="16" fill="#ffffff" stroke="#c7d2fe" stroke-width="2"/>
+      
+      <!-- Role Giáo Viên -->
+      <g transform="translate(40, 35)">
+        <rect width="150" height="130" rx="12" fill="#eff6ff" stroke="#3b82f6" stroke-width="1.5"/>
+        <circle cx="75" cy="40" r="22" fill="#3b82f6"/>
+        <path d="M75 32c-4 0-7 3-7 7s3 7 7 7 7-3 7-7-3-7-7-7zm0 18c-7 0-14 3.5-14 8v3h28v-3c0-4.5-7-8-14-8z" fill="#ffffff"/>
+        <text x="75" y="80" text-anchor="middle" font-weight="bold" fill="#1e3a8a" font-size="13">GIÁO VIÊN (Pro)</text>
+        <text x="75" y="98" text-anchor="middle" fill="#64748b" font-size="10.5">Tạo lớp &amp; Ngân hàng đề</text>
+        <text x="75" y="112" text-anchor="middle" fill="#64748b" font-size="10.5">Giao bài &amp; Quản lý điểm</text>
+      </g>
+
+      <!-- Trung Tâm Tương Tác / Đám mây LMS -->
+      <g transform="translate(225, 45)">
+        <rect width="150" height="110" rx="14" fill="#faf5ff" stroke="#8b5cf6" stroke-width="1.5"/>
+        <text x="75" y="32" text-anchor="middle" font-weight="bold" fill="#5b21b6" font-size="12">KHÔNG GIAN LỚP HỌC</text>
+        <text x="75" y="52" text-anchor="middle" fill="#7c3aed" font-weight="600" font-size="11">Mã Lớp Học (Code)</text>
+        <rect x="25" y="60" width="100" height="22" rx="6" fill="#ede9fe" stroke="#c4b5fd"/>
+        <text x="75" y="75" text-anchor="middle" font-weight="bold" fill="#6d28d9" font-size="11" font-family="monospace">ABC123</text>
+        <text x="75" y="98" text-anchor="middle" fill="#64748b" font-size="10">Hỗ trợ 3 Mã lớp tự do</text>
+      </g>
+
+      <!-- Role Học Sinh -->
+      <g transform="translate(410, 35)">
+        <rect width="150" height="130" rx="12" fill="#f0fdf4" stroke="#22c55e" stroke-width="1.5"/>
+        <circle cx="75" cy="40" r="22" fill="#22c55e"/>
+        <path d="M75 32c-4 0-7 3-7 7s3 7 7 7 7-3 7-7-3-7-7-7zm0 18c-7 0-14 3.5-14 8v3h28v-3c0-4.5-7-8-14-8z" fill="#ffffff"/>
+        <text x="75" y="80" text-anchor="middle" font-weight="bold" fill="#14532d" font-size="13">HỌC SINH (Free)</text>
+        <text x="75" y="98" text-anchor="middle" fill="#64748b" font-size="10.5">Nhập mã vào lớp</text>
+        <text x="75" y="112" text-anchor="middle" fill="#64748b" font-size="10.5">Thi trực tuyến &amp; Ôn luyện</text>
+      </g>
+
+      <!-- Mũi tên liên kết -->
+      <path d="M190 90 H225" stroke="#3b82f6" stroke-width="2" stroke-dasharray="4 3" marker-end="url(#arrow)"/>
+      <path d="M410 90 H375" stroke="#22c55e" stroke-width="2" stroke-dasharray="4 3"/>
+    </svg>
+  </div>
+
+  <div class="cover-meta">
+    <div class="meta-card">
+      <strong>Phiên bản</strong>
+      Hệ thống Khảo thí 2.1
+    </div>
+    <div class="meta-card">
+      <strong>Áp dụng cho</strong>
+      Khối 10, Khối 11, Khối 12
+    </div>
+    <div class="meta-card">
+      <strong>Cập nhật mới nhất</strong>
+      Tính năng đề xuất mã lớp tự do
+    </div>
+  </div>
+</div>
+
+<!-- MỤC LỤC & TỔNG QUAN HỆ THỐNG -->
+<div class="avoid-break">
+  <h1>1. Tổng Quan Hệ Thống &amp; Phân Quyền Người Dùng</h1>
+  <p>
+    Hệ thống Quản lý Khảo thí và Học tập Trực tuyến được thiết kế nhằm phục vụ toàn diện công tác giảng dạy, 
+    kiểm tra đánh giá môn Toán theo chương trình Giáo dục Phổ thông mới. Hệ thống chia làm hai phân hệ người dùng chính:
+  </p>
+
+  <table>
+    <thead>
+      <tr>
+        <th style="width: 20%;">Đối tượng</th>
+        <th style="width: 25%;">Quyền hạn chính</th>
+        <th>Chức năng nổi bật</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><strong>Học sinh (Student)</strong><br><span class="pill pill-green">Tài khoản Miễn phí</span></td>
+        <td>Học tập, làm bài kiểm tra và ôn tập cá nhân.</td>
+        <td>
+          • Tham gia lớp học theo mã lớp của giáo viên hoặc 3 mã đề xuất tự do.<br>
+          • Làm bài thi trực tuyến với bộ đếm giờ, nộp bài, xem giải chi tiết.<br>
+          • Luyện tập thích ứng thông minh (Adaptive Test) theo trình độ.
+        </td>
+      </tr>
+      <tr>
+        <td><strong>Giáo viên (Teacher)</strong><br><span class="pill pill-indigo">Tài khoản Pro</span></td>
+        <td>Quản lý lớp học, quản trị đề thi và đánh giá học sinh.</td>
+        <td>
+          • Tạo lớp học, quản lý danh sách học sinh và cấp mã lớp.<br>
+          • Xây dựng ma trận đề thi 4 cấp độ (N, H, V, C) và xuất đề Word/PDF.<br>
+          • Giao bài tập cho nhiều lớp với thông số LMS nâng cao (mở đề, hạn nộp, số lượt làm, xem giải).<br>
+          • Bảng điểm tự động và xuất báo cáo kết quả ra file Excel.
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- PHẦN DÀNH CHO HỌC SINH -->
+<div class="page-break"></div>
+<h1>2. Hướng Dẫn Chi Tiết Dành Cho Học Sinh</h1>
+
+<h2>2.1. Đăng ký &amp; Đăng nhập tài khoản</h2>
+<ul class="step-list">
+  <li class="step-item">
+    <div class="step-number">1</div>
+    <div class="step-content">
+      <div class="step-title">Truy cập màn hình Đăng ký</div>
+      <div>Trên giao diện chính, chọn <strong>Đăng ký ngay</strong>. Điền Họ và tên, Tên đăng nhập (username), Mật khẩu và Trường học.</div>
+    </div>
+  </li>
+  <li class="step-item">
+    <div class="step-number">2</div>
+    <div class="step-content">
+      <div class="step-title">Đăng nhập vào hệ thống</div>
+      <div>Sử dụng tên tài khoản và mật khẩu vừa đăng ký để đăng nhập. Giao diện sau khi đăng nhập sẽ tự động chuyển đến bảng điều khiển học sinh.</div>
+    </div>
+  </li>
+</ul>
+
+<h2>2.2. Tham gia lớp học (Class Join)</h2>
+<p>
+  Tại thanh điều hướng bên trái, chọn mục <strong>Lớp học của tôi</strong>. Tại đây học sinh có 2 phương thức để tham gia lớp:
+</p>
+
+<!-- Minh họa Mockup Màn Hình Chọn Lớp Của Học Sinh -->
+<div class="mockup-card">
+  <div class="mockup-header">
+    <div class="mockup-dots">
+      <div class="mockup-dot dot-red"></div>
+      <div class="mockup-dot dot-yellow"></div>
+      <div class="mockup-dot dot-green"></div>
+    </div>
+    <span>MINH HỌA GIAO DIỆN: CHỌN VÀ THAM GIA LỚP HỌC DÀNH CHO HỌC SINH</span>
+  </div>
+  <div class="mockup-body" style="background: #f8fafc;">
+    <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+      
+      <!-- Cột Trái: Form Nhập mã + Đề xuất -->
+      <div style="flex: 1; min-width: 280px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;">
+        <div style="font-weight: bold; color: #1e293b; font-size: 13px; margin-bottom: 8px;">Danh sách lớp</div>
+        
+        <!-- Hộp tìm kiếm theo mã -->
+        <div style="background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 10px; padding: 10px; margin-bottom: 12px;">
+          <div style="font-size: 12px; font-weight: bold; color: #166534; margin-bottom: 4px;">Tìm và tham gia lớp bằng mã</div>
+          <div style="font-size: 11px; color: #15803d; margin-bottom: 8px;">Nhập mã lớp do giáo viên cung cấp:</div>
+          <div style="display: flex; gap: 6px;">
+            <div style="flex: 1; background: #ffffff; border: 1px solid #86efac; border-radius: 6px; padding: 4px 8px; font-size: 12px; font-family: monospace; color: #334155;">ABC123</div>
+            <button style="background: #16a34a; color: white; border: none; border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: bold;">Tham gia</button>
+          </div>
+        </div>
+
+        <!-- Khối Đề Xuất 3 Mã Lớp Tự Do -->
+        <div style="background: #eef2ff; border: 1px solid #c7d2fe; border-radius: 10px; padding: 10px;">
+          <div style="font-size: 12px; font-weight: bold; color: #312e81; margin-bottom: 3px;">Mã đề xuất cho học sinh tự do:</div>
+          <div style="font-size: 10.5px; color: #64748b; margin-bottom: 8px;">Học sinh chưa có mã lớp riêng có thể bấm chọn nhanh khối lớp bên dưới:</div>
+          
+          <div style="display: flex; flex-direction: column; gap: 6px;">
+            <!-- Lớp 10 -->
+            <div style="background: #ffffff; border: 1px solid #e0e7ff; border-radius: 6px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-weight: bold; font-size: 11.5px; color: #1e293b;">Lớp 10 - Tự do</div>
+                <span class="pill-code">THY6TO</span>
+              </div>
+              <span style="background: #4f46e5; color: white; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold;">Vào lớp</span>
+            </div>
+
+            <!-- Lớp 11 -->
+            <div style="background: #ffffff; border: 1px solid #e0e7ff; border-radius: 6px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-weight: bold; font-size: 11.5px; color: #1e293b;">Lớp 11 - Tự do</div>
+                <span class="pill-code">WWHXNV</span>
+              </div>
+              <span style="background: #4f46e5; color: white; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold;">Vào lớp</span>
+            </div>
+
+            <!-- Lớp 12 -->
+            <div style="background: #ffffff; border: 1px solid #e0e7ff; border-radius: 6px; padding: 6px 10px; display: flex; justify-content: space-between; align-items: center;">
+              <div>
+                <div style="font-weight: bold; font-size: 11.5px; color: #1e293b;">Lớp 12 - Tự do</div>
+                <span class="pill-code">W0DBUX</span>
+              </div>
+              <span style="background: #4f46e5; color: white; padding: 3px 8px; border-radius: 5px; font-size: 11px; font-weight: bold;">Vào lớp</span>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Cột Phải: Chi tiết bài tập của lớp đã vào -->
+      <div style="flex: 1.5; min-width: 320px; background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; padding: 12px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #f1f5f9; padding-bottom: 8px; margin-bottom: 10px;">
+          <div>
+            <span style="font-size: 14px; font-weight: bold; color: #1e293b;">Lớp 12 - Tự do</span>
+            <span class="pill pill-green" style="margin-left: 6px;">Đang tham gia</span>
+          </div>
+          <span style="color: #ef4444; font-size: 11.5px; font-weight: 600; cursor: pointer;">Rời lớp</span>
+        </div>
+
+        <div style="font-size: 12px; font-weight: bold; color: #475569; margin-bottom: 8px;">Danh sách bài tập ({2})</div>
+        
+        <!-- Item 1: Đang mở -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px; margin-bottom: 8px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: #1e293b; font-size: 12.5px;">Đề Ôn Tập Khảo Sát Đầu Năm - Khối 12</strong>
+            <span class="pill pill-green">🟢 Đang mở</span>
+          </div>
+          <div style="font-size: 11px; color: #64748b; margin-top: 4px;">
+            ⏱ 45 phút &nbsp;|&nbsp; 🔁 Lần làm: 0/2 &nbsp;|&nbsp; 👁️ Cho xem giải
+          </div>
+          <div style="text-align: right; margin-top: 6px;">
+            <span style="background: #4f46e5; color: white; font-size: 11px; font-weight: bold; padding: 3px 12px; border-radius: 6px;">Vào thi</span>
+          </div>
+        </div>
+
+        <!-- Item 2: Quá hạn -->
+        <div style="background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px 12px;">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <strong style="color: #64748b; font-size: 12.5px;">Kiểm Tra 15 Phút: Đạo Hàm Và Ứng Dụng</strong>
+            <span class="pill pill-red">🔴 Quá hạn</span>
+          </div>
+          <div style="font-size: 11px; color: #94a3b8; margin-top: 4px;">
+            Hạn chót: 20:00 - 10/10/2026
+          </div>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="callout callout-success">
+  <strong>Ghi nhớ quan trọng cho học sinh tự do:</strong><br>
+  • Nếu bạn là học sinh tự do và chưa được giáo viên riêng xếp lớp, bạn <strong>chỉ cần bấm nút "Vào lớp"</strong> tương ứng với khối lớp của mình (Lớp 10: <span class="pill-code">THY6TO</span>, Lớp 11: <span class="pill-code">WWHXNV</span>, Lớp 12: <span class="pill-code">W0DBUX</span>).<br>
+  • Toàn bộ các lớp học chuyên biệt khác của các trường/thầy cô sẽ <strong>được ẩn hoàn toàn</strong> để đảm bảo tính bảo mật. Muốn vào các lớp này, bạn bắt buộc phải có mã do chính giáo viên bộ môn cấp.
+</div>
+
+<h2>2.3. Quy trình làm bài thi trực tuyến (Online Exam)</h2>
+<div class="step-list">
+  <li class="step-item">
+    <div class="step-number">1</div>
+    <div class="step-content">
+      <div class="step-title">Chọn bài tập và bấm "Vào thi"</div>
+      <div>Các bài thi có trạng thái <span class="pill pill-green">🟢 Đang mở</span> mới có thể bấm làm bài. Nếu bài thi chưa đến giờ (<span class="pill pill-amber">🟡 Chưa mở</span>) hoặc đã quá hạn (<span class="pill pill-red">🔴 Quá hạn</span>), nút vào thi sẽ bị khóa.</div>
+    </div>
+  </li>
+  <li class="step-item">
+    <div class="step-number">2</div>
+    <div class="step-content">
+      <div class="step-title">Làm bài với bộ đếm giờ tự động</div>
+      <div>
+        Giao diện bài thi hiển thị: Đồng hồ đếm ngược thời gian làm bài, bảng danh sách câu hỏi giúp nhảy nhanh đến câu bất kỳ, các công thức toán LaTeX và hình học TikZ sắc nét. Hệ thống tự động ghi nhận câu trả lời sau mỗi lần bạn click chọn.
+      </div>
+    </div>
+  </li>
+  <li class="step-item">
+    <div class="step-number">3</div>
+    <div class="step-content">
+      <div class="step-title">Nộp bài &amp; Xem kết quả</div>
+      <div>
+        Bấm <strong>Nộp bài</strong> khi hoàn thành. Hệ thống sẽ chấm điểm tức thì. Nếu giáo viên cho phép (<span class="pill pill-indigo">👁️ Cho xem giải</span>), học sinh có thể xem lại chi tiết đáp án đúng/sai kèm lời giải từng câu để rút kinh nghiệm.
+      </div>
+    </div>
+  </li>
+</ul>
+
+<!-- PHẦN DÀNH CHO GIÁO VIÊN -->
+<div class="page-break"></div>
+<h1>3. Hướng Dẫn Chi Tiết Dành Cho Giáo Viên</h1>
+
+<h2>3.1. Quản lý lớp học &amp; Cấp mã cho học sinh</h2>
+<p>
+  Tài khoản Giáo viên (Pro) có quyền khởi tạo các lớp học riêng biệt cho từng khối, lớp hoặc nhóm học sinh mà mình phụ trách:
+</p>
+
+<div class="step-list">
+  <li class="step-item">
+    <div class="step-number">1</div>
+    <div class="step-content">
+      <div class="step-title">Tạo lớp học mới</div>
+      <div>
+        Tại trang <strong>Lớp học của tôi</strong>, nhập tên lớp (Ví dụ: <em>12A1 - Toán Thầy Dũng</em>) vào ô "Tên lớp mới..." rồi nhấn nút dấu cộng <strong>(+)</strong>.
+      </div>
+    </div>
+  </li>
+  <li class="step-item">
+    <div class="step-number">2</div>
+    <div class="step-content">
+      <div class="step-title">Lấy mã tham gia lớp (Class Code)</div>
+      <div>
+        Hệ thống tự động sinh một mã ngẫu nhiên (gồm 6 ký tự viết hoa, ví dụ: <span class="pill-code">ABCXYZ</span>). Giáo viên sao chép mã này và gửi cho học sinh trong lớp.
+      </div>
+    </div>
+  </li>
+  <li class="step-item">
+    <div class="step-number">3</div>
+    <div class="step-content">
+      <div class="step-title">Quản lý danh sách thành viên</div>
+      <div>
+        Giáo viên có thể thêm trực tiếp học sinh bằng cách bấm nút <strong>"+ Thêm HS"</strong> (nhập email hoặc username), hoặc bấm biểu tượng thùng rác để xóa học sinh rời khỏi lớp khi cần.
+      </div>
+    </div>
+  </li>
+</ul>
+
+<h2>3.2. Tạo ma trận đề thi &amp; Soạn đề (Exam Generator)</h2>
+<p>
+  Chức năng <strong>Tạo đề &amp; Ma trận</strong> cho phép giáo viên thiết kế đề thi chuẩn hóa theo ma trận câu hỏi của Bộ GD&amp;ĐT:
+</p>
+<ul>
+  <li><strong>Phân bố 4 mức độ:</strong> Nhận biết (N) - Thông hiểu (H) - Vận dụng (V) - Vận dụng cao (C).</li>
+  <li><strong>Các dạng câu hỏi hỗ trợ:</strong> Trắc nghiệm nhiều lựa chọn (4 phương án A, B, C, D), Trắc nghiệm Đúng/Sai (4 ý a, b, c, d), và Trả lời ngắn.</li>
+  <li><strong>Bốc đề tự động:</strong> Hệ thống tự động quét Ngân hàng câu hỏi theo đúng chủ đề, dạng toán và mức độ để sinh đề thi hoàn chỉnh.</li>
+  <li><strong>Xuất đề:</strong> Hỗ trợ xuất đề ra định dạng Word (.docx) kèm bảng đáp án và lời giải chi tiết phục vụ in ấn bài thi giấy.</li>
+</ul>
+
+<h2>3.3. Giao bài tập cho lớp với thông số LMS nâng cao</h2>
+<p>
+  Để giao bài kiểm tra cho học sinh làm trực tuyến, giáo viên bấm nút <strong>"+ Giao bài"</strong> tại khung Bài tập của lớp học. Cửa sổ cấu hình thông số LMS sẽ hiện ra:
+</p>
+
+<!-- Minh Họa Cửa Sổ Cấu Hình Giao Bài LMS -->
+<div class="mockup-card">
+  <div class="mockup-header">
+    <div class="mockup-dots">
+      <div class="mockup-dot dot-red"></div>
+      <div class="mockup-dot dot-yellow"></div>
+      <div class="mockup-dot dot-green"></div>
+    </div>
+    <span>MINH HỌA GIAO DIỆN: CẤU HÌNH GIAO BÀI TẬP LMS CHO HỌC SINH</span>
+  </div>
+  <div class="mockup-body" style="background: #ffffff;">
+    <div style="border: 1px solid #cbd5e1; border-radius: 10px; padding: 12px; background: #f8fafc;">
+      <div style="font-weight: bold; color: #1e1b4b; font-size: 13px; margin-bottom: 10px;">
+        ⚙️ Cấu hình thông số bài tập: Đề Ôn Tập Khảo Sát Khối 12
+      </div>
+
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 12px;">
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
+          <label style="font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">🕒 Thời gian mở đề:</label>
+          <div style="font-family: monospace; color: #1e293b; background: #f1f5f9; padding: 4px; border-radius: 4px;">
+            2026-10-15T08:00 (08:00 ngày 15/10/2026)
+          </div>
+          <span style="font-size: 10.5px; color: #64748b;">(Để trống nếu muốn mở đề ngay lập tức)</span>
+        </div>
+
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
+          <label style="font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">📅 Hạn chót nộp bài:</label>
+          <div style="font-family: monospace; color: #1e293b; background: #f1f5f9; padding: 4px; border-radius: 4px;">
+            2026-10-16T22:00 (22:00 ngày 16/10/2026)
+          </div>
+          <span style="font-size: 10.5px; color: #64748b;">(Sau thời gian này học sinh không thể nộp bài)</span>
+        </div>
+
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
+          <label style="font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">🔁 Số lượt làm bài tối đa:</label>
+          <div style="font-family: monospace; color: #1e293b; background: #f1f5f9; padding: 4px; border-radius: 4px;">
+            2 lần (Lấy điểm cao nhất)
+          </div>
+          <span style="font-size: 10.5px; color: #64748b;">(Điền 0 nếu cho phép làm lại không giới hạn)</span>
+        </div>
+
+        <div style="background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
+          <label style="font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">👁️ Chế độ xem lời giải:</label>
+          <div style="color: #16a34a; font-weight: bold; padding: 4px 0;">
+            ☑️ Cho phép học sinh xem lời giải chi tiết sau khi nộp
+          </div>
+          <span style="font-size: 10.5px; color: #64748b;">(Bỏ tick nếu là bài kiểm tra chính thức bảo mật)</span>
+        </div>
+      </div>
+
+      <div style="margin-top: 10px; background: white; border: 1px solid #e2e8f0; border-radius: 8px; padding: 8px;">
+        <label style="font-weight: bold; color: #475569; display: block; margin-bottom: 4px;">🏫 Giao đồng thời cho nhiều lớp:</label>
+        <div style="display: flex; gap: 10px; font-size: 11.5px;">
+          <span style="background: #eef2ff; color: #4338ca; padding: 2px 8px; border-radius: 4px; font-weight: bold;">☑ 12A1</span>
+          <span style="background: #eef2ff; color: #4338ca; padding: 2px 8px; border-radius: 4px; font-weight: bold;">☑ 12A2</span>
+          <span style="background: #f1f5f9; color: #64748b; padding: 2px 8px; border-radius: 4px;">☐ 12A3</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<h2>3.4. Theo dõi kết quả thi &amp; Bảng điểm trực tuyến</h2>
+<p>
+  Mỗi khi học sinh nộp bài thi, hệ thống sẽ cập nhật ngay lập tức lên <strong>Bảng điểm trực tuyến</strong>:
+</p>
+<ul>
+  <li><strong>Tự động làm mới thời gian thực (Realtime):</strong> Bảng điểm tự động cập nhật mỗi 15 giây khi giáo viên đang mở tab quản lý lớp.</li>
+  <li><strong>Thông tin chi tiết:</strong> Họ tên học sinh, Tên tài khoản, Tên bài kiểm tra, Điểm số (thang điểm 10.00), Số lần nộp bài (Lần 1, Lần 2,...), Thời gian nộp chính xác đến từng giây.</li>
+  <li><strong>Điểm trung bình toàn lớp:</strong> Hệ thống tự động tính điểm trung bình chung giúp giáo viên nắm bắt ngay mức độ tiếp thu của học sinh.</li>
+  <li><strong>Xuất Excel (CSV):</strong> Nhấn nút <strong>Xuất Excel</strong> để tải về file bảng điểm phục vụ vào sổ điểm hoặc báo cáo ban giám hiệu nhà trường.</li>
+</ul>
+
+<!-- CÁC CÂU HỎI THƯỜNG GẶP (FAQ) -->
+<div class="page-break"></div>
+<h1>4. Câu Hỏi Thường Gặp (FAQ) &amp; Xử Lý Sự Cố</h1>
+
+<div class="avoid-break">
+  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;">
+    <strong style="color: #1e1b4b; font-size: 13.5px;">1. Học sinh đăng ký tài khoản tự do thì vào lớp bằng cách nào?</strong>
+    <p style="margin-top: 4px; color: #334155; font-size: 12.8px;">
+      Tại màn hình <strong>Lớp học của tôi</strong>, học sinh tự do không cần xin mã giáo viên mà chỉ cần bấm trực tiếp vào một trong 3 nút <strong>Vào lớp</strong> tương ứng:
+      Khối 10 (mã <strong>THY6TO</strong>), Khối 11 (mã <strong>WWHXNV</strong>), Khối 12 (mã <strong>W0DBUX</strong>). Sau khi vào lớp, các bài tập luyện thi chung sẽ hiển thị ngay.
+    </p>
+  </div>
+
+  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;">
+    <strong style="color: #1e1b4b; font-size: 13.5px;">2. Tại sao học sinh không thấy bài tập mới của lớp?</strong>
+    <p style="margin-top: 4px; color: #334155; font-size: 12.8px;">
+      Có 2 lý do phổ biến: (1) Giáo viên đặt <em>Thời gian mở đề</em> ở một thời điểm trong tương lai, bài thi đang ở trạng thái 🟡 Chưa mở. (2) Học sinh chưa tham gia đúng lớp mà giáo viên đã giao bài. Học sinh hãy kiểm tra lại mã lớp với giáo viên bộ môn.
+    </p>
+  </div>
+
+  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;">
+    <strong style="color: #1e1b4b; font-size: 13.5px;">3. Đang làm bài thi mà bị mất điện hoặc mất mạng thì có bị mất bài không?</strong>
+    <p style="margin-top: 4px; color: #334155; font-size: 12.8px;">
+      <strong>Không.</strong> Hệ thống lưu tiến trình làm bài liên tục vào bộ nhớ trình duyệt (Local Cache). Khi có điện/mạng trở lại, học sinh chỉ cần đăng nhập lại và truy cập bài thi, các câu hỏi đã chọn trước đó sẽ được giữ nguyên (miễn là thời gian làm bài của đề thi vẫn còn hiệu lực).
+    </p>
+  </div>
+
+  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;">
+    <strong style="color: #1e1b4b; font-size: 13.5px;">4. Giáo viên muốn gia hạn nộp bài hoặc cho học sinh làm lại thì làm thế nào?</strong>
+    <p style="margin-top: 4px; color: #334155; font-size: 12.8px;">
+      Tại khung <strong>Bài tập</strong> của lớp học, giáo viên bấm vào biểu tượng bánh răng cài đặt (⚙️) ở dòng bài tập tương ứng để mở lại hộp thoại cấu hình:
+      Giáo viên có thể lùi thời gian hạn nộp, hoặc tăng số lượt làm bài tối đa (ví dụ từ 1 lên 2 lần) rồi nhấn <strong>Lưu cấu hình</strong>.
+    </p>
+  </div>
+
+  <div style="background: #ffffff; border: 1px solid #e2e8f0; border-radius: 10px; padding: 10px 14px; margin-bottom: 10px;">
+    <strong style="color: #1e1b4b; font-size: 13.5px;">5. Làm thế nào để nâng cấp tài khoản từ Học sinh lên Giáo viên (Pro)?</strong>
+    <p style="margin-top: 4px; color: #334155; font-size: 12.8px;">
+      Mặc định tài khoản đăng ký mới là tài khoản Học sinh. Giáo viên cần liên hệ với Quản trị viên (Admin) của trường hoặc bộ môn để được cấp quyền hoặc sử dụng mã kích hoạt chuyên gia để kích hoạt đầy đủ tính năng soạn đề và quản trị ngân hàng câu hỏi.
+    </p>
+  </div>
+</div>
+
+<div class="callout callout-info" style="margin-top: 20px; text-align: center;">
+  <strong>HỆ THỐNG KHẢO THÍ VÀ QUẢN LÝ HỌC TẬP TRỰC TUYẾN</strong><br>
+  Hỗ trợ kỹ thuật: Vui lòng liên hệ Quản trị viên hệ thống hoặc gửi phản hồi tại mục <em>Báo lỗi câu hỏi</em> trên thanh menu.
+</div>
+
+</body>
+</html>
+"""
+
+def generate_pdf():
+    script_dir = os.path.dirname(os.path.abspath(__file__))
+    project_root = os.path.dirname(script_dir)
+    
+    html_path = os.path.join(project_root, "HUONG_DAN_SU_DUNG.html")
+    pdf_path = os.path.join(project_root, "HUONG_DAN_SU_DUNG_HE_THONG_THI.pdf")
+    docs_pdf_path = os.path.join(project_root, "docs", "HUONG_DAN_SU_DUNG_HE_THONG_THI.pdf")
+    
+    with open(html_path, "w", encoding="utf-8") as f:
+        f.write(HTML_CONTENT)
+    print(f"[OK] Da tao file HTML: {html_path}")
+    
+    edge_paths = [
+        r"C:\Program Files (x86)\Microsoft\Edge\Application\msedge.exe",
+        r"C:\Program Files\Microsoft\Edge\Application\msedge.exe",
+        r"C:\Program Files\Google\Chrome\Application\chrome.exe"
+    ]
+    
+    browser_exe = None
+    for p in edge_paths:
+        if os.path.exists(p):
+            browser_exe = p
+            break
+            
+    if not browser_exe:
+        print("[ERROR] Khong tim thay trinh duyet Edge hoac Chrome!")
+        sys.exit(1)
+        
+    print(f"[INFO] Su dung browser: {browser_exe}")
+    
+    file_url = f"file:///{os.path.abspath(html_path).replace(os.sep, '/')}"
+    
+    cmd = [
+        browser_exe,
+        "--headless=new",
+        "--disable-gpu",
+        "--run-all-compositor-stages-before-draw",
+        "--no-pdf-header-footer",
+        f"--print-to-pdf={pdf_path}",
+        file_url
+    ]
+    
+    print("[INFO] Dang render sang PDF...")
+    result = subprocess.run(cmd, capture_output=True, text=True, timeout=30)
+    
+    if os.path.exists(pdf_path) and os.path.getsize(pdf_path) > 0:
+        print(f"[SUCCESS] Da tao thanh cong file PDF: {pdf_path} (Kich thuoc: {os.path.getsize(pdf_path)} bytes)")
+        # Copy to docs/ as well
+        import shutil
+        shutil.copyfile(pdf_path, docs_pdf_path)
+        print(f"[SUCCESS] Da sao chep vao thu muc docs: {docs_pdf_path}")
+    else:
+        print(f"[ERROR] Tao PDF that bai. Stderr: {result.stderr}")
+        sys.exit(1)
+
+if __name__ == "__main__":
+    generate_pdf()
