@@ -37,7 +37,7 @@ export const stripExTestSolution = (text: string): string => {
  */
 export const stripExTestChoices = (text: string): string => {
     let res = text;
-    const commands = ['\\choice', '\\choiceTF', '\\shortans'];
+    const commands = ['\\choiceTF', '\\choice', '\\shortans'];
     commands.forEach(cmd => {
         let idx = res.indexOf(cmd);
         while (idx !== -1) {

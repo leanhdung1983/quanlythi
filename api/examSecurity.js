@@ -94,7 +94,7 @@ export function stripTrueMarkers(latex) {
     const tfMap = {};
 
     // 1. Process \choice for Multiple Choice (TN)
-    const choiceMatch = text.match(/\\choice\s*\{/i);
+    const choiceMatch = text.match(/\\choice\b\s*(?:\[[^\]]*\])?\s*\{/i);
     if (choiceMatch) {
         const choiceIdx = choiceMatch.index;
         const beforeChoice = text.substring(0, choiceIdx);
@@ -105,7 +105,7 @@ export function stripTrueMarkers(latex) {
         let depth = 0;
         let currentOption = '';
         let optIndex = 0;
-        let newChoicePart = '\\choice';
+        let newChoicePart = choicePart.substring(0, openBraceIdx);
 
         for (let i = 0; i < afterChoice.length; i++) {
             const char = afterChoice[i];
@@ -149,7 +149,7 @@ export function stripTrueMarkers(latex) {
     }
 
     // 2. Process \choiceTF for True/False (TF)
-    const choiceTFMatch = text.match(/\\choiceTF\s*\{/i);
+    const choiceTFMatch = text.match(/\\choiceTF\b\s*(?:\[[^\]]*\])?\s*\{/i);
     if (choiceTFMatch) {
         const choiceIdx = choiceTFMatch.index;
         const beforeChoice = text.substring(0, choiceIdx);
@@ -160,7 +160,7 @@ export function stripTrueMarkers(latex) {
         let depth = 0;
         let currentOption = '';
         let optIndex = 0;
-        let newChoicePart = '\\choiceTF';
+        let newChoicePart = choicePart.substring(0, openBraceIdx);
 
         for (let i = 0; i < afterChoice.length; i++) {
             const char = afterChoice[i];
@@ -294,7 +294,13 @@ export function rehydrateTrustedQuestions(clientQuestions, dbQuestionsMap) {
         } else if (type === 'TF') {
             options = options.map((opt, idx) => {
                 const optKey = String(opt.id || idx + 1);
-                return { ...opt, isCorrect: !!tfMap[optKey] };
+                const isCorrect = Boolean(
+                    tfMap[optKey] ?? 
+                    tfMap[String(idx + 1)] ?? 
+                    tfMap[String.fromCharCode(97 + idx)] ?? 
+                    tfMap[String.fromCharCode(65 + idx)]
+                );
+                return { ...opt, isCorrect };
             });
         }
 

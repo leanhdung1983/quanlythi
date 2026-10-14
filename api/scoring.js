@@ -41,7 +41,12 @@ export function calculateServerScore(questions, answers = {}, settings = {}) {
             if (correctOption && String(userAnswer) === String(correctOption.id)) totalPoints += pTN;
         } else if (question.type === 'TF' && userAnswer && typeof userAnswer === 'object') {
             const options = Array.isArray(question.options) ? question.options : [];
-            const correctCount = options.reduce((count, option) => count + (userAnswer[option.id] === option.isCorrect ? 1 : 0), 0);
+            const correctCount = options.reduce((count, option, idx) => {
+                const val = userAnswer[option.id] ?? userAnswer[String(idx + 1)] ?? userAnswer[idx] ?? userAnswer[String.fromCharCode(97 + idx)] ?? userAnswer[String.fromCharCode(65 + idx)];
+                const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
+                const boolVal = val === true || val === 'true' || val === 1;
+                return count + (isValid && boolVal === Boolean(option.isCorrect) ? 1 : 0);
+            }, 0);
             if (correctCount === options.length && options.length > 0) totalPoints += pTF;
             else if (correctCount === 3) totalPoints += tfMode === '10-25-50-100' ? pTF * 0.5 : tfMode === '0-0-0-100' ? 0 : pTF * 0.75;
             else if (correctCount === 2) totalPoints += tfMode === '10-25-50-100' ? pTF * 0.25 : tfMode === '0-0-0-100' ? 0 : pTF * 0.5;

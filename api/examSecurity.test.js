@@ -53,6 +53,17 @@ Tập nghiệm $\{x \\in \\mathbb{R} \\mid x \\ge 1\}$.
         expect(tfMap['4']).toBe(false);
     });
 
+    it('strips \\True from \\choiceTF[t] with optional bracket parameter while recording tfMap', () => {
+        const latex = '\\begin{ex} Cho phương trình... \\choiceTF[t]\n{Mệnh đề 1 sai}\n{\\True Mệnh đề 2 đúng}\n{\\True Mệnh đề 3 đúng}\n{Mệnh đề 4 sai}\n\\loigiai{} \\end{ex}';
+        const { cleaned, tfMap } = stripTrueMarkers(latex);
+        expect(cleaned).not.toContain('\\True');
+        expect(cleaned).toContain('\\choiceTF[t]');
+        expect(tfMap['1']).toBe(false);
+        expect(tfMap['2']).toBe(true);
+        expect(tfMap['3']).toBe(true);
+        expect(tfMap['4']).toBe(false);
+    });
+
     it('sanitizes complete question for student without exposing answers', () => {
         const question = {
             id: 101,

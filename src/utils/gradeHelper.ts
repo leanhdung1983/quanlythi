@@ -62,11 +62,17 @@ export const calculateExamScore = (
         
         if (q.type === 'TN') {
             if (userAns === q.options?.find((o: any) => o.isCorrect)?.id) totalPoints += pTN;
-        } else if (q.type === 'TF' && userAns) {
+        } else if (q.type === 'TF' && userAns && typeof userAns === 'object') {
             let correctCount = 0; 
-            q.options?.forEach((o: any) => { if (userAns[o.id] === o.isCorrect) correctCount++; });
+            const options = Array.isArray(q.options) ? q.options : [];
+            options.forEach((o: any, idx: number) => {
+                const val = userAns[o.id] ?? userAns[String(idx + 1)] ?? userAns[idx] ?? userAns[String.fromCharCode(97 + idx)] ?? userAns[String.fromCharCode(65 + idx)];
+                const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
+                const boolVal = val === true || val === 'true' || val === 1;
+                if (isValid && boolVal === Boolean(o.isCorrect)) correctCount++;
+            });
             
-            if (correctCount === 4) totalPoints += pTF;
+            if (correctCount === options.length && options.length > 0) totalPoints += pTF;
             else if (correctCount === 3) {
                 if (tfMode === '10-25-50-100') totalPoints += pTF * 0.5;
                 else if (tfMode === '0-0-0-100') totalPoints += 0;

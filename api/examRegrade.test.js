@@ -56,6 +56,16 @@ describe('synchronized grading preserves the exam the student actually saw', () 
         expect(updated.detail.questions[0].options.every(o => o.isCorrect === false)).toBe(true);
         expect(synchronizeExamDetail(updated.detail, { total_points_tf: 10, tf_scoring_mode: '0-0-0-100' }, map).score).toBe(0);
     });
+    it('correctly parses and regrades TF questions formatted with \\choiceTF[t]', () => {
+        const source = '\\choiceTF[t]\n{one}\n{\\True two}\n{\\True three}\n{four}';
+        const q = { id: 6, type: 'TF', original_latex: source,
+            options: ['one', 'two', 'three', 'four'].map((content, i) => ({ id: String(i + 1), content, isCorrect: false })) };
+        const detail = { questions: [q], answers: { 6: { 1: false, 2: true, 3: true, 4: false } } };
+        const map = new Map([[6, { content_latex: source }]]);
+        const updated = synchronizeExamDetail(detail, { total_points_tf: 10, tf_scoring_mode: '10-25-50-100' }, map);
+        expect(updated.score).toBe(10);
+        expect(updated.detail.questions[0].options.map(o => o.isCorrect)).toEqual([false, true, true, false]);
+    });
     it('updates short answers and uses the original source after image rendering stripped markers', () => {
         const q = { id: 3, type: 'KQ', correctAnswer: '1' };
         expect(synchronizeExamDetail({ questions: [q], answers: { 3: '2,5' } }, {},

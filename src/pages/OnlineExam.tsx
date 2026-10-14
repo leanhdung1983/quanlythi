@@ -2199,7 +2199,16 @@ export const OnlineExam: React.FC = () => {
                                                     if (q.type === 'KQ') {
                                                         correct = checkKQAnswer(answers[q.id], q.correctAnswer);
                                                     }
-                                                    else if (q.type === 'TF') { let cnt = 0; q.options.forEach(o => { if ((answers[q.id] as any)?.[o.id] === o.isCorrect) cnt++; }); correct = cnt === 4; }
+                                                    else if (q.type === 'TF') {
+                                                        let cnt = 0;
+                                                        q.options?.forEach((o, idx) => {
+                                                            const val = (answers[q.id] as any)?.[o.id] ?? (answers[q.id] as any)?.[String(idx + 1)] ?? (answers[q.id] as any)?.[String.fromCharCode(97 + idx)];
+                                                            const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
+                                                            const boolVal = val === true || val === 'true' || val === 1;
+                                                            if (isValid && boolVal === Boolean(o.isCorrect)) cnt++;
+                                                        });
+                                                        correct = cnt === (q.options?.length || 4);
+                                                    }
                                                     else if (q.type === 'TL') { isAutoGradable = false; }
                                                     else correct = q.options?.find(o => o.isCorrect)?.id === answers[q.id];
                                                     
@@ -2335,8 +2344,14 @@ export const OnlineExam: React.FC = () => {
                                                     if (!userAns) return false;
                                                     if (q.type === 'TN') return userAns === q.options.find(o => o.isCorrect)?.id;
                                                     if (q.type === 'TF') {
-                                                        let cnt = 0; q.options.forEach(o => { if ((userAns as any)[o.id] === o.isCorrect) cnt++; });
-                                                        return cnt === 4;
+                                                        let cnt = 0;
+                                                        q.options?.forEach((o, idx) => {
+                                                            const val = (userAns as any)?.[o.id] ?? (userAns as any)?.[String(idx + 1)] ?? (userAns as any)?.[String.fromCharCode(97 + idx)];
+                                                            const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
+                                                            const boolVal = val === true || val === 'true' || val === 1;
+                                                            if (isValid && boolVal === Boolean(o.isCorrect)) cnt++;
+                                                        });
+                                                        return cnt === (q.options?.length || 4);
                                                     }
                                                     if (q.type === 'KQ') {
                                                         return checkKQAnswer(userAns, q.correctAnswer);
@@ -2363,8 +2378,14 @@ export const OnlineExam: React.FC = () => {
                                                     if (!userAns) return false;
                                                     if (q.type === 'TN') return userAns === q.options.find(o => o.isCorrect)?.id;
                                                     if (q.type === 'TF') {
-                                                        let cnt = 0; q.options.forEach(o => { if ((userAns as any)[o.id] === o.isCorrect) cnt++; });
-                                                        return cnt === 4;
+                                                        let cnt = 0;
+                                                        q.options?.forEach((o, idx) => {
+                                                            const val = (userAns as any)?.[o.id] ?? (userAns as any)?.[String(idx + 1)] ?? (userAns as any)?.[String.fromCharCode(97 + idx)];
+                                                            const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
+                                                            const boolVal = val === true || val === 'true' || val === 1;
+                                                            if (isValid && boolVal === Boolean(o.isCorrect)) cnt++;
+                                                        });
+                                                        return cnt === (q.options?.length || 4);
                                                     }
                                                     if (q.type === 'KQ') {
                                                         return checkKQAnswer(userAns, q.correctAnswer);

@@ -6,7 +6,7 @@ const normalize = text => String(text || '').replace(/\\True\b/g, '').replace(/\
 // Extract the original option identities, independently of shuffled A/B/C/D labels.
 function choices(source, type) {
     const text = stripLoigiai(source).cleaned;
-    const match = text.match(type === 'TF' ? /\\choiceTF\s*\{/ : /\\choice\s*\{/);
+    const match = text.match(type === 'TF' ? /\\choiceTF\b\s*(?:\[[^\]]*\])?\s*\{/i : /\\choice\b\s*(?:\[[^\]]*\])?\s*\{/i);
     if (!match) return [];
     const options = [];
     let i = match.index + match[0].length - 1;
@@ -42,12 +42,13 @@ export function updateStoredAnswerKey(question, bankQuestion) {
     const latest = sources.map(source => choices(source, question.type)).find(options => options.length === 4);
     if (!latest || (question.type === 'TN' && latest.filter(o => o.isCorrect).length !== 1)) return question;
     const original = choices(question.original_latex || question.content_latex || '', question.type);
-    const options = (question.options || []).map(option => {
-        const index = Number.isInteger(option.originalIndex) ? option.originalIndex : Number(option.id) - 1;
-        const identity = original[index]?.content || option.content;
+    const options = (question.options || []).map((option, idx) => {
+        const index = Number.isInteger(option.originalIndex) ? option.originalIndex : (Number(option.id) - 1);
+        const identity = (Number.isInteger(index) ? original[index]?.content : null) || option.content;
         const matches = latest.filter(candidate => normalize(candidate.content) === normalize(identity));
-        if (!identity || matches.length !== 1) return null;
-        return { ...option, isCorrect: matches[0].isCorrect };
+        const matched = matches.length === 1 ? matches[0] : (question.type === 'TF' && latest[idx] ? latest[idx] : null);
+        if (!matched) return null;
+        return { ...option, isCorrect: matched.isCorrect };
     });
     // Never guess after an option was replaced or a legacy shuffle is ambiguous.
     if (options.length !== 4 || options.some(option => !option)) return question;
