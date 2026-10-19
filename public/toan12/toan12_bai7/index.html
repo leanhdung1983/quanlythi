@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 7: Hệ Toạ Độ Trong Không Gian - Toán 12 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Toạ Độ 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Không Gian Oxyz</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG II: VECTƠ VÀ HỆ TOẠ ĐỘ TRONG KHÔNG GIAN • BÀI 7</span>
+      <h1>Bài 7: Hệ Toạ Độ Trong Không Gian</h1>
+      <p>Xây dựng hệ trục Descartes vuông góc $Oxyz$: Định vị điểm, toạ độ vectơ, hình chiếu vuông góc, toạ độ trung điểm và trọng tâm tứ diện.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-title">1. Hệ Trục Toạ Độ Oxyz</div>
+          <p>Hệ trục toạ độ Đề-các vuông góc trong không gian $Oxyz$ gồm ba trục số $Ox, Oy, Oz$ vuông góc với nhau từng đôi một tại gốc $O$:</p>
+          <div class="formula-box">
+            Trục hoành: $Ox$ với vectơ đơn vị $\vec{i}$<br>
+            Trục tung: $Oy$ với vectơ đơn vị $\vec{j}$<br>
+            Trục cao: $Oz$ với vectơ đơn vị $\vec{k}$
+          </div>
+          <ul class="prop-list">
+            <li>Độ dài các vectơ đơn vị: $|\vec{i}| = |\vec{j}| = |\vec{k}| = 1$.</li>
+            <li>Đôi một vuông góc: $\vec{i} \cdot \vec{j} = \vec{j} \cdot \vec{k} = \vec{k} \cdot \vec{i} = 0$.</li>
+            <li>Ba mặt phẳng toạ độ: $(Oxy), (Oyz), (Ozx)$ đôi một vuông góc.</li>
+          </ul>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-title">2. Toạ Độ Của Một Điểm Trong Không Gian</div>
+          <p>Trong không gian $Oxyz$, mỗi điểm $M$ tương ứng với một bộ ba số thực duy nhất $(x; y; z)$:</p>
+          <div class="formula-box">
+            $$M(x; y; z) \iff \overrightarrow{OM} = x\vec{i} + y\vec{j} + z\vec{k}$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Tên gọi thành phần:</strong><br>
+            • $x$ là <strong>hoành độ</strong> của điểm $M$.<br>
+            • $y$ là <strong>tung độ</strong> của điểm $M$.<br>
+            • $z$ là <strong>cao độ</strong> của điểm $M$.
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card-title">3. Hình Chiếu Vuông Góc & Điểm Đối Xứng</div>
+          <p>Quy tắc xác định toạ độ hình chiếu của điểm $M(x; y; z)$ lên các mặt phẳng và các trục toạ độ:</p>
+          <div class="formula-box">
+            • Chiếu lên mặt phẳng $(Oxy)$: $M_1(x; y; 0)$<br>
+            • Chiếu lên mặt phẳng $(Oyz)$: $M_2(0; y; z)$<br>
+            • Chiếu lên mặt phẳng $(Ozx)$: $M_3(x; 0; z)$
+          </div>
+          <ul class="prop-list">
+            <li>Chiếu lên các trục: $Ox \Rightarrow (x; 0; 0)$; $Oy \Rightarrow (0; y; 0)$; $Oz \Rightarrow (0; 0; z)$.</li>
+            <li>Đối xứng qua $(Oxy)$: đổi dấu cao độ $z \Rightarrow (x; y; -z)$.</li>
+            <li>Đối xứng qua gốc $O$: đổi dấu cả 3 toạ độ $\Rightarrow (-x; -y; -z)$.</li>
+          </ul>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <div class="card-title">4. Toạ Độ Của Một Vectơ</div>
+          <p>Mỗi vectơ $\vec{u}$ trong không gian $Oxyz$ luôn được biểu diễn duy nhất qua các vectơ đơn vị:</p>
+          <div class="formula-box">
+            $$\vec{u} = (x; y; z) \iff \vec{u} = x\vec{i} + y\vec{j} + z\vec{k}$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Hai vectơ bằng nhau:</strong><br>
+            Cho $\vec{u} = (x_1; y_1; z_1)$ và $\vec{v} = (x_2; y_2; z_2)$:<br>
+            $$\vec{u} = \vec{v} \iff \begin{cases} x_1 = x_2 \\ y_1 = y_2 \\ z_1 = z_2 \end{cases}$$
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card">
+          <div class="card-title">5. Toạ Độ Trung Điểm Của Đoạn Thẳng</div>
+          <p>Cho hai điểm $A(x_A; y_A; z_A)$ và $B(x_B; y_B; z_B)$. Toạ độ trung điểm $I$ của đoạn thẳng $AB$ là trung bình cộng toạ độ hai đầu mút:</p>
+          <div class="formula-box">
+            $$x_I = \frac{x_A + x_B}{2}, \quad y_I = \frac{y_A + y_B}{2}, \quad z_I = \frac{z_A + z_B}{2}$$
+            $$I\left(\frac{x_A + x_B}{2}; \frac{y_A + y_B}{2}; \frac{z_A + z_B}{2}\right)$$
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+          <div class="card-title">6. Toạ Độ Trọng Tâm Tam Giác & Tứ Diện</div>
+          <p>Công thức mở rộng xác định tâm tỉ cự cân bằng cho tam giác và tứ diện trong không gian:</p>
+          <div class="formula-box">
+            <strong>Trọng tâm $G$ của tam giác $ABC$:</strong><br>
+            $$G\left(\frac{x_A + x_B + x_C}{3}; \frac{y_A + y_B + y_C}{3}; \frac{z_A + z_B + z_C}{3}\right)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Trọng tâm $G$ của tứ diện $ABCD$:</strong><br>
+            $$G\left(\frac{x_A + x_B + x_C + x_D}{4}; \frac{y_A + y_B + y_C + y_D}{4}; \frac{z_A + z_B + z_C + z_D}{4}\right)$$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-container">
+        <!-- Lab 1: Máy định vị điểm M(x; y; z) 3D -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Phòng Thí Nghiệm 1: Máy Định Vị Toạ Độ Điểm 3D</h3>
+            <p>Điều chỉnh hoành độ $x$, tung độ $y$, cao độ $z$ để quan sát vị trí điểm $M(x; y; z)$, các vectơ đơn vị $\vec{i}, \vec{j}, \vec{k}$ và hộp hình chiếu lên 3 mặt phẳng toạ độ.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="coordX">Hoành độ $x$ (trục $Ox$): <span id="valX">3</span></label>
+              <input type="range" id="coordX" min="-5" max="5" step="1" value="3">
+            </div>
+            <div class="control-group">
+              <label for="coordY">Tung độ $y$ (trục $Oy$): <span id="valY">4</span></label>
+              <input type="range" id="coordY" min="-5" max="5" step="1" value="4">
+            </div>
+            <div class="control-group">
+              <label for="coordZ">Cao độ $z$ (trục $Oz$): <span id="valZ">2</span></label>
+              <input type="range" id="coordZ" min="-5" max="5" step="1" value="2">
+            </div>
+            <div class="control-group">
+              <label for="camRot">Góc quan sát: <span id="valRot">30°</span></label>
+              <input type="range" id="camRot" min="0" max="90" step="5" value="30">
+            </div>
+          </div>
+          <canvas id="pointCanvas" class="lab-canvas" width="700" height="420"></canvas>
+          <div class="lab-output" id="pointOutput">
+            Đang xác định toạ độ hình chiếu và phân tích vectơ OM...
+          </div>
+        </div>
+
+        <!-- Lab 2: Máy Tính Trọng Tâm Tứ Diện & Trung Điểm -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Phòng Thí Nghiệm 2: Mô Phỏng Trọng Tâm Tứ Diện 3D</h3>
+            <p>Khảo sát toạ độ trọng tâm $G$ của tứ diện $ABCD$ khi di chuyển đỉnh $A$. Quan sát trực quan tâm cân bằng 4 đỉnh trong không gian.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="vertexAx">Đỉnh $A_x$: <span id="valAx">2</span></label>
+              <input type="range" id="vertexAx" min="-4" max="6" step="1" value="2">
+            </div>
+            <div class="control-group">
+              <label for="vertexAy">Đỉnh $A_y$: <span id="valAy">3</span></label>
+              <input type="range" id="vertexAy" min="-4" max="6" step="1" value="3">
+            </div>
+            <div class="control-group">
+              <label for="vertexAz">Đỉnh $A_z$: <span id="valAz">5</span></label>
+              <input type="range" id="vertexAz" min="1" max="8" step="1" value="5">
+            </div>
+          </div>
+          <canvas id="tetraCanvas" class="lab-canvas" width="700" height="380"></canvas>
+          <div class="lab-output" id="tetraOutput">
+            Đang tính toán toạ độ trọng tâm G tứ diện ABCD...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Tri Thức: Hệ Toạ Độ Trong Không Gian</h2>
+          <p>Thử thách 10 câu trắc nghiệm chuẩn SGK Toán 12 KNTT. Bấm trực tiếp vào các phương án để tích luỹ XP và thăng hạng sao!</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-stat-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-stat-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <div class="arena-summary-banner" id="arenaSummary" style="display: none;">
+        <h3>🎉 HOÀN THÀNH XUẤT SẮC ĐẤU TRƯỜNG!</h3>
+        <p id="summaryText">Đạt 200/200 XP. Khả năng định vị không gian Oxyz tuyệt hảo!</p>
+        <button class="btn-primary" id="btnRetake">🔄 Thử Thách Lại</button>
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">🌐</div>
+          <div class="badge-name">Khám Phá Oxyz</div>
+          <div class="badge-desc">Nghiên cứu Bản đồ tri thức hệ toạ độ không gian</div>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">🎯</div>
+          <div class="badge-name">Định Vị Không Gian</div>
+          <div class="badge-desc">Làm chủ Phòng thí nghiệm máy định vị điểm 3D</div>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">⚖️</div>
+          <div class="badge-name">Cân Bằng Tứ Diện</div>
+          <div class="badge-desc">Khảo sát toạ độ trọng tâm tại Phòng thí nghiệm 2</div>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Binh Toạ Độ</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK</div>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thống Lĩnh Không Gian 3D</div>
+          <div class="badge-desc">Trả lời đúng tuyệt đối cả 10 câu hỏi trắc nghiệm</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-border">
+          <div class="cert-header">
+            <h4>BỘ GIÁO DỤC VÀ ĐÀO TẠO • TRƯỜNG THPT LƯƠNG THẾ VINH</h4>
+            <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+            <p class="cert-sub">Khóa Học Hình Học Không Gian Số Hoá Lớp 12</p>
+          </div>
+          <div class="cert-body">
+            <p>Chứng nhận học sinh:</p>
+            <h3 id="certStudentName">Chiến Binh Toạ Độ</h3>
+            <p>Đã xuất sắc hoàn thành chuyên đề học tập tương tác:</p>
+            <h4 class="cert-lesson-title">BÀI 7: HỆ TOẠ ĐỘ TRONG KHÔNG GIAN (TOÁN 12 - TẬP MỘT)</h4>
+            <div class="cert-stats-row">
+              <span>Tổng điểm tích lũy: <strong id="certXP">0 XP</strong></span>
+              <span>Đánh giá xếp loại: <strong id="certRank">Xuất Sắc</strong></span>
+            </div>
+            <p class="cert-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</p>
+          </div>
+          <div class="cert-footer">
+            <div class="cert-seal">
+              <div class="seal-inner">★ CHUẨN KNTT ★</div>
+            </div>
+            <div class="cert-sign">
+              <p>GIÁO VIÊN HƯỚNG DẪN</p>
+              <div class="signature">ThS. Toán Học Số</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai6/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 6: Vectơ Trong Không Gian</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_bai8/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Bài 8: Biểu Thức Toạ Độ Vectơ</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Chọn Avatar (Ẩn mặc định) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-box">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker-grid">
+        <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Toạ Độ">👑 Chiến Binh</button>
+        <button class="avatar-opt" data-avatar="🚀" data-name="Phi Hành Gia Vũ Trụ">🚀 Phi Hành Gia</button>
+        <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Phù Thủy Oxyz">🧙‍♂️ Phù Thủy</button>
+        <button class="avatar-opt" data-avatar="🦊" data-name="Cáo Toạ Độ">🦊 Cáo Toạ Độ</button>
+        <button class="avatar-opt" data-avatar="🦉" data-name="Cú Không Gian">🦉 Cú Không Gian</button>
+        <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Vector">⚡ Tia Chớp</button>
+        <button class="avatar-opt" data-avatar="💎" data-name="Kim Cương Trọng Tâm">💎 Kim Cương</button>
+        <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Định Vị">🎯 Thiện Xạ</button>
+      </div>
+      <button class="btn-primary" id="btnCloseAvatarModal" style="margin-top: 15px;">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

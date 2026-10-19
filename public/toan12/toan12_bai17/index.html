@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 17: Phương Trình Mặt Cầu - Toán 12 KNTT</title>
+  <!-- KaTeX Offline -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Khối 1: HUD Gamification Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chỉ Huy Quỹ Đạo Vệ Tinh</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Khối 2: Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG V • BÀI 17 • TOÁN 12 KNTT (TẬP HAI)</span>
+      <h1>PHƯƠNG TRÌNH MẶT CẦU</h1>
+      <p>Thấu hiểu bản chất hình học mặt cầu $S(I, R)$, phương trình chính tắc $(x - a)^2 + (y - b)^2 + (z - c)^2 = R^2$, điều kiện phương trình tổng quát $a^2 + b^2 + c^2 - d > 0$ và nguyên lý định vị vệ tinh GPS toàn cầu.</p>
+    </section>
+
+    <!-- Khối 3: Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-title">1. Định Nghĩa & Phương Trình Chính Tắc</div>
+          <p>Mặt cầu tâm $I(a; b; c)$, bán kính $R > 0$ là tập hợp tất cả các điểm $M(x; y; z)$ trong không gian cách $I$ một khoảng bằng $R$:</p>
+          <div class="formula-box">
+            $$IM = R \iff (x - a)^2 + (y - b)^2 + (z - c)^2 = R^2$$
+          </div>
+          <div class="rule-box gold">
+            • Trường hợp đặc biệt: Mặt cầu tâm tại gốc toạ độ $O(0; 0; 0)$ có phương trình là:
+            $$x^2 + y^2 + z^2 = R^2$$
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-title">2. Phương Trình Tổng Quát Của Mặt Cầu</div>
+          <p>Khai triển phương trình chính tắc ta được phương trình dạng tổng quát:</p>
+          <div class="formula-box">
+            $$x^2 + y^2 + z^2 - 2ax - 2by - 2cz + d = 0$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Điều kiện cần và đủ:</strong> Phương trình trên là phương trình mặt cầu khi và chỉ khi:
+            $$a^2 + b^2 + c^2 - d > 0$$
+            Khi đó, mặt cầu có tâm $I(a; b; c)$ và bán kính $R = \sqrt{a^2 + b^2 + c^2 - d}$.
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card-title">3. Vị Trí Tương Đối Của Điểm Với Mặt Cầu</div>
+          <p>Cho mặt cầu $(S)$ tâm $I$, bán kính $R$ và một điểm $M$ bất kỳ trong không gian:</p>
+          <div class="formula-box">
+            $$\begin{cases} IM < R \iff M \text{ nằm trong mặt cầu } (S) \\ IM = R \iff M \text{ nằm trên mặt cầu } (S) \\ IM > R \iff M \text{ nằm ngoài mặt cầu } (S) \end{cases}$$
+          </div>
+          <p>Mặt cầu đường kính $AB$ có tâm là trung điểm $I$ của $AB$ và bán kính $R = \frac{AB}{2}$.</p>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <div class="card-title">4. Ứng Dụng: Định Vị Vệ Tinh GPS</div>
+          <p>Hệ thống GPS hoạt động bằng cách đo khoảng cách từ máy thu đến ít nhất 3 vệ tinh $A, B, C$. Giao điểm của 3 mặt cầu định vị chính xác toạ độ thiết bị:</p>
+          <div class="formula-box">
+            $$\begin{cases} (x - x_A)^2 + (y - y_A)^2 + (z - z_A)^2 = r_A^2 \\ (x - x_B)^2 + (y - y_B)^2 + (z - z_B)^2 = r_B^2 \\ (x - x_C)^2 + (y - y_C)^2 + (z - z_C)^2 = r_C^2 \end{cases}$$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1 -->
+        <div class="card">
+          <div class="card-title">🧪 Lab 1: Máy Khảo Sát & Dựng Mặt Cầu Không Gian 3D</div>
+          <p>Điều chỉnh toạ độ tâm $I(a; b; c)$, bán kính $R$ và xoay góc nhìn 3D để quan sát mặt cầu kinh vĩ tuyến (wireframe), kiểm tra điều kiện phương trình tổng quát thời gian thực!</p>
+
+          <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <div>
+              <label>Tâm $a$: <strong id="lab1ValA" style="color: #ef4444;">0</strong></label>
+              <input type="range" id="lab1SliderA" min="-4" max="4" step="1" value="0" style="width: 85px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Tâm $b$: <strong id="lab1ValB" style="color: #10b981;">1</strong></label>
+              <input type="range" id="lab1SliderB" min="-4" max="4" step="1" value="1" style="width: 85px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Tâm $c$: <strong id="lab1ValC" style="color: #38bdf8;">2</strong></label>
+              <input type="range" id="lab1SliderC" min="-4" max="4" step="1" value="2" style="width: 85px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Bán kính $R$: <strong id="lab1ValR" style="color: #f59e0b;">3</strong></label>
+              <input type="range" id="lab1SliderR" min="1" max="5" step="0.5" value="3" style="width: 100px; margin-left: 4px;">
+            </div>
+          </div>
+
+          <div style="margin-bottom: 10px; display: flex; gap: 10px; align-items: center;">
+            <label>Xoay 3D:</label>
+            <input type="range" id="lab1SliderRot" min="0" max="360" step="5" value="45" style="width: 140px;">
+            <span id="lab1RotVal" style="color: #38bdf8;">45°</span>
+          </div>
+
+          <canvas id="lab1Canvas" width="540" height="320" style="width: 100%; height: auto; background: #030712; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 10px 0;"></canvas>
+
+          <div class="lab-output" id="lab1Output" style="background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 6px; border-left: 3px solid #6366f1; font-size: 0.95em;">
+            Đang tính toán các thông số mặt cầu...
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="card">
+          <div class="card-title">🧪 Lab 2: Trạm Định Vị Vệ Tinh Toàn Cầu GPS 3D (SGK Trang 59–60)</div>
+          <p>Mô phỏng trọn vẹn dự án GPS SGK: Thiết bị $P$ trên mặt Trái Đất $x^2 + y^2 + z^2 = 1$ nhận tín hiệu từ 3 vệ tinh $A(2;0;0)$, $B(0;2;0)$, $C(0; 2.75; 0.66)$. Tìm điểm giao thoa định vị vĩ độ và kinh độ!</p>
+
+          <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+            <div>
+              <label>Khoảng cách vệ tinh $A$: <strong id="lab2ValRa" style="color: #ef4444;">√5 ≈ 2.24</strong></label>
+              <input type="range" id="lab2SliderRa" min="1.5" max="3.0" step="0.1" value="2.2" style="width: 120px; margin-left: 6px;">
+            </div>
+            <div>
+              <label>Khoảng cách vệ tinh $B$: <strong id="lab2ValRb" style="color: #10b981;">√2 ≈ 1.41</strong></label>
+              <input type="range" id="lab2SliderRb" min="1.0" max="2.5" step="0.1" value="1.4" style="width: 120px; margin-left: 6px;">
+            </div>
+          </div>
+
+          <canvas id="lab2Canvas" width="540" height="320" style="width: 100%; height: auto; background: #030712; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 10px 0;"></canvas>
+
+          <div class="lab-output" id="lab2Output" style="background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 6px; border-left: 3px solid #06b6d4; font-size: 0.95em;">
+            Đang tính toán toạ độ kinh vĩ độ vệ tinh GPS...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Phương Trình Mặt Cầu</h2>
+          <p>10 câu hỏi trắc nghiệm chọn lọc bám sát bài tập Bài 17 SGK Toán 12 KNTT (Trang 54 – 60). Bấm trực tiếp vào các phương án để nhận phản hồi và tích lũy XP!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="stat-item">
+            <span class="stat-label">Tiến Độ</span>
+            <span class="stat-value" id="arenaProgress" style="color: #38bdf8;">0/10</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Điểm Arena</span>
+            <span class="stat-value" id="arenaScore" style="color: #10b981;">0 XP</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Render 10 câu hỏi bằng JS -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="card-grid" style="margin-bottom: 30px;">
+        <div class="card" id="badge-1">
+          <div class="card-title">🎖️ Huy Hiệu 1: Khởi Động Quả Cầu</div>
+          <p>Mở khóa khi hoàn thành câu hỏi đầu tiên trên Đấu trường.</p>
+        </div>
+        <div class="card" id="badge-2">
+          <div class="card-title">⚡ Huy Hiệu 2: Quỹ Đạo Bất Khả Chiến Bại</div>
+          <p>Mở khóa khi đạt chuỗi đúng liên tiếp 🔥 3 câu.</p>
+        </div>
+        <div class="card" id="badge-3">
+          <div class="card-title">🧪 Huy Hiệu 3: Kỹ Sư Định Vị GPS 3D</div>
+          <p>Mở khóa khi trải nghiệm trạm khảo sát mặt cầu và trạm định vị vệ tinh GPS.</p>
+        </div>
+        <div class="card" id="badge-4">
+          <div class="card-title">🌟 Huy Hiệu 4: Bậc Thầy Mặt Cầu 12</div>
+          <p>Mở khóa khi đạt từ 160 XP trở lên trên Đấu trường (đúng từ 8 câu).</p>
+        </div>
+        <div class="card" id="badge-5">
+          <div class="card-title">👑 Huy Hiệu 5: Quán Quân Không Gian Oxyz</div>
+          <p>Mở khóa khi đạt điểm tuyệt đối 10/10 câu hỏi Đấu trường SGK!</p>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-border">
+          <div class="cert-header">
+            <h4>BỘ GIÁO DỤC VÀ ĐÀO TẠO • TRƯỜNG THPT LƯƠNG THẾ VINH</h4>
+            <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+            <p class="cert-sub">Khóa Học Hình Học Giải Tích Không Gian 12</p>
+          </div>
+          <div class="cert-body">
+            <p>Chứng nhận học sinh:</p>
+            <h3 id="certStudentName">Chiến Binh Logic</h3>
+            <p>Đã xuất sắc hoàn thành chuyên đề học tập tương tác:</p>
+            <h4 class="cert-lesson-title">BÀI 17: PHƯƠNG TRÌNH MẶT CẦU (TOÁN 12 - TẬP HAI)</h4>
+            <div class="cert-stats-row">
+              <span>Tổng điểm tích lũy: <strong id="certXP">0 XP</strong></span>
+              <span>Đánh giá xếp loại: <strong id="certRank">Xuất Sắc</strong></span>
+            </div>
+            <p class="cert-date" id="certDate">Đà Nẵng, ngày 19 tháng 10 năm 2026</p>
+          </div>
+          <div class="cert-footer">
+            <div class="cert-seal">
+              <div class="seal-inner">★ CHUẨN KNTT ★</div>
+            </div>
+            <div class="cert-sign">
+              <p>GIÁO VIÊN HƯỚNG DẪN</p>
+              <div class="signature">ThS. Toán Học Số</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai16/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 16: Công Thức Tính Góc</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_ontap_chuong5/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương V: Toạ Độ Oxyz</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Chọn Avatar (Ẩn mặc định) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-box">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker-grid">
+        <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh</button>
+        <button class="avatar-opt" data-avatar="🚀" data-name="Hoa Tiêu GPS">🚀 Hoa Tiêu GPS</button>
+        <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Phù Thủy Mặt Cầu">🧙‍♂️ Phù Thủy</button>
+        <button class="avatar-opt" data-avatar="🦊" data-name="Cáo Không Gian">🦊 Cáo Không Gian</button>
+        <button class="avatar-opt" data-avatar="🦉" data-name="Cú Bán Kính">🦉 Cú Thông Thái</button>
+        <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Quỹ Đạo">⚡ Tia Chớp</button>
+        <button class="avatar-opt" data-avatar="💎" data-name="Kim Cương Vệ Tinh">💎 Kim Cương</button>
+        <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Tâm Cầu">🎯 Thiện Xạ</button>
+      </div>
+      <button class="btn-primary" id="btnCloseAvatarModal" style="margin-top: 15px;">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

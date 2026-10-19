@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 9: Khoảng Biến Thiên Và Khoảng Tứ Phân Vị - Toán 12 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Thống Kê 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Phân Tích Dữ Liệu 12</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG III: CÁC SỐ ĐẶC TRƯNG ĐO MỨC ĐỘ PHÂN TÁN • BÀI 9</span>
+      <h1>Bài 9: Khoảng Biến Thiên Và Khoảng Tứ Phân Vị Của Mẫu Số Liệu Ghép Nhóm</h1>
+      <p>Nghiên cứu các thước đo độ phân tán của dữ liệu lớn: Khoảng biến thiên $R$, tứ phân vị $Q_1, Q_3$, khoảng tứ phân vị $\Delta_Q$ và phương pháp loại bỏ giá trị bất thường.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-title">1. Khoảng Biến Thiên Của Mẫu Ghép Nhóm</div>
+          <p>Cho mẫu số liệu ghép nhóm gồm $k$ nhóm liên tiếp $[a_1; a_2), [a_2; a_3), \dots, [a_k; a_{k+1})$:</p>
+          <div class="formula-box">
+            $$R = a_{k+1} - a_1$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Định nghĩa:</strong> Khoảng biến thiên $R$ là hiệu giữa đầu mút phải của nhóm cuối cùng và đầu mút trái của nhóm đầu tiên.<br>
+            <strong>Ý nghĩa:</strong> Dùng để đo độ phân tán của mẫu số liệu. $R$ càng lớn thì số liệu càng phân tán.<br>
+            <strong>Hạn chế:</strong> Dễ bị ảnh hưởng bởi các giá trị ngoại lai (bất thường).
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-title">2. Tứ Phân Vị Của Mẫu Số Liệu Ghép Nhóm</div>
+          <p>Mẫu số liệu có kích thước mẫu $n$. Tứ phân vị thứ $r$ ($r \in \{1, 2, 3\}$) được tính qua công thức nội suy tuyến tính:</p>
+          <div class="formula-box">
+            $$Q_r = a_p + \frac{\frac{r \cdot n}{4} - (m_1 + m_2 + \dots + m_{p-1})}{m_p} \cdot (a_{p+1} - a_p)$$
+          </div>
+          <ul class="prop-list">
+            <li>Nhóm $[a_p; a_{p+1})$ là nhóm đầu tiên có tần số tích luỹ lớn hơn hoặc bằng $\frac{r \cdot n}{4}$.</li>
+            <li>$m_p$ là tần số của nhóm chứa tứ phân vị đó.</li>
+            <li>$m_1 + \dots + m_{p-1}$ là tổng tần số của các nhóm đứng trước.</li>
+          </ul>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card-title">3. Khoảng Tứ Phân Vị (Interquartile Range)</div>
+          <p>Khoảng tứ phân vị của mẫu số liệu ghép nhóm, ký hiệu là $\Delta_Q$, là hiệu giữa tứ phân vị thứ ba $Q_3$ và tứ phân vị thứ nhất $Q_1$:</p>
+          <div class="formula-box">
+            $$\Delta_Q = Q_3 - Q_1$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Ưu điểm vượt trội:</strong> $\Delta_Q$ đo độ phân tán của $50\%$ số liệu chính giữa của mẫu, hoàn toàn không bị ảnh hưởng bởi các giá trị bất thường (quá nhỏ hoặc quá lớn).
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <div class="card-title">4. Nhận Diện Giá Trị Bất Thường (Outliers)</div>
+          <p>Trong thống kê và khoa học dữ liệu, khoảng tứ phân vị $\Delta_Q$ được dùng làm tiêu chuẩn phát hiện giá trị bất thường:</p>
+          <div class="formula-box">
+            $$x < Q_1 - 1{,}5 \cdot \Delta_Q \quad \text{hoặc} \quad x > Q_3 + 1{,}5 \cdot \Delta_Q$$
+          </div>
+          <ul class="prop-list">
+            <li>Các giá trị nằm ngoài khoảng $[Q_1 - 1{,}5\Delta_Q; Q_3 + 1{,}5\Delta_Q]$ được xem là giá trị bất thường.</li>
+            <li>Thường do sai sót khi thu thập dữ liệu hoặc hiện tượng đột biến.</li>
+          </ul>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card">
+          <div class="card-title">5. Ý Nghĩa Thực Tiễn Của Độ Phân Tán</div>
+          <p>So sánh mức độ đồng đều và ổn định giữa các tập dữ liệu thực tế:</p>
+          <div class="formula-box">
+            Độ phân tán càng nhỏ $\iff$ Mẫu số liệu càng đồng đều, ổn định.<br>
+            Độ phân tán càng lớn $\iff$ Số liệu càng chênh lệch, biến động mạnh.
+          </div>
+          <ul class="prop-list">
+            <li><strong>Y tế:</strong> So sánh thời gian chờ khám bệnh giữa hai phòng khám $X$ và $Y$.</li>
+            <li><strong>Giáo dục:</strong> Đánh giá mức độ đồng đều về kết quả thi giữa các lớp học.</li>
+            <li><strong>Sản xuất:</strong> Kiểm soát chất lượng độ bền sản phẩm và tuổi thọ linh kiện.</li>
+          </ul>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+          <div class="card-title">6. Bảng Tần Số Tích Luỹ & Thuật Toán Quét Nhóm</div>
+          <p>Quy trình xác định nhóm chứa $Q_1$ và $Q_3$ qua bảng tần số tích luỹ $cf_i$:</p>
+          <div class="formula-box">
+            $$cf_i = \sum\limits_{j=1}^i m_j \quad (cf_k = n)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Quy tắc tìm nhóm:</strong><br>
+            • Nhóm chứa $Q_1$: Nhóm đầu tiên có $cf_p \ge \frac{n}{4}$.<br>
+            • Nhóm chứa $Q_3$: Nhóm đầu tiên có $cf_q \ge \frac{3n}{4}$.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-container">
+        <!-- Lab 1: Biểu đồ phân phối tần số & Khoảng biến thiên R -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Phòng Thí Nghiệm 1: Biểu Đồ Cột Tần Số & Khoảng Biến Thiên $R$</h3>
+            <p>Khảo sát mẫu số liệu điểm kiểm tra. Điều chỉnh tần số các nhóm để quan sát biểu đồ Histogram và sự thay đổi của khoảng biến thiên $R = a_{k+1} - a_1$.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="freqGroup1">Nhóm $[20; 25)$: <span id="valF1">4</span> hs</label>
+              <input type="range" id="freqGroup1" min="0" max="20" step="1" value="4">
+            </div>
+            <div class="control-group">
+              <label for="freqGroup2">Nhóm $[25; 30)$: <span id="valF2">12</span> hs</label>
+              <input type="range" id="freqGroup2" min="1" max="25" step="1" value="12">
+            </div>
+            <div class="control-group">
+              <label for="freqGroup3">Nhóm $[30; 35)$: <span id="valF3">16</span> hs</label>
+              <input type="range" id="freqGroup3" min="1" max="25" step="1" value="16">
+            </div>
+            <div class="control-group">
+              <label for="freqGroup4">Nhóm $[35; 40)$: <span id="valF4">8</span> hs</label>
+              <input type="range" id="freqGroup4" min="0" max="20" step="1" value="8">
+            </div>
+          </div>
+          <canvas id="histCanvas" class="lab-canvas" width="700" height="380"></canvas>
+          <div class="lab-output" id="histOutput">
+            Đang tổng hợp dữ liệu tần số và tính khoảng biến thiên...
+          </div>
+        </div>
+
+        <!-- Lab 2: Máy Tính Tứ Phân Vị & Biểu Đồ Hộp (Box Plot) -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Phòng Thí Nghiệm 2: Máy Tính Tứ Phân Vị & Biểu Đồ Hộp $\Delta_Q$</h3>
+            <p>Tự động tính tần số tích luỹ $cf$, định vị nhóm chứa $Q_1$, $Q_3$, tính chính xác khoảng tứ phân vị $\Delta_Q = Q_3 - Q_1$ và vẽ biểu đồ Box Plot tương tác.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="samplePreset">Mẫu số liệu thử nghiệm:</label>
+              <select id="samplePreset" style="background: rgba(15, 23, 42, 0.8); color: #fff; border: 1px solid #6366f1; padding: 6px 12px; border-radius: 8px;">
+                <option value="sgk1">Ví dụ 2 SGK: Thời gian chờ khám bệnh (Phòng X)</option>
+                <option value="sgk2">Luyện tập 1 SGK: Thời gian hoàn thành bài kiểm tra</option>
+                <option value="sgk3">Tình huống mở đầu: Nhiệt độ cao nhất tại Hà Nội</option>
+              </select>
+            </div>
+          </div>
+          <canvas id="boxPlotCanvas" class="lab-canvas" width="700" height="380"></canvas>
+          <div class="lab-output" id="boxPlotOutput">
+            Đang tính toán các tứ phân vị Q1, Q3 và khoảng tứ phân vị...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Tri Thức: Khoảng Biến Thiên & Khoảng Tứ Phân Vị</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm chuẩn SGK Toán 12 KNTT. Bấm chọn trực tiếp để kiểm tra tư duy thống kê và nhận phản hồi chi tiết!</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-stat-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-stat-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <div class="arena-summary-banner" id="arenaSummary" style="display: none;">
+        <h3>🎉 HOÀN THÀNH XUẤT SẮC ĐẤU TRƯỜNG BÀI 9!</h3>
+        <p id="summaryText">Đạt 200/200 XP. Khả năng đo độ phân tán dữ liệu thống kê tuyệt vời!</p>
+        <button class="btn-primary" id="btnRetake">🔄 Thử Thách Lại</button>
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">📊</div>
+          <div class="badge-name">Thống Kê Khởi Đầu</div>
+          <div class="badge-desc">Đọc xong Bản đồ tri thức đo mức độ phân tán</div>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">📈</div>
+          <div class="badge-name">Chuyên Gia Histogram</div>
+          <div class="badge-desc">Khám phá biểu đồ cột và khoảng biến thiên tại Lab 1</div>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">📦</div>
+          <div class="badge-name">Bậc Thầy Tứ Phân Vị</div>
+          <div class="badge-desc">Vận hành máy tính Box Plot và quét Q1, Q3 tại Lab 2</div>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Binh Dữ Liệu</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK</div>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Sư Phân Tích Thống Kê</div>
+          <div class="badge-desc">Trả lời đúng tuyệt đối cả 10 câu trắc nghiệm</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-border">
+          <div class="cert-header">
+            <h4>BỘ GIÁO DỤC VÀ ĐÀO TẠO • TRƯỜNG THPT LƯƠNG THẾ VINH</h4>
+            <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+            <p class="cert-sub">Khóa Học Thống Kê & Phân Tích Dữ Liệu Số Lớp 12</p>
+          </div>
+          <div class="cert-body">
+            <p>Chứng nhận học sinh:</p>
+            <h3 id="certStudentName">Chiến Binh Thống Kê</h3>
+            <p>Đã xuất sắc hoàn thành chuyên đề học tập tương tác:</p>
+            <h4 class="cert-lesson-title">BÀI 9: KHOẢNG BIẾN THIÊN VÀ KHOẢNG TỨ PHÂN VỊ CỦA MẪU SỐ LIỆU GHÉP NHÓM (TOÁN 12 - TẬP MỘT)</h4>
+            <div class="cert-stats-row">
+              <span>Tổng điểm tích lũy: <strong id="certXP">0 XP</strong></span>
+              <span>Đánh giá xếp loại: <strong id="certRank">Xuất Sắc</strong></span>
+            </div>
+            <p class="cert-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</p>
+          </div>
+          <div class="cert-footer">
+            <div class="cert-seal">
+              <div class="seal-inner">★ CHUẨN KNTT ★</div>
+            </div>
+            <div class="cert-sign">
+              <p>GIÁO VIÊN HƯỚNG DẪN</p>
+              <div class="signature">ThS. Toán Học Số</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_ontap_chuong2/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Ôn Tập Chương II: Vectơ & Oxyz</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_bai10/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Bài 10: Phương Sai & Độ Lệch Chuẩn</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Chọn Avatar (Ẩn mặc định) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-box">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker-grid">
+        <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Thống Kê">👑 Chiến Binh</button>
+        <button class="avatar-opt" data-avatar="🚀" data-name="Nhà Khoa Học Dữ Liệu">🚀 Khoa Học Gia</button>
+        <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Phù Thủy Tần Số">🧙‍♂️ Phù Thủy</button>
+        <button class="avatar-opt" data-avatar="🦊" data-name="Cáo Thống Kê">🦊 Cáo Thống Kê</button>
+        <button class="avatar-opt" data-avatar="🦉" data-name="Cú Phân Tích">🦉 Cú Thông Thái</button>
+        <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Dữ Liệu">⚡ Tia Chớp</button>
+        <button class="avatar-opt" data-avatar="💎" data-name="Kim Cương BoxPlot">💎 Kim Cương</button>
+        <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Tứ Phân Vị">🎯 Thiện Xạ</button>
+      </div>
+      <button class="btn-primary" id="btnCloseAvatarModal" style="margin-top: 15px;">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

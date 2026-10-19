@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ôn Tập Chương III: Các Số Đặc Trưng Đo Mức Độ Phân Tán Mẫu Ghép Nhóm - Toán 12 KNTT</title>
+    <!-- KaTeX Offline -->
+    <link rel="stylesheet" href="katex/katex.min.css">
+    <script defer src="katex/katex.min.js"></script>
+    <script defer src="katex/contrib/auto-render.min.js"></script>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <!-- HUD Header -->
+        <header class="hud-header">
+            <div class="hud-profile">
+                <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+                <div class="user-meta">
+                    <h2 id="userNameDisplay">Chiến Binh Logic</h2>
+                    <span class="user-title" id="userTitle">Đại Sư Thống Kê Toán 12</span>
+                </div>
+            </div>
+            <div class="hud-stats">
+                <div class="stat-item">
+                    <span class="stat-label">Cấp Độ Sao</span>
+                    <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Kinh Nghiệm (XP)</span>
+                    <span class="stat-value xp" id="xpDisplay">0</span>
+                </div>
+                <div class="stat-item">
+                    <span class="stat-label">Chuỗi Đúng</span>
+                    <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+                </div>
+            </div>
+            <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+                <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+                <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+            </div>
+        </header>
+
+        <!-- Lesson Banner -->
+        <section class="lesson-banner">
+            <span class="lesson-badge">TOÁN 12 • TẬP MỘT • CHƯƠNG III</span>
+            <h1>BÀI TẬP CUỐI CHƯƠNG III: CÁC SỐ ĐẶC TRƯNG ĐO ĐỘ PHÂN TÁN</h1>
+            <p>Hệ thống hóa toàn bộ công thức khoảng biến thiên, khoảng tứ phân vị, phương sai và độ lệch chuẩn. Ứng dụng thực tiễn trong phân tích dữ liệu, kiểm soát rủi ro tài chính và độ chính xác đo lường.</p>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="section-nav">
+            <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+            <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+            <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+            <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+        </nav>
+
+        <!-- TAB 1: THEORY -->
+        <section class="tab-content active" id="tab-theory">
+            <div class="card-grid">
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <span class="concept-icon">📐</span>
+                        <h3>1. Khoảng Biến Thiên ($R$)</h3>
+                    </div>
+                    <p>Khoảng biến thiên là hiệu giữa đầu mút phải của nhóm cuối cùng và đầu mút trái của nhóm đầu tiên:</p>
+                    <div class="formula-box">
+                        $$R = a_{k+1} - a_1$$
+                    </div>
+                    <p><strong>Ý nghĩa:</strong> Đơn giản, tính toán nhanh nhất để nắm bắt độ trải rộng cực đại của dữ liệu. Tuy nhiên, nó rất nhạy cảm với các giá trị ngoại lai (bất thường) và không phản ánh sự phân bố ở giữa mẫu.</p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <span class="concept-icon">✂️</span>
+                        <h3>2. Khoảng Tứ Phân Vị ($\Delta_Q$)</h3>
+                    </div>
+                    <p>Khoảng tứ phân vị đo độ phân tán của $50\%$ số liệu trung tâm trong mẫu dữ liệu:</p>
+                    <div class="formula-box">
+                        $$\Delta_Q = Q_3 - Q_1$$
+                    </div>
+                    <p>Công thức tứ phân vị thứ $r$ ($r \in \{1, 2, 3\}$):</p>
+                    <div class="formula-box">
+                        $$Q_r = a_p + \frac{\frac{r \cdot n}{4} - cf_{p-1}}{m_p} \cdot (a_{p+1} - a_p)$$
+                    </div>
+                    <p><strong>Ý nghĩa:</strong> Không bị ảnh hưởng bởi nhóm đầu và nhóm cuối, thích hợp đánh giá mẫu số liệu có giá trị bất thường.</p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <span class="concept-icon">📊</span>
+                        <h3>3. Phương Sai ($s^2$) & Độ Lệch Chuẩn ($s$)</h3>
+                    </div>
+                    <p>Đo độ phân tán của toàn bộ các số liệu quanh số trung bình cộng $\bar{x}$:</p>
+                    <div class="formula-box">
+                        $$s^2 = \frac{1}{n}\sum\limits_{i=1}^k m_i x_i^2 - (\bar{x})^2 \quad \text{và} \quad s = \sqrt{s^2}$$
+                    </div>
+                    <p>Trong đó $x_i = \frac{a_i + a_{i+1}}{2}$ là giá trị đại diện của nhóm thứ $i$.</p>
+                    <p><strong>Ý nghĩa:</strong> Sử dụng thông tin của toàn bộ các nhóm trong mẫu, là số đo độ phân tán phổ biến nhất trong thống kê hiện đại.</p>
+                </div>
+
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <span class="concept-icon">⚖️</span>
+                        <h3>4. Bảng So Sánh & Lựa Chọn Số Đặc Trưng</h3>
+                    </div>
+                    <div class="rule-box gold">
+                        <p><strong>📌 Khi nào dùng số đặc trưng nào?</strong></p>
+                        <ul>
+                            <li><strong>Khoảng biến thiên $R$:</strong> Cần ước lượng sơ bộ, nhanh chóng biên độ biến động cực đại.</li>
+                            <li><strong>Khoảng tứ phân vị $\Delta_Q$:</strong> Mẫu số liệu có chứa giá trị bất thường hoặc phân bố lệch nhiều.</li>
+                            <li><strong>Phương sai $s^2$ & Độ lệch chuẩn $s$:</strong> Mẫu số liệu có phân bố tương đối đối xứng, cần số đo đại diện cho toàn bộ mẫu (ví dụ: đo độ rủi ro đầu tư, sai số thiết bị đo).</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 2: LABS -->
+        <section class="tab-content" id="tab-labs">
+            <div class="card-grid">
+                <!-- LAB 1: Tuổi thọ 20 con hổ & Biểu đồ hộp Box-Plot -->
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <span class="concept-icon">🐯</span>
+                        <h3>Lab 1: Khảo Sát Tuổi Thọ 20 Con Hổ SGK & Box-Plot</h3>
+                    </div>
+                    <p>Phân tích dữ liệu thực tế từ bài toán 3.9 - 3.11 SGK KNTT trang 85. Điều chỉnh tần số nhóm để quan sát trực tiếp sự thay đổi của các số đặc trưng:</p>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 12px; flex-wrap: wrap;">
+                        <button class="btn-primary" id="btnResetTigerData">🔄 Khôi phục số liệu gốc SGK</button>
+                        <button class="btn-secondary" id="btnAllFour">⚡ Thử thách câu 3.13 (Tất cả = 4)</button>
+                    </div>
+
+                    <div style="overflow-x: auto; margin-bottom: 15px;">
+                        <table style="width: 100%; border-collapse: collapse; text-align: center; font-size: 0.95rem;">
+                            <thead>
+                                <tr style="background: rgba(99, 102, 241, 0.2); border-bottom: 1px solid rgba(99, 102, 241, 0.4);">
+                                    <th style="padding: 6px;">Nhóm tuổi (năm)</th>
+                                    <th>$[14; 15)$</th>
+                                    <th>$[15; 16)$</th>
+                                    <th>$[16; 17)$</th>
+                                    <th>$[17; 18)$</th>
+                                    <th>$[18; 19)$</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td style="padding: 6px; font-weight: bold; color: #a5b4fc;">Tần số ($m_i$)</td>
+                                    <td><input type="number" id="freq0" min="0" max="30" value="1" style="width: 48px; text-align: center; background: rgba(0,0,0,0.4); color: #fff; border: 1px solid #6366f1; border-radius: 4px; padding: 4px;"></td>
+                                    <td><input type="number" id="freq1" min="0" max="30" value="3" style="width: 48px; text-align: center; background: rgba(0,0,0,0.4); color: #fff; border: 1px solid #6366f1; border-radius: 4px; padding: 4px;"></td>
+                                    <td><input type="number" id="freq2" min="0" max="30" value="8" style="width: 48px; text-align: center; background: rgba(0,0,0,0.4); color: #fff; border: 1px solid #6366f1; border-radius: 4px; padding: 4px;"></td>
+                                    <td><input type="number" id="freq3" min="0" max="30" value="6" style="width: 48px; text-align: center; background: rgba(0,0,0,0.4); color: #fff; border: 1px solid #6366f1; border-radius: 4px; padding: 4px;"></td>
+                                    <td><input type="number" id="freq4" min="0" max="30" value="2" style="width: 48px; text-align: center; background: rgba(0,0,0,0.4); color: #fff; border: 1px solid #6366f1; border-radius: 4px; padding: 4px;"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <canvas id="tigerCanvas" width="540" height="200" style="width: 100%; height: auto; background: rgba(0, 0, 0, 0.4); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"></canvas>
+
+                    <div class="lab-output" id="tigerMetrics" style="margin-top: 12px;">
+                        <!-- Render metrics by JS -->
+                    </div>
+                </div>
+
+                <!-- LAB 2: So Sánh Tính Ổn Định 2 Dụng Cụ Đo / 2 Dự Án Đầu Tư -->
+                <div class="concept-card">
+                    <div class="concept-header">
+                        <span class="concept-icon">⚡</span>
+                        <h3>Lab 2: Phân Tích Độ Ổn Định 2 Nguồn Dữ Liệu (Vôn Kế / Đầu Tư)</h3>
+                    </div>
+                    <p>Mô phỏng bài toán 3.15 & 3.17 SGK KNTT trang 86. So sánh 2 tập số liệu để đánh giá xem thiết bị nào đo ổn định hơn, hoặc kênh đầu tư nào ít rủi ro hơn:</p>
+                    
+                    <div style="display: flex; gap: 10px; margin-bottom: 12px;">
+                        <button class="btn-primary" id="btnVoltPreset">🔋 Dữ liệu Vôn kế (Bài 3.17)</button>
+                        <button class="btn-secondary" id="btnInvestPreset">📈 Dữ liệu Đầu tư (Bài 3.15)</button>
+                    </div>
+
+                    <canvas id="compareCanvas" width="540" height="200" style="width: 100%; height: auto; background: rgba(0, 0, 0, 0.4); border-radius: 12px; border: 1px solid rgba(255, 255, 255, 0.1);"></canvas>
+
+                    <div class="lab-output" id="compareMetrics" style="margin-top: 12px;">
+                        <!-- Render compare metrics by JS -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- TAB 3: ARENA -->
+        <section class="tab-content" id="tab-arena">
+            <div class="arena-header">
+                <div>
+                    <h2>ĐẤU TRƯỜNG SGK: BÀI TẬP CUỐI CHƯƠNG III</h2>
+                    <p>Chinh phục 10 câu hỏi trắc nghiệm tuyển chọn từ SGK Toán 12 KNTT (Trang 85 – 86). Nhận ngay phản hồi và phân tích chi tiết!</p>
+                </div>
+                <div class="arena-score-box">
+                    <div id="arenaProgress">Tiến Độ: 0/10</div>
+                    <div id="arenaScore">Điểm Arena: 0 XP</div>
+                </div>
+            </div>
+
+            <div id="quizContainer">
+                <!-- 10 Quiz Cards rendered dynamically by app.js -->
+            </div>
+        </section>
+
+        <!-- TAB 4: BADGES -->
+        <section class="tab-content" id="tab-badges">
+            <div class="concept-card" style="margin-bottom: 25px;">
+                <div class="concept-header">
+                    <span class="concept-icon">🏅</span>
+                    <h3>Bộ Sưu Tập Huy Hiệu Chương III</h3>
+                </div>
+                <p>Hoàn thành các hoạt động lý thuyết, thực hành thí nghiệm và chinh phục Đấu trường để mở khóa 5 huy hiệu vinh danh:</p>
+                
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 15px; margin-top: 15px;">
+                    <div class="concept-card" id="badge-1" style="text-align: center; opacity: 0.4;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">📖</div>
+                        <h4 style="color: #67e8f9;">Nhà Phân Tích</h4>
+                        <p style="font-size: 0.85rem; color: #94a3b8;">Khám phá toàn bộ Bản Đồ Tri Thức Chương III.</p>
+                    </div>
+                    <div class="concept-card" id="badge-2" style="text-align: center; opacity: 0.4;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">🐯</div>
+                        <h4 style="color: #67e8f9;">Bậc Thầy Box-Plot</h4>
+                        <p style="font-size: 0.85rem; color: #94a3b8;">Thao tác Lab 1 và phân tích dữ liệu 20 con hổ.</p>
+                    </div>
+                    <div class="concept-card" id="badge-3" style="text-align: center; opacity: 0.4;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">⚖️</div>
+                        <h4 style="color: #67e8f9;">Chuyên Gia Đánh Giá</h4>
+                        <p style="font-size: 0.85rem; color: #94a3b8;">Thử nghiệm so sánh 2 nguồn dữ liệu tại Lab 2.</p>
+                    </div>
+                    <div class="concept-card" id="badge-4" style="text-align: center; opacity: 0.4;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">⚔️</div>
+                        <h4 style="color: #67e8f9;">Chiến Binh Xuất Sắc</h4>
+                        <p style="font-size: 0.85rem; color: #94a3b8;">Đạt từ 160 XP trở lên trong Đấu Trường SGK.</p>
+                    </div>
+                    <div class="concept-card" id="badge-5" style="text-align: center; opacity: 0.4;">
+                        <div style="font-size: 2.5rem; margin-bottom: 8px;">👑</div>
+                        <h4 style="color: #67e8f9;">Huyền Thoại Thống Kê</h4>
+                        <p style="font-size: 0.85rem; color: #94a3b8;">Đạt điểm tuyệt đối 10/10 câu Đấu Trường.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Graduation Certificate -->
+            <div class="cert-container" id="gradCert">
+                <div style="font-size: 1.1rem; text-transform: uppercase; letter-spacing: 2px; color: #1e1b4b; font-weight: bold; margin-bottom: 5px;">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+                <div style="font-size: 0.95rem; color: #475569; margin-bottom: 15px;">HỘI ĐỒNG KHẢO THÍ HỌC LIỆU SỐ TOÁN 12</div>
+                
+                <h2 style="font-size: 1.8rem; color: #b45309; margin: 10px 0; font-family: 'Times New Roman', serif; text-transform: uppercase;">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+                
+                <p style="font-size: 1.05rem; color: #334155; margin-top: 10px;">Chứng nhận học sinh:</p>
+                <div id="certStudentName" style="font-size: 1.6rem; font-weight: bold; color: #0f172a; font-family: 'Times New Roman', Cambria, serif; margin: 5px 0;">Chiến Binh Logic</div>
+                
+                <p style="max-width: 650px; margin: 10px auto; color: #334155; line-height: 1.6;">Đã xuất sắc hoàn thành chương trình học liệu tương tác và vượt qua toàn diện các thử thách tại bài học: <strong>"Ôn Tập Chương III: Các Số Đặc Trưng Đo Mức Độ Phân Tán Mẫu Số Liệu Ghép Nhóm"</strong></p>
+                
+                <div style="display: flex; justify-content: space-around; margin-top: 25px; padding-top: 15px; border-top: 1px dashed #cbd5e1; font-size: 0.95rem; color: #475569;">
+                    <div>
+                        <span>Điểm Arena: </span><strong id="certScore" style="color: #059669;">0 XP</strong>
+                    </div>
+                    <div>
+                        <span>Xếp loại: </span><strong id="certRank" style="color: #b45309;">Chiến Binh Logic</strong>
+                    </div>
+                </div>
+
+                <div style="margin-top: 25px; text-align: right; padding-right: 30px; font-style: italic; color: #475569;">
+                    Đà Nẵng, ngày 18 tháng 10 năm 2026<br>
+                    <strong>BAN ĐIỀU HÀNH HỌC TẬP THÔNG MINH</strong>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 20px;">
+                <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+            </div>
+        </section>
+
+            <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai10/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 10: Phương Sai & Độ Lệch Chuẩn</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_bai11/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Bài 11: Nguyên Hàm</span>
+      </a>
+    </footer>
+    </div>
+
+    <!-- Modal chọn Avatar (Ẩn mặc định) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+        <div class="modal-card">
+            <h3>Chọn Nhân Vật Của Bạn</h3>
+            <p>Chọn đại diện phong cách học tập cho hồ sơ của bạn:</p>
+            <div class="avatar-grid" id="avatarGrid">
+                <button class="avatar-option" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+                <button class="avatar-option" data-avatar="🧙‍♂️" data-name="Phù Thủy Thống Kê">🧙‍♂️ Phù Thủy Thống Kê</button>
+                <button class="avatar-option" data-avatar="🚀" data-name="Nhà Thám Hiểm Không Gian">🚀 Nhà Thám Hiểm</button>
+                <button class="avatar-option" data-avatar="🦁" data-name="Sư Tử Dũng Mãnh">🦁 Sư Tử Dũng Mãnh</button>
+                <button class="avatar-option" data-avatar="⚡" data-name="Tia Chớp Phân Tích">⚡ Tia Chớp</button>
+                <button class="avatar-option" data-avatar="🦉" data-name="Cú Vẹo Uyên Bác">🦉 Cú Uyên Bác</button>
+                <button class="avatar-option" data-avatar="🎯" data-name="Xạ Thủ Chuẩn Xác">🎯 Xạ Thủ</button>
+                <button class="avatar-option" data-avatar="💎" data-name="Kim Cương Trí Tuệ">💎 Kim Cương</button>
+            </div>
+            <div style="text-align: right; margin-top: 15px;">
+                <button class="btn-secondary" id="btnCloseAvatar">Đóng</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 5: Ứng Dụng Đạo Hàm Để Giải Quyết Một Số Vấn Đề Thực Tiễn - Toán 12 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Tối Ưu Thực Tiễn 12</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Danh Mục Bài Học Toán 12">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương I: Ứng Dụng Đạo Hàm Khảo Sát & Vẽ Đồ Thị • Toán 12</span>
+      <h1>BÀI 5: ỨNG DỤNG ĐẠO HÀM ĐỂ GIẢI QUYẾT MỘT SỐ VẤN ĐỀ THỰC TIỄN</h1>
+      <p>Ứng dụng sức mạnh của đạo hàm vào các bài toán tối ưu hóa thực tế cuộc sống: Tối đa hóa doanh thu và lợi nhuận kinh doanh, tối thiểu hóa chi phí kỹ thuật kéo cáp điện và khảo sát vận tốc, gia tốc chuyển động!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Khen</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <h3 class="card-title"><i>🧭</i> 1. Quy Trình 4 Bước Tối Ưu Hóa Bằng Đạo Hàm</h3>
+          <div class="rule-box gold">
+            <h4>Bước 1: Chọn biến và tìm tập xác định</h4>
+            <p>Xác định đại lượng cần tối ưu hóa $y$ và chọn biến số độc lập $x$. Tìm tập xác định thực tế của $x$ dựa trên điều kiện bài toán (ví dụ: $x > 0$, độ dài cạnh, thời gian $t \ge 0$).</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>Bước 2: Thiết lập hàm mục tiêu</h4>
+            <p>Biểu diễn đại lượng cần tối ưu theo biến số $x$ để nhận được hàm số $y = f(x)$ trên miền xác định $D$.</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>Bước 3: Khảo sát tìm $\max$ hoặc $\min$</h4>
+            <p>Tính đạo hàm $f'(x)$, giải phương trình $f'(x) = 0$ và lập bảng biến thiên (hoặc so sánh các giá trị biên) để tìm điểm đạt GTLN hoặc GTNN.</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>Bước 4: Kết luận & Đối chiếu thực tế</h4>
+            <p>Trả lời câu hỏi bài toán kèm đơn vị đo và giải thích ý nghĩa kinh tế, kỹ thuật của kết quả.</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <h3 class="card-title"><i>💼</i> 2. Ứng Dụng Trong Kinh Tế & Quản Trị Kinh Doanh</h3>
+          <div class="concept-box cyan">
+            <h4>Hàm cầu, Doanh thu và Lợi nhuận</h4>
+            <p>• <strong>Hàm cầu:</strong> $p = p(x)$ biểu diễn giá bán một đơn vị sản phẩm theo số lượng $x$.</p>
+            <p>• <strong>Hàm doanh thu:</strong> $R(x) = x \cdot p(x)$ (số lượng bán nhân giá bán).</p>
+            <p>• <strong>Hàm lợi nhuận:</strong> $P(x) = R(x) - C(x)$, trong đó $C(x)$ là tổng chi phí sản xuất.</p>
+          </div>
+          <div class="concept-box emerald">
+            <h4>Chi phí biên và Quy tắc vàng tối đa hóa lợi nhuận</h4>
+            <p>• <strong>Chi phí biên:</strong> $C'(x)$ xấp xỉ chi phí phát sinh để sản xuất thêm 1 đơn vị sản phẩm thứ $x + 1$.</p>
+            <p>• <strong>Doanh thu biên:</strong> $R'(x)$ xấp xỉ doanh thu tăng thêm khi bán thêm 1 sản phẩm.</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$P'(x) = R'(x) - C'(x) = 0 \quad \Longleftrightarrow \quad R'(x) = C'(x) \quad (MR = MC)$$</p>
+            </div>
+            <p>Lợi nhuận đạt tối đa khi Doanh thu biên bằng Chi phí biên ($MR = MC$).</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <h3 class="card-title"><i>🚀</i> 3. Ứng Dụng Trong Vật Lý & Chuyển Động</h3>
+          <div class="concept-box gold">
+            <h4>Vận tốc và Gia tốc tức thời</h4>
+            <p>Xét một chất điểm chuyển động thẳng có phương trình quãng đường $s = s(t)$ theo thời gian $t$:</p>
+            <p>• <strong>Vận tốc tức thời:</strong> Là đạo hàm bậc nhất của quãng đường:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$v(t) = s'(t)$$</p>
+            </div>
+            <p>• <strong>Gia tốc tức thời:</strong> Là đạo hàm bậc hai của quãng đường (đạo hàm bậc nhất của vận tốc):</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$a(t) = v'(t) = s''(t)$$</p>
+            </div>
+          </div>
+          <div class="concept-box rose">
+            <h4>Quy luật chuyển động nhanh dần & chậm dần</h4>
+            <p>• Hạt chuyển động thẳng theo chiều dương khi $v(t) > 0$, chiều âm khi $v(t) < 0$.</p>
+            <p>• Vận tốc đạt cực đại khi gia tốc bằng $0$: $a(t) = v'(t) = 0$.</p>
+            <p>• Chuyển động tăng tốc khi $a(t) \cdot v(t) > 0$, giảm tốc khi $a(t) \cdot v(t) < 0$.</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <h3 class="card-title"><i>🏗️</i> 4. Bài Toán Kéo Cáp Điện Biển (SGK 1.46)</h3>
+          <div class="concept-box cyan">
+            <h4>Mô hình tam giác vuông ven biển</h4>
+            <p>Nhà máy điện ở đất liền $A$, đảo $C$ cách bờ biển $B$ là $4\text{ km}$, khoảng cách $AB = 10\text{ km}$. Nối cáp từ đảo $C$ đến một điểm $M$ trên bờ ($BM = x$, $0 \le x \le 10$), sau đó đi ngầm dọc bờ biển từ $M$ đến $A$.</p>
+            <p>• Độ dài đường cáp biển $CM = \sqrt{x^2 + 16}$ (km), chi phí $50\text{ triệu/km}$.</p>
+            <p>• Độ dài đường cáp đất liền $MA = 10 - x$ (km), chi phí $30\text{ triệu/km}$.</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$T(x) = 50\sqrt{x^2 + 16} + 30(10 - x)$$</p>
+            </div>
+            <p>Giải $T'(x) = \frac{50x}{\sqrt{x^2 + 16}} - 30 = 0 \Leftrightarrow 5x = 3\sqrt{x^2 + 16} \Leftrightarrow x = 3\text{ km}$.</p>
+            <p>Chi phí lắp đặt nhỏ nhất là $T(3) = 50(5) + 30(7) = 460\text{ triệu đồng}$!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🧪</i> Lab 1: Giả Lập Tối Đa Hóa Lợi Nhuận Doanh Nghiệp (SGK Vận Dụng Trang 40)</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.95rem;">
+          Khảo sát kinh doanh ti vi: Giá bán $p(x) = 19 - 0.005x$ (triệu đồng), chi phí $C(x) = 12000 - 3x$, lợi nhuận $P(x) = -0.005x^2 + 22x - 12000$. Kéo thanh trượt để quan sát đồ thị lợi nhuận parabol và tìm điểm đạt đỉnh $P_{\max}$!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;">
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 12px; text-align: center;">
+            <canvas id="lab1Canvas" width="600" height="380" style="width: 100%; max-width: 600px; height: auto; border-radius: var(--radius-sm); background: #030712; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span>📈 Doanh thu $R(x)$</span>
+              <span>📉 Lợi nhuận $P(x)$</span>
+              <span>⭐ Điểm cực đại $x = 2200$</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="concept-box cyan" style="margin: 0;">
+              <h4>Sản lượng sản xuất $x$ (chiếc/tuần):</h4>
+              <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                <input type="range" id="lab1SliderX" min="1000" max="3200" step="50" value="1500" style="flex: 1;">
+                <span id="lab1ValX" style="font-weight: 800; color: var(--cyan-neon); min-width: 60px;">$1500$</span>
+              </div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="btn-icon" id="btnLab1Optimal" style="font-size: 0.75rem;">⭐ Tối ưu $x = 2200$</button>
+                <button class="btn-icon" id="btnLab1Low" style="font-size: 0.75rem;">Sản lượng $1000$</button>
+                <button class="btn-icon" id="btnLab1High" style="font-size: 0.75rem;">Sản lượng $3000$</button>
+              </div>
+            </div>
+
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px;">
+              <h4 style="color: var(--indigo-light); margin-bottom: 8px; font-size: 0.95rem;">Chỉ Số Kinh Doanh Tức Thời:</h4>
+              <p style="margin-bottom: 5px;">• Giá bán một chiếc: $p = 19 - 0.005x =$ <strong id="lab1ValPrice" style="color: #fff;">$11.50\text{ tr}$</strong></p>
+              <p style="margin-bottom: 5px;">• Doanh thu tuần: $R(x) =$ <strong id="lab1ValRev" style="color: var(--gold-accent);">$17250\text{ tr}$</strong></p>
+              <p style="margin-bottom: 5px;">• Tổng lợi nhuận: $P(x) =$ <strong id="lab1ValProfit" style="color: var(--emerald-true); font-size: 1.1rem;">$9750\text{ tr}$</strong></p>
+              <div id="lab1StatusBox" style="margin-top: 8px; padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; line-height: 1.4; background: rgba(99,102,241,0.15); border: 1px solid var(--border-color); color: var(--text-primary);">
+                Di chuyển $x$ về $2200$ để doanh thu biên $MR = MC$, đạt lợi nhuận tối đa!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2 -->
+      <div class="card">
+        <h3 class="card-title"><i>⚡</i> Lab 2: Mô Phỏng Thiết Kế Kéo Cáp Điện Biển Tối Thiểu Hóa Chi Phí (SGK 1.46)</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.95rem;">
+          Đảo $C$ cách bờ $B$ là $4\text{ km}$, khoảng cách $AB = 10\text{ km}$. Điểm $M$ trên đoạn $AB$ cách $B$ là $x$ (km). Cáp biển đắt hơn cáp đất liền ($50\text{ tr/km}$ so với $30\text{ tr/km}$). Kéo thanh trượt $x$ để tìm vị trí $M$ cho tổng chi phí lắp đặt nhỏ nhất!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;">
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 12px; text-align: center;">
+            <canvas id="lab2Canvas" width="600" height="340" style="width: 100%; max-width: 600px; height: auto; border-radius: var(--radius-sm); background: #030712; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span>🌊 Cáp biển $CM$</span>
+              <span>🏖️ Cáp đất liền $MA$</span>
+              <span>⭐ Điểm tối ưu $x = 3\text{ km}$</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="concept-box gold" style="margin: 0;">
+              <h4>Vị trí điểm nối $M$ (cách $B$ đoạn $x$ km):</h4>
+              <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                <input type="range" id="lab2SliderX" min="0.0" max="10.0" step="0.1" value="6.0" style="flex: 1;">
+                <span id="lab2ValX" style="font-weight: 800; color: var(--gold-accent); min-width: 55px;">$6.0\text{ km}$</span>
+              </div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="btn-icon" id="btnLab2Optimal" style="font-size: 0.75rem;">⭐ Điểm tối ưu $x = 3\text{ km}$</button>
+                <button class="btn-icon" id="btnLab2Perp" style="font-size: 0.75rem;">Vuông góc $x = 0$ ($M \equiv B$)</button>
+                <button class="btn-icon" id="btnLab2Direct" style="font-size: 0.75rem;">Thẳng tới $A$ ($x = 10$)</button>
+              </div>
+            </div>
+
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px;">
+              <h4 style="color: var(--indigo-light); margin-bottom: 8px; font-size: 0.95rem;">Chi Phí Lắp Đặt Thực Tế:</h4>
+              <p style="margin-bottom: 5px;">• Chiều dài cáp biển: $CM = \sqrt{x^2 + 16} =$ <strong id="lab2ValSeaLen" style="color: var(--cyan-neon);">$7.21\text{ km}$</strong></p>
+              <p style="margin-bottom: 5px;">• Chiều dài cáp đất liền: $MA = 10 - x =$ <strong id="lab2ValLandLen" style="color: var(--gold-accent);">$4.00\text{ km}$</strong></p>
+              <p style="margin-bottom: 5px;">• Tổng chi phí lắp đặt: $T(x) =$ <strong id="lab2ValTotalCost" style="color: var(--emerald-true); font-size: 1.1rem;">$480.56\text{ triệu}$</strong></p>
+              <div id="lab2StatusBox" style="margin-top: 8px; padding: 10px; border-radius: 6px; font-size: 0.88rem; line-height: 1.4; background: rgba(99,102,241,0.15); border: 1px solid var(--indigo-light); color: var(--text-primary);">
+                Đang đo lường chi phí dự toán.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>ĐẤU TRƯỜNG TOÁN 12: ỨNG DỤNG THỰC TIỄN</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm bám sát SGK Bài 5. Bấm trực tiếp đáp án để tích lũy XP và giữ vững ngọn lửa Combo!</p>
+        </div>
+        <div class="arena-score-box">
+          <div style="text-align: right;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Tiến độ</div>
+            <div id="arenaProgress" style="font-size: 1.1rem; font-weight: 800; color: #fff;">0/10</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Điểm Arena</div>
+            <div id="arenaScore" style="font-size: 1.3rem; font-weight: 800; color: var(--emerald-true);">0 XP</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Bài 5: Ứng Dụng Thực Tiễn</h3>
+
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-biz_profit">
+          <div class="badge-icon">💼</div>
+          <div class="badge-name">CEO Tối Ưu Lợi Nhuận</div>
+          <div class="badge-desc">Tìm chính xác sản lượng $x = 2200$ cho lợi nhuận cực đại trong Lab 1.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-cable_optimizer">
+          <div class="badge-icon">⚡</div>
+          <div class="badge-name">Kỹ Sư Công Trình Biển</div>
+          <div class="badge-desc">Khám phá vị trí $x = 3\text{ km}$ đạt chi phí tối thiểu $460\text{ triệu}$ trong Lab 2.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-streak">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Ngọn Lửa Chuỗi Đúng</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng liên tiếp từ 5 câu trở lên trong Đấu Trường.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-arena">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Binh Thực Tiễn</div>
+          <div class="badge-desc">Đạt từ 8/10 câu đúng trong Đấu Trường SGK Bài 5.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-master">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Bậc Thầy Giải Tích Thực Tiễn 12</div>
+          <div class="badge-desc">Đạt trọn vẹn 10/10 câu hỏi và hoàn thành xuất sắc toàn bộ bài học!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 5: ỨNG DỤNG ĐẠO HÀM ĐỂ GIẢI QUYẾT MỘT SỐ VẤN ĐỀ THỰC TIỄN (TOÁN 12 TẬP 1)</strong><br>
+            Nắm vững quy trình mô hình hóa toán học 4 bước, tối ưu hóa thành công các bài toán kinh doanh, vật lý và kỹ thuật công trình đời sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHUYÊN GIA ỨNG DỤNG THỰC TIỄN XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai4/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 4: Khảo Sát & Vẽ Đồ Thị</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_ontap_chuong1/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương I: Khảo Sát Hàm Số</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Học Giả Giải Tích</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Chuyên Gia Giải Tích Hoàng Gia">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Đạo Hàm Vũ Trụ">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Biến Thiên Bất Bại">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Chinh Phục Cực Trị">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Giải Tích 12">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Toán Học Tối Cao">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Khảo Sát Hàm Số">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Thủ Khoa Olympic Toán 12">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

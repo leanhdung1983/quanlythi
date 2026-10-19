@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 15: Phương Trình Đường Thẳng Trong Không Gian - Toán 12 KNTT</title>
+  <!-- KaTeX Offline -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Khối 1: HUD Gamification Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Phi Công Toạ Độ Tuyến Tính</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Khối 2: Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG V • BÀI 15 • TOÁN 12 KNTT (TẬP HAI)</span>
+      <h1>PHƯƠNG TRÌNH ĐƯỜNG THẲNG TRONG KHÔNG GIAN</h1>
+      <p>Làm chủ vectơ chỉ phương $\overrightarrow{u}$, thiết lập phương trình tham số và phương trình chính tắc, phân loại 4 vị trí tương đối (trùng, song song, cắt nhau, chéo nhau) và giải quyết các bài toán chuyển động, nút giao thông khác mức trong thực tế.</p>
+    </section>
+
+    <!-- Khối 3: Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-title">1. Vectơ Chỉ Phương Của Đường Thẳng</div>
+          <p>Vectơ $\overrightarrow{u} \ne \overrightarrow{0}$ được gọi là <strong>vectơ chỉ phương (VTCP)</strong> của đường thẳng $\Delta$ nếu giá của $\overrightarrow{u}$ song song hoặc trùng với $\Delta$.</p>
+          <div class="formula-box">
+            $$\overrightarrow{u} \text{ là VTCP của } \Delta \iff k\overrightarrow{u} \text{ cũng là VTCP của } \Delta \quad (k \ne 0)$$
+          </div>
+          <p>Đường thẳng đi qua hai điểm phân biệt $A$ và $B$ luôn nhận vectơ $\overrightarrow{AB}$ làm một vectơ chỉ phương.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-title">2. Phương Trình Tham Số & Chính Tắc</div>
+          <p>Đường thẳng $\Delta$ đi qua điểm $M_0(x_0; y_0; z_0)$ và có VTCP $\overrightarrow{u} = (a; b; c) \ne \overrightarrow{0}$ có <strong>phương trình tham số</strong>:</p>
+          <div class="formula-box">
+            $$\begin{cases} x = x_0 + at \\ y = y_0 + bt \\ z = z_0 + ct \end{cases} \quad (t \in \mathbb{R})$$
+          </div>
+          <p>Khi $a, b, c$ đều khác $0$, khử tham số $t$ ta được <strong>phương trình chính tắc</strong>:</p>
+          <div class="formula-box">
+            $$\frac{x - x_0}{a} = \frac{y - y_0}{b} = \frac{z - z_0}{c}$$
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card-title">3. Vị Trí Tương Đối Giữa Hai Đường Thẳng</div>
+          <p>Cho $\Delta_1$ qua $M_1$ có VTCP $\overrightarrow{u}_1$ và $\Delta_2$ qua $M_2$ có VTCP $\overrightarrow{u}_2$:</p>
+          <div class="rule-box gold">
+            • <strong>Song song ($\Delta_1 \parallel \Delta_2$):</strong> $\overrightarrow{u}_1 = k\overrightarrow{u}_2$ và $M_1 \notin \Delta_2$. <br>
+            • <strong>Trùng nhau ($\Delta_1 \equiv \Delta_2$):</strong> $\overrightarrow{u}_1 = k\overrightarrow{u}_2$ và $M_1 \in \Delta_2$. <br>
+            • <strong>Cắt nhau:</strong> $\overrightarrow{u}_1, \overrightarrow{u}_2$ không cùng phương và $[\overrightarrow{u}_1, \overrightarrow{u}_2] \cdot \overrightarrow{M_1M_2} = 0$ (hệ toạ độ có $1$ nghiệm duy nhất). <br>
+            • <strong>Chéo nhau (Nút giao khác mức):</strong> $[\overrightarrow{u}_1, \overrightarrow{u}_2] \cdot \overrightarrow{M_1M_2} \ne 0$.
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <div class="card-title">4. Đường Thẳng & Mặt Phẳng</div>
+          <p>Cho đường thẳng $\Delta$ có VTCP $\overrightarrow{u} = (a; b; c)$ và mặt phẳng $(\alpha)$ có VTPT $\overrightarrow{n} = (A; B; C)$:</p>
+          <div class="formula-box">
+            $$\Delta \perp (\alpha) \iff \overrightarrow{u} \parallel \overrightarrow{n} \iff \overrightarrow{u} = k\overrightarrow{n} \quad (k \ne 0)$$
+          </div>
+          <div class="formula-box">
+            $$\Delta \parallel (\alpha) \iff \overrightarrow{u} \cdot \overrightarrow{n} = 0 \text{ và } M_0 \in \Delta \text{ nhưng } M_0 \notin (\alpha)$$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1 -->
+        <div class="card">
+          <div class="card-title">🧪 Lab 1: Trạm Bay Toạ Độ & Quỹ Đạo Đường Thẳng 3D</div>
+          <p>Kéo các thanh trượt điểm xuất phát $M_0(x_0; y_0; z_0)$, vectơ vận tốc $\overrightarrow{u} = (a; b; c)$ và tham số thời gian $t$ để mô phỏng quỹ đạo bay trong không gian 3D!</p>
+
+          <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <div>
+              <label>Điểm $x_0$: <strong id="lab1ValX0" style="color: #ef4444;">1</strong></label>
+              <input type="range" id="lab1SliderX0" min="-4" max="4" step="1" value="1" style="width: 85px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Điểm $y_0$: <strong id="lab1ValY0" style="color: #10b981;">-1</strong></label>
+              <input type="range" id="lab1SliderY0" min="-4" max="4" step="1" value="-1" style="width: 85px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Điểm $z_0$: <strong id="lab1ValZ0" style="color: #38bdf8;">2</strong></label>
+              <input type="range" id="lab1SliderZ0" min="-4" max="4" step="1" value="2" style="width: 85px; margin-left: 4px;">
+            </div>
+          </div>
+
+          <div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <div>
+              <label>VTCP $a$: <strong id="lab1ValA" style="color: #f59e0b;">2</strong></label>
+              <input type="range" id="lab1SliderA" min="-3" max="3" step="1" value="2" style="width: 85px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>VTCP $b$: <strong id="lab1ValB" style="color: #f59e0b;">1</strong></label>
+              <input type="range" id="lab1SliderB" min="-3" max="3" step="1" value="1" style="width: 85px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>VTCP $c$: <strong id="lab1ValC" style="color: #f59e0b;">-1</strong></label>
+              <input type="range" id="lab1SliderC" min="-3" max="3" step="1" value="-1" style="width: 85px; margin-left: 4px;">
+            </div>
+          </div>
+
+          <div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 15px; align-items: center;">
+            <div>
+              <label>Tham số thời gian $t$: <strong id="lab1ValT" style="color: #a855f7;">1.5</strong></label>
+              <input type="range" id="lab1SliderT" min="-3" max="3" step="0.1" value="1.5" style="width: 140px; margin-left: 6px;">
+            </div>
+            <div>
+              <label>Xoay 3D:</label>
+              <input type="range" id="lab1SliderRot" min="0" max="360" step="5" value="45" style="width: 110px; margin-left: 4px;">
+            </div>
+          </div>
+
+          <canvas id="lab1Canvas" width="540" height="320" style="width: 100%; height: auto; background: #030712; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 10px 0;"></canvas>
+
+          <div class="lab-output" id="lab1Output" style="background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 6px; border-left: 3px solid #6366f1; font-size: 0.95em;">
+            Đang tạo lập phương trình đường thẳng...
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="card">
+          <div class="card-title">🧪 Lab 2: Máy Quét Nút Giao Thông Khác Mức 3D (Bài 5.17 SGK)</div>
+          <p>Mô phỏng bài toán kỹ thuật giao thông Bài 5.17 (SGK trang 49): Xét vị trí tương đối giữa hai tuyến đường $\Delta_1$ và $\Delta_2$. Kiểm tra xem hai con đường có cắt nhau hay chéo nhau tạo thành nút giao khác mức an toàn!</p>
+
+          <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <label><strong>Chọn cặp đường:</strong></label>
+            <select id="lab2SelectCase" style="background: rgba(15, 23, 42, 0.8); color: #f8fafc; border: 1px solid #6366f1; padding: 6px 12px; border-radius: 6px;">
+              <option value="sgk517">Bài 5.17 SGK: Nút giao khác mức vuông góc</option>
+              <option value="sgk514">Bài 5.14 SGK: Hai đường giao cắt tại 1 điểm</option>
+              <option value="parallel">Hai con đường song song nhau</option>
+              <option value="skew">Hai tuyến bay chéo nhau trong không gian</option>
+            </select>
+          </div>
+
+          <canvas id="lab2Canvas" width="540" height="320" style="width: 100%; height: auto; background: #030712; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 10px 0;"></canvas>
+
+          <div class="lab-output" id="lab2Output" style="background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 6px; border-left: 3px solid #06b6d4; font-size: 0.95em;">
+            Đang phân tích giao cắt và khoảng cách giữa 2 con đường...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Phương Trình Đường Thẳng</h2>
+          <p>10 câu hỏi trắc nghiệm bám sát hệ thống bài tập Bài 15 SGK Toán 12 KNTT (Trang 41 – 49). Bấm trực tiếp vào các nút lựa chọn để tích lũy XP và nâng cấp chuỗi combo!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="stat-item">
+            <span class="stat-label">Tiến Độ</span>
+            <span class="stat-value" id="arenaProgress" style="color: #38bdf8;">0/10</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Điểm Arena</span>
+            <span class="stat-value" id="arenaScore" style="color: #10b981;">0 XP</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Render 10 câu hỏi bằng JS -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="card-grid" style="margin-bottom: 30px;">
+        <div class="card" id="badge-1">
+          <div class="card-title">🎖️ Huy Hiệu 1: Khởi Hành Tuyến Đường</div>
+          <p>Mở khóa khi hoàn thành câu hỏi đầu tiên trên Đấu trường.</p>
+        </div>
+        <div class="card" id="badge-2">
+          <div class="card-title">⚡ Huy Hiệu 2: Đường Bay Siêu Tốc</div>
+          <p>Mở khóa khi đạt chuỗi đúng combo liên tiếp 🔥 3 câu.</p>
+        </div>
+        <div class="card" id="badge-3">
+          <div class="card-title">🧪 Huy Hiệu 3: Kỹ Sư Cầu Đường 3D</div>
+          <p>Mở khóa khi trải nghiệm trạm bay toạ độ và máy quét nút giao thông khác mức.</p>
+        </div>
+        <div class="card" id="badge-4">
+          <div class="card-title">🌟 Huy Hiệu 4: Hoa Tiêu Không Gian 12</div>
+          <p>Mở khóa khi đạt từ 160 XP trở lên trên Đấu trường (đúng từ 8 câu).</p>
+        </div>
+        <div class="card" id="badge-5">
+          <div class="card-title">👑 Huy Hiệu 5: Cơ Trưởng Xuất Sắc</div>
+          <p>Mở khóa khi giải đúng tuyệt đối 10/10 câu hỏi Đấu trường SGK!</p>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-border">
+          <div class="cert-header">
+            <h4>BỘ GIÁO DỤC VÀ ĐÀO TẠO • TRƯỜNG THPT LƯƠNG THẾ VINH</h4>
+            <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+            <p class="cert-sub">Khóa Học Hình Học Giải Tích Không Gian 12</p>
+          </div>
+          <div class="cert-body">
+            <p>Chứng nhận học sinh:</p>
+            <h3 id="certStudentName">Chiến Binh Logic</h3>
+            <p>Đã xuất sắc hoàn thành chuyên đề học tập tương tác:</p>
+            <h4 class="cert-lesson-title">BÀI 15: PHƯƠNG TRÌNH ĐƯỜNG THẲNG TRONG KHÔNG GIAN (TOÁN 12 - TẬP HAI)</h4>
+            <div class="cert-stats-row">
+              <span>Tổng điểm tích lũy: <strong id="certXP">0 XP</strong></span>
+              <span>Đánh giá xếp loại: <strong id="certRank">Xuất Sắc</strong></span>
+            </div>
+            <p class="cert-date" id="certDate">Đà Nẵng, ngày 19 tháng 10 năm 2026</p>
+          </div>
+          <div class="cert-footer">
+            <div class="cert-seal">
+              <div class="seal-inner">★ CHUẨN KNTT ★</div>
+            </div>
+            <div class="cert-sign">
+              <p>GIÁO VIÊN HƯỚNG DẪN</p>
+              <div class="signature">ThS. Toán Học Số</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai14/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 14: Phương Trình Mặt Phẳng</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_bai16/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Bài 16: Công Thức Tính Góc</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Chọn Avatar (Ẩn mặc định) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-box">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker-grid">
+        <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh</button>
+        <button class="avatar-opt" data-avatar="🚀" data-name="Phi Công Đường Bay">🚀 Phi Công</button>
+        <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Phù Thủy Vectơ">🧙‍♂️ Phù Thủy</button>
+        <button class="avatar-opt" data-avatar="🦊" data-name="Cáo Tuyến Tính">🦊 Cáo Tuyến Tính</button>
+        <button class="avatar-opt" data-avatar="🦉" data-name="Cú Chỉ Phương">🦉 Cú Thông Thái</button>
+        <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Tham Số">⚡ Tia Chớp</button>
+        <button class="avatar-opt" data-avatar="💎" data-name="Kim Cương Chính Tắc">💎 Kim Cương</button>
+        <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Không Gian">🎯 Thiện Xạ</button>
+      </div>
+      <button class="btn-primary" id="btnCloseAvatarModal" style="margin-top: 15px;">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

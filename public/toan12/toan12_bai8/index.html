@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 8: Biểu Thức Toạ Độ Của Các Phép Toán Vectơ - Toán 12 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Đại Số Không Gian 🌟</h2>
+          <span class="user-title" id="userTitle">Bậc Thầy Biểu Thức Toạ Độ</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG II: VECTƠ VÀ HỆ TOẠ ĐỘ TRONG KHÔNG GIAN • BÀI 8</span>
+      <h1>Bài 8: Biểu Thức Toạ Độ Của Các Phép Toán Vectơ</h1>
+      <p>Số hoá toàn diện các phép toán hình học: Cộng, trừ, nhân số, tích vô hướng, độ dài, khoảng cách và góc giữa hai vectơ qua hệ toạ độ Đề-các.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-title">1. Toạ Độ Của Tổng, Hiệu Và Tích Với Số</div>
+          <p>Cho hai vectơ $\vec{u} = (x_1; y_1; z_1)$, $\vec{v} = (x_2; y_2; z_2)$ và số thực $k \in \mathbb{R}$:</p>
+          <div class="formula-box">
+            $$\vec{u} + \vec{v} = (x_1 + x_2; y_1 + y_2; z_1 + z_2)$$
+            $$\vec{u} - \vec{v} = (x_1 - x_2; y_1 - y_2; z_1 - z_2)$$
+            $$k\vec{u} = (kx_1; ky_1; kz_1)$$
+          </div>
+          <ul class="prop-list">
+            <li>Tổng/hiệu hai vectơ được tính bằng cách cộng/trừ các toạ độ tương ứng.</li>
+            <li>Nhân vectơ với một số bằng cách nhân số đó với từng toạ độ.</li>
+          </ul>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-title">2. Toạ Độ Vectơ Nối Hai Điểm</div>
+          <p>Cho hai điểm $A(x_A; y_A; z_A)$ và $B(x_B; y_B; z_B)$ trong không gian:</p>
+          <div class="formula-box">
+            $$\overrightarrow{AB} = (x_B - x_A; y_B - y_A; z_B - z_A)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Quy tắc nhớ nhanh:</strong> Toạ độ vectơ $\overrightarrow{AB}$ bằng toạ độ điểm ngọn (điểm cuối $B$) trừ toạ độ điểm gốc (điểm đầu $A$).
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card-title">3. Biểu Thức Toạ Độ Tích Vô Hướng</div>
+          <p>Tích vô hướng của hai vectơ trong không gian được tính rất đơn giản qua các toạ độ:</p>
+          <div class="formula-box">
+            $$\vec{u} \cdot \vec{v} = x_1 x_2 + y_1 y_2 + z_1 z_2$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Quy tắc:</strong> Tích vô hướng bằng tổng các tích của các toạ độ tương ứng (hoành nhân hoành + tung nhân tung + cao nhân cao).
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <div class="card-title">4. Độ Dài Vectơ & Khoảng Cách Hai Điểm</div>
+          <p>Công thức tính chuẩn độ dài của vectơ và khoảng cách Euclid giữa hai điểm trong không gian:</p>
+          <div class="formula-box">
+            $$|\vec{u}| = \sqrt{x_1^2 + y_1^2 + z_1^2}$$
+            $$AB = |\overrightarrow{AB}| = \sqrt{(x_B - x_A)^2 + (y_B - y_A)^2 + (z_B - z_A)^2}$$
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="card">
+          <div class="card-title">5. Góc Giữa Hai Vectơ & Điều Kiện Vuông Góc</div>
+          <p>Góc giữa hai vectơ $\vec{u} \ne \vec{0}$ và $\vec{v} \ne \vec{0}$ được tính bằng công thức cosin:</p>
+          <div class="formula-box">
+            $$\cos(\vec{u}, \vec{v}) = \frac{\vec{u} \cdot \vec{v}}{|\vec{u}| \cdot |\vec{v}|} = \frac{x_1 x_2 + y_1 y_2 + z_1 z_2}{\sqrt{x_1^2 + y_1^2 + z_1^2} \cdot \sqrt{x_2^2 + y_2^2 + z_2^2}}$$
+          </div>
+          <div class="rule-box gold">
+            <strong>ĐIỀU KIỆN VUÔNG GÓC:</strong><br>
+            $$\vec{u} \perp \vec{v} \iff \vec{u} \cdot \vec{v} = 0 \iff x_1 x_2 + y_1 y_2 + z_1 z_2 = 0$$
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="card">
+          <div class="card-title">6. Điều Kiện Cùng Phương & Ba Điểm Thẳng Hàng</div>
+          <p>Cho $\vec{v} \ne \vec{0}$. Vectơ $\vec{u}$ cùng phương với $\vec{v}$ khi và chỉ khi tồn tại số thực $k$ sao cho $\vec{u} = k\vec{v}$:</p>
+          <div class="formula-box">
+            $$\begin{cases} x_1 = k x_2 \\ y_1 = k y_2 \\ z_1 = k z_2 \end{cases} \iff \frac{x_1}{x_2} = \frac{y_1}{y_2} = \frac{z_1}{z_2} \quad (\text{với } x_2, y_2, z_2 \ne 0)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Ứng dụng:</strong> Ba điểm $A, B, C$ thẳng hàng $\iff$ hai vectơ $\overrightarrow{AB}$ và $\overrightarrow{AC}$ cùng phương.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-container">
+        <!-- Lab 1: Máy tính phép toán tuyến tính vectơ -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Phòng Thí Nghiệm 1: Máy Tính Tuyến Tính Vectơ ($k\vec{u} + m\vec{v}$)</h3>
+            <p>Khảo sát vectơ tổng hợp $\vec{w} = k\vec{u} + m\vec{v}$. Điều chỉnh hệ số $k, m$ và toạ độ hai vectơ để quan sát biểu diễn hình học 3D trong không gian.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="coeffK">Hệ số $k$ của $\vec{u}$: <span id="valK">1.0</span></label>
+              <input type="range" id="coeffK" min="-3" max="3" step="0.5" value="1.0">
+            </div>
+            <div class="control-group">
+              <label for="coeffM">Hệ số $m$ của $\vec{v}$: <span id="valM">1.0</span></label>
+              <input type="range" id="coeffM" min="-3" max="3" step="0.5" value="1.0">
+            </div>
+            <div class="control-group">
+              <label for="uxVal">Hoành độ $u_x$: <span id="valUx">2</span></label>
+              <input type="range" id="uxVal" min="-4" max="4" step="1" value="2">
+            </div>
+            <div class="control-group">
+              <label for="vyVal">Tung độ $v_y$: <span id="valVy">3</span></label>
+              <input type="range" id="vyVal" min="-4" max="4" step="1" value="3">
+            </div>
+          </div>
+          <canvas id="linearCanvas" class="lab-canvas" width="700" height="400"></canvas>
+          <div class="lab-output" id="linearOutput">
+            Đang tính toán biểu thức toạ độ tổ hợp tuyến tính...
+          </div>
+        </div>
+
+        <!-- Lab 2: Thước đo không gian: Độ dài, Tích vô hướng & Góc -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Phòng Thí Nghiệm 2: Thước Đo Không Gian Euclid Oxyz</h3>
+            <p>Nhập toạ độ hai điểm $A$ và $B$. Tự động tính khoảng cách $AB$, tích vô hướng $\vec{u} \cdot \vec{v}$, góc $\alpha$ và kiểm tra vuông góc.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="bxSlider">Điểm $B_x$: <span id="valBx">3</span></label>
+              <input type="range" id="bxSlider" min="-5" max="5" step="1" value="3">
+            </div>
+            <div class="control-group">
+              <label for="bySlider">Điểm $B_y$: <span id="valBy">4</span></label>
+              <input type="range" id="bySlider" min="-5" max="5" step="1" value="4">
+            </div>
+            <div class="control-group">
+              <label for="bzSlider">Điểm $B_z$: <span id="valBz">0</span></label>
+              <input type="range" id="bzSlider" min="-5" max="5" step="1" value="0">
+            </div>
+          </div>
+          <canvas id="metricCanvas" class="lab-canvas" width="700" height="380"></canvas>
+          <div class="lab-output" id="metricOutput">
+            Đang tính toán các đại lượng hình học và tích vô hướng...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Tri Thức: Biểu Thức Toạ Độ Vectơ</h2>
+          <p>Thử thách 10 câu trắc nghiệm chuẩn SGK Toán 12 KNTT. Bấm trực tiếp vào các lựa chọn để kiểm tra độ hiểu bài và tích lũy XP!</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-stat-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-stat-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+
+      <div class="arena-summary-banner" id="arenaSummary" style="display: none;">
+        <h3>🎉 HOÀN THÀNH XUẤT SẮC ĐẤU TRƯỜNG BÀI 8!</h3>
+        <p id="summaryText">Đạt 200/200 XP. Khả năng tính toán toạ độ không gian tuyệt hảo!</p>
+        <button class="btn-primary" id="btnRetake">🔄 Thử Thách Lại</button>
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">📘</div>
+          <div class="badge-name">Nhà Toán Học Số Hoá</div>
+          <div class="badge-desc">Đọc xong Bản đồ tri thức biểu thức toạ độ</div>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">⚡</div>
+          <div class="badge-name">Bậc Thầy Tuyến Tính</div>
+          <div class="badge-desc">Khám phá tổ hợp tuyến tính tại Phòng Thí Nghiệm 1</div>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">📏</div>
+          <div class="badge-name">Thước Đo Euclid</div>
+          <div class="badge-desc">Thực hành đo khoảng cách và góc tại Phòng Thí Nghiệm 2</div>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Binh Toạ Độ</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK</div>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Chuyên Gia Không Gian 3D</div>
+          <div class="badge-desc">Trả lời đúng tuyệt đối cả 10 câu trắc nghiệm</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-border">
+          <div class="cert-header">
+            <h4>BỘ GIÁO DỤC VÀ ĐÀO TẠO • TRƯỜNG THPT LƯƠNG THẾ VINH</h4>
+            <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+            <p class="cert-sub">Khóa Học Hình Học Không Gian Số Hoá Lớp 12</p>
+          </div>
+          <div class="cert-body">
+            <p>Chứng nhận học sinh:</p>
+            <h3 id="certStudentName">Chiến Binh Đại Số Không Gian</h3>
+            <p>Đã xuất sắc hoàn thành chuyên đề học tập tương tác:</p>
+            <h4 class="cert-lesson-title">BÀI 8: BIỂU THỨC TOẠ ĐỘ CỦA CÁC PHÉP TOÁN VECTƠ (TOÁN 12 - TẬP MỘT)</h4>
+            <div class="cert-stats-row">
+              <span>Tổng điểm tích lũy: <strong id="certXP">0 XP</strong></span>
+              <span>Đánh giá xếp loại: <strong id="certRank">Xuất Sắc</strong></span>
+            </div>
+            <p class="cert-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</p>
+          </div>
+          <div class="cert-footer">
+            <div class="cert-seal">
+              <div class="seal-inner">★ CHUẨN KNTT ★</div>
+            </div>
+            <div class="cert-sign">
+              <p>GIÁO VIÊN HƯỚNG DẪN</p>
+              <div class="signature">ThS. Toán Học Số</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai7/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 7: Hệ Trục Toạ Độ Oxyz</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_ontap_chuong2/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương II: Vectơ & Oxyz</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Chọn Avatar (Ẩn mặc định) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-box">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker-grid">
+        <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Toạ Độ">👑 Chiến Binh</button>
+        <button class="avatar-opt" data-avatar="🚀" data-name="Phi Hành Gia Euclid">🚀 Phi Hành Gia</button>
+        <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Phù Thủy Giải Tích">🧙‍♂️ Phù Thủy</button>
+        <button class="avatar-opt" data-avatar="🦊" data-name="Cáo Toạ Độ 3D">🦊 Cáo Toạ Độ</button>
+        <button class="avatar-opt" data-avatar="🦉" data-name="Cú Thông Thái Oxyz">🦉 Cú Thông Thái</button>
+        <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Vector">⚡ Tia Chớp</button>
+        <button class="avatar-opt" data-avatar="💎" data-name="Kim Cương Hình Học">💎 Kim Cương</button>
+        <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Euclid">🎯 Thiện Xạ</button>
+      </div>
+      <button class="btn-primary" id="btnCloseAvatarModal" style="margin-top: 15px;">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

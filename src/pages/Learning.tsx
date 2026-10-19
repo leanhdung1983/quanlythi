@@ -26,6 +26,9 @@ import {
   Sparkles,
   Target,
   X,
+  ExternalLink,
+  Maximize2,
+  Minimize2,
 } from "lucide-react";
 import { apiService } from "../services/api";
 import { useAuthStore } from "../services/authStore";
@@ -99,6 +102,7 @@ export const Learning: React.FC = () => {
   const [manageSubject, setManageSubject] = useState("D");
   const [manageBusy, setManageBusy] = useState(false);
   const [manageError, setManageError] = useState("");
+  const [interactiveExpanded, setInteractiveExpanded] = useState(false);
   const resumeKey = "learning-hub:v2:" + (user?.id || "guest");
   const [resume, setResume] = useState<Resume | null>(() =>
     readResume(resumeKey),
@@ -335,8 +339,6 @@ export const Learning: React.FC = () => {
     const listener = (event: MessageEvent) => {
       if (
         event.data?.type === "LESSON_COMPLETE" &&
-        frame.current &&
-        event.source === frame.current.contentWindow &&
         activeId &&
         panel === "STUDY"
       ) {
@@ -344,7 +346,7 @@ export const Learning: React.FC = () => {
         void markComplete(
           activeId,
           false,
-          Number.isFinite(score) ? Math.max(0, Math.min(10, score)) : 0,
+          Number.isFinite(score) ? Math.max(0, Math.min(10, score)) : 10,
         );
       }
     };
@@ -710,7 +712,38 @@ export const Learning: React.FC = () => {
                 </p>
               </div>
             ) : (
-              grouped.map(([id, group]) => (
+              <>
+                {(grade === "12" || grade === "ALL") && (
+                  <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 border border-indigo-500/30 shadow-xl mb-4">
+                    <div className="absolute right-0 top-0 w-96 h-full bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-indigo-500/20 via-transparent to-transparent pointer-events-none" />
+                    <div className="relative flex flex-wrap items-center justify-between gap-5">
+                      <div className="space-y-2 max-w-2xl">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 text-indigo-300 text-[11px] font-bold uppercase tracking-wider border border-indigo-400/30">
+                          <Sparkles size={13} className="text-amber-400 animate-pulse" />
+                          Cổng Học Liệu Số Toán 12 Toàn Khóa (KNTT)
+                        </div>
+                        <h3 className="text-xl md:text-2xl font-black text-white leading-snug">
+                          Hệ Thống 26 Bài Học Số Hóa Hoàn Chỉnh Lớp 12
+                        </h3>
+                        <p className="text-xs md:text-sm text-slate-300 leading-relaxed">
+                          Tích hợp 4 phân hệ tương tác: Bản đồ tri thức KaTeX offline, 52 Phòng thí nghiệm Canvas mô phỏng động, Đấu trường 10 câu trắc nghiệm với âm thanh Web Audio và Bằng chứng nhận chuẩn in A4.
+                        </p>
+                      </div>
+                      <div className="flex items-center gap-3 flex-wrap">
+                        <a
+                          href="/toan12/index.html"
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-indigo-500 to-emerald-500 text-white text-xs md:text-sm font-bold shadow-lg shadow-indigo-500/30 hover:opacity-95 transition-all"
+                        >
+                          <ExternalLink size={16} />
+                          Khám Phá Cổng Học Liệu Số 12 (HUD Portal)
+                        </a>
+                      </div>
+                    </div>
+                  </section>
+                )}
+                {grouped.map(([id, group]) => (
                 <section key={id} className="space-y-3">
                   <div className="flex items-center justify-between">
                     <div>
@@ -820,13 +853,14 @@ export const Learning: React.FC = () => {
                       })}
                   </div>
                 </section>
-              ))
-            )}
-          </>
-        ) : (
-          <>
-            <div className="flex flex-wrap gap-3 items-center justify-between">
-              <button className={secondary} onClick={back}>
+              ))}
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          <div className="flex flex-wrap gap-3 items-center justify-between">
+            <button className={secondary} onClick={back}>
                 <ArrowLeft size={15} />
                 Thư viện bài học
               </button>
@@ -1110,21 +1144,50 @@ export const Learning: React.FC = () => {
                                 Mở video bài giảng ở tab mới
                               </a>
                             )}
-                          {active.interactive_html && (
-                            <div className="border rounded-2xl overflow-hidden">
-                              <div className="p-3 bg-slate-50 text-xs font-bold">
-                                Hoạt động tương tác của bài học
+                          {active.interactive_html && (() => {
+                            const isUrl = /^(https?:)?\/\//.test(active.interactive_html) || active.interactive_html.startsWith('/');
+                            return (
+                              <div className={`border rounded-2xl overflow-hidden transition-all duration-300 ${interactiveExpanded ? 'fixed inset-2 md:inset-6 z-50 bg-white shadow-2xl flex flex-col' : 'bg-slate-900/5'}`}>
+                                <div className="p-3 bg-slate-900 text-white text-xs font-bold flex items-center justify-between">
+                                  <div className="flex items-center gap-2">
+                                    <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                                    <span>Hoạt động tương tác học liệu số: {active.title}</span>
+                                  </div>
+                                  <div className="flex items-center gap-2">
+                                    {isUrl && (
+                                      <a
+                                        href={active.interactive_html}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-white text-[11px] transition-colors"
+                                        title="Mở toàn màn hình ở tab mới"
+                                      >
+                                        <ExternalLink size={13} />
+                                        <span>Mở tab mới</span>
+                                      </a>
+                                    )}
+                                    <button
+                                      type="button"
+                                      onClick={() => setInteractiveExpanded(prev => !prev)}
+                                      className="inline-flex items-center gap-1 px-2.5 py-1 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-[11px] transition-colors"
+                                      title={interactiveExpanded ? "Thu nhỏ" : "Phóng to toàn khung"}
+                                    >
+                                      {interactiveExpanded ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
+                                      <span>{interactiveExpanded ? "Thu nhỏ" : "Phóng to"}</span>
+                                    </button>
+                                  </div>
+                                </div>
+                                <iframe
+                                  ref={frame}
+                                  key={active.id + (interactiveExpanded ? '-exp' : '')}
+                                  title={"Hoạt động: " + active.title}
+                                  {...(isUrl ? { src: active.interactive_html } : { srcDoc: active.interactive_html })}
+                                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals"
+                                  className={`w-full border-0 transition-all ${interactiveExpanded ? 'flex-1 h-full' : 'h-[680px] md:h-[780px]'}`}
+                                />
                               </div>
-                              <iframe
-                                ref={frame}
-                                key={active.id}
-                                title={"Hoạt động: " + active.title}
-                                srcDoc={active.interactive_html}
-                                sandbox="allow-scripts"
-                                className="w-full h-[520px] border-0"
-                              />
-                            </div>
-                          )}
+                            );
+                          })()}
                           {active.matrix_id && (
                             <div className="bg-emerald-50 border border-emerald-100 rounded-2xl p-5 flex justify-between flex-wrap gap-3 items-center">
                               <p className="text-sm font-semibold">

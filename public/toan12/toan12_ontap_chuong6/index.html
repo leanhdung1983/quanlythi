@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Chương VI: Xác Suất Có Điều Kiện - Toán 12 KNTT</title>
+  <!-- KaTeX Offline Cục Bộ -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Phân Tích Bayes</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">TOÁN 12 • TẬP HAI • BÀI TẬP CUỐI CHƯƠNG VI</span>
+      <h1>ÔN TẬP CHƯƠNG VI: XÁC SUẤT CÓ ĐIỀU KIỆN</h1>
+      <p>Tổng hợp và làm chủ các công cụ xác suất hiện đại: Xác suất có điều kiện, quy tắc nhân, sơ đồ cây, công thức xác suất toàn phần và định lý suy diễn ngược Bayes</p>
+    </section>
+
+    <!-- KHỐI 3: THANH NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- KHỐI NỘI DUNG TABS -->
+    <main class="main-content">
+      <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+      <section class="tab-content active" id="tab-theory">
+        <div class="card-grid">
+          <!-- Thẻ 1 -->
+          <article class="concept-card">
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <span class="card-num">01</span>
+              <h3>Xác Suất Có Điều Kiện & Quy Tắc Nhân</h3>
+            </div>
+            <div class="card-body">
+              <p>Cho hai biến cố $A$ và $B$ với $P(A) > 0$. Xác suất xảy ra biến cố $B$ khi đã biết biến cố $A$ xảy ra gọi là <strong>xác suất của $B$ với điều kiện $A$</strong>:</p>
+              <div class="formula-box">
+                $$P(B|A) = \frac{P(AB)}{P(A)}$$
+              </div>
+              <p>Từ đó suy ra <strong>Quy tắc nhân xác suất</strong> cho hai biến cố tùy ý:</p>
+              <div class="formula-box">
+                $$P(AB) = P(A) \cdot P(B|A) = P(B) \cdot P(A|B)$$
+              </div>
+              <div class="rule-box gold">
+                <strong>💡 Lưu ý quan trọng:</strong> Nếu $A$ và $B$ độc lập thì $P(B|A) = P(B)$ và quy tắc nhân trở thành $P(AB) = P(A) \cdot P(B)$.
+              </div>
+            </div>
+          </article>
+
+          <!-- Thẻ 2 -->
+          <article class="concept-card">
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <span class="card-num">02</span>
+              <h3>Công Thức Xác Suất Toàn Phần</h3>
+            </div>
+            <div class="card-body">
+              <p>Cho $A_1, A_2, \dots, A_n$ là một hệ biến cố đầy đủ ($A_i \cap A_j = \varnothing$ với mọi $i \ne j$ và $\sum P(A_i) = 1$) với $P(A_i) > 0$. Với mọi biến cố $B$:</p>
+              <div class="formula-box">
+                $$P(B) = \sum_{i=1}^n P(A_i) \cdot P(B|A_i)$$
+              </div>
+              <p>Trường hợp đặc biệt cho hai biến cố đối lập $A$ và $\overline{A}$:</p>
+              <div class="formula-box">
+                $$P(B) = P(A) \cdot P(B|A) + P(\overline{A}) \cdot P(B|\overline{A})$$
+              </div>
+              <div class="rule-box gold">
+                <strong>🌳 Ý nghĩa sơ đồ cây:</strong> Xác suất toàn phần chính là tổng xác suất của mọi đường đi từ gốc cây đến nút lá mang biến cố $B$.
+              </div>
+            </div>
+          </article>
+
+          <!-- Thẻ 3 -->
+          <article class="concept-card">
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <span class="card-num">03</span>
+              <h3>Định Lý Suy Diễn Ngược Bayes</h3>
+            </div>
+            <div class="card-body">
+              <p>Cho hệ biến cố đầy đủ $A_1, A_2, \dots, A_n$ và biến cố $B$ thỏa mãn $P(B) > 0$. Với mỗi $k \in \{1, 2, \dots, n\}$:</p>
+              <div class="formula-box">
+                $$P(A_k|B) = \frac{P(A_k) \cdot P(B|A_k)}{\sum\limits_{i=1}^n P(A_i) \cdot P(B|A_i)}$$
+              </div>
+              <p>Với hệ biến cố phân đôi $A$ và $\overline{A}$:</p>
+              <div class="formula-box">
+                $$P(A|B) = \frac{P(A) \cdot P(B|A)}{P(A) \cdot P(B|A) + P(\overline{A}) \cdot P(B|\overline{A})}$$
+              </div>
+              <div class="rule-box gold">
+                <strong>🔄 Chuyển giao thông tin:</strong> Định lý Bayes chuyển đổi xác suất tiên nghiệm (Prior) $P(A)$ thành xác suất hậu nghiệm (Posterior) $P(A|B)$ khi nhận được bằng chứng mới $B$.
+              </div>
+            </div>
+          </article>
+
+          <!-- Thẻ 4 -->
+          <article class="concept-card">
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <span class="card-num">04</span>
+              <h3>Bảng Thống Kê 2x2 & Ứng Dụng Thực Tiễn</h3>
+            </div>
+            <div class="card-body">
+              <p>Trong y học, dịch tễ học và trí tuệ nhân tạo, các biến cố nhị phân thường được biểu diễn qua bảng thống kê chéo $2 \times 2$:</p>
+              <div class="formula-box">
+                $$P(B|A) = \frac{n(AB)}{n(A)}; \quad P(A|B) = \frac{n(AB)}{n(B)}$$
+              </div>
+              <p>Các chỉ số lâm sàng cốt lõi:</p>
+              <ul>
+                <li><strong>Độ nhạy (Sensitivity):</strong> Xác suất kết quả dương tính khi thực sự có bệnh $P(+|\text{Bệnh})$.</li>
+                <li><strong>Độ đặc hiệu (Specificity):</strong> Xác suất âm tính khi không có bệnh $P(-|\text{Lành})$.</li>
+                <li><strong>Giá trị tiên đoán dương (PPV):</strong> $P(\text{Bệnh}|+)$ tính qua công thức Bayes.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- TAB 2: PHÒNG THÍ NGHIỆM -->
+      <section class="tab-content" id="tab-labs">
+        <!-- LAB 1 -->
+        <article class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Lab 1: Máy Tính Cây Xác Suất Toàn Phần & Bayes Đa Tầng</h3>
+            <p>Trực quan hóa cây xác suất 2 tầng thời gian thực. Điều chỉnh xác suất tiên nghiệm $P(A)$ và các xác suất có điều kiện $P(B|A)$, $P(B|\overline{A})$ để quan sát dòng chảy xác suất và bộ tính Bayes tự động.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="pAInput">Tiên nghiệm $P(A)$: <span class="val-display" id="pAVal">0.40</span></label>
+              <input type="range" id="pAInput" min="0.05" max="0.95" step="0.05" value="0.40">
+            </div>
+            <div class="control-group">
+              <label for="pBAInput">Điều kiện $P(B|A)$: <span class="val-display" id="pBAVal">0.33</span></label>
+              <input type="range" id="pBAInput" min="0.05" max="0.95" step="0.01" value="0.33">
+            </div>
+            <div class="control-group">
+              <label for="pBNotAInput">Điều kiện $P(B|\overline{A})$: <span class="val-display" id="pBNotAVal">0.25</span></label>
+              <input type="range" id="pBNotAInput" min="0.05" max="0.95" step="0.01" value="0.25">
+            </div>
+          </div>
+          <div class="lab-btn-row">
+            <button class="btn-lab-opt" id="btnPresetSGK612">📚 Mẫu SGK 6.12–6.14 ($P(A)=\frac{2}{5}$)</button>
+            <button class="btn-lab-opt" id="btnPresetVaccine">💉 Mẫu SGK 6.21 (Vaccine Bệnh Nền)</button>
+            <button class="btn-lab-opt" id="btnPresetChicken">🐔 Mẫu SGK 6.20 (Bắt Gà Mái)</button>
+          </div>
+          <canvas id="treeCanvas" width="900" height="340"></canvas>
+          <div class="lab-output" id="treeOutput">
+            Đang tính toán dòng chảy xác suất toàn phần...
+          </div>
+        </article>
+
+        <!-- LAB 2 -->
+        <article class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Lab 2: Ma Trận Hiệu Quả Thuốc & Bảng Thống Kê 2x2 (Bài 6.18 & 6.21 SGK)</h3>
+            <p>Mô phỏng thử nghiệm lâm sàng trên mẫu 4000 bệnh nhân. So sánh hiệu quả điều trị giữa Thuốc X và Thuốc Y, quan sát biểu đồ Mosaic Chart và tính xác suất Bayes ngược.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="xHealed">Thuốc X - Khỏi: <span class="val-display" id="xHealedVal">1600</span></label>
+              <input type="range" id="xHealed" min="200" max="3000" step="50" value="1600">
+            </div>
+            <div class="control-group">
+              <label for="xNotHealed">Thuốc X - Không Khỏi: <span class="val-display" id="xNotHealedVal">800</span></label>
+              <input type="range" id="xNotHealed" min="100" max="2000" step="50" value="800">
+            </div>
+            <div class="control-group">
+              <label for="yHealed">Thuốc Y - Khỏi: <span class="val-display" id="yHealedVal">1200</span></label>
+              <input type="range" id="yHealed" min="200" max="3000" step="50" value="1200">
+            </div>
+            <div class="control-group">
+              <label for="yNotHealed">Thuốc Y - Không Khỏi: <span class="val-display" id="yNotHealedVal">400</span></label>
+              <input type="range" id="yNotHealed" min="100" max="2000" step="50" value="400">
+            </div>
+          </div>
+          <div class="lab-btn-row">
+            <button class="btn-lab-opt" id="btnResetTable">🔄 Bảng Gốc SGK 6.18 (4000 Bệnh Nhân)</button>
+            <button class="btn-lab-opt" id="btnEqualDrugs">⚖️ Hai Thuốc Cùng Hiệu Quả (75%)</button>
+            <button class="btn-lab-opt" id="btnHighY">💊 Thuốc Y Vượt Trội (90% Khỏi)</button>
+          </div>
+          <canvas id="matrixCanvas" width="900" height="320"></canvas>
+          <div class="lab-output" id="matrixOutput">
+            Đang phân tích bảng thống kê $2 \times 2$...
+          </div>
+        </article>
+      </section>
+
+      <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+      <section class="tab-content" id="tab-arena">
+        <div class="arena-header">
+          <div>
+            <h2>⚔️ Đấu Trường SGK: Bài Tập Cuối Chương VI</h2>
+            <p>10 câu hỏi trắc nghiệm & tự luận chuẩn hóa từ SGK trang 79–80. Bấm trực tiếp vào đáp án để nhận phản hồi và tích lũy XP!</p>
+          </div>
+          <div class="arena-score-box">
+            <span class="arena-prog" id="arenaProgress">Tiến Độ: 0/10</span>
+            <span class="arena-score" id="arenaScore">Điểm Arena: 0 XP</span>
+          </div>
+        </div>
+        <div class="quiz-container" id="quizContainer">
+          <!-- Các câu hỏi render qua JavaScript -->
+        </div>
+      </section>
+
+      <!-- TAB 4: HUY HIỆU & VINH DANH -->
+      <section class="tab-content" id="tab-badges">
+        <div class="badges-banner">
+          <h2>🏆 Bảng Vàng Danh Dự & Chứng Nhận Hoàn Thành</h2>
+          <p>Mở khóa toàn bộ 5 huy hiệu để nhận Giấy Chứng Nhận Tốt Nghiệp Chuyên Sâu Chương VI từ Hội Đồng Sư Phạm Toán</p>
+        </div>
+        <div class="badges-grid">
+          <div class="badge-card locked" id="badge-1">
+            <div class="badge-icon">📖</div>
+            <h4>Nhà Thông Thái Lý Thuyết</h4>
+            <p>Đọc và khám phá trọn vẹn Bản Đồ Tri Thức Chương VI</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+          <div class="badge-card locked" id="badge-2">
+            <div class="badge-icon">🧪</div>
+            <h4>Kỹ Sư Cây Xác Suất</h4>
+            <p>Tương tác thực nghiệm và kiểm chứng Lab Cây Xác Suất Toàn Phần</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+          <div class="badge-card locked" id="badge-3">
+            <div class="badge-icon">📊</div>
+            <h4>Chuyên Gia Thống Kê Y Học</h4>
+            <p>Phân tích dữ liệu lâm sàng và bảng thống kê chéo $2 \times 2$</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+          <div class="badge-card locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <h4>Bậc Thầy Đấu Trường</h4>
+            <p>Đạt từ 160 XP trở lên tại Đấu Trường SGK Chương VI</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+          <div class="badge-card locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <h4>Đại Kiện Tướng Xác Suất</h4>
+            <p>Xuất sắc trả lời đúng tuyệt đối 10/10 câu hỏi Đấu Trường</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+        </div>
+
+        <!-- Khung chứng nhận A4 -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-inner">
+              <div class="cert-header">
+                <h3>TRƯỜNG THPT LƯƠNG THẾ VINH</h3>
+                <h4>HỘI ĐỒNG BỘ MÔN TOÁN HỌC</h4>
+                <div class="cert-ornament">✦ ✦ ✦ ❖ ✦ ✦ ✦</div>
+                <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+              </div>
+              <div class="cert-body">
+                <p>Chứng nhận học sinh:</p>
+                <h3 class="cert-student" id="certStudentName">Chiến Binh Logic</h3>
+                <p>Đã hoàn thành xuất sắc toàn diện nội dung học tập chuyên sâu:</p>
+                <h4 class="cert-course">BÀI TẬP CUỐI CHƯƠNG VI: XÁC SUẤT CÓ ĐIỀU KIỆN</h4>
+                <p>Đạt thành tích xuất sắc trong việc vận dụng Quy tắc nhân, Công thức xác suất toàn phần và Định lý Bayes vào phân tích thống kê và giải quyết bài toán thực tế.</p>
+                <div class="cert-meta">
+                  <span id="certDate">Đà Nẵng, ngày 19 tháng 10 năm 2026</span>
+                  <span id="certGrade">Xếp loại: Xuất Sắc (10/10 Câu Chuẩn SGK)</span>
+                </div>
+              </div>
+              <div class="cert-signatures">
+                <div class="sig-box">
+                  <span class="sig-title">GIÁO VIÊN HƯỚNG DẪN</span>
+                  <div class="sig-stamp">ĐÃ DUYỆT</div>
+                  <span class="sig-name">Tổ Chuyên Môn Toán</span>
+                </div>
+                <div class="sig-box">
+                  <span class="sig-title">HIỆU TRƯỞNG TRƯỜNG</span>
+                  <div class="sig-seal">✦ THPT LTV ✦</div>
+                  <span class="sig-name">Ban Giám Hiệu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cert-actions">
+            <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai19/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 19: Xác Suất Toàn Phần & Bayes</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_ontap_cuoinam/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Ôn Tập Cuối Năm: Toàn Bộ Toán 12</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (KHÔNG HIỆN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Chọn Avatar Chiến Binh Logic</h3>
+          <button class="modal-close" id="modalCloseBtn">✕</button>
+        </div>
+        <div class="avatar-options">
+          <button class="avatar-opt" data-avatar="👑" data-title="Chiến Binh Hoàng Gia">👑</button>
+          <button class="avatar-opt" data-avatar="🧙‍♂️" data-title="Pháp Sư Bayes">🧙‍♂️</button>
+          <button class="avatar-opt" data-avatar="🧮" data-title="Kiện Tướng Thống Kê">🧮</button>
+          <button class="avatar-opt" data-avatar="🚀" data-title="Phi Hành Gia Logic">🚀</button>
+          <button class="avatar-opt" data-avatar="🦁" data-title="Dũng Sĩ Dữ Liệu">🦁</button>
+          <button class="avatar-opt" data-avatar="⚡" data-title="Tia Chớp Phân Tích">⚡</button>
+          <button class="avatar-opt" data-avatar="🎯" data-title="Thiện Xạ Xác Suất">🎯</button>
+          <button class="avatar-opt" data-avatar="💎" data-title="Bậc Thầy Toán Học">💎</button>
+        </div>
+        <div class="name-input-group">
+          <label for="nameInput">Tên người học:</label>
+          <input type="text" id="nameInput" maxlength="25" placeholder="Nhập tên của bạn...">
+          <button class="btn-primary" id="saveProfileBtn">Lưu Thông Tin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

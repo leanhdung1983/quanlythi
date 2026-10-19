@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 16: Công Thức Tính Góc Trong Không Gian - Toán 12 KNTT</title>
+  <!-- KaTeX Offline -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Khối 1: HUD Gamification Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Bậc Thầy Lượng Giác Không Gian</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Khối 2: Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG V • BÀI 16 • TOÁN 12 KNTT (TẬP HAI)</span>
+      <h1>CÔNG THỨC TÍNH GÓC TRONG KHÔNG GIAN</h1>
+      <p>Tổng hợp bộ 3 công thức tính góc cốt lõi: góc giữa hai đường thẳng, góc giữa đường thẳng và mặt phẳng, góc giữa hai mặt phẳng. Ứng dụng giải quyết bài toán độ dốc mái nhà, góc nghiêng bể nước và góc kim tự tháp Kheops.</p>
+    </section>
+
+    <!-- Khối 3: Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <div class="card-title">1. Góc Giữa Hai Đường Thẳng</div>
+          <p>Cho hai đường thẳng $\Delta_1$ và $\Delta_2$ lần lượt có VTCP $\overrightarrow{u}_1 = (a_1; b_1; c_1)$ và $\overrightarrow{u}_2 = (a_2; b_2; c_2)$:</p>
+          <div class="formula-box">
+            $$\cos(\Delta_1, \Delta_2) = |\cos(\overrightarrow{u}_1, \overrightarrow{u}_2)| = \frac{|\overrightarrow{u}_1 \cdot \overrightarrow{u}_2|}{|\overrightarrow{u}_1| \cdot |\overrightarrow{u}_2|} = \frac{|a_1 a_2 + b_1 b_2 + c_1 c_2|}{\sqrt{a_1^2 + b_1^2 + c_1^2} \cdot \sqrt{a_2^2 + b_2^2 + c_2^2}}$$
+          </div>
+          <div class="rule-box gold">
+            • Góc giữa hai đường thẳng luôn thoả mãn: $0^\circ \le (\Delta_1, \Delta_2) \le 90^\circ$. <br>
+            • $\Delta_1 \perp \Delta_2 \iff \overrightarrow{u}_1 \cdot \overrightarrow{u}_2 = 0 \iff a_1 a_2 + b_1 b_2 + c_1 c_2 = 0$.
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <div class="card-title">2. Góc Giữa Đường Thẳng & Mặt Phẳng</div>
+          <p>Cho đường thẳng $\Delta$ có VTCP $\overrightarrow{u} = (a; b; c)$ và mặt phẳng $(\alpha)$ có VTPT $\overrightarrow{n} = (A; B; C)$:</p>
+          <div class="formula-box">
+            $$\sin(\Delta, (\alpha)) = |\cos(\overrightarrow{u}, \overrightarrow{n})| = \frac{|\overrightarrow{u} \cdot \overrightarrow{n}|}{|\overrightarrow{u}| \cdot |\overrightarrow{n}|} = \frac{|a A + b B + c C|}{\sqrt{a^2 + b^2 + c^2} \cdot \sqrt{A^2 + B^2 + C^2}}$$
+          </div>
+          <div class="rule-box gold">
+            • Góc giữa đường thẳng và mặt phẳng thoả mãn: $0^\circ \le (\Delta, (\alpha)) \le 90^\circ$. <br>
+            • Chú ý: Dùng hàm $\sin$ vì góc giữa đường thẳng và mặt phẳng phụ với góc giữa $\overrightarrow{u}$ và $\overrightarrow{n}$.
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <div class="card-title">3. Góc Giữa Hai Mặt Phẳng</div>
+          <p>Cho hai mặt phẳng $(\alpha)$ và $(\beta)$ có VTPT tương ứng $\overrightarrow{n}_1 = (A_1; B_1; C_1)$ và $\overrightarrow{n}_2 = (A_2; B_2; C_2)$:</p>
+          <div class="formula-box">
+            $$\cos((\alpha), (\beta)) = |\cos(\overrightarrow{n}_1, \overrightarrow{n}_2)| = \frac{|\overrightarrow{n}_1 \cdot \overrightarrow{n}_2|}{|\overrightarrow{n}_1| \cdot |\overrightarrow{n}_2|} = \frac{|A_1 A_2 + B_1 B_2 + C_1 C_2|}{\sqrt{A_1^2 + B_1^2 + C_1^2} \cdot \sqrt{A_2^2 + B_2^2 + C_2^2}}$$
+          </div>
+          <div class="rule-box gold">
+            • Góc giữa hai mặt phẳng thoả mãn: $0^\circ \le ((\alpha), (\beta)) \le 90^\circ$. <br>
+            • $(\alpha) \perp (\beta) \iff \overrightarrow{n}_1 \cdot \overrightarrow{n}_2 = 0 \iff A_1 A_2 + B_1 B_2 + C_1 C_2 = 0$.
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <div class="card-title">4. Bảng Tra Cứu So Sánh Nhanh</div>
+          <p>Quy tắc ghi nhớ chuẩn xác dấu giá trị lượng giác khi tính góc trong không gian:</p>
+          <div class="formula-box">
+            $$\text{Đường - Đường: } \cos \varphi = \frac{|\overrightarrow{u}_1 \cdot \overrightarrow{u}_2|}{|\overrightarrow{u}_1| \cdot |\overrightarrow{u}_2|}$$
+            $$\text{Đường - Mặt: } \sin \varphi = \frac{|\overrightarrow{u} \cdot \overrightarrow{n}|}{|\overrightarrow{u}| \cdot |\overrightarrow{n}|}$$
+            $$\text{Mặt - Mặt: } \cos \varphi = \frac{|\overrightarrow{n}_1 \cdot \overrightarrow{n}_2|}{|\overrightarrow{n}_1| \cdot |\overrightarrow{n}_2|}$$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1 -->
+        <div class="card">
+          <div class="card-title">🧪 Lab 1: Thước Đo Góc Không Gian Đa Năng 3D</div>
+          <p>Chọn đối tượng đo góc (Đường - Đường, Đường - Mặt, Mặt - Mặt), kéo các thanh trượt vectơ chỉ phương / pháp tuyến và quan sát cung tròn đo góc phát sáng trực quan!</p>
+
+          <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <label><strong>Chế độ đo góc:</strong></label>
+            <select id="lab1ModeSelect" style="background: rgba(15, 23, 42, 0.8); color: #f8fafc; border: 1px solid #6366f1; padding: 6px 12px; border-radius: 6px;">
+              <option value="line_line">1. Góc giữa hai đường thẳng cos(Δ₁, Δ₂)</option>
+              <option value="line_plane">2. Góc giữa đường thẳng và mặt phẳng sin(Δ, P)</option>
+              <option value="plane_plane">3. Góc giữa hai mặt phẳng cos(P, Q)</option>
+            </select>
+          </div>
+
+          <div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <div>
+              <label>Vectơ 1 ($x$): <strong id="lab1ValV1x" style="color: #38bdf8;">2</strong></label>
+              <input type="range" id="lab1SliderV1x" min="-3" max="3" step="1" value="2" style="width: 80px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Vectơ 1 ($y$): <strong id="lab1ValV1y" style="color: #38bdf8;">-1</strong></label>
+              <input type="range" id="lab1SliderV1y" min="-3" max="3" step="1" value="-1" style="width: 80px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Vectơ 1 ($z$): <strong id="lab1ValV1z" style="color: #38bdf8;">3</strong></label>
+              <input type="range" id="lab1SliderV1z" min="-3" max="3" step="1" value="3" style="width: 80px; margin-left: 4px;">
+            </div>
+          </div>
+
+          <div style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <div>
+              <label>Vectơ 2 ($x$): <strong id="lab1ValV2x" style="color: #f59e0b;">-1</strong></label>
+              <input type="range" id="lab1SliderV2x" min="-3" max="3" step="1" value="-1" style="width: 80px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Vectơ 2 ($y$): <strong id="lab1ValV2y" style="color: #f59e0b;">1</strong></label>
+              <input type="range" id="lab1SliderV2y" min="-3" max="3" step="1" value="1" style="width: 80px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Vectơ 2 ($z$): <strong id="lab1ValV2z" style="color: #f59e0b;">2</strong></label>
+              <input type="range" id="lab1SliderV2z" min="-3" max="3" step="1" value="2" style="width: 80px; margin-left: 4px;">
+            </div>
+          </div>
+
+          <canvas id="lab1Canvas" width="540" height="320" style="width: 100%; height: auto; background: #030712; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 10px 0;"></canvas>
+
+          <div class="lab-output" id="lab1Output" style="background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 6px; border-left: 3px solid #6366f1; font-size: 0.95em;">
+            Đang tính toán giá trị lượng giác và số đo góc...
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="card">
+          <div class="card-title">🧪 Lab 2: Mô Phỏng Mái Nghiêng Trụ & Kim Tự Tháp Kheops 3D</div>
+          <p>Mô phỏng kiến trúc thực tế: Tình huống mở đầu (mái nhà hình tròn trên 3 cột trụ H.5.33) hoặc Bài 5.23 (Kim tự tháp Kheops H.5.38). Tính góc nghiêng chính xác ra độ phút!</p>
+
+          <div style="margin: 15px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <label><strong>Công trình kiến trúc:</strong></label>
+            <select id="lab2ArchSelect" style="background: rgba(15, 23, 42, 0.8); color: #f8fafc; border: 1px solid #6366f1; padding: 6px 12px; border-radius: 6px;">
+              <option value="roof">1. Tình huống mở đầu: Mái nhà trên 3 cột trụ (7m, 6m, 5m)</option>
+              <option value="pyramid">2. Bài 5.23: Kim tự tháp Kheops Ai Cập (Góc 2 mặt bên)</option>
+            </select>
+          </div>
+
+          <div id="lab2SlidersRoof" style="margin: 10px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <div>
+              <label>Cột A: <strong id="lab2ValHa" style="color: #ef4444;">7</strong> m</label>
+              <input type="range" id="lab2SliderHa" min="4" max="10" step="0.5" value="7" style="width: 90px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Cột B: <strong id="lab2ValHb" style="color: #10b981;">6</strong> m</label>
+              <input type="range" id="lab2SliderHb" min="4" max="10" step="0.5" value="6" style="width: 90px; margin-left: 4px;">
+            </div>
+            <div>
+              <label>Cột C: <strong id="lab2ValHc" style="color: #38bdf8;">5</strong> m</label>
+              <input type="range" id="lab2SliderHc" min="4" max="10" step="0.5" value="5" style="width: 90px; margin-left: 4px;">
+            </div>
+          </div>
+
+          <canvas id="lab2Canvas" width="540" height="320" style="width: 100%; height: auto; background: #030712; border-radius: 8px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 10px 0;"></canvas>
+
+          <div class="lab-output" id="lab2Output" style="background: rgba(15, 23, 42, 0.6); padding: 10px 14px; border-radius: 6px; border-left: 3px solid #06b6d4; font-size: 0.95em;">
+            Đang tính toán góc nghiêng kiến trúc thực tế...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Công Thức Tính Góc Không Gian</h2>
+          <p>10 câu hỏi trắc nghiệm chọn lọc bám sát SGK Toán 12 KNTT (Trang 50 – 53). Bấm trực tiếp vào các nút lựa chọn để nhận giải thích chi tiết và nhận điểm XP!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="stat-item">
+            <span class="stat-label">Tiến Độ</span>
+            <span class="stat-value" id="arenaProgress" style="color: #38bdf8;">0/10</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">Điểm Arena</span>
+            <span class="stat-value" id="arenaScore" style="color: #10b981;">0 XP</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Render 10 câu hỏi bằng JS -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="card-grid" style="margin-bottom: 30px;">
+        <div class="card" id="badge-1">
+          <div class="card-title">🎖️ Huy Hiệu 1: Khởi Đầu Đo Góc</div>
+          <p>Mở khóa khi học sinh hoàn thành câu hỏi đầu tiên trên Đấu trường.</p>
+        </div>
+        <div class="card" id="badge-2">
+          <div class="card-title">⚡ Huy Hiệu 2: Chuỗi Đo Góc Bất Bại</div>
+          <p>Mở khóa khi đạt chuỗi đúng liên tiếp 🔥 3 câu.</p>
+        </div>
+        <div class="card" id="badge-3">
+          <div class="card-title">🧪 Huy Hiệu 3: Kiến Trúc Sư Kheops</div>
+          <p>Mở khóa khi trải nghiệm cả 2 phòng thí nghiệm Thước đo góc đa năng và Mô phỏng Kheops.</p>
+        </div>
+        <div class="card" id="badge-4">
+          <div class="card-title">🌟 Huy Hiệu 4: Bậc Thầy Lượng Giác Không Gian</div>
+          <p>Mở khóa khi đạt từ 160 XP trở lên trên Đấu trường (đúng từ 8 câu).</p>
+        </div>
+        <div class="card" id="badge-5">
+          <div class="card-title">👑 Huy Hiệu 5: Quán Quân Góc Không Gian 12</div>
+          <p>Mở khóa khi đạt điểm tuyệt đối 10/10 câu hỏi Đấu trường SGK!</p>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-border">
+          <div class="cert-header">
+            <h4>BỘ GIÁO DỤC VÀ ĐÀO TẠO • TRƯỜNG THPT LƯƠNG THẾ VINH</h4>
+            <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+            <p class="cert-sub">Khóa Học Hình Học Giải Tích Không Gian 12</p>
+          </div>
+          <div class="cert-body">
+            <p>Chứng nhận học sinh:</p>
+            <h3 id="certStudentName">Chiến Binh Logic</h3>
+            <p>Đã xuất sắc hoàn thành chuyên đề học tập tương tác:</p>
+            <h4 class="cert-lesson-title">BÀI 16: CÔNG THỨC TÍNH GÓC TRONG KHÔNG GIAN (TOÁN 12 - TẬP HAI)</h4>
+            <div class="cert-stats-row">
+              <span>Tổng điểm tích lũy: <strong id="certXP">0 XP</strong></span>
+              <span>Đánh giá xếp loại: <strong id="certRank">Xuất Sắc</strong></span>
+            </div>
+            <p class="cert-date" id="certDate">Đà Nẵng, ngày 19 tháng 10 năm 2026</p>
+          </div>
+          <div class="cert-footer">
+            <div class="cert-seal">
+              <div class="seal-inner">★ CHUẨN KNTT ★</div>
+            </div>
+            <div class="cert-sign">
+              <p>GIÁO VIÊN HƯỚNG DẪN</p>
+              <div class="signature">ThS. Toán Học Số</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align: center; margin-top: 20px;">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai15/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 15: Phương Trình Đường Thẳng</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_bai17/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Bài 17: Phương Trình Mặt Cầu</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Chọn Avatar (Ẩn mặc định) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-box">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker-grid">
+        <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh</button>
+        <button class="avatar-opt" data-avatar="🚀" data-name="Thủ Khoa Góc">🚀 Thủ Khoa</button>
+        <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Pháp Sư Lượng Giác">🧙‍♂️ Pháp Sư</button>
+        <button class="avatar-opt" data-avatar="🦊" data-name="Cáo Kheops">🦊 Cáo Thông Thái</button>
+        <button class="avatar-opt" data-avatar="🦉" data-name="Cú Sin-Cos">🦉 Cú Uyên Bác</button>
+        <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Độ Dốc">⚡ Tia Chớp</button>
+        <button class="avatar-opt" data-avatar="💎" data-name="Kim Cương Góc Vuông">💎 Kim Cương</button>
+        <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Cung Tròn">🎯 Thiện Xạ</button>
+      </div>
+      <button class="btn-primary" id="btnCloseAvatarModal" style="margin-top: 15px;">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

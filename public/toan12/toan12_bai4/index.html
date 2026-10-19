@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 4: Khảo Sát Sự Biến Thiên Và Vẽ Đồ Thị Của Hàm Số - Toán 12 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nghệ Nhân Khảo Sát Đồ Thị 12</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Danh Mục Bài Học Toán 12">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương I: Ứng Dụng Đạo Hàm Khảo Sát & Vẽ Đồ Thị • Toán 12</span>
+      <h1>BÀI 4: KHẢO SÁT SỰ BIẾN THIÊN VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ</h1>
+      <p>Tổng hợp toàn diện quy trình khảo sát 3 bước và làm chủ 3 họ đường cong kinh điển của Toán 12: Hàm đa thức bậc ba, hàm phân thức bậc 1 trên bậc 1 và hàm phân thức bậc 2 trên bậc 1!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Khen</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <h3 class="card-title"><i>📋</i> 1. Sơ Đồ Khảo Sát Hàm Số Chuẩn 3 Bước</h3>
+          <div class="rule-box gold">
+            <h4>Bước 1: Tìm tập xác định</h4>
+            <p>Xác định miền xác định $D$ của hàm số $y = f(x)$ và xét tính chẵn, lẻ, tuần hoàn (nếu có).</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>Bước 2: Khảo sát sự biến thiên</h4>
+            <p>• Tính đạo hàm $y' = f'(x)$. Tìm các điểm tại đó $y' = 0$ hoặc $y'$ không xác định.</p>
+            <p>• Xét dấu $y'$ để suy ra các khoảng đồng biến, nghịch biến và các điểm cực trị.</p>
+            <p>• Tìm các giới hạn tại vô cực, giới hạn một bên và xác định các đường tiệm cận (đứng, ngang, xiên).</p>
+            <p>• Lập bảng biến thiên (BBT) thể hiện đầy đủ các yếu tố trên.</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>Bước 3: Vẽ đồ thị</h4>
+            <p>• Xác định các điểm đặc biệt: giao điểm với trục tung $(0; f(0))$, trục hoành ($f(x) = 0$), điểm uốn, điểm cực trị.</p>
+            <p>• Vẽ các đường tiệm cận trước, sau đó vẽ đường cong đồ thị đi qua các điểm đặc biệt.</p>
+            <p>• Chỉ ra tâm đối xứng và trục đối xứng của đồ thị (nếu có).</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <h3 class="card-title"><i>📈</i> 2. Hàm Đa Thức Bậc Ba $y = ax^3 + bx^2 + cx + d$ ($a \neq 0$)</h3>
+          <div class="concept-box cyan">
+            <h4>Đạo hàm và số lượng cực trị</h4>
+            <p>Đạo hàm là tam thức bậc hai: $y' = 3ax^2 + 2bx + c$. Biệt thức $\Delta' = b^2 - 3ac$:</p>
+            <p>• Nếu $\Delta' > 0$: $y' = 0$ có 2 nghiệm phân biệt $\Rightarrow$ đồ thị có <strong>2 điểm cực trị</strong> (1 cực đại và 1 cực tiểu).</p>
+            <p>• Nếu $\Delta' \le 0$: $y' \ge 0$ (hoặc $\le 0$) $\Rightarrow$ hàm số đơn điệu trên $\mathbb{R}$, <strong>không có cực trị</strong>.</p>
+          </div>
+          <div class="concept-box emerald">
+            <h4>Tâm đối xứng đặc trưng: Điểm uốn $I$</h4>
+            <p>Đồ thị hàm bậc ba luôn nhận điểm uốn $I(x_0; y_0)$ làm <strong>tâm đối xứng</strong>, trong đó hoành độ $x_0$ là nghiệm của đạo hàm cấp hai:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$y'' = 6ax + 2b = 0 \quad \Longleftrightarrow \quad x_0 = -\frac{b}{3a}$$</p>
+            </div>
+            <p>Đặc biệt: Nếu hàm số có 2 điểm cực trị $A, B$ thì điểm uốn $I$ chính là trung điểm của đoạn thẳng $AB$!</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <h3 class="card-title"><i>🔀</i> 3. Hàm Phân Thức Bậc Nhất Trên Bậc Nhất $y = \frac{ax+b}{cx+d}$</h3>
+          <div class="concept-box rose">
+            <h4>Đặc điểm biến thiên</h4>
+            <p>Tập xác định: $D = \mathbb{R} \setminus \{-\frac{d}{c}\}$. Đạo hàm:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$y' = \frac{ad - bc}{(cx + d)^2}$$</p>
+            </div>
+            <p>• Nếu $ad - bc > 0$: hàm số đồng biến trên từng khoảng xác định.</p>
+            <p>• Nếu $ad - bc < 0$: hàm số nghịch biến trên từng khoảng xác định.</p>
+            <p>• Hàm số <strong>tuyệt đối không có cực trị</strong>!</p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Tiệm cận và Tâm đối xứng</h4>
+            <p>• Tiệm cận đứng: $x = -\frac{d}{c}$. Tiệm cận ngang: $y = \frac{a}{c}$.</p>
+            <p>• <strong>Tâm đối xứng:</strong> Giao điểm hai đường tiệm cận $I\left(-\frac{d}{c}; \frac{a}{c}\right)$.</p>
+            <p>• <strong>Trục đối xứng:</strong> Hai đường phân giác của các góc tạo bởi hai đường tiệm cận.</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <h3 class="card-title"><i>⚡</i> 4. Hàm Phân Thức Bậc Hai Trên Bậc Nhất $y = \frac{ax^2+bx+c}{px+q}$</h3>
+          <div class="concept-box gold">
+            <h4>Phân tích tiệm cận xiên</h4>
+            <p>Chia tử cho mẫu ta được dạng: $y = mx + n + \frac{r}{px + q}$ với $m = \frac{a}{p} \neq 0$.</p>
+            <p>• Tiệm cận đứng: $x = -\frac{q}{p}$.</p>
+            <p>• Tiệm cận xiên: $y = mx + n$.</p>
+            <p>• <strong>Tâm đối xứng:</strong> Giao điểm $I$ của đường tiệm cận đứng và đường tiệm cận xiên.</p>
+          </div>
+          <div class="concept-box emerald">
+            <h4>Quy luật cực trị của đồ thị</h4>
+            <p>Khi phương trình đạo hàm $y' = 0$ có 2 nghiệm phân biệt khác $-\frac{q}{p}$, đồ thị hàm số có <strong>2 điểm cực trị</strong> nằm về <strong>hai phía</strong> của đường tiệm cận đứng!</p>
+            <p>Đường thẳng nối 2 điểm cực trị có hệ số góc bằng hệ số góc của tiệm cận xiên.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🧪</i> Lab 1: Studio Khảo Sát & Tiếp Tuyến Động Của Hàm Đa Thức Bậc Ba</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.95rem;">
+          Khảo sát hàm số $y = -x^3 + 3x + 1$ (Bài 1.21a SGK). Hàm số có $y' = -3x^2 + 3 = 0 \Leftrightarrow x = \pm 1$. Di chuyển thanh trượt $x$ để xem tiếp tuyến động, điểm uốn $I(0; 1)$ làm tâm đối xứng và hai đỉnh cực trị!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;">
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 12px; text-align: center;">
+            <canvas id="lab1Canvas" width="600" height="380" style="width: 100%; max-width: 600px; height: auto; border-radius: var(--radius-sm); background: #030712; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span>⭐ Điểm uốn $I(0; 1)$</span>
+              <span>🔷 Cực tiểu $(-1; -1)$</span>
+              <span>🔶 Cực đại $(1; 3)$</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="concept-box cyan" style="margin: 0;">
+              <h4>Hoành độ điểm tiếp xúc $x$:</h4>
+              <div style="display: flex; align-items: center; gap: 10px; margin: 10px 0;">
+                <input type="range" id="lab1SliderX" min="-2.5" max="2.5" step="0.05" value="0.0" style="flex: 1;">
+                <span id="lab1ValX" style="font-weight: 800; color: var(--cyan-neon); min-width: 45px;">$0.00$</span>
+              </div>
+              <div style="display: flex; gap: 6px; flex-wrap: wrap;">
+                <button class="btn-icon" id="btnLab1Min" style="font-size: 0.75rem;">Cực tiểu $x = -1$</button>
+                <button class="btn-icon" id="btnLab1Inflection" style="font-size: 0.75rem;">Điểm uốn $x = 0$</button>
+                <button class="btn-icon" id="btnLab1Max" style="font-size: 0.75rem;">Cực đại $x = 1$</button>
+              </div>
+            </div>
+
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px;">
+              <h4 style="color: var(--indigo-light); margin-bottom: 8px; font-size: 0.95rem;">Thông Số Khảo Sát Tức Thời:</h4>
+              <p style="margin-bottom: 5px;">• Tọa độ điểm: $M($ <span id="lab1DispX" style="color: #fff;">$0.00$</span> ; <span id="lab1DispY" style="color: var(--gold-accent);">$1.00$</span> $)$</p>
+              <p style="margin-bottom: 5px;">• Hệ số góc tiếp tuyến: $k = y' =$ <strong id="lab1ValSlope" style="color: var(--cyan-neon);">$3.00$</strong></p>
+              <p style="margin-bottom: 5px;">• Đạo hàm cấp hai: $y'' = -6x =$ <strong id="lab1ValD2" style="color: #fb7185;">$0.00$</strong></p>
+              <div id="lab1StatusBox" style="margin-top: 8px; padding: 8px 10px; border-radius: 6px; font-size: 0.85rem; line-height: 1.4; background: rgba(99,102,241,0.15); border: 1px solid var(--border-color); color: var(--text-primary);">
+                Tại $x = 0$: $y'' = 0$, điểm $I(0; 1)$ là điểm uốn và là tâm đối xứng của đồ thị!
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2 -->
+      <div class="card">
+        <h3 class="card-title"><i>🎛️</i> Lab 2: Máy Biến Hình Phân Thức Hữu Tỉ (Bậc 1/1 & Bậc 2/1)</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.95rem;">
+          Chuyển đổi giữa hai dạng phân thức: Hàm nhất biến $y = \frac{2x+1}{x+1}$ (Bài 1.22a) và hàm phân thức bậc 2 trên bậc 1 $y = \frac{x^2 - x + 1}{x - 1} = x + \frac{1}{x - 1}$. Khám phá cấu trúc tiệm cận và tâm đối xứng!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;">
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 12px; text-align: center;">
+            <canvas id="lab2Canvas" width="600" height="340" style="width: 100%; max-width: 600px; height: auto; border-radius: var(--radius-sm); background: #030712; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: center; gap: 20px; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span>🔵 Đồ thị Hyperbol</span>
+              <span>🟣 Tiệm cận & Tâm $I$</span>
+              <span>🟢 Trục đối xứng phân giác</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="concept-box gold" style="margin: 0;">
+              <h4>Chọn họ hàm số khảo sát:</h4>
+              <div style="display: flex; gap: 8px; margin: 10px 0;">
+                <button class="btn-icon" id="btnMode11" style="flex: 1; font-weight: 700; background: rgba(99,102,241,0.3); border-color: #818cf8;">Hàm Bậc 1 / Bậc 1</button>
+                <button class="btn-icon" id="btnMode21" style="flex: 1; font-weight: 700;">Hàm Bậc 2 / Bậc 1</button>
+              </div>
+
+              <h4>Dịch chuyển điểm khảo sát $x$:</h4>
+              <div style="display: flex; align-items: center; gap: 10px; margin: 6px 0;">
+                <input type="range" id="lab2SliderX" min="-5.0" max="4.0" step="0.1" value="1.0" style="flex: 1;">
+                <span id="lab2ValX" style="font-weight: 800; color: var(--gold-accent); min-width: 45px;">$1.0$</span>
+              </div>
+            </div>
+
+            <div style="background: rgba(15,23,42,0.7); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 14px;">
+              <h4 style="color: var(--indigo-light); margin-bottom: 8px; font-size: 0.95rem;">Phân Tích Cấu Trúc Đồ Thị:</h4>
+              <p style="margin-bottom: 5px;" id="lab2FormulaDesc">• Phương trình: $y = \frac{2x+1}{x+1}$</p>
+              <p style="margin-bottom: 5px;" id="lab2AsymptoteDesc">• Tiệm cận: Đứng $x = -1$, Ngang $y = 2$</p>
+              <p style="margin-bottom: 5px;" id="lab2CenterDesc">• Tâm đối xứng: $I(-1; 2)$</p>
+              <div id="lab2StatusBox" style="margin-top: 8px; padding: 10px; border-radius: 6px; font-size: 0.88rem; line-height: 1.4; background: rgba(99,102,241,0.15); border: 1px solid var(--indigo-light); color: var(--text-primary);">
+                Đồ thị gồm 2 nhánh nhận $I$ làm tâm đối xứng và 2 đường phân giác vuông góc làm trục đối xứng.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>ĐẤU TRƯỜNG TOÁN 12: KHẢO SÁT & VẼ ĐỒ THỊ</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm bám sát SGK Bài 4. Bấm trực tiếp đáp án để tích lũy XP và bùng nổ chuỗi Combo!</p>
+        </div>
+        <div class="arena-score-box">
+          <div style="text-align: right;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Tiến độ</div>
+            <div id="arenaProgress" style="font-size: 1.1rem; font-weight: 800; color: #fff;">0/10</div>
+          </div>
+          <div style="text-align: right;">
+            <div style="font-size: 0.8rem; color: var(--text-muted); text-transform: uppercase;">Điểm Arena</div>
+            <div id="arenaScore" style="font-size: 1.3rem; font-weight: 800; color: var(--emerald-true);">0 XP</div>
+          </div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Bài 4: Khảo Sát & Vẽ Đồ Thị</h3>
+
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-cubic_studio">
+          <div class="badge-icon">📈</div>
+          <div class="badge-name">Họa Sĩ Đường Cong Bậc Ba</div>
+          <div class="badge-desc">Khám phá thành công điểm uốn và tiếp tuyến động trong Lab 1.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-rational_morpher">
+          <div class="badge-icon">🎛️</div>
+          <div class="badge-name">Bậc Thầy Biến Hình Phân Thức</div>
+          <div class="badge-desc">Trải nghiệm cả 2 dạng đồ thị phân thức bậc 1/1 và bậc 2/1 trong Lab 2.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-streak">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Ngọn Lửa Chuỗi Đúng</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng liên tiếp từ 5 câu trở lên trong Đấu Trường.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-arena">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Binh Khảo Sát</div>
+          <div class="badge-desc">Đạt từ 8/10 câu đúng trong Đấu Trường SGK Bài 4.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-master">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng Đồ Thị 12</div>
+          <div class="badge-desc">Đạt trọn vẹn 10/10 câu hỏi và hoàn thành xuất sắc toàn bộ bài học!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 4: KHẢO SÁT SỰ BIẾN THIÊN VÀ VẼ ĐỒ THỊ CỦA HÀM SỐ (TOÁN 12 TẬP 1)</strong><br>
+            Nắm vững quy trình khảo sát hàm số 3 bước, làm chủ phương pháp vẽ và nhận dạng các dạng đồ thị bậc ba, phân thức bậc 1/1 và bậc 2/1 chuẩn SGK.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHUYÊN GIA KHẢO SÁT HÀM SỐ XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_bai3/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Bài 3: Đường Tiệm Cận</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../toan12_bai5/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài Tiếp Theo ➡️</span>
+        <span class="nav-title">Bài 5: Ứng Dụng Thực Tiễn</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Học Giả Giải Tích</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Chuyên Gia Giải Tích Hoàng Gia">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Đạo Hàm Vũ Trụ">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Biến Thiên Bất Bại">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Chinh Phục Cực Trị">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Giải Tích 12">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Toán Học Tối Cao">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Khảo Sát Hàm Số">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Thủ Khoa Olympic Toán 12">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

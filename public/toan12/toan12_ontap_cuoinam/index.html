@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Cuối Năm: Toàn Bộ Chương Trình Toán 12 - KNTT</title>
+  <!-- KaTeX Offline Cục Bộ -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic</h2>
+          <span class="user-title" id="userTitle">Thủ Khoa Tốt Nghiệp Toán 12</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <a href="/learning?grade=12" class="btn-icon btn-nav-hub" style="text-decoration: none;" title="Về Không Gian Học Tập">🎓 Học Trực Tuyến</a>
+        <a href="../index.html" class="btn-icon btn-portal-home" title="Về Cổng Tổng Quan Toán 12">🏠 Cổng Bài Học</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">TOÁN 12 • TỔNG HỢP TOÀN KHÓA • BÀI TẬP ÔN TẬP CUỐI NĂM</span>
+      <h1>ÔN TẬP CUỐI NĂM: TOÀN BỘ CHƯƠNG TRÌNH TOÁN 12</h1>
+      <p>Tổng kết 6 chương cốt lõi: Giải tích hàm số, Hình học không gian Oxyz, Thống kê ghép nhóm, Nguyên hàm - Tích phân và Xác suất Bayes</p>
+    </section>
+
+    <!-- KHỐI 3: THANH NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- KHỐI NỘI DUNG TABS -->
+    <main class="main-content">
+      <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+      <section class="tab-content active" id="tab-theory">
+        <div class="card-grid">
+          <!-- Thẻ 1: Khảo sát hàm số -->
+          <article class="concept-card">
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <span class="card-num">01</span>
+              <h3>Khảo Sát & Ứng Dụng Đạo Hàm</h3>
+            </div>
+            <div class="card-body">
+              <p>Khung phân tích toàn diện đồ thị hàm số $y = f(x)$:</p>
+              <ul>
+                <li><strong>Đơn điệu:</strong> $f'(x) \ge 0$ (đồng biến), $f'(x) \le 0$ (nghịch biến).</li>
+                <li><strong>Cực trị:</strong> $f'(x_0) = 0$ và đổi dấu qua $x_0$.</li>
+                <li><strong>Tiệm cận ngang:</strong> $y = y_0$ nếu $\lim\limits_{x \to \pm\infty} f(x) = y_0$.</li>
+                <li><strong>Tiệm cận đứng:</strong> $x = x_0$ nếu $\lim\limits_{x \to x_0^\pm} f(x) = \pm\infty$.</li>
+                <li><strong>Tiệm cận xiên:</strong> $y = ax + b$ với $a = \lim\limits_{x \to \pm\infty} \frac{f(x)}{x}$, $b = \lim\limits_{x \to \pm\infty} [f(x) - ax]$.</li>
+              </ul>
+              <div class="formula-box">
+                $$f(x) = ax + b + \frac{r(x)}{d(x)} \implies \text{TCX: } y = ax + b$$
+              </div>
+            </div>
+          </article>
+
+          <!-- Thẻ 2: Nguyên hàm & Tích phân -->
+          <article class="concept-card">
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <span class="card-num">02</span>
+              <h3>Nguyên Hàm, Tích Phân & Ứng Dụng</h3>
+            </div>
+            <div class="card-body">
+              <p>Công thức định nghĩa tích phân và định lý cơ bản Newton-Leibniz:</p>
+              <div class="formula-box">
+                $$\int_a^b f(x)dx = F(b) - F(a) = \left[ F(x) \right]_a^b$$
+              </div>
+              <p>Ứng dụng hình học thực tiễn:</p>
+              <ul>
+                <li><strong>Diện tích hình phẳng:</strong> $S = \int_a^b |f(x) - g(x)|dx$.</li>
+                <li><strong>Thể tích khối tròn xoay (quanh $Ox$):</strong> $V = \pi \int_a^b [f(x)]^2 dx$.</li>
+              </ul>
+              <div class="rule-box gold">
+                <strong>💡 Lưu ý dấu tích phân:</strong> Khi tính diện tích $S$, phải chia nhỏ tích phân tại các nghiệm của $f(x) - g(x) = 0$ để phá dấu giá trị tuyệt đối.
+              </div>
+            </div>
+          </article>
+
+          <!-- Thẻ 3: Hình học không gian Oxyz -->
+          <article class="concept-card">
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <span class="card-num">03</span>
+              <h3>Hình Học Không Gian & Tọa Độ Oxyz</h3>
+            </div>
+            <div class="card-body">
+              <p>Các phương trình cốt lõi trong không gian tọa độ:</p>
+              <ul>
+                <li><strong>Mặt phẳng:</strong> $Ax + By + Cz + D = 0$ (VTPT $\overrightarrow{n} = (A; B; C)$).</li>
+                <li><strong>Mặt phẳng đoạn chắn:</strong> $\frac{x}{a} + \frac{y}{b} + \frac{z}{c} = 1$ với $A(a;0;0), B(0;b;0), C(0;0;c)$.</li>
+                <li><strong>Đường thẳng:</strong> $\begin{cases} x = x_0 + at \\ y = y_0 + bt \\ z = z_0 + ct \end{cases}$ (VTCP $\overrightarrow{u} = (a; b; c)$).</li>
+                <li><strong>Góc giữa đường thẳng và mặt phẳng:</strong>
+                  $$\sin\varphi = \frac{|\overrightarrow{u} \cdot \overrightarrow{n}|}{|\overrightarrow{u}| \cdot |\overrightarrow{n}|}$$
+                </li>
+              </ul>
+            </div>
+          </article>
+
+          <!-- Thẻ 4: Thống kê ghép nhóm & Xác suất Bayes -->
+          <article class="concept-card">
+            <div class="card-glow"></div>
+            <div class="card-header">
+              <span class="card-num">04</span>
+              <h3>Thống Kê Ghép Nhóm & Xác Suất Bayes</h3>
+            </div>
+            <div class="card-body">
+              <p>Đo lường mức độ phân tán số liệu & suy diễn xác suất nâng cao:</p>
+              <ul>
+                <li><strong>Khoảng biến thiên:</strong> $R = x_{max} - x_{min}$.</li>
+                <li><strong>Khoảng tứ phân vị:</strong> $\Delta_Q = Q_3 - Q_1$.</li>
+                <li><strong>Phương sai & Độ lệch chuẩn:</strong> $s^2 = \frac{1}{n} \sum m_i (c_i - \overline{x})^2; \quad s = \sqrt{s^2}$.</li>
+                <li><strong>Xác suất toàn phần:</strong> $P(B) = \sum P(A_i)P(B|A_i)$.</li>
+                <li><strong>Định lý Bayes:</strong> $P(A_k|B) = \frac{P(A_k)P(B|A_k)}{P(B)}$.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </section>
+
+      <!-- TAB 2: PHÒNG THÍ NGHIỆM -->
+      <section class="tab-content" id="tab-labs">
+        <!-- LAB 1 -->
+        <article class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Lab 1: Kính Vạn Hoa Giải Tích 12 (Omni Calculus & Curves)</h3>
+            <p>Khảo sát động hàm số, đạo hàm tức thời $f'(x)$, cực trị, đường tiệm cận và diện tích hình phẳng tích phân $\int_a^b f(x)dx$.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="curveType">Loại hàm số:</label>
+              <select id="curveType" style="padding: 6px 12px; background: #0f172a; color: #fff; border: 1px solid #6366f1; border-radius: 8px;">
+                <option value="cubic">Bậc Ba: $y = x^3 - 3x^2 + 3$ (Câu 4 SGK)</option>
+                <option value="rational">Phân Thức: $y = \frac{x^2+3}{x-1}$ (Câu 2 SGK)</option>
+                <option value="integral">Tích Phân & Diện Tích: $S = \int_{-1}^4 f(x)dx$ (Câu 7 SGK)</option>
+              </select>
+            </div>
+            <div class="control-group">
+              <label for="paramA">Hệ số $a$: <span class="val-display" id="paramAVal">1.0</span></label>
+              <input type="range" id="paramA" min="-3" max="3" step="0.5" value="1.0">
+            </div>
+            <div class="control-group">
+              <label for="paramX">Điểm khảo sát $x_0$: <span class="val-display" id="paramXVal">2.0</span></label>
+              <input type="range" id="paramX" min="-3" max="5" step="0.1" value="2.0">
+            </div>
+          </div>
+          <div class="lab-btn-row">
+            <button class="btn-lab-opt" id="btnPresetCubic">📉 Đồ Thị Bậc Ba Cực Trị</button>
+            <button class="btn-lab-opt" id="btnPresetRational">📊 Phân Thức Tiệm Cận</button>
+            <button class="btn-lab-opt" id="btnPresetArea">🎨 Diện Tích Tích Phân Đổi Dấu</button>
+          </div>
+          <canvas id="calcCanvas" width="900" height="340"></canvas>
+          <div class="lab-output" id="calcOutput">
+            Đang phân tích vi tích phân hàm số...
+          </div>
+        </article>
+
+        <!-- LAB 2 -->
+        <article class="lab-card">
+          <div class="lab-header">
+            <h3>🧪 Lab 2: Trạm Không Gian Oxyz 3D & Đo Lường Hình Học</h3>
+            <p>Trực quan hóa mô hình tọa độ không gian $Oxyz$: Điểm $M(x_0, y_0, z_0)$, các hình chiếu $A, B, C$ trên ba trục tọa độ, mặt phẳng đoạn chắn $(ABC)$ và góc giữa đường thẳng $d$ với mặt phẳng $(P)$.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="coordX">Tọa độ $x_0$: <span class="val-display" id="coordXVal">2</span></label>
+              <input type="range" id="coordX" min="-5" max="5" step="1" value="2">
+            </div>
+            <div class="control-group">
+              <label for="coordY">Tọa độ $y_0$: <span class="val-display" id="coordYVal">-1</span></label>
+              <input type="range" id="coordY" min="-5" max="5" step="1" value="-1">
+            </div>
+            <div class="control-group">
+              <label for="coordZ">Tọa độ $z_0$: <span class="val-display" id="coordZVal">3</span></label>
+              <input type="range" id="coordZ" min="-5" max="5" step="1" value="3">
+            </div>
+            <div class="control-group">
+              <label for="rotAngle">Góc xoay 3D: <span class="val-display" id="rotAngleVal">35°</span></label>
+              <input type="range" id="rotAngle" min="0" max="360" step="5" value="35">
+            </div>
+          </div>
+          <div class="lab-btn-row">
+            <button class="btn-lab-opt" id="btnPresetSGK12">📐 Mẫu Điểm $M(2; -1; 3)$ (Câu 12 SGK)</button>
+            <button class="btn-lab-opt" id="btnPresetLinePlane">📏 Góc Đường & Mặt Phẳng (Câu 11 SGK)</button>
+            <button class="btn-lab-opt" id="btnReset3D">🔄 Tọa Độ Gốc Chuẩn</button>
+          </div>
+          <canvas id="spaceCanvas" width="900" height="340"></canvas>
+          <div class="lab-output" id="spaceOutput">
+            Đang phân tích cấu trúc hình học $Oxyz$...
+          </div>
+        </article>
+      </section>
+
+      <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+      <section class="tab-content" id="tab-arena">
+        <div class="arena-header">
+          <div>
+            <h2>⚔️ Đấu Trường SGK: Bài Tập Ôn Tập Cuối Năm</h2>
+            <p>10 câu hỏi tinh hoa bao quát trọn vẹn 6 chương Toán 12 từ SGK trang 90–91. Trả lời đúng để tích lũy XP và hoàn thiện khóa học!</p>
+          </div>
+          <div class="arena-score-box">
+            <span class="arena-prog" id="arenaProgress">Tiến Độ: 0/10</span>
+            <span class="arena-score" id="arenaScore">Điểm Arena: 0 XP</span>
+          </div>
+        </div>
+        <div class="quiz-container" id="quizContainer">
+          <!-- Các câu hỏi render qua JavaScript -->
+        </div>
+      </section>
+
+      <!-- TAB 4: HUY HIỆU & VINH DANH -->
+      <section class="tab-content" id="tab-badges">
+        <div class="badges-banner">
+          <h2>🏆 Bảng Vàng Danh Dự & Văn Bằng Tốt Nghiệp Toàn Khóa</h2>
+          <p>Chúc mừng bạn đã chinh phục trọn vẹn chương trình Toán 12! Hãy mở khóa 5 huy hiệu tối thượng để nhận Giấy Chứng Nhận Tốt Nghiệp Danh Dự A4.</p>
+        </div>
+        <div class="badges-grid">
+          <div class="badge-card locked" id="badge-1">
+            <div class="badge-icon">📖</div>
+            <h4>Đại Sứ Tri Thức Toán 12</h4>
+            <p>Khám phá trọn vẹn Bản Đồ Tri Thức tổng hợp 6 chương</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+          <div class="badge-card locked" id="badge-2">
+            <div class="badge-icon">🧪</div>
+            <h4>Bậc Thầy Giải Tích Động</h4>
+            <p>Thực nghiệm Lab Kính Vạn Hoa Giải Tích và khảo sát đồ thị</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+          <div class="badge-card locked" id="badge-3">
+            <div class="badge-icon">📐</div>
+            <h4>Kiến Trúc Sư Không Gian Oxyz</h4>
+            <p>Khám phá và thao tác tọa độ 3D cùng Lab Trạm Không Gian</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+          <div class="badge-card locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <h4>Chiến Binh Toàn Năng</h4>
+            <p>Đạt từ 160 XP trở lên tại Đấu Trường Ôn Tập Cuối Năm</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+          <div class="badge-card locked" id="badge-5">
+            <div class="badge-icon">🎓</div>
+            <h4>Thủ Khoa Tốt Nghiệp Toán 12</h4>
+            <p>Đạt thành tích hoàn hảo 10/10 câu hỏi Đấu Trường Toàn Khóa</p>
+            <span class="badge-status">Chưa đạt</span>
+          </div>
+        </div>
+
+        <!-- Khung chứng nhận tốt nghiệp toàn khóa A4 -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-inner">
+              <div class="cert-header">
+                <h3>TRƯỜNG THPT LƯƠNG THẾ VINH</h3>
+                <h4>HỘI ĐỒNG KHẢO THÍ & BỘ MÔN TOÁN HỌC</h4>
+                <div class="cert-ornament">✦ ✦ ✦ ❖ ✦ ✦ ✦</div>
+                <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+              </div>
+              <div class="cert-body">
+                <p>Chứng nhận học sinh:</p>
+                <h3 class="cert-student" id="certStudentName">Chiến Binh Logic</h3>
+                <p>Đã xuất sắc hoàn thành trọn vẹn toàn bộ chương trình và bài tập tốt nghiệp:</p>
+                <h4 class="cert-course">BÀI TẬP ÔN TẬP CUỐI NĂM: CHƯƠNG TRÌNH TOÁN LỚP 12</h4>
+                <p>Đạt thành tích vượt trội trên cả 6 lĩnh vực cốt lõi: Ứng dụng đạo hàm, Hình học không gian Oxyz, Thống kê ghép nhóm, Nguyên hàm - Tích phân và Xác suất Bayes.</p>
+                <div class="cert-meta">
+                  <span id="certDate">Đà Nẵng, ngày 19 tháng 10 năm 2026</span>
+                  <span id="certGrade">Xếp loại: Xuất Sắc Toàn Diện (10/10 Câu Chuẩn SGK)</span>
+                </div>
+              </div>
+              <div class="cert-signatures">
+                <div class="sig-box">
+                  <span class="sig-title">TỔ TRƯỞNG TỔ TOÁN</span>
+                  <div class="sig-stamp">ĐÃ DUYỆT</div>
+                  <span class="sig-name">Tổ Chuyên Môn Toán</span>
+                </div>
+                <div class="sig-box">
+                  <span class="sig-title">HIỆU TRƯỞNG NHÀ TRƯỜNG</span>
+                  <div class="sig-seal">✦ THPT LTV ✦</div>
+                  <span class="sig-name">Ban Giám Hiệu</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="cert-actions">
+            <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer-nav">
+      <a href="../toan12_ontap_chuong6/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài Trước</span>
+        <span class="nav-title">Ôn Tập Chương VI: Xác Suất Có Điều Kiện</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Mục Lục Khóa Học</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../index.html" class="nav-btn next">
+        <span class="nav-sub">Hoàn Thành Khóa Học ➡️</span>
+        <span class="nav-title">🎓 Cổng Vinh Danh Toán 12</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (KHÔNG HIỆN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Chọn Avatar Chiến Binh Tốt Nghiệp</h3>
+          <button class="modal-close" id="modalCloseBtn">✕</button>
+        </div>
+        <div class="avatar-options">
+          <button class="avatar-opt" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia">👑</button>
+          <button class="avatar-opt" data-avatar="🧙‍♂️" data-title="Đại Pháp Sư Vi Tích Phân">🧙‍♂️</button>
+          <button class="avatar-opt" data-avatar="🧮" data-title="Đại Kiện Tướng Toán Học">🧮</button>
+          <button class="avatar-opt" data-avatar="🚀" data-title="Nhà Du Hành Không Gian Oxyz">🚀</button>
+          <button class="avatar-opt" data-avatar="🦁" data-title="Sư Tử Bất Bại">🦁</button>
+          <button class="avatar-opt" data-avatar="⚡" data-title="Tia Chớp Giải Đề">⚡</button>
+          <button class="avatar-opt" data-avatar="🎯" data-title="Thiện Xạ Điểm 10">🎯</button>
+          <button class="avatar-opt" data-avatar="🎓" data-title="Thủ Khoa Xuất Sắc">🎓</button>
+        </div>
+        <div class="name-input-group">
+          <label for="nameInput">Tên người học:</label>
+          <input type="text" id="nameInput" maxlength="25" placeholder="Nhập tên của bạn...">
+          <button class="btn-primary" id="saveProfileBtn">Lưu Thông Tin</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>
