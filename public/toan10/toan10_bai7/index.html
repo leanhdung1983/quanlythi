@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 7: Các Khái Niệm Mở Đầu Về Vectơ - Toán 10</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Vectơ Khởi Nguyên</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương IV • Bài 7 • Toán 10 Tập 1 (Trang 46 - 50)</span>
+      <h1>BÀI 7: CÁC KHÁI NIỆM MỞ ĐẦU VỀ VECTƠ</h1>
+      <p>Khám phá bản chất đại lượng có hướng trong không gian tự nhiên: Độ dài, phương, hướng của vectơ, vectơ-không, quan hệ cùng phương - cùng hướng - bằng nhau và ứng dụng định vị dẫn đường, phân tích vận tốc gió và nguyên lý lực đẩy Archimedes!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức Vectơ</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Tương Tác (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Bài 4.1 - 4.5)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: Khái niệm Vectơ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🎯</span>
+            <h3>1. Khái Niệm Vectơ & Độ Dài</h3>
+          </div>
+          <div class="concept-body">
+            <p><strong>Vectơ</strong> là một đoạn thẳng có hướng, nghĩa là trong hai điểm mút của đoạn thẳng đã chỉ rõ điểm đầu (gốc) và điểm cuối (ngọn).</p>
+            <div class="formula-box">
+              <p>• Vectơ có điểm đầu $A$, điểm cuối $B$ kí hiệu là: $\overrightarrow{AB}$</p>
+              <p>• Vectơ còn được kí hiệu chữ cái thường: $\vec{a}, \vec{b}, \vec{x}, \vec{u}$</p>
+              <p>• <strong>Độ dài vectơ</strong> là khoảng cách giữa điểm đầu và điểm cuối:</p>
+              <p class="math-highlight">$|\overrightarrow{AB}| = AB$ và $|\vec{a}| \ge 0$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>💡 Lưu ý quan trọng:</strong> Độ dài của vectơ là một số không âm mang đơn vị đo độ dài. Hai điểm trùng nhau tạo nên vectơ có độ dài bằng $0$.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Giá & Vectơ Cùng Phương -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📐</span>
+            <h3>2. Giá Của Vectơ & Vectơ Cùng Phương</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Giá của vectơ</strong> $\overrightarrow{AB}$ ($\overrightarrow{AB} \neq \vec{0}$) là đường thẳng đi qua điểm đầu $A$ và điểm cuối $B$.</p>
+            <div class="formula-box">
+              <p>• <strong>Hai vectơ cùng phương:</strong> nếu giá của chúng song song hoặc trùng nhau.</p>
+              <p>• Ngược lại, nếu giá cắt nhau hoặc chéo nhau thì hai vectơ <em>không cùng phương</em>.</p>
+            </div>
+            <div class="rule-box green">
+              <strong>⭐ Định lí Ba Điểm Thẳng Hàng:</strong><br>
+              Ba điểm phân biệt $A, B, C$ thẳng hàng khi và chỉ khi hai vectơ $\overrightarrow{AB}$ và $\overrightarrow{AC}$ cùng phương!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Cùng Hướng, Ngược Hướng & Bằng Nhau -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🧭</span>
+            <h3>3. Cùng Hướng, Ngược Hướng & Bằng Nhau</h3>
+          </div>
+          <div class="concept-body">
+            <p><strong>Điều kiện tiên quyết:</strong> Chỉ khi hai vectơ <em>đã cùng phương</em>, ta mới xét đến việc chúng cùng hướng hay ngược hướng!</p>
+            <div class="formula-box">
+              <p>• Hai vectơ cùng phương có thể <strong>cùng hướng</strong> ($\rightrightarrows$) hoặc <strong>ngược hướng</strong> ($\rightleftarrows$).</p>
+              <p>• <strong>Hai vectơ bằng nhau</strong> khi và chỉ khi chúng có <em>cùng độ dài</em> và <em>cùng hướng</em>:</p>
+              <p class="math-highlight">$$\vec{a} = \vec{b} \iff \begin{cases} |\vec{a}| = |\vec{b}| \\ \vec{a} \text{ cùng hướng } \vec{b} \end{cases}$$</p>
+            </div>
+            <div class="rule-box blue">
+              <strong>🔹 Quy tắc dựng vectơ:</strong> Với mỗi điểm $O$ và vectơ $\vec{a}$ cho trước, luôn tồn tại <em>duy nhất</em> một điểm $A$ sao cho $\overrightarrow{OA} = \vec{a}$.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Vectơ-không -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⭕</span>
+            <h3>4. Vectơ-không ($\vec{0}$) Huyền Thoại</h3>
+          </div>
+          <div class="concept-body">
+            <p><strong>Vectơ-không</strong> là vectơ có điểm đầu và điểm cuối trùng nhau, kí hiệu là $\vec{0}$ (ví dụ $\overrightarrow{AA}, \overrightarrow{BB}, \overrightarrow{MM}$).</p>
+            <div class="formula-box">
+              <p>• Độ dài của vectơ-không bằng $0$: $|\vec{0}| = 0$.</p>
+              <p>• Mọi vectơ-không đều bằng nhau: $\overrightarrow{AA} = \overrightarrow{BB} = \vec{0}$.</p>
+              <p>• <strong>Quy ước đặc biệt:</strong> Vectơ $\vec{0}$ được coi là <em>cùng phương</em> và <em>cùng hướng</em> với mọi vectơ!</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>💡 Mẹo SGK:</strong> Bất kì câu hỏi nào hỏi "Vectơ-không có cùng phương với $\vec{a}$ hay không?", câu trả lời luôn là CÓ!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Vị Trí Điểm & Hình Bình Hành -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">💎</span>
+            <h3>5. Vectơ Trong Hình Bình Hành & Đoạn Thẳng</h3>
+          </div>
+          <div class="concept-body">
+            <p>Ngôn ngữ vectơ giúp nhận diện và chứng minh hình học cực kì ngắn gọn:</p>
+            <div class="formula-box">
+              <p>• Tứ giác $ABCD$ là hình bình hành khi và chỉ khi:</p>
+              <p class="math-highlight">$$\overrightarrow{AB} = \overrightarrow{DC} \iff \overrightarrow{BC} = \overrightarrow{AD}$$</p>
+              <p>• Điểm $M$ nằm giữa hai điểm phân biệt $A, B$ khi và chỉ khi hai vectơ $\overrightarrow{MA}$ và $\overrightarrow{MB}$ ngược hướng.</p>
+              <p>• Điểm $M$ là trung điểm đoạn $AB$ khi và chỉ khi $\overrightarrow{MA} = -\overrightarrow{MB}$ (hai vectơ đối nhau).</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Ứng Dụng Thực Tiễn: Gió, Ca Nô & Archimedes -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🚢</span>
+            <h3>6. Ứng Dụng Vật Lý: Vận Tốc, Lực & Archimedes</h3>
+          </div>
+          <div class="concept-body">
+            <p>Trong tự nhiên, nhiều đại lượng mang đầy đủ hướng và độ lớn:</p>
+            <div class="formula-box">
+              <p>• <strong>Vận tốc gió / ca nô:</strong> Ca nô xuôi dòng có vận tốc thực tế $v_{\text{thực}} = v_{\text{riêng}} + v_{\text{dòng}}$ do hai vectơ cùng hướng; ngược dòng thì ngược hướng $v_{\text{thực}} = v_{\text{riêng}} - v_{\text{dòng}}$.</p>
+              <p>• <strong>Lực đẩy Archimedes & Trọng lực:</strong></p>
+              <p>Trọng lực $\vec{P}$ hướng thẳng đứng xuống dưới, lực đẩy $\vec{F}_A$ hướng thẳng đứng lên trên (hai vectơ cùng phương, ngược hướng). Khi vật chìm nghỉ dưới đáy: $|\vec{P}| > |\vec{F}_A|$.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1: Vector Compass & Coordinate Explorer -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">🧭</span>
+            <div>
+              <h3>Lab 1: Thước Đo & La Bàn Vectơ Động</h3>
+              <p>Kéo điểm đầu A và điểm cuối B trên mặt phẳng toạ độ để phân tích toạ độ, độ dài và góc phương vị của vectơ $\overrightarrow{AB}$.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="vectorCanvas" width="600" height="380"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="control-row">
+                <span class="control-label">Điểm $A(x_1, y_1)$:</span>
+                <span class="control-val" id="ptALabel">(-3, -2)</span>
+                <span class="control-label" style="margin-left: 16px;">Điểm $B(x_2, y_2)$:</span>
+                <span class="control-val" id="ptBLabel">(3, 2)</span>
+              </div>
+              <div class="control-row" style="margin-top: 10px;">
+                <button class="lab-btn" id="btnGenParallel">Tạo Vectơ Cùng Phương</button>
+                <button class="lab-btn" id="btnGenOpposite">Tạo Vectơ Ngược Hướng</button>
+                <button class="lab-btn" id="btnGenEqual">Tạo Vectơ Bằng Nhau</button>
+                <button class="lab-btn" id="btnResetVec">Đặt Lại</button>
+              </div>
+            </div>
+            <div class="lab-output" id="lab1Output">
+              <div class="output-item">Toạ độ $\vec{u}$: <span class="badge-blue" id="vecCoord">(6, 4)</span></div>
+              <div class="output-item">Độ dài $|\vec{u}|$: <span class="badge-gold" id="vecModulus">7.21</span></div>
+              <div class="output-item">Góc hướng: <span class="badge-green" id="vecAngle">33.7°</span></div>
+              <div class="output-item">Trạng thái: <span class="badge-cyan" id="vecRelation">Đang khảo sát vectơ tự do</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: River Crossing & Archimedes Flotation -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">⚓</span>
+            <div>
+              <h3>Lab 2: Mô Phỏng Vận Tốc Ca Nô Xuôi / Ngược Dòng & Archimedes</h3>
+              <p>Mô phỏng sự kết hợp hai vectơ vận tốc cùng phương (cùng hướng và ngược hướng) của ca nô trên sông (SGK trang 51).</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="boatCanvas" width="600" height="300"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Vận tốc riêng của ca nô $v_{\text{riêng}}$ (km/h): <span id="vBoatVal">15</span> km/h</label>
+                <input type="range" id="vBoatSlider" min="5" max="30" value="15" step="1">
+              </div>
+              <div class="slider-group">
+                <label>Vận tốc dòng nước $v_{\text{nước}}$ (km/h): <span id="vRiverVal">3</span> km/h</label>
+                <input type="range" id="vRiverSlider" min="0" max="10" value="3" step="0.5">
+              </div>
+              <div class="control-row" style="margin-top: 10px;">
+                <button class="lab-btn active" id="btnDownstream">Ca Nô A: Xuôi Dòng ($\rightrightarrows$ Cùng hướng)</button>
+                <button class="lab-btn" id="btnUpstream">Ca Nô B: Ngược Dòng ($\rightleftarrows$ Ngược hướng)</button>
+                <button class="lab-btn" id="btnArchimedes">Mô Hình Lực Archimedes Cốc Nước</button>
+              </div>
+            </div>
+            <div class="lab-output" id="lab2Output">
+              <div class="output-item">Vận tốc thực tế $v$: <span class="badge-gold" id="vResult">18 km/h</span></div>
+              <div class="output-item">Quan hệ vectơ: <span class="badge-green" id="vecBoatRelation">$\vec{v} = \vec{v}_{\text{riêng}} + \vec{v}_{\text{nước}}$ (Cùng hướng)</span></div>
+              <div class="output-item">Đánh giá SGK: <span class="badge-blue" id="boatEvaluation">Ca nô A chạy xuôi dòng nên vận tốc tăng cường</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena SGK Quiz (10 MCQs) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2 style="color: var(--cyan-neon); font-size: 1.4rem;">⚔️ Đấu Trường Các Khái Niệm Mở Đầu Về Vectơ SGK</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">10 câu hỏi bao phủ 100% các dạng bài tập SGK Bài 4.1 - 4.5 trang 46 - 50.</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Vectơ Khởi Nguyên K10</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">🧭</div>
+          <div class="badge-name">Tập Sự Vectơ</div>
+          <div class="badge-desc">Đọc kĩ Bản đồ Tri thức và làm chủ khái niệm vectơ, độ dài và giá.</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">La Bàn Tinh Tường</div>
+          <div class="badge-desc">Tương tác và làm chủ Lab 1 với các vectơ cùng phương, bằng nhau.</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🚢</div>
+          <div class="badge-name">Thuyền Trưởng Sông Nước</div>
+          <div class="badge-desc">Mô phỏng ca nô xuôi dòng, ngược dòng và lực đẩy Archimedes trong Lab 2.</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Thần Đấu Trường</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK Bài 7.</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Vectơ Khởi Nguyên</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc toàn bộ Bài 7!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc bài học và hệ thống bài tập thực hành <strong>BÀI 7: CÁC KHÁI NIỆM MỞ ĐẦU VỀ VECTƠ (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững bản chất đoạn thẳng có hướng, làm chủ điều kiện hai vectơ cùng phương, cùng hướng, hai vectơ bằng nhau, tính chất đặc biệt của vectơ-không $\vec{0}$ và giải quyết thành thạo các bài toán định vị thực tiễn, phân tích vận tốc gió và nguyên lý lực đẩy Archimedes.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG VECTƠ KHỞI NGUYÊN XUẤT SẮC 👑</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày 17 tháng 10 năm 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn-primary" id="btnPrintCert">
+          🖨️ In Giấy Chứng Nhận A4
+        </button>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_ontap_chuong3/index.html" class="nav-btn prev">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <small>Bài trước</small>
+          <strong>Ôn Tập Chương III: Hệ Thức Lượng Trong Tam Giác</strong>
+        </div>
+      </a>
+      <a href="../toan10_bai8/index.html" class="nav-btn next">
+        <div class="nav-text">
+          <small>Bài tiếp theo</small>
+          <strong>Bài 8: Tổng Và Hiệu Của Hai Vectơ</strong>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <h3 class="modal-title">Chọn Avatar Đại Kiện Tướng</h3>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑">👑</button>
+        <button class="avatar-choice" data-avatar="🚀">🚀</button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button class="avatar-choice" data-avatar="🦁">🦁</button>
+        <button class="avatar-choice" data-avatar="💎">💎</button>
+        <button class="avatar-choice" data-avatar="🦉">🦉</button>
+        <button class="avatar-choice" data-avatar="🎯">🎯</button>
+        <button class="avatar-choice" data-avatar="🏅">🏅</button>
+      </div>
+      <button class="btn-secondary" id="closeAvatarModal">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 26: Biến Cố & Định Nghĩa Cổ Điển Của Xác Suất - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Xác Suất Cổ Điển</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG IX • TÍNH XÁC SUẤT THEO ĐỊNH NGHĨA CỔ ĐIỂN</span>
+      <h1>Bài 26: Biến Cố Và Định Nghĩa Cổ Điển Của Xác Suất</h1>
+      <p>Làm chủ khái niệm phép thử ngẫu nhiên, không gian mẫu $\Omega$, biến cố $E$, biến cố đối $\overline{E}$ và công thức tính xác suất cổ điển $P(E) = \frac{n(E)}{n(\Omega)}$.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">01</span>
+            <h3>Phép Thử Ngẫu Nhiên & Không Gian Mẫu</h3>
+          </div>
+          <p><strong>Phép thử ngẫu nhiên (phép thử $T$):</strong> Là thí nghiệm hay hành động mà kết quả của nó không thể biết trước khi phép thử được thực hiện.</p>
+          <div class="formula-box">
+            <div class="formula-title">Không Gian Mẫu $\Omega$</div>
+            <p>Tập hợp tất cả các kết quả có thể xảy ra của phép thử được kí hiệu là $\Omega$.</p>
+            <p class="math-highlight">Số phần tử của không gian mẫu kí hiệu là $n(\Omega)$.</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">LƯU Ý SGK</span>
+            <p>Trong chương trình Toán 10, ta chỉ xét các phép thử mà không gian mẫu $\Omega$ gồm hữu hạn kết quả đồng khả năng.</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">02</span>
+            <h3>Biến Cố & Kết Quả Thuận Lợi</h3>
+          </div>
+          <p>Mỗi biến cố $E$ liên quan đến phép thử $T$ là một <strong>tập con của không gian mẫu $\Omega$</strong> ($E \subset \Omega$).</p>
+          <div class="formula-box">
+            <div class="formula-title">Tập Hợp Kết Quả Thuận Lợi</div>
+            <p>Mỗi phần tử thuộc tập $E$ được gọi là một kết quả thuận lợi cho biến cố $E$.</p>
+            <p class="math-highlight">Số phần tử thuận lợi kí hiệu là $n(E)$.</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">BIẾN CỐ ĐẶC BIỆT</span>
+            <p>• <strong>Biến cố chắc chắn:</strong> Là tập $\Omega$ (luôn luôn xảy ra).</p>
+            <p>• <strong>Biến cố không thể:</strong> Là tập rỗng $\varnothing$ (không bao giờ xảy ra).</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">03</span>
+            <h3>Biến Cố Đối $\overline{E}$</h3>
+          </div>
+          <p>Biến cố đối của biến cố $E$ là biến cố <em>"E không xảy ra"</em>, kí hiệu là $\overline{E}$.</p>
+          <div class="formula-box">
+            <div class="formula-title">Đặc Trưng Tập Hợp</div>
+            <p class="math-highlight">$$\overline{E} = C_\Omega E = \Omega \setminus E$$</p>
+            <p>Biến cố $\overline{E}$ xảy ra khi và chỉ khi $E$ không xảy ra.</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">QUAN HỆ SỐ PHẦN TỬ</span>
+            <p>Tổng số phần tử thuận lợi cho $E$ và biến cố đối $\overline{E}$ bằng số phần tử không gian mẫu:</p>
+            <p class="math-highlight">$$n(E) + n(\overline{E}) = n(\Omega)$$</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">04</span>
+            <h3>Định Nghĩa Cổ Điển Của Xác Suất</h3>
+          </div>
+          <p>Giả thiết các kết quả có thể của phép thử $T$ là đồng khả năng. Xác suất của biến cố $E$ được xác định bởi công thức Laplace:</p>
+          <div class="formula-box">
+            <div class="formula-title">Công Thức Cổ Điển</div>
+            <p class="math-highlight">$$P(E) = \frac{n(E)}{n(\Omega)}$$</p>
+            <p>Trong đó $n(E)$ là số kết quả thuận lợi cho $E$, $n(\Omega)$ là số phần tử của $\Omega$.</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">TÍNH CHẤT NỀN TẢNG</span>
+            <p>• $0 \le P(E) \le 1$ với mọi biến cố $E$.</p>
+            <p>• Xác suất biến cố chắc chắn: $P(\Omega) = 1$.</p>
+            <p>• Xác suất biến cố không thể: $P(\varnothing) = 0$.</p>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">05</span>
+            <h3>Nguyên Lí Xác Suất Bé & Ý Nghĩa Thực Tế</h3>
+          </div>
+          <div class="formula-box">
+            <div class="formula-title">Nguyên Lí Xác Suất Bé</div>
+            <p>Nếu một biến cố có xác suất rất bé thì trong một phép thử biến cố đó sẽ không xảy ra.</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">Ý NGHĨA THỰC TẾ</span>
+            <p>Giả sử biến cố $A$ có xác suất $P(A)$. Khi thực hiện phép thử $n$ lần ($n \ge 30$) độc lập, số lần xuất hiện biến cố $A$ xấp xỉ:</p>
+            <p class="math-highlight">$$m \approx n \cdot P(A)$$</p>
+            <p>Khi $n$ càng lớn, tỉ số tần suất $\frac{m}{n}$ càng tiến sát đến xác suất lý thuyết $P(A)$.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1 -->
+        <div class="concept-card lab-card">
+          <div class="card-header">
+            <span class="card-num">LAB 1</span>
+            <h3>Mô Phỏng Gieo Xúc Xắc 6 Mặt & Tần Suất Thực Nghiệm</h3>
+          </div>
+          <p>Mô phỏng phép thử gieo xúc xắc cân đối. Quan sát tần suất xuất hiện của từng mặt $\{1, 2, 3, 4, 5, 6\}$ hội tụ về xác suất lý thuyết $P = \frac{1}{6} \approx 0{,}167$.</p>
+          
+          <div class="lab-controls" style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <button class="btn-primary" id="btnRoll1">🎲 Gieo 1 Lần</button>
+            <button class="btn-primary" id="btnRoll10">🎲 Gieo 10 Lần</button>
+            <button class="btn-primary" id="btnRoll100">⚡ Gieo 100 Lần</button>
+            <button class="btn-primary" id="btnRoll1000">🚀 Gieo 1000 Lần</button>
+            <button class="btn-icon" id="btnResetDice">🔄 Đặt Lại</button>
+          </div>
+
+          <div style="display: flex; justify-content: center; align-items: center; margin: 15px 0; gap: 20px;">
+            <div id="diceFaceDisplay" style="font-size: 64px; min-width: 80px; text-align: center; text-shadow: 0 0 15px rgba(99, 102, 241, 0.8);">⚄</div>
+            <div id="diceStatsSummary" style="font-size: 15px; color: #cbd5e1; line-height: 1.6;">
+              Tổng số lần gieo: <strong id="totalRolls" style="color: #38bdf8;">0</strong><br>
+              Mặt vừa ra: <strong id="lastFace" style="color: #f59e0b;">-</strong>
+            </div>
+          </div>
+
+          <canvas id="diceCanvas" width="540" height="260" style="width: 100%; max-width: 540px; background: rgba(15, 23, 42, 0.6); border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 0 auto;"></canvas>
+          <div class="lab-output" id="diceFeedback" style="margin-top: 15px; padding: 10px; background: rgba(99, 102, 241, 0.1); border-radius: 8px; font-size: 14px; text-align: center;">
+            Nhấn nút để bắt đầu gieo xúc xắc và theo dõi định luật số lớn!
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="concept-card lab-card">
+          <div class="card-header">
+            <span class="card-num">LAB 2</span>
+            <h3>Bảng Không Gian Mẫu Hai Xúc Xắc ($6 \times 6 = 36$)</h3>
+          </div>
+          <p>Khám phá toàn bộ 36 kết quả có thể khi gieo 2 con xúc xắc. Chọn điều kiện biến cố $E$ để các ô thuận lợi tự động phát sáng và tính ngay xác suất $P(E) = \frac{n(E)}{36}$.</p>
+          
+          <div class="lab-controls" style="margin-bottom: 15px;">
+            <label for="eventFilter" style="display: block; margin-bottom: 8px; font-weight: bold; color: #a5b4fc;">Chọn Biến Cố Cần Khảo Sát:</label>
+            <select id="eventFilter" style="padding: 10px; border-radius: 8px; background: #0f172a; color: #fff; border: 1px solid #6366f1; width: 100%; font-size: 14px;">
+              <option value="sum_7">1. Tổng số chấm bằng 7 (Ví dụ SGK)</option>
+              <option value="sum_4_6">2. Tổng số chấm bằng 4 hoặc bằng 6 (Luyện tập 3)</option>
+              <option value="prod_lt_6">3. Tích hai số chấm bé hơn 6 (Bài tập 9.5c)</option>
+              <option value="sum_prime">4. Tổng hai số chấm là số nguyên tố (Bài tập 9.5d)</option>
+              <option value="both_same">5. Hai con xúc xắc ra số chấm giống nhau (Số đôi)</option>
+              <option value="first_ge_5">6. Xúc xắc thứ nhất lớn hơn hoặc bằng 5 (Bài 9.5b)</option>
+            </select>
+          </div>
+
+          <div id="diceGridContainer" style="overflow-x: auto; margin: 15px 0;">
+            <table id="diceMatrixTable" style="width: 100%; border-collapse: collapse; text-align: center; font-size: 12px;">
+              <!-- Matrix populated by JS -->
+            </table>
+          </div>
+
+          <div class="lab-output" id="matrixOutput" style="padding: 12px; background: rgba(6, 182, 212, 0.1); border-left: 4px solid #06b6d4; border-radius: 8px; font-size: 14px;">
+            Đang tính toán...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Biến Cố & Xác Suất Cổ Điển</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm chuẩn SGK Toán 10 KNTT. Bấm trực tiếp vào đáp án để nhận phản hồi và tích lũy XP!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="progress-label" id="arenaProgress">Tiến Độ: 0/10</div>
+          <div class="score-display" id="arenaScore">Điểm Arena: 0 XP</div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-wrapper">
+        <h2 style="text-align: center; margin-bottom: 25px; color: #f8fafc;">🏆 Bảng Vàng Vinh Danh & Huy Hiệu</h2>
+        <div class="badges-grid">
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon">📖</div>
+            <div class="badge-name">Nhập Môn Xác Suất</div>
+            <div class="badge-desc">Khám phá toàn bộ Bản Đồ Tri Thức về Không Gian Mẫu và Biến Cố.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon">🧪</div>
+            <div class="badge-name">Nhà Thực Nghiệm Laplace</div>
+            <div class="badge-desc">Thực hiện mô phỏng gieo xúc xắc và khảo sát bảng ma trận không gian mẫu.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon">⚡</div>
+            <div class="badge-name">Phản Xạ Biến Cố</div>
+            <div class="badge-desc">Hoàn thành chính xác tối thiểu 5 câu hỏi trong Đấu Trường.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <div class="badge-name">Chiến Tướng Cổ Điển</div>
+            <div class="badge-desc">Đạt tối thiểu 160 XP trong Đấu Trường SGK.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <div class="badge-name">Bậc Thầy Xác Suất 10</div>
+            <div class="badge-desc">Xuất sắc đạt điểm số tuyệt đối 200/200 XP (10/10 câu đúng).</div>
+          </div>
+        </div>
+
+        <!-- Certificate Container -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-header">
+              <span class="school-name">TRƯỜNG THPT LƯƠNG THẾ VINH</span>
+              <span class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</span>
+              <span class="cert-subtitle">Bài 26: Biến Cố & Định Nghĩa Cổ Điển Của Xác Suất</span>
+            </div>
+            <div class="cert-body">
+              <p class="cert-text">Chứng nhận học sinh:</p>
+              <h3 class="student-name" id="certStudentName">Chiến Binh Logic</h3>
+              <p class="cert-desc">Đã hoàn thành xuất sắc các nội dung học tập, thí nghiệm mô phỏng và vượt qua các thử thách trong Đấu Trường Toán Học Bài 26 theo chương trình SGK Toán 10 Kết Nối Tri Thức Với Cuộc Sống.</p>
+              <div class="cert-score-line">
+                <span>Tổng điểm đạt được: <strong id="certXP">0</strong> XP</span> • 
+                <span>Xếp loại: <strong id="certRank">Xuất Sắc</strong></span>
+              </div>
+            </div>
+            <div class="cert-footer">
+              <div class="cert-seal">★ CHUẨN KIẾN THỨC ★</div>
+              <div class="cert-sign">
+                <div class="sign-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</div>
+                <div class="sign-role">GIÁO VIÊN BỘ MÔN</div>
+                <div class="signature">Tổ Toán THPT Lương Thế Vinh</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan10_ontap_chuong8/index.html" class="nav-btn prev">⬅️ Ôn Tập Chương VIII</a>
+      <a href="../toan10_bai27/index.html" class="nav-btn next">Bài 27: Thực Hành Xác Suất ➡️</a>
+    </footer>
+  </div>
+
+  <!-- Modal Overlay (Hidden initially) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker">
+        <button class="av-opt" data-av="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+        <button class="av-opt" data-av="🧙‍♂️" data-name="Phù Thủy Xác Suất">🧙‍♂️ Phù Thủy Xác Suất</button>
+        <button class="av-opt" data-av="🎲" data-name="Bậc Thầy Laplace">🎲 Bậc Thầy Laplace</button>
+        <button class="av-opt" data-av="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+        <button class="av-opt" data-av="⚡" data-name="Tia Chớp Phản Xạ">⚡ Tia Chớp Phản Xạ</button>
+        <button class="av-opt" data-av="💎" data-name="Đại Sư Ngẫu Nhiên">💎 Đại Sư Ngẫu Nhiên</button>
+        <button class="av-opt" data-av="🚀" data-name="Phi Hành Gia Logic">🚀 Phi Hành Gia Logic</button>
+        <button class="av-opt" data-av="🛡️" data-name="Hiệp Sĩ Toán Học">🛡️ Hiệp Sĩ Toán Học</button>
+      </div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-primary" id="btnCloseModal">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

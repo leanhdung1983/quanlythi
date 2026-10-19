@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 8: Tổng Và Hiệu Của Hai Vectơ - Toán 10</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Tổng Hiệu Vectơ</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương IV • Bài 8 • Toán 10 Tập 1 (Trang 51 - 54)</span>
+      <h1>BÀI 8: TỔNG VÀ HIỆU CỦA HAI VECTƠ</h1>
+      <p>Làm chủ hai quy tắc nền tảng của hình học hiện đại: Quy tắc ba điểm, Quy tắc hình bình hành; Quy tắc hiệu và các hệ thức vàng về trung điểm, trọng tâm tam giác; Ứng dụng giải quyết bài toán hợp lực và bài toán kéo pháo lên dốc Điện Biên Phủ!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức Tổng & Hiệu</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Hợp Lực & Dốc Nghiêng (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Bài 4.6 - 4.10)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: Tổng & Quy tắc ba điểm -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">➕</span>
+            <h3>1. Tổng Hai Vectơ & Quy Tắc Ba Điểm</h3>
+          </div>
+          <div class="concept-body">
+            <p>Cho hai vectơ $\vec{a}$ và $\vec{b}$. Lấy một điểm $A$ tuỳ ý, vẽ $\overrightarrow{AB} = \vec{a}, \overrightarrow{BC} = \vec{b}$. Khi đó vectơ $\overrightarrow{AC}$ được gọi là <strong>tổng</strong> của hai vectơ $\vec{a}$ và $\vec{b}$, kí hiệu là $\vec{a} + \vec{b}$.</p>
+            <div class="formula-box">
+              <p><strong>⭐ QUY TẮC BA ĐIỂM (Chasles):</strong></p>
+              <p>Với ba điểm bất kì $A, B, C$, ta luôn có:</p>
+              <p class="math-highlight">$$\overrightarrow{AB} + \overrightarrow{BC} = \overrightarrow{AC}$$</p>
+            </div>
+            <div class="rule-box green">
+              <strong>💡 Mẹo nhớ:</strong> Điểm cuối của vectơ thứ nhất trùng với điểm đầu của vectơ thứ hai thì ta "triệt tiêu" điểm trung gian để nối liền hai đầu mút!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Quy tắc hình bình hành -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📐</span>
+            <h3>2. Quy Tắc Hình Bình Hành</h3>
+          </div>
+          <div class="concept-body">
+            <p>Áp dụng khi hai vectơ có <strong>chung điểm gốc</strong>:</p>
+            <div class="formula-box">
+              <p>Nếu $ABCD$ là một hình bình hành thì:</p>
+              <p class="math-highlight">$$\overrightarrow{AB} + \overrightarrow{AD} = \overrightarrow{AC}$$</p>
+              <p>Tổng hai vectơ chung gốc bằng vectơ đường chéo xuất phát từ đỉnh chung đó!</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>⚡ Ứng dụng trong Vật lý:</strong> Nếu chất điểm $A$ chịu tác dụng đồng thời của hai lực $\vec{F}_1 = \overrightarrow{AB}$ và $\vec{F}_2 = \overrightarrow{AD}$ thì hợp lực tổng hợp $\vec{F} = \vec{F}_1 + \vec{F}_2 = \overrightarrow{AC}$.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Tính chất phép cộng vectơ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🔄</span>
+            <h3>3. Tính Chất Của Phép Cộng Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>Với ba vectơ $\vec{a}, \vec{b}, \vec{c}$ tuỳ ý:</p>
+            <div class="formula-box">
+              <p>• <strong>Giao hoán:</strong> $\vec{a} + \vec{b} = \vec{b} + \vec{a}$</p>
+              <p>• <strong>Kết hợp:</strong> $(\vec{a} + \vec{b}) + \vec{c} = \vec{a} + (\vec{b} + \vec{c}) = \vec{a} + \vec{b} + \vec{c}$</p>
+              <p>• <strong>Cộng với vectơ-không:</strong> $\vec{a} + \vec{0} = \vec{0} + \vec{a} = \vec{a}$</p>
+            </div>
+            <p>Nhờ tính chất kết hợp, ta có thể tính tổng của nhiều vectơ nối tiếp:</p>
+            <p class="math-highlight">$$\overrightarrow{A_1 A_2} + \overrightarrow{A_2 A_3} + \dots + \overrightarrow{A_{n-1} A_n} = \overrightarrow{A_1 A_n}$$</p>
+          </div>
+        </div>
+
+        <!-- Card 4: Hiệu hai vectơ & Quy tắc hiệu -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">➖</span>
+            <h3>4. Vectơ Đối & Quy Tắc Hiệu</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Vectơ đối</strong> của $\vec{a}$ là vectơ có cùng độ dài nhưng ngược hướng với $\vec{a}$, kí hiệu là $-\vec{a}$. Ta có $\vec{a} + (-\vec{a}) = \vec{0}$ và $-\overrightarrow{AB} = \overrightarrow{BA}$.</p>
+            <div class="formula-box">
+              <p>• <strong>Hiệu của hai vectơ:</strong> $\vec{a} - \vec{b} = \vec{a} + (-\vec{b})$</p>
+              <p><strong>⭐ QUY TẮC HIỆU:</strong> Với ba điểm $O, M, N$ bất kì, ta luôn có:</p>
+              <p class="math-highlight">$$\overrightarrow{MN} = \overrightarrow{ON} - \overrightarrow{OM}$$</p>
+              <p>Hiệu hai vectơ chung gốc: Lấy điểm cuối trừ điểm đầu!</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Hai Hệ thức vàng Trung điểm & Trọng tâm -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⭐</span>
+            <h3>5. Hệ Thức Vàng: Trung Điểm & Trọng Tâm</h3>
+          </div>
+          <div class="concept-body">
+            <p>Hai hệ thức trọng tâm xuyên suốt toàn bộ chương trình Toán cấp 3:</p>
+            <div class="formula-box">
+              <p><strong>1. Hệ thức trung điểm:</strong> $I$ là trung điểm của đoạn thẳng $AB$ khi và chỉ khi:</p>
+              <p class="math-highlight">$$\overrightarrow{IA} + \overrightarrow{IB} = \vec{0}$$</p>
+              <p><strong>2. Hệ thức trọng tâm:</strong> $G$ là trọng tâm của tam giác $ABC$ khi và chỉ khi:</p>
+              <p class="math-highlight">$$\overrightarrow{GA} + \overrightarrow{GB} + \overrightarrow{GC} = \vec{0}$$</p>
+            </div>
+            <div class="rule-box blue">
+              <strong>💡 Mở rộng với điểm O bất kì:</strong><br>
+              • $\overrightarrow{OA} + \overrightarrow{OB} = 2\overrightarrow{OI}$ ($I$ là trung điểm $AB$)<br>
+              • $\overrightarrow{OA} + \overrightarrow{OB} + \overrightarrow{OC} = 3\overrightarrow{OG}$ ($G$ là trọng tâm $\triangle ABC$)
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6: Ứng dụng Vật lý: Hợp lực & Kéo pháo -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">💣</span>
+            <h3>6. Ứng Dụng: Cân Bằng Lực & Kéo Pháo Lên Dốc</h3>
+          </div>
+          <div class="concept-body">
+            <p>SGK Vận dụng trang 54: Kéo khẩu pháo $22\,148\text{ N}$ lên dốc nghiêng $\alpha = 30^\circ$:</p>
+            <div class="formula-box">
+              <p>• Pháo chịu 3 lực cân bằng: $\vec{P} + \vec{N} + \vec{F}_{\text{kéo}} = \vec{0}$</p>
+              <p>• Trọng lực: $P = 22\,148\text{ N}$ (thẳng đứng xuống)</p>
+              <p>• Phản lực mặt dốc: $N = P \cdot \cos 30^\circ \approx 19\,180\text{ N}$</p>
+              <p>• Lực kéo tối thiểu dọc dốc: $F_{\text{kéo}} = P \cdot \sin 30^\circ = 11\,074\text{ N}$</p>
+              <p>• Mỗi người kéo $100\text{ N} \implies$ cần tối thiểu $\frac{11\,074}{100} = 111$ người!</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1: Interactive Vector Addition Lab -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">📐</span>
+            <div>
+              <h3>Lab 1: Thí Nghiệm Tổng & Hiệu Vectơ Động (Parallelogram & Triangle)</h3>
+              <p>Điều chỉnh độ dài hai vectơ và góc xen giữa để quan sát đường chéo hình bình hành $(\vec{u} + \vec{v})$ và vectơ hiệu $(\vec{u} - \vec{v})$.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="addCanvas" width="600" height="380"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Độ dài vectơ $\vec{u}$: <span id="uLenVal">6</span> đơn vị</label>
+                <input type="range" id="uLenSlider" min="2" max="10" value="6" step="0.5">
+              </div>
+              <div class="slider-group">
+                <label>Độ dài vectơ $\vec{v}$: <span id="vLenVal">5</span> đơn vị</label>
+                <input type="range" id="vLenSlider" min="2" max="10" value="5" step="0.5">
+              </div>
+              <div class="slider-group">
+                <label>Góc giữa hai vectơ $\alpha$: <span id="angleVal">60°</span></label>
+                <input type="range" id="angleSlider" min="0" max="180" value="60" step="5">
+              </div>
+              <div class="control-row" style="margin-top: 10px;">
+                <button class="lab-btn active" id="btnModeParallelogram">Quy Tắc Hình Bình Hành</button>
+                <button class="lab-btn" id="btnModeTriangle">Quy Tắc Ba Điểm (Nối Tiếp)</button>
+              </div>
+            </div>
+            <div class="lab-output" id="lab1AddOutput">
+              <div class="output-item">Độ dài tổng $|\vec{u} + \vec{v}|$: <span class="badge-gold" id="sumModulus">9.54</span></div>
+              <div class="output-item">Độ dài hiệu $|\vec{u} - \vec{v}|$: <span class="badge-cyan" id="diffModulus">5.57</span></div>
+              <div class="output-item">Công thức: <span class="badge-green" id="formulaDisplay">$|\vec{u} + \vec{v}| = \sqrt{u^2 + v^2 + 2uv\cos\alpha}$</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Artillery Slope Simulation -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">💣</span>
+            <div>
+              <h3>Lab 2: Mô Phỏng Kéo Pháo Lên Dốc & Cân Bằng Ba Lực (SGK Trang 54)</h3>
+              <p>Mô phỏng bài toán lịch sử kéo khẩu pháo 2 260 kg lên dốc Điện Biên Phủ với sự phân tích hệ ba vectơ lực cân bằng $\vec{P} + \vec{N} + \vec{F}_{\text{kéo}} = \vec{0}$.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="slopeCanvas" width="600" height="340"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Góc nghiêng dốc $\alpha$: <span id="slopeAngleVal">30°</span></label>
+                <input type="range" id="slopeAngleSlider" min="10" max="60" value="30" step="5">
+              </div>
+              <div class="slider-group">
+                <label>Trọng lượng pháo $P$: <span id="cannonWeightVal">22 148 N (2 260 kg)</span></label>
+              </div>
+            </div>
+            <div class="lab-output" id="lab2SlopeOutput">
+              <div class="output-item">Lực kéo tối thiểu: <span class="badge-gold" id="fPullVal">11 074 N</span></div>
+              <div class="output-item">Phản lực mặt dốc $N$: <span class="badge-blue" id="fNormalVal">19 181 N</span></div>
+              <div class="output-item">Số chiến sĩ kéo ($100\text{ N/người}$): <span class="badge-green" id="peopleCountVal">111 người</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena SGK Quiz (10 MCQs) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2 style="color: var(--cyan-neon); font-size: 1.4rem;">⚔️ Đấu Trường Tổng Và Hiệu Của Hai Vectơ SGK</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">10 câu hỏi bao phủ 100% các dạng bài tập SGK Bài 4.6 - 4.10 trang 51 - 54.</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Tổng & Hiệu Vectơ K10</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">➕</div>
+          <div class="badge-name">Khởi Động Ba Điểm</div>
+          <div class="badge-desc">Đọc kĩ Bản đồ Tri thức và làm chủ quy tắc cộng ba điểm Chasles.</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Cao Thủ Bình Hành</div>
+          <div class="badge-desc">Tương tác và làm chủ Lab 1 với quy tắc hình bình hành và tính độ dài tổng hiệu.</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">💣</div>
+          <div class="badge-name">Kỹ Sư Cân Bằng Lực</div>
+          <div class="badge-desc">Mô phỏng kéo pháo Điện Biên Phủ và phân tích tam giác ba lực trong Lab 2.</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Trọng Tâm</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK Bài 8.</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Tổng Hiệu</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc toàn bộ Bài 8!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc bài học và hệ thống bài tập thực hành <strong>BÀI 8: TỔNG VÀ HIỆU CỦA HAI VECTƠ (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững bản chất quy tắc 3 điểm, quy tắc hình bình hành, làm chủ phép trừ vectơ và quy tắc hiệu, hệ thức trung điểm - trọng tâm tam giác và giải quyết thành thạo các bài toán hợp lực, kéo pháo cân bằng lực thực tế.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG TỔNG HIỆU VECTƠ XUẤT SẮC 👑</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày 17 tháng 10 năm 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn-primary" id="btnPrintCert">
+          🖨️ In Giấy Chứng Nhận A4
+        </button>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_bai7/index.html" class="nav-btn prev">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <small>Bài trước</small>
+          <strong>Bài 7: Các Khái Niệm Mở Đầu Về Vectơ</strong>
+        </div>
+      </a>
+      <a href="../toan10_bai9/index.html" class="nav-btn next">
+        <div class="nav-text">
+          <small>Bài tiếp theo</small>
+          <strong>Bài 9: Tích Của Một Vectơ Với Một Số</strong>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <h3 class="modal-title">Chọn Avatar Đại Kiện Tướng</h3>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑">👑</button>
+        <button class="avatar-choice" data-avatar="🚀">🚀</button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button class="avatar-choice" data-avatar="🦁">🦁</button>
+        <button class="avatar-choice" data-avatar="💎">💎</button>
+        <button class="avatar-choice" data-avatar="🦉">🦉</button>
+        <button class="avatar-choice" data-avatar="🎯">🎯</button>
+        <button class="avatar-choice" data-avatar="🏅">🏅</button>
+      </div>
+      <button class="btn-secondary" id="closeAvatarModal">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

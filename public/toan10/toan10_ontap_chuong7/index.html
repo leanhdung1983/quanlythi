@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Chương VII: Phương Pháp Toạ Độ Trong Mặt Phẳng - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Hình Học Giải Tích</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">TOÁN 10 • CHƯƠNG VII • ÔN TẬP TỔNG HỢP</span>
+      <h1>ÔN TẬP CHƯƠNG VII: PHƯƠNG PHÁP TOẠ ĐỘ TRONG MẶT PHẲNG</h1>
+      <p>Hệ thống hoá toàn bộ kiến thức then chốt: Phương trình đường thẳng, vị trí tương đối, góc và khoảng cách, phương trình đường tròn và ba đường conic (Elip, Hypebol, Parabol).</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: THEORY -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Chuyên đề 1 -->
+        <div class="card concept-card">
+          <div class="card-icon">📏</div>
+          <h3>1. Phương Trình Đường Thẳng</h3>
+          <p>Mỗi đường thẳng $\Delta$ được xác định bởi một điểm đi qua $M_0(x_0; y_0)$ và vectơ chỉ phương $\vec{u} = (u_1; u_2)$ ($\vec{u} \ne \vec{0}$) hoặc vectơ pháp tuyến $\vec{n} = (a; b)$ ($\vec{n} \ne \vec{0}$):</p>
+          <div class="formula-box">
+            $$\begin{cases} x = x_0 + u_1 t \\ y = y_0 + u_2 t \end{cases} \quad (t \in \mathbb{R}) \quad \text{— Phương trình tham số}$$
+          </div>
+          <div class="formula-box">
+            $$ax + by + c = 0 \quad (a^2 + b^2 > 0) \quad \text{— Phương trình tổng quát}$$
+          </div>
+          <div class="rule-box gold">
+            Mối liên hệ giữa hai vectơ: Nếu $\vec{n} = (a; b)$ thì $\vec{u} = (-b; a)$ hoặc $(b; -a)$, thoả mãn $\vec{n} \cdot \vec{u} = 0$.
+          </div>
+        </div>
+
+        <!-- Chuyên đề 2 -->
+        <div class="card concept-card">
+          <div class="card-icon">📐</div>
+          <h3>2. Vị Trí Tương Đối, Góc &amp; Khoảng Cách</h3>
+          <p>Cho $\Delta_1: a_1 x + b_1 y + c_1 = 0$ và $\Delta_2: a_2 x + b_2 y + c_2 = 0$:</p>
+          <div class="formula-box">
+            $$\cos \varphi = \frac{|a_1 a_2 + b_1 b_2|}{\sqrt{a_1^2 + b_1^2}\sqrt{a_2^2 + b_2^2}} \quad (0^\circ \le \varphi \le 90^\circ)$$
+          </div>
+          <div class="formula-box">
+            $$d(M_0, \Delta) = \frac{|a x_0 + b y_0 + c|}{\sqrt{a^2 + b^2}} \quad \text{với } M_0(x_0; y_0)$$
+          </div>
+          <div class="rule-box gold">
+            Điều kiện vuông góc: $\Delta_1 \perp \Delta_2 \Leftrightarrow a_1 a_2 + b_1 b_2 = 0$.
+          </div>
+        </div>
+
+        <!-- Chuyên đề 3 -->
+        <div class="card concept-card">
+          <div class="card-icon">⭕</div>
+          <h3>3. Phương Trình Đường Tròn &amp; Tiếp Tuyến</h3>
+          <p>Đường tròn $(C)$ có tâm $I(a; b)$, bán kính $R > 0$:</p>
+          <div class="formula-box">
+            $$(x - a)^2 + (y - b)^2 = R^2 \quad \text{hoặc} \quad x^2 + y^2 - 2ax - 2by + c = 0$$
+          </div>
+          <p>Điều kiện dạng khai triển là đường tròn: $a^2 + b^2 - c > 0$, với $R = \sqrt{a^2 + b^2 - c}$.</p>
+          <div class="formula-box">
+            $$(x_0 - a)(x - x_0) + (y_0 - b)(y - y_0) = 0 \quad \text{— Tiếp tuyến tại } M_0(x_0; y_0) \in (C)$$
+          </div>
+          <div class="rule-box gold">
+            $\Delta$ tiếp xúc $(C)$ khi và chỉ khi khoảng cách từ tâm đến $\Delta$ bằng bán kính: $d(I, \Delta) = R$.
+          </div>
+        </div>
+
+        <!-- Chuyên đề 4 -->
+        <div class="card concept-card">
+          <div class="card-icon">🌌</div>
+          <h3>4. Ba Đường Conic Chuẩn Hoá</h3>
+          <p>Bảng đối sánh 3 đường Conic chính tắc:</p>
+          <div class="formula-box">
+            $$\text{Elip: } \frac{x^2}{a^2} + \frac{y^2}{b^2} = 1 \quad (a > b > 0, \, c^2 = a^2 - b^2)$$
+            $$\text{Hypebol: } \frac{x^2}{a^2} - \frac{y^2}{b^2} = 1 \quad (a, b > 0, \, c^2 = a^2 + b^2)$$
+            $$\text{Parabol: } y^2 = 2px \quad (p > 0, \, F\left(\frac{p}{2}; 0\right), \, \Delta: x = -\frac{p}{2})$$
+          </div>
+          <div class="rule-box gold">
+            Mọi điểm $M(x_0; y_0)$ trên Elip đều thoả mãn $b \le OM \le a$. Độ rộng nhỏ nhất của nhánh Hypebol giữa hai đỉnh là khoảng cách thực $2a$.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: LABS -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-wrapper">
+        <!-- Lab 1: Radar toạ độ Oxy -->
+        <div class="card lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">THÍ NGHIỆM 1</span>
+            <h3>🧪 Radar Toạ Độ Oxy: Đường Thẳng, Đường Tròn &amp; Khoảng Cách</h3>
+          </div>
+          <p>Khảo sát tương quan giữa điểm $M(x_0; y_0)$, đường thẳng $\Delta: ax + by + c = 0$ và đường tròn $(C)$ trong thời gian thực:</p>
+          
+          <div class="lab-controls">
+            <div class="slider-group">
+              <label>Toạ độ điểm $M(x_0; y_0)$: <span id="mVal">M(3, 2)</span></label>
+              <div style="display: flex; gap: 10px;">
+                <input type="range" id="slMx" min="-5" max="5" step="0.5" value="3">
+                <input type="range" id="slMy" min="-5" max="5" step="0.5" value="2">
+              </div>
+            </div>
+            <div class="slider-group">
+              <label>Đường thẳng $\Delta$: $a = $ <span id="aVal">1</span>, $b = $ <span id="bVal">2</span>, $c = $ <span id="cVal">-3</span></label>
+              <div style="display: flex; gap: 10px;">
+                <input type="range" id="slA" min="-4" max="4" step="1" value="1">
+                <input type="range" id="slB" min="-4" max="4" step="1" value="2">
+                <input type="range" id="slC" min="-8" max="8" step="1" value="-3">
+              </div>
+            </div>
+            <div class="slider-group">
+              <label>Bán kính đường tròn $(C)$ tâm $O$: $R = $ <span id="rVal">3</span></label>
+              <input type="range" id="slR" min="1" max="5" step="0.5" value="3">
+            </div>
+          </div>
+
+          <div class="canvas-container">
+            <canvas id="radarCanvas" width="600" height="380"></canvas>
+          </div>
+
+          <div class="lab-output" id="radarOutput">
+            Đang tính toán toạ độ...
+          </div>
+        </div>
+
+        <!-- Lab 2: Phân tích 3 đường conic -->
+        <div class="card lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">THÍ NGHIỆM 2</span>
+            <h3>🧪 Bộ Nhận Diện &amp; Phân Tích Ba Đường Conic</h3>
+          </div>
+          <p>Chuyển đổi linh hoạt giữa Elip, Hypebol và Parabol. Quan sát các yếu tố hình học đặc trưng (tiêu điểm, đỉnh, đường chuẩn, tiêu cự):</p>
+
+          <div class="lab-controls">
+            <div class="btn-group" style="display: flex; gap: 10px; margin-bottom: 12px;">
+              <button class="btn-primary" id="btnModeElip" style="flex: 1;">🪐 Elip</button>
+              <button class="btn-primary" id="btnModeHypebol" style="flex: 1;">⚡ Hypebol</button>
+              <button class="btn-primary" id="btnModeParabol" style="flex: 1;">📡 Parabol</button>
+            </div>
+            <div class="slider-group" id="conicParamGroup">
+              <label id="conicParamLabel">Bán trục $a = 4$, $b = 3$</label>
+              <div style="display: flex; gap: 10px;">
+                <input type="range" id="slParam1" min="2" max="6" step="0.5" value="4">
+                <input type="range" id="slParam2" min="1" max="5" step="0.5" value="3">
+              </div>
+            </div>
+          </div>
+
+          <div class="canvas-container">
+            <canvas id="conicCanvas" width="600" height="380"></canvas>
+          </div>
+
+          <div class="lab-output" id="conicOutput">
+            Đang tải dữ liệu Conic...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ARENA -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ ĐẤU TRƯỜNG BÀI TẬP CUỐI CHƯƠNG VII</h2>
+          <p>10 câu hỏi chuẩn mực từ SGK Kết Nối Tri Thức (Bài 7.26 đến 7.37). Phản hồi tức thì, cộng XP và rèn luyện tư duy!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="score-line">Tiến Độ: <span id="arenaProgress">0/10</span></div>
+          <div class="score-line">Điểm Arena: <span id="arenaScore">0 XP</span></div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: BADGES -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-wrapper">
+        <h2>🏆 HUY HIỆU VINH DANH CHƯƠNG VII</h2>
+        <p>Mở khoá toàn bộ 5 huy hiệu để nhận Giấy Chứng Nhận Đại Kiện Tướng Toạ Độ!</p>
+        
+        <div class="badge-grid">
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon">🌟</div>
+            <div class="badge-name">Khởi Đầu Toạ Độ</div>
+            <div class="badge-desc">Đọc và khám phá toàn bộ Bản Đồ Tri Thức Chương VII.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon">🧪</div>
+            <div class="badge-name">Chuyên Gia Radar Oxy</div>
+            <div class="badge-desc">Tương tác và làm chủ cả 2 phòng thí nghiệm thực tế.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon">⚡</div>
+            <div class="badge-name">Phản Xạ Toạ Độ</div>
+            <div class="badge-desc">Hoàn thành chính xác 5 câu hỏi trong Đấu Trường.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <div class="badge-name">Bậc Thầy Giải Tích</div>
+            <div class="badge-desc">Đạt tối thiểu 160 XP trong Đấu Trường SGK.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <div class="badge-name">Đại Kiện Tướng Chương VII</div>
+            <div class="badge-desc">Xuất sắc đạt điểm số tuyệt đối 200/200 XP (10/10).</div>
+          </div>
+        </div>
+
+        <!-- Certificate Container -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-header">
+              <span class="school-name">TRƯỜNG THPT LƯƠNG THẾ VINH</span>
+              <span class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</span>
+              <span class="cert-subtitle">Chương VII: Phương Pháp Toạ Độ Trong Mặt Phẳng</span>
+            </div>
+            
+            <div class="cert-body">
+              <p>Chứng nhận học sinh:</p>
+              <h3 class="student-name" id="certStudentName">Chiến Binh Logic</h3>
+              <p>Đã hoàn thành xuất sắc toàn bộ nội dung lý thuyết, phòng thí nghiệm tương tác và bộ câu hỏi đánh giá năng lực Chương VII: Phương Pháp Toạ Độ Trong Mặt Phẳng theo chương trình GDPT môn Toán 10.</p>
+              
+              <div class="cert-stats">
+                <div class="c-stat">Điểm Arena: <b id="certScore">0</b>/200 XP</div>
+                <div class="c-stat">Xếp loại: <b id="certRank">Xuất Sắc</b></div>
+                <div class="c-stat">Cấp sao: <b id="certStars">⭐⭐⭐⭐⭐</b></div>
+              </div>
+            </div>
+
+            <div class="cert-footer">
+              <div class="cert-seal">
+                <div class="seal-inner">CHỨNG NHẬN<br>TOÁN 10 KNTT</div>
+              </div>
+              <div class="cert-sign">
+                <div class="sign-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</div>
+                <div class="sign-role">GIÁO VIÊN BỘ MÔN</div>
+                <div class="signature">Tổ Toán THPT Lương Thế Vinh</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan10_bai22/index.html" class="nav-btn prev">⬅️ Bài 22: Ba Đường Conic</a>
+      <a href="../toan10_bai1/index.html" class="nav-btn next">🏠 Về Trang Chủ Khóa Học ➡️</a>
+    </footer>
+  </div>
+
+  <!-- Modal Overlay (Hidden initially) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker">
+        <button class="av-opt" data-av="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+        <button class="av-opt" data-av="🧙‍♂️" data-name="Phù Thủy Toạ Độ">🧙‍♂️ Phù Thủy Toạ Độ</button>
+        <button class="av-opt" data-av="🚀" data-name="Phi Hành Gia Conic">🚀 Phi Hành Gia Conic</button>
+        <button class="av-opt" data-av="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+        <button class="av-opt" data-av="⚡" data-name="Tia Chớp Vector">⚡ Tia Chớp Vector</button>
+        <button class="av-opt" data-av="💎" data-name="Bậc Thầy Không Gian">💎 Bậc Thầy Không Gian</button>
+        <button class="av-opt" data-av="🏹" data-name="Cung Thủ Parabol">🏹 Cung Thủ Parabol</button>
+        <button class="av-opt" data-av="🛡️" data-name="Hiệp Sĩ Elip">🛡️ Hiệp Sĩ Elip</button>
+      </div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-primary" id="btnCloseModal">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

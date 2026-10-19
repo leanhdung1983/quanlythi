@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 18: Phương Trình Quy Về Bậc Hai - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <div class="user-name" id="userNameDisplay">Chiến Binh Logic</div>
+          <div class="user-title" id="userTitleDisplay">Chuyên Gia Giải Phương Trình Căn Thức</div>
+        </div>
+      </div>
+
+            <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <div class="lesson-banner">
+      <div class="banner-badge-group">
+        <span class="banner-badge">CHƯƠNG VI: HÀM SỐ, ĐỒ THỊ VÀ ỨNG DỤNG</span>
+        <span class="banner-badge highlight">TOÁN 10 KNTT • BÀI 18</span>
+      </div>
+      <h1 class="lesson-title">BÀI 18: PHƯƠNG TRÌNH QUY VỀ BẬC HAI</h1>
+      <p class="lesson-subtitle">
+        Nắm vững kỹ thuật bình phương giải phương trình căn thức $\sqrt{f(x)} = \sqrt{g(x)}$ và $\sqrt{f(x)} = ax + b$, kiểm soát triệt để nghiệm ngoại lai và ứng dụng giải hình học thực tế.
+      </p>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">Bản Đồ Tri Thức</span>
+      </button>
+      <button class="nav-tab" data-tab="labs">
+        <span class="tab-icon">🧪</span>
+        <span class="tab-text">Phòng Thí Nghiệm</span>
+      </button>
+      <button class="nav-tab" data-tab="arena">
+        <span class="tab-icon">⚔️</span>
+        <span class="tab-text">Đấu Trường SGK</span>
+      </button>
+      <button class="nav-tab" data-tab="badges">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-text">Huy Hiệu & Vinh Danh</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="concept-card highlight-border">
+          <div class="concept-card-header">
+            <span class="concept-icon">🔍</span>
+            <h3>1. Phương Trình Dạng $\sqrt{f(x)} = \sqrt{g(x)}$</h3>
+          </div>
+          <div class="concept-body">
+            <p>
+              Phương trình chứa căn ở cả hai vế với $f(x), g(x)$ là các tam thức hoặc nhị thức bậc nhất.
+            </p>
+            <div class="formula-box">
+              $$\sqrt{f(x)} = \sqrt{g(x)}$$
+            </div>
+            <div class="mini-rule-box">
+              <strong>Quy trình giải chuẩn 3 bước:</strong><br>
+              <strong>Bước 1:</strong> Bình phương hai vế đưa về phương trình hệ quả: $f(x) = g(x)$.<br>
+              <strong>Bước 2:</strong> Giải phương trình bậc hai tìm các nghiệm $x$.<br>
+              <strong>Bước 3 (Bắt buộc):</strong> Thay từng giá trị tìm được vào phương trình ban đầu (hoặc kiểm tra điều kiện $f(x) \ge 0$) để loại nghiệm ngoại lai.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card highlight-border">
+          <div class="concept-card-header">
+            <span class="concept-icon">⚡</span>
+            <h3>2. Phương Trình Dạng $\sqrt{f(x)} = ax + b$</h3>
+          </div>
+          <div class="concept-body">
+            <p>
+              Phương trình có một vế chứa căn thức bậc hai và một vế là nhị thức bậc nhất.
+            </p>
+            <div class="formula-box">
+              $$\sqrt{f(x)} = ax + b$$
+            </div>
+            <div class="mini-rule-box">
+              <strong>Cách 1 (Bình phương và thử lại):</strong><br>
+              • Bình phương hai vế: $f(x) = (ax + b)^2$.<br>
+              • Giải phương trình bậc hai nhận được.<br>
+              • Thử lại vào phương trình ban đầu để chọn nghiệm đúng.<br><br>
+              <strong>Cách 2 (Dùng điều kiện tương đương):</strong><br>
+              $$\sqrt{f(x)} = ax + b \iff \begin{cases} ax + b \ge 0 \\ f(x) = (ax + b)^2 \end{cases}$$
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card">
+          <div class="concept-card-header">
+            <span class="concept-icon">⚠️</span>
+            <h3>3. Bản Chất Của Nghiệm Ngoại Lai</h3>
+          </div>
+          <div class="concept-body">
+            <p>
+              Tại sao phép bình phương lại sinh ra <strong>nghiệm ngoại lai</strong>?
+            </p>
+            <div class="formula-box">
+              $$A = B \implies A^2 = B^2 \iff A = B \text{ hoặc } A = -B$$
+            </div>
+            <p>
+              Khi ta bình phương phương trình $\sqrt{f(x)} = ax + b$, ta đã vô tình giải cả phương trình đối xứng $-\sqrt{f(x)} = ax + b$. Những nghiệm làm cho $ax + b < 0$ chính là nghiệm ngoại lai cần phải loại bỏ!
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="concept-card">
+          <div class="concept-card-header">
+            <span class="concept-icon">📐</span>
+            <h3>4. Ứng Dụng Trong Hình Học & Thực Tiễn</h3>
+          </div>
+          <div class="concept-body">
+            <p>Rất nhiều bài toán thực tế quy về phương trình căn thức:</p>
+            <div class="mini-rule-box">
+              <strong>1. Định lý Pythagore trong tứ giác vuông góc:</strong><br>
+              Bài tập 6.22: Tứ giác có $AB \perp CD$, áp dụng Pythagore dẫn đến phương trình:
+              $$4\sqrt{25 - x^2} = 19 - x \implies x = 3$$
+              <strong>2. Bài toán chuyển động đón bạn:</strong><br>
+              Bài tập 6.23: Tìm điểm hẹn tối ưu trên quãng đường dựa trên tam giác vuông và vận tốc.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1 -->
+        <div class="lab-card">
+          <div class="lab-card-header">
+            <div class="lab-badge">THÍ NGHIỆM 1</div>
+            <h3>Khảo Sát Giao Điểm Đồ Thị Căn Thức & Đường Thẳng</h3>
+            <p class="lab-desc">Trực quan hóa sự giao nhau giữa đường cong căn bậc hai $y = \sqrt{f(x)}$ và đường thẳng $y = ax + b$. Phát hiện nghiệm thật và nghiệm ngoại lai.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="selectRadicalEq">Chọn phương trình căn thức:</label>
+              <select id="selectRadicalEq" class="select-input">
+                <option value="eq1">√(3x² - 17x + 23) = x - 3 (BT 6.21c)</option>
+                <option value="eq2">√(-x² + 2x + 4) = x - 2 (BT 6.21d)</option>
+                <option value="eq3">√(2x² + 5x + 3) = -3 - x (BT 6.21b: Vô nghiệm)</option>
+                <option value="eq4">4√(25 - x²) = 19 - x (BT 6.22: Tứ giác)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="canvasRadicalLab" width="700" height="380"></canvas>
+          </div>
+
+          <div class="lab-analysis-box" id="radicalAnalysisBox">
+            <!-- Dynamic graphical intersection info -->
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="lab-card">
+          <div class="lab-card-header">
+            <div class="lab-badge">THÍ NGHIỆM 2</div>
+            <h3>Máy Kiểm Định & Rà Soát Nghiệm Ngoại Lai</h3>
+            <p class="lab-desc">Thực hiện phép bình phương, đối chiếu điều kiện và thử lại từng nghiệm trực tiếp vào phương trình gốc.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <button class="btn-primary" id="btnStepSquare">Bình Phương 2 Vế</button>
+              <button class="hud-btn" id="btnStepCheck" style="margin-left: 12px; padding: 10px 16px; border-radius: 8px;">Thử Lại Nghiệm</button>
+            </div>
+          </div>
+
+          <div class="taxi-receipt-card" id="stepByStepBox">
+            <!-- Step by step verification logs -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>ĐẤU TRƯỜNG TRI THỨC BÀI 18</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm bám sát các bài tập 6.20 đến 6.23 trong SGK Toán 10 KNTT.</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="arena-progress" id="arenaProgress">Tiến độ: 0/10</div>
+          <div class="arena-score" id="arenaScore">Điểm Arena: 0 XP</div>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-dashboard">
+        <h2>BỘ HUY HIỆU DANH GIÁ</h2>
+        <p class="section-desc">Làm chủ phương trình vô tỉ căn thức, chinh phục các bài toán thực tiễn đỉnh cao.</p>
+
+        <div class="badge-gallery">
+          <div class="badge-item locked" id="badge-0">
+            <div class="badge-icon-box">🌟</div>
+            <div class="badge-info">
+              <div class="badge-title">Thợ Săn Căn Thức</div>
+              <div class="badge-desc">Nắm vững quy tắc bình phương 2 vế của phương trình căn</div>
+            </div>
+            <div class="badge-status">Đã mở</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon-box">🎯</div>
+            <div class="badge-info">
+              <div class="badge-title">Kính Chiếu Yêu Ngoại Lai</div>
+              <div class="badge-desc">Phát hiện và loại bỏ chính xác các nghiệm ngoại lai</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon-box">📐</div>
+            <div class="badge-info">
+              <div class="badge-title">Kiến Trúc Sư Hình Học</div>
+              <div class="badge-desc">Giải quyết thành công bài toán tứ giác vuông góc 6.22</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon-box">⚔️</div>
+            <div class="badge-info">
+              <div class="badge-title">Chiến Binh Căn Bậc Hai</div>
+              <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon-box">👑</div>
+            <div class="badge-info">
+              <div class="badge-title">Đại Kiện Tướng Vô Tỉ</div>
+              <div class="badge-desc">Đạt 200/200 XP tuyệt đối trong toàn bộ thử thách bài 18</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+        </div>
+
+        <!-- A4 Printable Certificate -->
+        <div class="cert-outer-box">
+          <div class="cert-action-bar">
+            <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+          </div>
+
+          <div class="cert-container" id="gradCert">
+            <div class="cert-inner-frame">
+              <div class="cert-header">
+                <div class="cert-school">SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐÀ NẴNG</div>
+                <div class="cert-school" style="font-weight: 700; font-size: 16pt;">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+                <div class="cert-divider">✦ ✦ ✦</div>
+              </div>
+
+              <div class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</div>
+              <div class="cert-subtitle">CHỨNG NHẬN HỌC SINH ĐÃ LÀM CHỦ KIẾN THỨC BÀI HỌC</div>
+
+              <div class="cert-body">
+                <p class="cert-present">Chứng nhận em:</p>
+                <div class="cert-student-name" id="certStudentName">Chiến Binh Logic</div>
+                <p class="cert-text">
+                  Đã hoàn thành xuất sắc toàn bộ chương trình lý thuyết, thực hành phòng thí nghiệm và vượt qua thử thách trắc nghiệm của bài học:
+                </p>
+                <div class="cert-lesson-name">BÀI 18: PHƯƠNG TRÌNH QUY VỀ BẬC HAI (TOÁN 10 KẾT NỐI TRI THỨC)</div>
+                <div class="cert-stats-row">
+                  <div class="cert-stat">Tổng điểm tích lũy: <strong id="certXp">0 XP</strong></div>
+                  <div class="cert-stat">Xếp hạng: <strong id="certRank">Kiện Tướng Vô Tỉ</strong></div>
+                </div>
+              </div>
+
+              <div class="cert-footer">
+                <div class="cert-date" id="certDateText">Đà Nẵng, ngày 17 tháng 10 năm 2026</div>
+                <div class="cert-signature-area">
+                  <div class="cert-sign-title">TỔ TRƯỞNG CHUYÊN MÔN TOÁN</div>
+                  <div class="cert-sign-name">TS. Hoàng Văn Minh</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a class="nav-btn prev" href="../toan10_bai17/index.html">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <span class="nav-sub">Bài trước</span>
+          <span class="nav-main">Bài 17: Dấu Của Tam Thức Bậc Hai</span>
+        </div>
+      </a>
+      <a class="nav-btn next" href="../toan10_ontap_chuong6/index.html">
+        <div class="nav-text" style="text-align: right;">
+          <span class="nav-sub">Bài tiếp theo</span>
+          <span class="nav-main">Bài Tập Cuối Chương VI</span>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Đổi Avatar -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>CHỌN NHÂN VẬT ĐẠI DIỆN</h3>
+        <button class="modal-close" id="closeAvatarBtn">✕</button>
+      </div>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑"><span class="avatar-ico">👑</span><span>Đại Kiện Tướng</span></button>
+        <button class="avatar-choice" data-avatar="🚀"><span class="avatar-ico">🚀</span><span>Phi Hành Gia</span></button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️"><span class="avatar-ico">🧙‍♂️</span><span>Phù Thủy Căn Thức</span></button>
+        <button class="avatar-choice" data-avatar="🦁"><span class="avatar-ico">🦁</span><span>Sư Tử Dũng Mãnh</span></button>
+        <button class="avatar-choice" data-avatar="💎"><span class="avatar-ico">💎</span><span>Bậc Thầy Khử Nghiệm</span></button>
+        <button class="avatar-choice" data-avatar="🦉"><span class="avatar-ico">🦉</span><span>Cú Thông Thái</span></button>
+        <button class="avatar-choice" data-avatar="🎯"><span class="avatar-ico">🎯</span><span>Xạ Thủ Vô Tỉ</span></button>
+        <button class="avatar-choice" data-avatar="🏅"><span class="avatar-ico">🏅</span><span>Quán Quân Mô Hình</span></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

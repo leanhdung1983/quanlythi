@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 24: Hoán Vị, Chỉnh Hợp Và Tổ Hợp - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Hoán Vị &amp; Tổ Hợp</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">TOÁN 10 • CHƯƠNG VIII • ĐẠI SỐ TỔ HỢP</span>
+      <h1>BÀI 24: HOÁN VỊ, CHỈNH HỢP VÀ TỔ HỢP</h1>
+      <p>Khám phá bản chất của việc sắp xếp và lựa chọn: Hoán vị $P_n$, Chỉnh hợp $A_n^k$, Tổ hợp $C_n^k$, mối liên hệ tam giác Pascal và ứng dụng máy tính cầm tay giải quyết các bài toán thực tế.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: THEORY -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: Hoán vị -->
+        <div class="card concept-card">
+          <div class="card-icon">🔀</div>
+          <h3>1. Hoán Vị (Permutation)</h3>
+          <p>Một hoán vị của một tập hợp có $n$ phần tử là một cách sắp xếp thứ tự $n$ phần tử đó ($n \ge 1$):</p>
+          <div class="formula-box">
+            $$P_n = n! = n \cdot (n - 1) \cdot (n - 2) \cdots 2 \cdot 1$$
+          </div>
+          <div class="rule-box gold">
+            Quy ước giai thừa: $0! = 1$. Ý nghĩa: Hoán vị là việc sắp thứ tự <strong>TOÀN BỘ</strong> $n$ phần tử có sẵn.
+          </div>
+        </div>
+
+        <!-- Card 2: Chỉnh hợp -->
+        <div class="card concept-card">
+          <div class="card-icon">🎯</div>
+          <h3>2. Chỉnh Hợp (Arrangement)</h3>
+          <p>Một chỉnh hợp chập $k$ của $n$ phần tử ($1 \le k \le n$) là một cách chọn ra $k$ phần tử và sắp xếp chúng theo một thứ tự nhất định:</p>
+          <div class="formula-box">
+            $$A_n^k = \frac{n!}{(n - k)!} = n(n - 1)\cdots(n - k + 1)$$
+          </div>
+          <div class="rule-box gold">
+            Khi $k = n$, ta có $A_n^n = P_n = n!$. Chỉnh hợp nhấn mạnh vào: <strong>CÓ CHỌN VÀ CÓ PHÂN BIỆT THỨ TỰ</strong> (vị trí, chức vụ, hàng ghế).
+          </div>
+        </div>
+
+        <!-- Card 3: Tổ hợp -->
+        <div class="card concept-card">
+          <div class="card-icon">👥</div>
+          <h3>3. Tổ Hợp (Combination)</h3>
+          <p>Một tổ hợp chập $k$ của $n$ phần tử ($0 \le k \le n$) là một cách chọn ra $k$ phần tử mà không phân biệt thứ tự sắp xếp của chúng:</p>
+          <div class="formula-box">
+            $$C_n^k = \frac{n!}{k!(n - k)!} = \frac{A_n^k}{k!} \quad (0 \le k \le n)$$
+          </div>
+          <div class="rule-box gold">
+            Tính chất then chốt:
+            $$C_n^k = C_n^{n - k} \quad \text{và} \quad C_{n - 1}^{k - 1} + C_{n - 1}^k = C_n^k$$
+          </div>
+        </div>
+
+        <!-- Card 4: Bảng phân biệt -->
+        <div class="card concept-card">
+          <div class="card-icon">⚖️</div>
+          <h3>4. Phân Biệt Chỉnh Hợp $A_n^k$ &amp; Tổ Hợp $C_n^k$</h3>
+          <p>Chiếc chìa khóa vàng để giải quyết mọi bài toán đếm:</p>
+          <div class="formula-box">
+            $$\text{Chọn } k \text{ từ } n \textbf{ CÓ THỨ TỰ } \longrightarrow A_n^k$$
+            $$\text{Chọn } k \text{ từ } n \textbf{ KHÔNG CẦN THỨ TỰ } \longrightarrow C_n^k$$
+          </div>
+          <div class="rule-box gold">
+            Mẹo nhận diện: Nếu đổi chỗ 2 phần tử được chọn mà tạo ra kết quả MỚI (như đổi số trong số tự nhiên, đổi chức Trưởng/Phó ban) $\Rightarrow A_n^k$. Nếu đổi chỗ mà bản chất nhóm VẪN NHƯ CŨ (như lập nhóm học tập, chọn bi cùng màu) $\Rightarrow C_n^k$.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: LABS -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-wrapper">
+        <!-- Lab 1: Máy tính Pn, Ank, Cnk tương tác -->
+        <div class="card lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">THÍ NGHIỆM 1</span>
+            <h3>🧪 Máy Tính Động Hoán Vị, Chỉnh Hợp &amp; Tổ Hợp</h3>
+          </div>
+          <p>Điều chỉnh thanh trượt $n$ và $k$ để phân tích và đối chiếu giá trị của $P_n, A_n^k, C_n^k$ trong thời gian thực:</p>
+
+          <div class="lab-controls">
+            <div class="slider-group">
+              <label>Số phần tử tập hợp: $n = $ <span id="valN">6</span></label>
+              <input type="range" id="slN" min="1" max="10" step="1" value="6">
+            </div>
+            <div class="slider-group">
+              <label>Số phần tử được chọn: $k = $ <span id="valK">3</span></label>
+              <input type="range" id="slK" min="0" max="6" step="1" value="3">
+            </div>
+          </div>
+
+          <div class="canvas-container" style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 15px; border: 1px solid rgba(255,255,255,0.1);">
+            <div id="visBox" style="display: flex; flex-direction: column; gap: 15px; align-items: center;">
+              <!-- Dynamic elements rendered by JS -->
+            </div>
+          </div>
+
+          <div class="lab-output" id="combinOutput">
+            Đang tính toán giá trị...
+          </div>
+        </div>
+
+        <!-- Lab 2: Tam giác Pascal tương tác -->
+        <div class="card lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">THÍ NGHIỆM 2</span>
+            <h3>🧪 Tam Giác Pascal Trực Quan &amp; Hệ Thức $C_{n-1}^{k-1} + C_{n-1}^k = C_n^k$</h3>
+          </div>
+          <p>Rê chuột hoặc nhấp vào bất kì ô số nào trong tam giác Pascal để quan sát hai số ở hàng trên tạo thành nó và tính đối xứng hoàn hảo:</p>
+
+          <div class="canvas-container" style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1); overflow-x: auto;">
+            <div id="pascalContainer" style="display: flex; flex-direction: column; align-items: center; gap: 8px;">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <div class="lab-output" id="pascalOutput">
+            Nhấp chuột vào một ô số bất kì để kiểm chứng hệ thức Pascal!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ARENA -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ ĐẤU TRƯỜNG HOÁN VỊ - CHỈNH HỢP - TỔ HỢP</h2>
+          <p>10 câu hỏi chuẩn mực bám sát SGK Kết Nối Tri Thức (Bài 8.6 đến 8.11 trang 70–71). Tương tác tức thì, phân tích cặn kẽ và nhận điểm kinh nghiệm!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="score-line">Tiến Độ: <span id="arenaProgress">0/10</span></div>
+          <div class="score-line">Điểm Arena: <span id="arenaScore">0 XP</span></div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: BADGES -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-wrapper">
+        <h2>🏆 HUY HIỆU VINH DANH BÀI 24</h2>
+        <p>Hoàn thành xuất sắc bài học để nhận Giấy Chứng Nhận Bậc Thầy Hoán Vị &amp; Tổ Hợp!</p>
+
+        <div class="badge-grid">
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon">🌟</div>
+            <div class="badge-name">Khởi Đầu Hoán Vị</div>
+            <div class="badge-desc">Đọc và tìm hiểu Bản Đồ Tri Thức về Pn, Ank và Cnk.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon">🧪</div>
+            <div class="badge-name">Chuyên Gia Pascal</div>
+            <div class="badge-desc">Thực nghiệm máy tính tổ hợp và tam giác Pascal.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon">⚡</div>
+            <div class="badge-name">Phản Xạ Tổ Hợp</div>
+            <div class="badge-desc">Vượt qua chính xác tối thiểu 5 câu hỏi trong Đấu Trường.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <div class="badge-name">Cao Thủ Đếm Nâng Cao</div>
+            <div class="badge-desc">Đạt tối thiểu 160 XP trong Đấu Trường SGK.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <div class="badge-name">Đại Kiện Tướng Tổ Hợp</div>
+            <div class="badge-desc">Xuất sắc đạt điểm số tuyệt đối 200/200 XP (10/10 câu đúng).</div>
+          </div>
+        </div>
+
+        <!-- Certificate Container -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-header">
+              <span class="school-name">TRƯỜNG THPT LƯƠNG THẾ VINH</span>
+              <span class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</span>
+              <span class="cert-subtitle">Bài 24: Hoán Vị, Chỉnh Hợp Và Tổ Hợp</span>
+            </div>
+
+            <div class="cert-body">
+              <p>Chứng nhận học sinh:</p>
+              <h3 class="student-name" id="certStudentName">Chiến Binh Logic</h3>
+              <p>Đã hoàn thành xuất sắc toàn bộ nội dung lý thuyết bản đồ tri thức, thực nghiệm tương tác tam giác Pascal và giải quyết trọn vẹn bộ câu hỏi đánh giá năng lực Bài 24: Hoán Vị, Chỉnh Hợp Và Tổ Hợp theo chương trình GDPT môn Toán 10.</p>
+
+              <div class="cert-stats">
+                <div class="c-stat">Điểm Arena: <b id="certScore">0</b>/200 XP</div>
+                <div class="c-stat">Xếp loại: <b id="certRank">Xuất Sắc</b></div>
+                <div class="c-stat">Cấp sao: <b id="certStars">⭐⭐⭐⭐⭐</b></div>
+              </div>
+            </div>
+
+            <div class="cert-footer">
+              <div class="cert-seal">
+                <div class="seal-inner">CHỨNG NHẬN<br>TOÁN 10 KNTT</div>
+              </div>
+              <div class="cert-sign">
+                <div class="sign-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</div>
+                <div class="sign-role">GIÁO VIÊN BỘ MÔN</div>
+                <div class="signature">Tổ Toán THPT Lương Thế Vinh</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan10_bai23/index.html" class="nav-btn prev">⬅️ Bài 23: Quy Tắc Đếm</a>
+      <a href="../toan10_bai25/index.html" class="nav-btn next">Bài 25: Nhị Thức Newton ➡️</a>
+    </footer>
+  </div>
+
+  <!-- Modal Overlay (Hidden initially) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker">
+        <button class="av-opt" data-av="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+        <button class="av-opt" data-av="🧙‍♂️" data-name="Phù Thủy Pascal">🧙‍♂️ Phù Thủy Pascal</button>
+        <button class="av-opt" data-av="🔀" data-name="Bậc Thầy Hoán Vị">🔀 Bậc Thầy Hoán Vị</button>
+        <button class="av-opt" data-av="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+        <button class="av-opt" data-av="⚡" data-name="Tia Chớp Chỉnh Hợp">⚡ Tia Chớp Chỉnh Hợp</button>
+        <button class="av-opt" data-av="💎" data-name="Nhà Toán Học Fibonacci">💎 Nhà Toán Học Fibonacci</button>
+        <button class="av-opt" data-av="🚀" data-name="Phi Hành Gia Tổ Hợp">🚀 Phi Hành Gia Tổ Hợp</button>
+        <button class="av-opt" data-av="🛡️" data-name="Hiệp Sĩ Logic">🛡️ Hiệp Sĩ Logic</button>
+      </div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-primary" id="btnCloseModal">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

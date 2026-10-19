@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 10: Vectơ Trong Mặt Phẳng Toạ Độ - Toán 10 Kết Nối Tri Thức</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <div class="user-name" id="userNameDisplay">Chiến Binh Logic 🌟</div>
+          <div class="user-title" id="userTitle">Đại Kiện Tướng Toạ Độ Phẳng</div>
+        </div>
+      </div>
+
+            <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <div class="banner-badge">CHƯƠNG IV: VECTƠ • BÀI 10 (SGK TRANG 60 - 65)</div>
+      <h1 class="lesson-title">VECTƠ TRONG MẶT PHẲNG TOẠ ĐỘ</h1>
+      <p class="lesson-subtitle">
+        Cầu nối kỳ diệu giữa Hình học và Đại số: Khám phá cách biểu diễn vectơ bằng cặp số toạ độ $(x; y)$, tính khoảng cách, trung điểm, trọng tâm và giải mã bài toán dự báo tâm bão, nước đi quân mã bàn cờ vua!
+      </p>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="lesson-tabs">
+      <button class="nav-tab active" data-tab="theory">
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">Bản Đồ Tri Thức</span>
+      </button>
+      <button class="nav-tab" data-tab="labs">
+        <span class="tab-icon">🧪</span>
+        <span class="tab-text">Phòng Thí Nghiệm Toạ Độ</span>
+      </button>
+      <button class="nav-tab" data-tab="arena">
+        <span class="tab-icon">⚔️</span>
+        <span class="tab-text">Đấu Trường SGK</span>
+      </button>
+      <button class="nav-tab" data-tab="badges">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-text">Huy Hiệu & Vinh Danh</span>
+      </button>
+    </nav>
+
+    <!-- Tab 1: Theory Knowledge Map -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="concept-cards-grid">
+        <!-- Card 1: Toạ độ vectơ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🧭</span>
+            <h3>1. Toạ Độ Của Vectơ Trên Hệ Trục Oxy</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Hệ trục toạ độ $Oxy$:</strong> Gồm hai trục vuông góc $Ox$ (trục hoành) và $Oy$ (trục tung) với các vectơ đơn vị tương ứng là $\vec{i}$ và $\vec{j}$ ($|\vec{i}| = |\vec{j}| = 1$ và $\vec{i} \perp \vec{j}$).</p>
+            <p>• <strong>Định nghĩa toạ độ vectơ:</strong> Mọi vectơ $\vec{u}$ trên mặt phẳng đều được biểu diễn duy nhất dưới dạng:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\vec{u} = x\vec{i} + y\vec{j} \iff \vec{u} = (x; y)$$</p>
+            </div>
+            <p>Cặp số $(x; y)$ được gọi là <strong>toạ độ của vectơ $\vec{u}$</strong>. Số $x$ là hoành độ, $y$ là tung độ.</p>
+          </div>
+        </div>
+
+        <!-- Card 2: Toạ độ điểm & Vectơ nối hai điểm -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📍</span>
+            <h3>2. Toạ Độ Điểm & Vectơ Nối Hai Điểm</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Toạ độ của điểm $M$:</strong> Là toạ độ của vectơ vị trí $\overrightarrow{OM}$:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$M(x; y) \iff \overrightarrow{OM} = (x; y) = x\vec{i} + y\vec{j}$$</p>
+            </div>
+            <p>• <strong>Vectơ nối hai điểm $A(x_A; y_A)$ và $B(x_B; y_B)$:</strong></p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\overrightarrow{AB} = (x_B - x_A; y_B - y_A)$$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>💡 Quy tắc nhớ nhanh:</strong> Toạ độ vectơ bằng toạ độ <em>điểm Ngọn</em> trừ đi toạ độ <em>điểm Gốc</em>!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Phép toán toạ độ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⚡</span>
+            <h3>3. Toạ Độ Của Các Phép Toán Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>Cho hai vectơ $\vec{u} = (x; y), \vec{v} = (x'; y')$ và số thực $k$:</p>
+            <div class="formula-box">
+              <p>• Tổng: $\vec{u} + \vec{v} = (x + x'; y + y')$</p>
+              <p>• Hiệu: $\vec{u} - \vec{v} = (x - x'; y - y')$</p>
+              <p>• Nhân với số: $k\vec{u} = (kx; ky)$</p>
+              <p>• Bằng nhau: $\vec{u} = \vec{v} \iff x = x'$ và $y = y'$</p>
+            </div>
+            <p>• <strong>Điều kiện cùng phương:</strong> $\vec{u}$ cùng phương với $\vec{v} \neq \vec{0} \iff \exists k: x = kx'$ và $y = ky'$ (tức $\frac{x}{x'} = \frac{y}{y'}$ khi $x', y' \neq 0$).</p>
+          </div>
+        </div>
+
+        <!-- Card 4: Trung điểm, Trọng tâm, Độ dài -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📐</span>
+            <h3>4. Trung Điểm, Trọng Tâm & Độ Dài Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>Cho đoạn thẳng $AB$ với $A(x_A; y_A), B(x_B; y_B)$ và tam giác $ABC$ thêm $C(x_C; y_C)$:</p>
+            <div class="formula-box">
+              <p>• <strong>Trung điểm $M$ của $AB$:</strong> $M\left(\frac{x_A + x_B}{2}; \frac{y_A + y_B}{2}\right)$</p>
+              <p>• <strong>Trọng tâm $G$ của $\triangle ABC$:</strong> $G\left(\frac{x_A + x_B + x_C}{3}; \frac{y_A + y_B + y_C}{3}\right)$</p>
+              <p>• <strong>Độ dài vectơ:</strong> $|\vec{u}| = \sqrt{x^2 + y^2}$</p>
+              <p>• <strong>Khoảng cách giữa hai điểm:</strong> $AB = |\overrightarrow{AB}| = \sqrt{(x_B - x_A)^2 + (y_B - y_A)^2}$</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Ứng dụng Dự báo Tâm bão & Vận tốc tàu -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🌪️</span>
+            <h3>5. Ứng Dụng Thực Tế: Dự Báo Bão & Vận Tốc Tàu</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Dự báo tâm bão (SGK Trang 60):</strong> Bằng cách định vị tâm bão trên hệ toạ độ kinh - vĩ độ $(x; y)$, khi bão di chuyển đều với vectơ vận tốc $\vec{v}$, vị trí sau thời gian $t$ là $M(t) = M_0 + t\vec{v}$.</p>
+            <p>• <strong>Chuyển động tàu biển (Bài 4.19 SGK Trang 65):</strong> Tàu xuất phát từ $A(1; 2)$ với vận tốc $\vec{v} = (3; 4)$ km/h. Sau $1,5$ giờ, vị trí tàu đạt toạ độ $M = (1 + 1,5 \times 3; 2 + 1,5 \times 4) = (5,5; 8)$.</p>
+          </div>
+        </div>
+
+        <!-- Card 6: Nước đi quân mã bàn cờ toạ độ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">♟️</span>
+            <h3>6. Ứng Dụng: Toạ Độ Nước Đi Quân Mã Bàn Cờ Vua</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Bài toán 4.20 SGK Trang 65:</strong> Quân mã trong cờ vua di chuyển theo hình chữ L: 2 ô theo một trục và 1 ô theo trục còn lại.</p>
+            <p>• <strong>Biểu diễn qua vectơ bước nhảy:</strong> Vectơ di chuyển $\vec{s} = (\Delta x; \Delta y)$ với $|\Delta x| + |\Delta y| = 3$ và $|\Delta x| \neq |\Delta y|$, tức $(\Delta x; \Delta y) \in \{(\pm 1; \pm 2), (\pm 2; \pm 1)\}$.</p>
+            <p>Từ vị trí $(1; 2)$, quân mã có thể nhảy tới các ô hợp lệ trên bàn cờ như $(2; 4), (3; 3), (3; 1)$,... một cách chính xác tuyệt đối nhờ toạ độ vectơ!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1: Interactive Coordinate Plane & Vector Explorer -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">📐</span>
+            <div>
+              <h3>Lab 1: Khám Phá Mặt Phẳng Toạ Độ Oxy & Điểm Động</h3>
+              <p>Kéo thả các điểm $A, B$ (hoặc điều chỉnh thanh trượt) để quan sát vectơ $\overrightarrow{AB}$, toạ độ trung điểm $M$ và trọng tâm $G$ thời gian thực.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="coordCanvas" width="600" height="380"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Hoành độ điểm $A$ ($x_A$): <span id="xAVal">-3</span></label>
+                <input type="range" id="xASlider" min="-6" max="6" value="-3" step="1">
+              </div>
+              <div class="slider-group">
+                <label>Tung độ điểm $A$ ($y_A$): <span id="yAVal">-2</span></label>
+                <input type="range" id="yASlider" min="-5" max="5" value="-2" step="1">
+              </div>
+              <div class="slider-group">
+                <label>Hoành độ điểm $B$ ($x_B$): <span id="xBVal">3</span></label>
+                <input type="range" id="xBSlider" min="-6" max="6" value="3" step="1">
+              </div>
+              <div class="slider-group">
+                <label>Tung độ điểm $B$ ($y_B$): <span id="yBVal">2</span></label>
+                <input type="range" id="yBSlider" min="-5" max="5" value="2" step="1">
+              </div>
+              <div class="control-row" style="margin-top: 10px;">
+                <button class="lab-btn" id="btnTogglePointC">📐 Bật/Tắt Điểm C (Tạo $\triangle ABC$)</button>
+                <button class="lab-btn" id="btnPresetCoord1">Mẫu 1: $A(1; 3), B(4; 2)$ [Bài 4.16]</button>
+                <button class="lab-btn" id="btnPresetCoord2">Mẫu 2: $A(-3; 6), B(3; -3)$ [Bài 4.17]</button>
+                <button class="lab-btn" id="btnResetCoord">Đặt Lại Toạ Độ</button>
+              </div>
+            </div>
+            <div class="lab-output" id="lab1Output">
+              <div class="output-item">Toạ độ $\overrightarrow{AB}$: <span class="badge-gold" id="outVecAB">$(6; 4)$</span></div>
+              <div class="output-item">Độ dài khoảng cách $AB$: <span class="badge-cyan" id="outDistAB">7.21</span></div>
+              <div class="output-item">Toạ độ trung điểm $M$: <span class="badge-blue" id="outMidM">$(0; 0)$</span></div>
+              <div class="output-item" id="boxTrigG" style="display: none;">Toạ độ trọng tâm $G$: <span class="badge-green" id="outGravG">$(0; 1)$</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Simulation of Ship Motion & Knight's Chess Coordinates -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">♟️</span>
+            <div>
+              <h3>Lab 2: Mô Phỏng Hành Trình Tàu Thủy & Nước Đi Quân Mã (SGK Trang 65)</h3>
+              <p>Mô phỏng chuyển động thẳng đều của tàu thuyền và xác định các vị trí nước đi hợp lệ của quân mã trên bàn cờ toạ độ.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="simCanvas" width="600" height="340"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="control-row" style="margin-bottom: 12px;">
+                <button class="lab-btn active" id="btnModeShip">🚢 Mô Phỏng Tàu Thuỷ (Bài 4.19)</button>
+                <button class="lab-btn" id="btnModeKnight">♟️ Bàn Cờ Quân Mã (Bài 4.20)</button>
+              </div>
+              <div id="shipControls">
+                <div class="slider-group">
+                  <label>Thời gian hành trình $t$: <span id="timeVal">1.5 giờ</span></label>
+                  <input type="range" id="timeSlider" min="0" max="4" value="1.5" step="0.25">
+                </div>
+                <div class="slider-group">
+                  <label>Vận tốc $\vec{v} = (v_x; v_y)$: <span id="velVal">(3; 4) km/h</span></label>
+                  <input type="range" id="velSlider" min="1" max="5" value="3" step="1">
+                </div>
+              </div>
+              <div id="knightControls" style="display: none;">
+                <p style="font-size: 0.9rem; color: var(--text-secondary); margin-bottom: 8px;">Nhấp vào bất kỳ ô nào trên bàn cờ hoặc kéo thanh trượt để di chuyển quân mã và xem các bước nhảy $(\pm 1; \pm 2)$ hoặc $(\pm 2; \pm 1)$:</p>
+                <div class="slider-group">
+                  <label>Toạ độ vị trí quân mã $(x_K; y_K)$: <span id="knightPosVal">(1; 2)</span></label>
+                  <input type="range" id="knightXSlider" min="1" max="6" value="1" step="1">
+                </div>
+              </div>
+            </div>
+            <div class="lab-output" id="lab2Output">
+              <div class="output-item" id="shipOutput1">Vị trí hiện tại của tàu: <span class="badge-gold" id="shipPosDisplay">$(5.5; 8.0)$</span></div>
+              <div class="output-item" id="shipOutput2">Quãng đường đã đi $s = vt$: <span class="badge-green" id="shipDistDisplay">7.5 km</span></div>
+              <div class="output-item" id="knightOutput" style="display: none;">Số nước đi hợp lệ trên bàn cờ: <span class="badge-cyan" id="knightMovesDisplay">4 vị trí</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena SGK Quiz (10 MCQs) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2 style="color: var(--cyan-neon); font-size: 1.4rem;">⚔️ Đấu Trường Toạ Độ Vectơ SGK</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">10 câu hỏi trắc nghiệm bao phủ 100% các dạng bài tập SGK Bài 4.16 - 4.20 trang 60 - 65.</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Toạ Độ Vectơ K10</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">🧭</div>
+          <div class="badge-name">Người Khai Phá Toạ Độ</div>
+          <div class="badge-desc">Đọc kĩ Bản đồ Tri thức và làm chủ toạ độ của vectơ và điểm trên hệ trục $Oxy$.</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Bậc Thầy Trục Oxy</div>
+          <div class="badge-desc">Tương tác và làm chủ Lab 1 với việc xác định vectơ $\overrightarrow{AB}$, trung điểm và trọng tâm.</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">♟️</div>
+          <div class="badge-name">Kiện Tướng Cờ Toạ Độ</div>
+          <div class="badge-desc">Mô phỏng hành trình tàu biển và giải mã nước đi quân mã toạ độ trong Lab 2.</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Chiến Thần Đấu Trường Toạ Độ</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK Bài 10.</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Toạ Độ Phẳng</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc toàn bộ Bài 10!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc bài học và hệ thống bài tập thực hành <strong>BÀI 10: VECTƠ TRONG MẶT PHẲNG TOẠ ĐỘ (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững bản chất toạ độ của vectơ và toạ độ điểm, làm chủ các phép toán toạ độ, công thức toạ độ trung điểm, trọng tâm tam giác, khoảng cách hai điểm và giải quyết thành thạo bài toán dự báo tâm bão, chuyển động tàu thuyền và bàn cờ toạ độ.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG TOẠ ĐỘ PHẲNG XUẤT SẮC 👑</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày 17 tháng 10 năm 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn-primary" id="btnPrintCert">
+          🖨️ In Giấy Chứng Nhận A4
+        </button>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_bai9/index.html" class="nav-btn prev">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <small>Bài trước</small>
+          <strong>Bài 9: Tích Của Một Vectơ Với Một Số</strong>
+        </div>
+      </a>
+      <a href="../toan10_bai11/index.html" class="nav-btn next">
+        <div class="nav-text">
+          <small>Bài tiếp theo</small>
+          <strong>Bài 11: Tích Vô Hướng Của Hai Vectơ</strong>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <h3 class="modal-title">Chọn Avatar Đại Kiện Tướng</h3>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑">👑</button>
+        <button class="avatar-choice" data-avatar="🚀">🚀</button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button class="avatar-choice" data-avatar="🦁">🦁</button>
+        <button class="avatar-choice" data-avatar="💎">💎</button>
+        <button class="avatar-choice" data-avatar="🦉">🦉</button>
+        <button class="avatar-choice" data-avatar="🎯">🎯</button>
+        <button class="avatar-choice" data-avatar="🏅">🏅</button>
+      </div>
+      <button class="btn-secondary" id="closeAvatarModal">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

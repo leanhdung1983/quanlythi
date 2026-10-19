@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 25: Nhị Thức Newton - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Nhị Thức Newton</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">TOÁN 10 • CHƯƠNG VIII • ĐẠI SỐ TỔ HỢP</span>
+      <h1>BÀI 25: NHỊ THỨC NEWTON</h1>
+      <p>Khai triển nhị thức Newton $(a + b)^n$ với số mũ thấp ($n = 4$ và $n = 5$), làm chủ quy luật luỹ thừa - tổ hợp, tính đối xứng của hệ số và ứng dụng thực tiễn trong tính toán gần đúng.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: THEORY -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: Khai triển bậc 4 -->
+        <div class="card concept-card">
+          <div class="card-icon">4️⃣</div>
+          <h3>1. Khai Triển Nhị Thức Bậc 4</h3>
+          <p>Khai triển luỹ thừa bậc $4$ của nhị thức $(a + b)$ bằng vận dụng tổ hợp:</p>
+          <div class="formula-box">
+            $$(a + b)^4 = C_4^0 a^4 + C_4^1 a^3 b + C_4^2 a^2 b^2 + C_4^3 a b^3 + C_4^4 b^4$$
+            $$= a^4 + 4a^3 b + 6a^2 b^2 + 4ab^3 + b^4$$
+          </div>
+          <div class="rule-box gold">
+            Khai triển gồm $5$ số hạng. Các hệ số lần lượt là $1, 4, 6, 4, 1$ (ứng với hàng $4$ của tam giác Pascal).
+          </div>
+        </div>
+
+        <!-- Card 2: Khai triển bậc 5 -->
+        <div class="card concept-card">
+          <div class="card-icon">5️⃣</div>
+          <h3>2. Khai Triển Nhị Thức Bậc 5</h3>
+          <p>Khai triển luỹ thừa bậc $5$ của nhị thức $(a + b)$:</p>
+          <div class="formula-box">
+            $$(a + b)^5 = C_5^0 a^5 + C_5^1 a^4 b + C_5^2 a^3 b^2 + C_5^3 a^2 b^3 + C_5^4 a b^4 + C_5^5 b^5$$
+            $$= a^5 + 5a^4 b + 10a^3 b^2 + 10a^2 b^3 + 5ab^4 + b^5$$
+          </div>
+          <div class="rule-box gold">
+            Khai triển gồm $6$ số hạng. Các hệ số lần lượt là $1, 5, 10, 10, 5, 1$ (ứng với hàng $5$ của tam giác Pascal).
+          </div>
+        </div>
+
+        <!-- Card 3: Quy luật tổng quát -->
+        <div class="card concept-card">
+          <div class="card-icon">🔍</div>
+          <h3>3. Ba Quy Luật Cốt Lõi Của Khai Triển</h3>
+          <p>Trong khai triển $(a + b)^n$ ($n \in \{4; 5\}$):</p>
+          <ul>
+            <li><strong>Số lượng:</strong> Có đúng $n + 1$ số hạng.</li>
+            <li><strong>Bậc số hạng:</strong> Trong mỗi đơn thức, số mũ của $a$ giảm dần từ $n$ về $0$, số mũ của $b$ tăng dần từ $0$ lên $n$. Tổng số mũ luôn bằng $n$.</li>
+            <li><strong>Tính đối xứng:</strong> Các hệ số cách đều số hạng đầu và số hạng cuối thì bằng nhau do $C_n^k = C_n^{n - k}$.</li>
+          </ul>
+        </div>
+
+        <!-- Card 4: Ứng dụng tính gần đúng -->
+        <div class="card concept-card">
+          <div class="card-icon">📐</div>
+          <h3>4. Ứng Dụng Tính Giá Trị Gần Đúng</h3>
+          <p>Khi $|x|$ rất bé so với $1$, ta có thể ước lượng giá trị của $(1 + x)^n$ bằng hai số hạng đầu tiên:</p>
+          <div class="formula-box">
+            $$(1 + x)^n \approx 1 + nx$$
+          </div>
+          <div class="rule-box gold">
+            Ví dụ: $1,02^5 = (1 + 0,02)^5 \approx 1 + 5 \cdot 0,02 = 1,1$. Sai số tuyệt đối rất nhỏ: $|1,02^5 - 1,1| \approx 0,00408$.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: LABS -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-wrapper">
+        <!-- Lab 1: Máy khai triển đa thức -->
+        <div class="card lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">THÍ NGHIỆM 1</span>
+            <h3>🧪 Máy Khai Triển Tự Động Biểu Thức $(Ax + B)^n$</h3>
+          </div>
+          <p>Chọn số mũ $n \in \{4; 5\}$ và điều chỉnh các hệ số $A, B$ để quan sát từng bước khai triển chi tiết và biểu đồ phân bố hệ số:</p>
+
+          <div class="lab-controls">
+            <div class="btn-group" style="display: flex; gap: 10px; margin-bottom: 12px;">
+              <button class="btn-primary" id="btnDeg4" style="flex: 1;">Bậc 4: $(Ax + B)^4$</button>
+              <button class="btn-primary" id="btnDeg5" style="flex: 1;">Bậc 5: $(Ax + B)^5$</button>
+            </div>
+            <div class="slider-group">
+              <label>Hệ số $A = $ <span id="valA">1</span></label>
+              <input type="range" id="slA" min="-3" max="3" step="1" value="1">
+            </div>
+            <div class="slider-group">
+              <label>Hệ số $B = $ <span id="valB">2</span></label>
+              <input type="range" id="slB" min="-4" max="4" step="1" value="2">
+            </div>
+          </div>
+
+          <div class="canvas-container">
+            <canvas id="polyCanvas" width="600" height="260"></canvas>
+          </div>
+
+          <div class="lab-output" id="polyOutput">
+            Đang sinh biểu thức khai triển...
+          </div>
+        </div>
+
+        <!-- Lab 2: Thực nghiệm tính gần đúng & sai số -->
+        <div class="card lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">THÍ NGHIỆM 2</span>
+            <h3>🧪 Mô Phỏng Tính Gần Đúng $(1 + x)^n \approx 1 + nx$ &amp; Sai Số Tuyệt Đối</h3>
+          </div>
+          <p>Thực nghiệm bài toán xấp xỉ nhị thức Newton (SGK tr. 74–75): Kéo thanh trượt $x$ để xem độ chính xác và sai số tuyệt đối:</p>
+
+          <div class="lab-controls">
+            <div class="slider-group">
+              <label>Giá trị phần dư $x = $ <span id="valX">0.020</span></label>
+              <input type="range" id="slX" min="0.005" max="0.050" step="0.005" value="0.020">
+            </div>
+            <div class="btn-group" style="display: flex; gap: 10px; margin-top: 10px;">
+              <button class="btn-primary" id="btnApproxN4" style="flex: 1;">Số mũ n = 4</button>
+              <button class="btn-primary" id="btnApproxN5" style="flex: 1;">Số mũ n = 5</button>
+            </div>
+          </div>
+
+          <div class="canvas-container" style="background: rgba(15, 23, 42, 0.7); border-radius: 12px; padding: 20px; border: 1px solid rgba(255,255,255,0.1);">
+            <div id="approxDisplay" style="display: flex; flex-direction: column; gap: 12px; align-items: center;">
+              <!-- Rendered by JS -->
+            </div>
+          </div>
+
+          <div class="lab-output" id="approxOutput">
+            Đang tính toán sai số...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ARENA -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ ĐẤU TRƯỜNG NHỊ THỨC NEWTON</h2>
+          <p>10 câu hỏi chuẩn mực bám sát SGK Kết Nối Tri Thức (Bài 8.12 đến 8.16 trang 74–75). Nhận phản hồi tức thì, rèn luyện kĩ năng tính toán và nâng bậc danh hiệu!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="score-line">Tiến Độ: <span id="arenaProgress">0/10</span></div>
+          <div class="score-line">Điểm Arena: <span id="arenaScore">0 XP</span></div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: BADGES -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-wrapper">
+        <h2>🏆 HUY HIỆU VINH DANH BÀI 25</h2>
+        <p>Mở khoá toàn bộ 5 huy hiệu để nhận Giấy Chứng Nhận Bậc Thầy Nhị Thức Newton!</p>
+
+        <div class="badge-grid">
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon">🌟</div>
+            <div class="badge-name">Khởi Đầu Nhị Thức</div>
+            <div class="badge-desc">Đọc và khám phá toàn bộ Bản Đồ Tri Thức về Nhị thức Newton.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon">🧪</div>
+            <div class="badge-name">Chuyên Gia Khai Triển</div>
+            <div class="badge-desc">Tương tác và thực nghiệm cả 2 phòng thí nghiệm nhị thức.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon">⚡</div>
+            <div class="badge-name">Nhạy Bén Hệ Số</div>
+            <div class="badge-desc">Vượt qua chính xác tối thiểu 5 câu hỏi trong Đấu Trường.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <div class="badge-name">Bậc Thầy Khai Triển</div>
+            <div class="badge-desc">Đạt tối thiểu 160 XP trong Đấu Trường SGK.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <div class="badge-name">Đại Kiện Tướng Newton</div>
+            <div class="badge-desc">Xuất sắc đạt điểm số tuyệt đối 200/200 XP (10/10 câu đúng).</div>
+          </div>
+        </div>
+
+        <!-- Certificate Container -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-header">
+              <span class="school-name">TRƯỜNG THPT LƯƠNG THẾ VINH</span>
+              <span class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</span>
+              <span class="cert-subtitle">Bài 25: Nhị Thức Newton • Đại Số Tổ Hợp</span>
+            </div>
+
+            <div class="cert-body">
+              <p>Chứng nhận học sinh:</p>
+              <h3 class="student-name" id="certStudentName">Chiến Binh Logic</h3>
+              <p>Đã xuất sắc hoàn thành nội dung lý thuyết bản đồ tri thức, làm chủ phòng thí nghiệm khai triển biểu thức và vượt qua bộ câu hỏi đánh giá năng lực Bài 25: Nhị Thức Newton theo chương trình GDPT môn Toán 10.</p>
+
+              <div class="cert-stats">
+                <div class="c-stat">Điểm Arena: <b id="certScore">0</b>/200 XP</div>
+                <div class="c-stat">Xếp loại: <b id="certRank">Xuất Sắc</b></div>
+                <div class="c-stat">Cấp sao: <b id="certStars">⭐⭐⭐⭐⭐</b></div>
+              </div>
+            </div>
+
+            <div class="cert-footer">
+              <div class="cert-seal">
+                <div class="seal-inner">CHỨNG NHẬN<br>TOÁN 10 KNTT</div>
+              </div>
+              <div class="cert-sign">
+                <div class="sign-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</div>
+                <div class="sign-role">GIÁO VIÊN BỘ MÔN</div>
+                <div class="signature">Tổ Toán THPT Lương Thế Vinh</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan10_bai24/index.html" class="nav-btn prev">⬅️ Bài 24: Hoán Vị, Chỉnh Hợp &amp; Tổ Hợp</a>
+      <a href="../toan10_ontap_chuong8/index.html" class="nav-btn next">Ôn Tập Chương VIII ➡️</a>
+    </footer>
+  </div>
+
+  <!-- Modal Overlay (Hidden initially) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker">
+        <button class="av-opt" data-av="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+        <button class="av-opt" data-av="🧙‍♂️" data-name="Phù Thủy Newton">🧙‍♂️ Phù Thủy Newton</button>
+        <button class="av-opt" data-av="🔭" data-name="Nhà Thiên Văn Tổ Hợp">🔭 Nhà Thiên Văn Tổ Hợp</button>
+        <button class="av-opt" data-av="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+        <button class="av-opt" data-av="⚡" data-name="Tia Chớp Luỹ Thừa">⚡ Tia Chớp Luỹ Thừa</button>
+        <button class="av-opt" data-av="💎" data-name="Bậc Thầy Nhị Thức">💎 Bậc Thầy Nhị Thức</button>
+        <button class="av-opt" data-av="🚀" data-name="Phi Hành Gia Đa Thức">🚀 Phi Hành Gia Đa Thức</button>
+        <button class="av-opt" data-av="🛡️" data-name="Hiệp Sĩ Pascal">🛡️ Hiệp Sĩ Pascal</button>
+      </div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-primary" id="btnCloseModal">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Chương II: Bất Phương Trình & Hệ BPT Bậc Nhất Hai Ẩn - Toán 10</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Quy Hoạch Tuyến Tính</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Tổng Ôn Chương II • Toán 10 Tập 1 (Trang 31 - 32)</span>
+      <h1>BÀI TẬP CUỐI CHƯƠNG II: BẤT PHƯƠNG TRÌNH & HỆ BPT BẬC NHẤT HAI ẨN</h1>
+      <p>Tổng kết toàn diện kiến thức Chương II: Nhận diện miền nghiệm nửa mặt phẳng, giao các miền nghiệm đa giác lồi, vận dụng định lý đỉnh tìm Max/Min của $F(x; y) = ax + by$ và giải các bài toán quy hoạch kinh tế - quảng cáo thực tiễn!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức Chương II</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Đồ Thị & Quảng Cáo (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Bài 2.7 - 2.16)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <h3 class="card-title"><i>📐</i> 1. Bất Phương Trình Bậc Nhất Hai Ẩn</h3>
+          <div class="concept-box">
+            <h4>Dạng chuẩn & Tập nghiệm</h4>
+            <p>
+              • Dạng: $ax + by < c; \quad ax + by \le c; \quad ax + by > c; \quad ax + by \ge c$ ($a^2 + b^2 \ne 0$).<br>
+              • Bất phương trình luôn có <strong>vô số nghiệm</strong>.<br>
+              • Miền nghiệm là một <strong>nửa mặt phẳng</strong> bờ $d: ax + by = c$ (vẽ nét đứt nếu $<, >$; vẽ nét liền nếu $\le, \ge$).
+            </p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Phương pháp điểm thử $O(0;0)$</h4>
+            <p>
+              • Nếu $c \ne 0$, tính $a(0) + b(0) = 0$ và so sánh với $c$.<br>
+              • Nếu $c = 0$, chọn điểm thử khác nằm trên trục tọa độ như $M(1;0)$ hoặc $N(0;1)$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <h3 class="card-title"><i>🔷</i> 2. Hệ Bất Phương Trình Bậc Nhất Hai Ẩn</h3>
+          <div class="concept-box gold">
+            <h4>Miền nghiệm đa giác lồi</h4>
+            <p>
+              • Miền nghiệm của hệ là <strong>phần giao</strong> của các miền nghiệm của từng bất phương trình thành phần.<br>
+              • Thường tạo thành một miền đa giác (tam giác, tứ giác, ngũ giác lồi...) hoặc miền không bị chặn.
+            </p>
+          </div>
+          <div class="concept-box emerald">
+            <h4>Phương pháp gạch bỏ liên tiếp</h4>
+            <p>
+              Lần lượt vẽ từng đường thẳng bờ, xác định nửa mặt phẳng không chứa nghiệm của từng BPT rồi gạch bỏ. Phần còn lại không bị gạch chính là miền nghiệm chung của hệ.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <h3 class="card-title"><i>🎯</i> 3. Định Lý Đỉnh Trong Quy Hoạch Tuyến Tính</h3>
+          <div class="concept-box rose">
+            <h4>Định lý cực trị trên miền đa giác</h4>
+            <p>
+              Cho biểu thức bậc nhất hai ẩn:
+              $$F(x; y) = ax + by$$
+              với $(x; y)$ thuộc miền đa giác lồi $A_1A_2...A_n$ (kể cả biên).<br>
+              <strong>Định lý:</strong> Giá trị lớn nhất (GTLN) và giá trị nhỏ nhất (GTNN) của $F(x; y)$ luôn đạt tại <strong>một trong các đỉnh</strong> của miền đa giác đó!
+            </p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Quy trình tối ưu 3 bước</h4>
+            <p>
+              1. Xác định tọa độ các đỉnh của miền đa giác.<br>
+              2. Tính giá trị $F(A_i)$ tại từng đỉnh.<br>
+              3. Giá trị lớn nhất trong các số đó là $\max F$, nhỏ nhất là $\min F$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <h3 class="card-title"><i>💼</i> 4. Các Bài Toán Thực Tiễn Lớn (SGK 2.15 & 2.16)</h3>
+          <div class="concept-box gold">
+            <h4>Tối ưu hóa ngân sách & chi phí</h4>
+            <p>
+              • <strong>Quảng cáo phát thanh & truyền hình (SGK 2.16):</strong> Phân bổ thời lượng $x, y$ để đạt hiệu quả truyền thông $F(x; y) = x + 8y$ cao nhất trong ngân sách 160 triệu.<br>
+              • <strong>Đầu tư trái phiếu (SGK 2.15):</strong> Phân bổ 1,2 tỉ đồng vào các loại trái phiếu chính phủ, ngân hàng, doanh nghiệp để thu lợi nhuận cao nhất mà giảm thiểu rủi ro.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1: Máy Thử Nghiệm & Nhận Dạng Đồ Thị Miền Nghiệm -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>📊</i> Lab 1: Máy Nhận Dạng Đồ Thị Miền Nghiệm & Điểm Nghiệm (SGK 2.9 & 2.11)</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
+          Mô phỏng bài toán nhận diện đồ thị SGK 2.9 ($x - y < 3$) và kiểm tra các điểm nghiệm SGK 2.11 trên hệ trục $Oxy$. Canvas 2D vẽ đường thẳng bờ nét đứt, gạch sọc phần loại bỏ và hiển thị tọa độ các điểm kiểm tra!
+        </p>
+
+        <div class="lab-grid-layout">
+          <div class="lab-controls">
+            <label style="font-weight: 700; color: var(--cyan-neon); margin-bottom: 8px; display: block;">Chọn điểm thử nghiệm (SGK 2.11):</label>
+            <div class="point-choice-group" style="display: flex; flex-direction: column; gap: 8px;">
+              <button class="op-btn active" data-point="-3,1" style="padding: 10px; font-size: 0.88rem; text-align: left;">
+                ★ Điểm D: $(-3; 1)$ (Điểm nghiệm chuẩn SGK 2.11)
+              </button>
+              <button class="op-btn" data-point="0,0" style="padding: 10px; font-size: 0.88rem; text-align: left;">
+                • Điểm A: $(0; 0)$ (Gốc tọa độ)
+              </button>
+              <button class="op-btn" data-point="-2,1" style="padding: 10px; font-size: 0.88rem; text-align: left;">
+                • Điểm B: $(-2; 1)$
+              </button>
+              <button class="op-btn" data-point="3,-1" style="padding: 10px; font-size: 0.88rem; text-align: left;">
+                • Điểm C: $(3; -1)$
+              </button>
+            </div>
+
+            <div class="point-eval-box" id="pointEvalBox" style="margin-top: 16px; padding: 12px; background: rgba(30,41,59,0.9); border-radius: var(--radius-sm); border-left: 4px solid var(--emerald);">
+              <h4 id="evalTitle" style="color: #10b981; margin-bottom: 4px;">KẾT QUẢ ĐIỂM D(-3; 1):</h4>
+              <p id="evalDesc" style="font-size: 0.88rem; line-height: 1.5;"></p>
+            </div>
+          </div>
+
+          <div class="lab-canvas-box">
+            <canvas id="graphCanvas" width="500" height="380" style="max-width: 100%; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.82rem; margin-top: 8px;">
+              <span style="color: #38bdf8;">- - Đường bờ nét đứt</span>
+              <span style="color: #10b981;">● Nửa mặt phẳng nghiệm</span>
+              <span style="color: #fbbf24;">★ Điểm thử nghiệm</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2: Tối Ưu Chiến Dịch Quảng Cáo 160 Triệu (SGK 2.16) -->
+      <div class="card">
+        <h3 class="card-title"><i>📺</i> Lab 2: Máy Tối Ưu Chiến Dịch Quảng Cáo 160 Triệu Đồng (SGK 2.16)</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+          Mô phỏng bài toán tối ưu thực tế SGK 2.16 trang 32: Đặt $x$ giây quảng cáo đài phát thanh (80 nghìn/giây, max 900s) và $y$ giây truyền hình (400 nghìn/giây, max 360s, hiệu quả gấp 8 lần). Ngân sách tối đa 160 triệu đồng. Tìm $(x; y)$ để hiệu quả $F(x; y) = x + 8y$ lớn nhất!
+        </p>
+
+        <div class="lab-grid-layout">
+          <div class="lab-controls">
+            <div class="form-group">
+              <label style="font-size: 0.88rem; font-weight: 600; color: #38bdf8;">Thời lượng phát thanh ($x$ giây, max 900s):</label>
+              <input type="range" id="sliderRadio" min="0" max="900" value="200" step="20" style="width: 100%; margin: 8px 0;">
+              <span id="lblRadio" style="font-weight: 700; color: #fff;">200 giây</span>
+            </div>
+
+            <div class="form-group" style="margin-top: 12px;">
+              <label style="font-size: 0.88rem; font-weight: 600; color: #f43f5e;">Thời lượng truyền hình ($y$ giây, max 360s):</label>
+              <input type="range" id="sliderTV" min="0" max="360" value="360" step="10" style="width: 100%; margin: 8px 0;">
+              <span id="lblTV" style="font-weight: 700; color: #fff;">360 giây</span>
+            </div>
+
+            <div class="ad-status-box" id="adStatusBox" style="margin-top: 16px; padding: 14px; border-radius: var(--radius-sm); background: rgba(30,41,59,0.9); border-left: 4px solid var(--gold);">
+              <h4 id="adStatusTitle" style="color: var(--gold); margin-bottom: 6px;">HIỆU QUẢ TỐI ƯU CỰC ĐẠI 🌟</h4>
+              <p id="adStatusDesc" style="font-size: 0.86rem; line-height: 1.5;"></p>
+            </div>
+          </div>
+
+          <div class="lab-canvas-box">
+            <canvas id="adCanvas" width="500" height="350" style="max-width: 100%; display: block; margin: 0 auto;"></canvas>
+            <div style="text-align: center; font-size: 0.82rem; margin-top: 6px; color: var(--gold);">
+              ★ Điểm đỉnh tối ưu: $x = 200$s phát thanh, $y = 360$s truyền hình (Hiệu quả Max = 3 080 điểm)
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena (Quiz 2.7 - 2.16) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-card">
+        <div class="arena-progress">
+          <span id="arenaProgressText">Câu hỏi 1 / 10</span>
+          <span id="arenaScoreText">Điểm: 0 XP</span>
+        </div>
+
+        <div class="arena-question-text" id="arenaQuestion">Đang tải câu hỏi...</div>
+
+        <div class="arena-options" id="arenaOptions">
+          <!-- Dynamic Options -->
+        </div>
+
+        <div class="arena-feedback" id="arenaFeedback">
+          <!-- Explanation with MathML -->
+        </div>
+
+        <div class="arena-actions">
+          <button class="btn-primary" id="btnNextQuestion" style="display: none;">Câu Tiếp Theo ➡️</button>
+          <button class="btn-primary" id="btnRestartArena" style="display: none;">Làm Lại Đấu Trường 🔄</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Tổng Ôn Chương II</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-identify">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Nhận Diện Miền Nghiệm</div>
+          <div class="badge-desc">Xác định chuẩn xác dạng đường bờ nét đứt, nét liền và nửa mặt phẳng nghiệm.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-graph">
+          <div class="badge-icon">📊</div>
+          <div class="badge-name">Chuyên Gia Đồ Thị Oxy</div>
+          <div class="badge-desc">Kiểm tra chính xác tọa độ các điểm nghiệm và nhận dạng hình vẽ SGK 2.9.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-ad">
+          <div class="badge-icon">📺</div>
+          <div class="badge-name">Bậc Thầy Tối Ưu Quảng Cáo</div>
+          <div class="badge-desc">Giải mã thành công bài toán cực trị 160 triệu đồng đạt hiệu quả cực đại.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-arena">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Thần Ôn Tập Chương II</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK 2.7 - 2.16.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-master">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng Toàn Năng</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc toàn bộ Chương II!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH CHƯƠNG II</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc toàn bộ chương trình và bài tập tổng hợp <strong>CHƯƠNG II: BẤT PHƯƠNG TRÌNH VÀ HỆ BẤT PHƯƠNG TRÌNH BẬC NHẤT HAI ẨN (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững phương pháp hình học giải bất phương trình và hệ bất phương trình, thành thạo định lý đỉnh tìm giá trị lớn nhất, nhỏ nhất của biểu thức mục tiêu $F(x; y) = ax + by$ và giải quyết xuất sắc các bài toán quy hoạch tuyến tính thực tiễn.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG QUY HOẠCH TUYẾN TÍNH XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-icon" onclick="window.print()" style="background: #312e81; color: #fff; border-color: #6366f1; margin: 0 auto;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_bai4/index.html" class="nav-btn prev">
+        ⬅️ Bài 4: Hệ Bất Phương Trình Bậc Nhất Hai Ẩn
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Toán 10 Tập 1 • Bài Tập Cuối Chương II (Trang 31 - 32)
+      </span>
+      <a href="../toan10_bai5/index.html" class="nav-btn next">
+        Chương III - Bài 5: Giá Trị Lượng Giác Của Một Góc ➡️
+      </a>
+    </footer>
+
+    <!-- Avatar Selection Modal -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-content">
+        <h3 class="modal-title">Chọn Nhân Vật Đại Diện 🌟</h3>
+        <div class="avatar-grid">
+          <button class="avatar-choice" data-avatar="👑">👑</button>
+          <button class="avatar-choice" data-avatar="🚀">🚀</button>
+          <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+          <button class="avatar-choice" data-avatar="🦁">🦁</button>
+          <button class="avatar-choice" data-avatar="💎">💎</button>
+          <button class="avatar-choice" data-avatar="🦉">🦉</button>
+          <button class="avatar-choice" data-avatar="🎯">🎯</button>
+          <button class="avatar-choice" data-avatar="🏅">🏅</button>
+        </div>
+        <button class="btn-primary" id="btnCloseAvatarModal" style="width: 100%;">Xác Nhận Avatar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

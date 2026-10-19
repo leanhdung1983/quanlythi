@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 17: Dấu Của Tam Thức Bậc Hai - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <div class="user-name" id="userNameDisplay">Chiến Binh Logic</div>
+          <div class="user-title" id="userTitleDisplay">Chuyên Gia Xét Dấu & Bất Phương Trình</div>
+        </div>
+      </div>
+
+            <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <div class="lesson-banner">
+      <div class="banner-badge-group">
+        <span class="banner-badge">CHƯƠNG VI: HÀM SỐ, ĐỒ THỊ VÀ ỨNG DỤNG</span>
+        <span class="banner-badge highlight">TOÁN 10 KNTT • BÀI 17</span>
+      </div>
+      <h1 class="lesson-title">BÀI 17: DẤU CỦA TAM THỨC BẬC HAI</h1>
+      <p class="lesson-subtitle">
+        Khám phá định lý xét dấu tam thức bậc hai, quy tắc "Trong trái - Ngoài cùng", giải quyết trọn vẹn bất phương trình bậc hai và các bài toán tối ưu khoảng an toàn thực tế.
+      </p>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">Bản Đồ Tri Thức</span>
+      </button>
+      <button class="nav-tab" data-tab="labs">
+        <span class="tab-icon">🧪</span>
+        <span class="tab-text">Phòng Thí Nghiệm</span>
+      </button>
+      <button class="nav-tab" data-tab="arena">
+        <span class="tab-icon">⚔️</span>
+        <span class="tab-text">Đấu Trường SGK</span>
+      </button>
+      <button class="nav-tab" data-tab="badges">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-text">Huy Hiệu & Vinh Danh</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="concept-card highlight-border">
+          <div class="concept-card-header">
+            <span class="concept-icon">⚖️</span>
+            <h3>1. Khái Niệm Tam Thức Bậc Hai</h3>
+          </div>
+          <div class="concept-body">
+            <p>
+              Tam thức bậc hai đối với $x$ là biểu thức đại số có dạng:
+            </p>
+            <div class="formula-box">
+              $$f(x) = ax^2 + bx + c \quad (a \neq 0)$$
+            </div>
+            <ul>
+              <li><strong>Biệt thức:</strong> $\Delta = b^2 - 4ac$ (hoặc $\Delta' = b'^2 - ac$).</li>
+              <li><strong>Nghiệm:</strong> Là giá trị của $x$ làm cho $f(x) = 0$.</li>
+              <li>Số nghiệm của $f(x)$ chính là số giao điểm của parabol $y = f(x)$ với trục hoành $Ox$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card highlight-border">
+          <div class="concept-card-header">
+            <span class="concept-icon">🎯</span>
+            <h3>2. Định Lý Về Dấu Của Tam Thức Bậc Hai</h3>
+          </div>
+          <div class="concept-body">
+            <p>Cho tam thức bậc hai $f(x) = ax^2 + bx + c$ ($a \neq 0$):</p>
+            <div class="mini-rule-box">
+              <strong>1. Khi $\Delta < 0$:</strong> $f(x)$ luôn <strong>cùng dấu</strong> với hệ số $a$ với mọi $x \in \mathbb{R}$ ($af(x) > 0, \forall x$).<br><br>
+              <strong>2. Khi $\Delta = 0$:</strong> $f(x)$ luôn <strong>cùng dấu</strong> với hệ số $a$ với mọi $x \neq -\dfrac{b}{2a}$; tại $x = -\dfrac{b}{2a}$ thì $f(x) = 0$.<br><br>
+              <strong>3. Khi $\Delta > 0$:</strong> $f(x)$ có 2 nghiệm phân biệt $x_1 < x_2$. Áp dụng quy tắc vàng:
+              <div class="formula-box" style="margin: 8px 0; background: rgba(16, 185, 129, 0.15); color: #34d399;">
+                <strong>"TRONG TRÁI - NGOÀI CÙNG"</strong>
+              </div>
+              • Trong khoảng $(x_1; x_2)$: $f(x)$ <strong>trái dấu</strong> với hệ số $a$.<br>
+              • Ngoài đoạn $[x_1; x_2]$: $f(x)$ <strong>cùng dấu</strong> với hệ số $a$.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card">
+          <div class="concept-card-header">
+            <span class="concept-icon">📐</span>
+            <h3>3. Bất Phương Trình Bậc Hai Một Ẩn</h3>
+          </div>
+          <div class="concept-body">
+            <p>Bất phương trình bậc hai một ẩn có dạng:</p>
+            <div class="formula-box">
+              $$ax^2 + bx + c > 0 \quad (\text{hoặc } \ge 0, < 0, \le 0)$$
+            </div>
+            <p><strong>Phương pháp giải chuẩn 3 bước:</strong></p>
+            <ol>
+              <li>Tính biệt thức $\Delta$ và tìm các nghiệm (nếu có) của tam thức.</li>
+              <li>Lập bảng xét dấu của tam thức dựa vào dấu của $a$ và các nghiệm.</li>
+              <li>Kết luận tập nghiệm $S$ tương ứng với chiều bất đẳng thức.</li>
+            </ol>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="concept-card">
+          <div class="concept-card-header">
+            <span class="concept-icon">🚀</span>
+            <h3>4. Ứng Dụng Thực Tế & Điều Kiện Tham Số</h3>
+          </div>
+          <div class="concept-body">
+            <div class="mini-rule-box">
+              <strong>Điều kiện $f(x) > 0, \forall x \in \mathbb{R}$ khi và chỉ khi:</strong>
+              $$\begin{cases} a > 0 \\ \Delta < 0 \end{cases}$$
+              <strong>Điều kiện $f(x) < 0, \forall x \in \mathbb{R}$ khi và chỉ khi:</strong>
+              $$\begin{cases} a < 0 \\ \Delta < 0 \end{cases}$$
+              <strong>Ứng dụng vật lý:</strong> Xác định khoảng thời gian quả bóng ở trên độ cao an toàn $h(t) \ge h_0$, hoặc độ cao cách mặt đất không quá mốc quy định.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1 -->
+        <div class="lab-card">
+          <div class="lab-card-header">
+            <div class="lab-badge">THÍ NGHIỆM 1</div>
+            <h3>Máy Quét Dấu Tam Thức Bậc Hai Trực Quan</h3>
+            <p class="lab-desc">Điều chỉnh hệ số $a, b, c$ để quan sát đồ thị tương quan với trục $Ox$, vùng mang dấu dương (+) màu xanh và vùng mang dấu âm (-) màu đỏ.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="sliderSignA">Hệ số $a$: <span id="valSignA" class="dyn-val">1.0</span></label>
+              <input type="range" id="sliderSignA" min="-3" max="3" step="0.5" value="1">
+            </div>
+            <div class="control-group">
+              <label for="sliderSignB">Hệ số $b$: <span id="valSignB" class="dyn-val">-3.0</span></label>
+              <input type="range" id="sliderSignB" min="-6" max="6" step="0.5" value="-3">
+            </div>
+            <div class="control-group">
+              <label for="sliderSignC">Hệ số $c$: <span id="valSignC" class="dyn-val">2.0</span></label>
+              <input type="range" id="sliderSignC" min="-5" max="5" step="0.5" value="2">
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="canvasSignLab" width="700" height="380"></canvas>
+          </div>
+
+          <div class="lab-analysis-box" id="signAnalysisBox">
+            <!-- Dynamic analysis of Delta and intervals -->
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="lab-card">
+          <div class="lab-card-header">
+            <div class="lab-badge">THÍ NGHIỆM 2</div>
+            <h3>Máy Giải & Biểu Diễn Trục Số Bất Phương Trình</h3>
+            <p class="lab-desc">Chọn chiều bất đẳng thức để hệ thống tự động suy ra tập nghiệm $S$ và vẽ biểu diễn trục số chuẩn SGK (phần gạch bỏ, ngoặc tròn, ngoặc vuông).</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="selectInequality">Chiều bất phương trình:</label>
+              <select id="selectInequality" class="select-input">
+                <option value="gt">f(x) > 0 (Dương ngặt)</option>
+                <option value="ge">f(x) ≥ 0 (Không âm)</option>
+                <option value="lt">f(x) < 0 (Âm ngặt)</option>
+                <option value="le">f(x) ≤ 0 (Không dương)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="canvasNumberLine" width="700" height="200"></canvas>
+          </div>
+
+          <div class="taxi-receipt-card" id="solutionDetails">
+            <!-- Dynamic solution text -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>ĐẤU TRƯỜNG TRI THỨC BÀI 17</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm thực chiến bám sát các bài tập 6.15 đến 6.19 trong SGK Toán 10 KNTT.</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="arena-progress" id="arenaProgress">Tiến độ: 0/10</div>
+          <div class="arena-score" id="arenaScore">Điểm Arena: 0 XP</div>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-dashboard">
+        <h2>BỘ HUY HIỆU DANH GIÁ</h2>
+        <p class="section-desc">Chinh phục quy tắc dấu tam thức, khẳng định bản lĩnh giải bất phương trình bậc hai.</p>
+
+        <div class="badge-gallery">
+          <div class="badge-item locked" id="badge-0">
+            <div class="badge-icon-box">🌟</div>
+            <div class="badge-info">
+              <div class="badge-title">Chuyên Gia Xét Dấu</div>
+              <div class="badge-desc">Thành thạo định lý dấu của tam thức bậc hai</div>
+            </div>
+            <div class="badge-status">Đã mở</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon-box">🎯</div>
+            <div class="badge-info">
+              <div class="badge-title">Bậc Thầy Trong Trái Ngoài Cùng</div>
+              <div class="badge-desc">Giải chuẩn xác các bất phương trình có Delta dương</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon-box">🛡️</div>
+            <div class="badge-info">
+              <div class="badge-title">Hộ Vệ Miền Nghiệm</div>
+              <div class="badge-desc">Biểu diễn xuất sắc tập nghiệm trên trục số thực</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon-box">⚔️</div>
+            <div class="badge-info">
+              <div class="badge-title">Chiến Binh Bất Đẳng Thức</div>
+              <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon-box">👑</div>
+            <div class="badge-info">
+              <div class="badge-title">Đại Kiện Tướng Tam Thức</div>
+              <div class="badge-desc">Đạt trọn vẹn 200/200 XP với 10/10 câu hỏi chính xác</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+        </div>
+
+        <!-- A4 Printable Certificate -->
+        <div class="cert-outer-box">
+          <div class="cert-action-bar">
+            <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+          </div>
+
+          <div class="cert-container" id="gradCert">
+            <div class="cert-inner-frame">
+              <div class="cert-header">
+                <div class="cert-school">SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐÀ NẴNG</div>
+                <div class="cert-school" style="font-weight: 700; font-size: 16pt;">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+                <div class="cert-divider">✦ ✦ ✦</div>
+              </div>
+
+              <div class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</div>
+              <div class="cert-subtitle">CHỨNG NHẬN HỌC SINH ĐÃ LÀM CHỦ KIẾN THỨC BÀI HỌC</div>
+
+              <div class="cert-body">
+                <p class="cert-present">Chứng nhận em:</p>
+                <div class="cert-student-name" id="certStudentName">Chiến Binh Logic</div>
+                <p class="cert-text">
+                  Đã hoàn thành xuất sắc toàn bộ chương trình lý thuyết, thực hành phòng thí nghiệm và vượt qua thử thách trắc nghiệm của bài học:
+                </p>
+                <div class="cert-lesson-name">BÀI 17: DẤU CỦA TAM THỨC BẬC HAI (TOÁN 10 KẾT NỐI TRI THỨC)</div>
+                <div class="cert-stats-row">
+                  <div class="cert-stat">Tổng điểm tích lũy: <strong id="certXp">0 XP</strong></div>
+                  <div class="cert-stat">Xếp hạng: <strong id="certRank">Kiện Tướng Tam Thức</strong></div>
+                </div>
+              </div>
+
+              <div class="cert-footer">
+                <div class="cert-date" id="certDateText">Đà Nẵng, ngày 17 tháng 10 năm 2026</div>
+                <div class="cert-signature-area">
+                  <div class="cert-sign-title">TỔ TRƯỞNG CHUYÊN MÔN TOÁN</div>
+                  <div class="cert-sign-name">TS. Hoàng Văn Minh</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a class="nav-btn prev" href="../toan10_bai16/index.html">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <span class="nav-sub">Bài trước</span>
+          <span class="nav-main">Bài 16: Hàm Số Bậc Hai</span>
+        </div>
+      </a>
+      <a class="nav-btn next" href="../toan10_bai18/index.html">
+        <div class="nav-text" style="text-align: right;">
+          <span class="nav-sub">Bài tiếp theo</span>
+          <span class="nav-main">Bài 18: Phương Trình Quy Về Bậc Hai</span>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Đổi Avatar -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>CHỌN NHÂN VẬT ĐẠI DIỆN</h3>
+        <button class="modal-close" id="closeAvatarBtn">✕</button>
+      </div>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑"><span class="avatar-ico">👑</span><span>Đại Kiện Tướng</span></button>
+        <button class="avatar-choice" data-avatar="🚀"><span class="avatar-ico">🚀</span><span>Phi Hành Gia</span></button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️"><span class="avatar-ico">🧙‍♂️</span><span>Phù Thủy Tam Thức</span></button>
+        <button class="avatar-choice" data-avatar="🦁"><span class="avatar-ico">🦁</span><span>Sư Tử Dũng Mãnh</span></button>
+        <button class="avatar-choice" data-avatar="💎"><span class="avatar-ico">💎</span><span>Bậc Thầy Bất Đẳng Thức</span></button>
+        <button class="avatar-choice" data-avatar="🦉"><span class="avatar-ico">🦉</span><span>Cú Thông Thái</span></button>
+        <button class="avatar-choice" data-avatar="🎯"><span class="avatar-ico">🎯</span><span>Xạ Thủ Xét Dấu</span></button>
+        <button class="avatar-choice" data-avatar="🏅"><span class="avatar-ico">🏅</span><span>Quán Quân Miền Nghiệm</span></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

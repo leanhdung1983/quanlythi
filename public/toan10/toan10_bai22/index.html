@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 22: Ba Đường Conic - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Ba Đường Conic</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương VII: Phương Pháp Toạ Độ Trong Mặt Phẳng • Toán 10 KNTT</span>
+      <h1>BÀI 22: BA ĐƯỜNG CONIC</h1>
+      <p>
+        Khám phá thế giới tuyệt mỹ của ba đường conic kinh điển: Đường Elip, Đường Hypebol và Đường Parabol. Nắm vững phương trình chính tắc, tiêu điểm, tiêu cự, tâm sai và các ứng dụng quang học thực tiễn.
+      </p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: Elip -->
+        <div class="concept-card">
+          <h3 class="card-title"><i>🪐</i> 1. Đường Elip (Ellipse)</h3>
+          <div class="concept-box cyan">
+            <h4>Định nghĩa hình học</h4>
+            <p>
+              Cho hai điểm cố định $F_1, F_2$ với $F_1 F_2 = 2c$ ($c > 0$) và hằng số $a > c$.<br>
+              Đường elip là tập hợp các điểm $M$ thoả mãn:
+              $$MF_1 + MF_2 = 2a$$
+              • $F_1, F_2$ gọi là <strong>hai tiêu điểm</strong>.<br>
+              • $F_1 F_2 = 2c$ gọi là <strong>tiêu cự</strong>.
+            </p>
+          </div>
+          <div class="formula-box">
+            <strong>Phương trình chính tắc của elip:</strong>
+            $$\dfrac{x^2}{a^2} + \dfrac{y^2}{b^2} = 1 \quad (a > b > 0 \text{ và } b^2 = a^2 - c^2)$$
+          </div>
+          <div class="concept-box gold">
+            <h4>Các yếu tố hình học của elip:</h4>
+            <p>
+              • Tiêu điểm: $F_1(-c; 0)$ và $F_2(c; 0)$.<br>
+              • Trục lớn $A_1 A_2 = 2a$, trục nhỏ $B_1 B_2 = 2b$.<br>
+              • Bốn đỉnh: $A_1(-a; 0), A_2(a; 0), B_1(0; -b), B_2(0; b)$.<br>
+              • Tâm sai: $e = \dfrac{c}{a} < 1$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2: Hypebol -->
+        <div class="concept-card">
+          <h3 class="card-title"><i>⏳</i> 2. Đường Hypebol (Hyperbola)</h3>
+          <div class="concept-box emerald">
+            <h4>Định nghĩa hình học</h4>
+            <p>
+              Cho hai điểm cố định $F_1, F_2$ với $F_1 F_2 = 2c$ ($c > 0$) và số dương $a < c$.<br>
+              Đường hypebol là tập hợp các điểm $M$ thoả mãn:
+              $$|MF_1 - MF_2| = 2a$$
+            </p>
+          </div>
+          <div class="formula-box">
+            <strong>Phương trình chính tắc của hypebol:</strong>
+            $$\dfrac{x^2}{a^2} - \dfrac{y^2}{b^2} = 1 \quad (a > 0, b > 0 \text{ và } b^2 = c^2 - a^2)$$
+          </div>
+          <div class="concept-box">
+            <h4>Các yếu tố hình học của hypebol:</h4>
+            <p>
+              • Tiêu điểm: $F_1(-c; 0)$ và $F_2(c; 0)$, tiêu cự $2c$.<br>
+              • Trục thực $A_1 A_2 = 2a$, trục ảo $B_1 B_2 = 2b$.<br>
+              • Hai đỉnh: $A_1(-a; 0)$ và $A_2(a; 0)$.<br>
+              • Tâm sai: $e = \dfrac{c}{a} > 1$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3: Parabol -->
+        <div class="concept-card">
+          <h3 class="card-title"><i>📡</i> 3. Đường Parabol (Parabola)</h3>
+          <div class="concept-box cyan">
+            <h4>Định nghĩa hình học</h4>
+            <p>
+              Cho một điểm cố định $F$ và một đường thẳng cố định $\Delta$ không đi qua $F$.<br>
+              Đường parabol là tập hợp các điểm $M$ cách đều $F$ và $\Delta$:
+              $$d(M, F) = d(M, \Delta)$$
+              • $F$ gọi là <strong>tiêu điểm</strong>, $\Delta$ gọi là <strong>đường chuẩn</strong>.<br>
+              • Khoảng cách $p = d(F, \Delta) > 0$ gọi là <strong>tham số tiêu</strong>.
+            </p>
+          </div>
+          <div class="formula-box">
+            <strong>Phương trình chính tắc của parabol:</strong>
+            $$y^2 = 2px \quad (p > 0)$$
+          </div>
+          <div class="concept-box gold">
+            <h4>Các yếu tố hình học của parabol:</h4>
+            <p>
+              • Tiêu điểm: $F\left(\dfrac{p}{2}; 0\right)$.<br>
+              • Đường chuẩn: $\Delta: x = -\dfrac{p}{2}$.<br>
+              • Đỉnh: Gốc toạ độ $O(0; 0)$, trục đối xứng là trục hoành $Ox$.<br>
+              • Tâm sai: $e = 1$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 4: Ứng dụng thực tiễn -->
+        <div class="concept-card">
+          <h3 class="card-title"><i>💡</i> 4. Ứng Dụng Thực Tiễn Của Ba Đường Conic</h3>
+          <div class="concept-box emerald">
+            <h4>Gương elip trong máy tán sỏi thận (Vận dụng 3 SGK)</h4>
+            <p>
+              Dựa vào tính chất quang học: Mọi tia laser phát ra từ một tiêu điểm của gương elip sau khi phản xạ đều hội tụ chính xác tại tiêu điểm còn lại (vị trí đặt viên sỏi thận).
+            </p>
+          </div>
+          <div class="concept-box gold">
+            <h4>Gương parabol (Anten vệ tinh & Đèn pha ô tô)</h4>
+            <p>
+              Mọi tia sáng xuất phát từ tiêu điểm của parabol sau khi phản xạ đều tạo thành chùm tia song song với trục đối xứng (đèn pha). Ngược lại, sóng truyền song song chiếu tới gương parabol đều hội tụ tại tiêu điểm thu tín hiệu (anten chảo).
+            </p>
+          </div>
+          <div class="concept-box">
+            <h4>Hệ thống định vị sóng LORAN</h4>
+            <p>
+              Đo độ chênh lệch thời gian nhận tín hiệu từ hai trạm phát vô tuyến cho phép xác định vị trí tàu thuỷ nằm trên một nhánh hypebol. Giao điểm của hai nhánh hypebol xác định toạ độ tàu.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1: Máy Khám Phá Ba Đường Conic -->
+        <div class="card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Máy Khám Phá Ba Đường Conic Tương Tác</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+            Chọn một trong 3 đường Conic (Elip, Hypebol, Parabol) và kéo thanh trượt tham số. Quan sát hình dạng đường cong, tiêu điểm $F_1, F_2$ và các trục toạ độ!
+          </p>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+            <button class="btn-icon active" id="btnSelectEllipse" style="background: rgba(99, 102, 241, 0.3); border-color: var(--indigo-light);">🪐 1. Elip</button>
+            <button class="btn-icon" id="btnSelectHyperbola">⏳ 2. Hypebol</button>
+            <button class="btn-icon" id="btnSelectParabola">📡 3. Parabol</button>
+          </div>
+
+          <div class="lab-container">
+            <div class="lab-canvas-box">
+              <canvas id="conicCanvas" width="460" height="360"></canvas>
+            </div>
+
+            <div class="lab-panel">
+              <div class="control-group" id="groupParamA">
+                <div class="control-label">
+                  <span>Bán trục lớn a:</span>
+                  <strong id="valA">5</strong>
+                </div>
+                <input type="range" class="slider-input" id="sliderA" min="3" max="8" step="0.5" value="5">
+              </div>
+
+              <div class="control-group" id="groupParamB">
+                <div class="control-label">
+                  <span>Bán trục nhỏ / ảo b:</span>
+                  <strong id="valB">3</strong>
+                </div>
+                <input type="range" class="slider-input" id="sliderB" min="1" max="5" step="0.5" value="3">
+              </div>
+
+              <div class="control-group" id="groupParamP" style="display: none;">
+                <div class="control-label">
+                  <span>Tham số tiêu p:</span>
+                  <strong id="valP">4</strong>
+                </div>
+                <input type="range" class="slider-input" id="sliderP" min="1" max="8" step="0.5" value="4">
+              </div>
+
+              <div class="lab-readout">
+                <div class="readout-item">
+                  <span>Phương trình chính tắc:</span>
+                  <strong id="readoutConicEq" style="color: var(--cyan-neon);">x²/25 + y²/9 = 1</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Toạ độ tiêu điểm:</span>
+                  <strong id="readoutFoci" style="color: #fb7185;">F₁(-4; 0) và F₂(4; 0)</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Tiêu cự 2c:</span>
+                  <strong id="readoutFocalDist" style="color: var(--gold-accent);">2c = 8.00</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Tâm sai e:</span>
+                  <strong id="readoutEcc" style="color: #34d399;">e = 0.80 &lt; 1</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Đặc Tính Phản Xạ Quang Học Conic -->
+        <div class="card">
+          <h3 class="card-title"><i>💡</i> Lab 2: Mô Phỏng Đặc Tính Phản Xạ Quang Học Conic</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+            Khám phá tính chất hội tụ kì diệu: Chùm tia từ tiêu điểm $F_1$ của Elip hội tụ tại $F_2$ (tán sỏi thận), và chùm tia từ tiêu điểm Parabol tạo thành chùm song song (đèn xe ô tô).
+          </p>
+
+          <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+            <button class="btn-icon active" id="btnOpticEllipse" style="background: rgba(99, 102, 241, 0.3); border-color: var(--indigo-light);">Gương Elip (Hội tụ 2 tiêu điểm)</button>
+            <button class="btn-icon" id="btnOpticParabola">Gương Parabol (Tia song song)</button>
+          </div>
+
+          <div class="lab-container">
+            <div class="lab-canvas-box">
+              <canvas id="opticCanvas" width="460" height="360"></canvas>
+            </div>
+
+            <div class="lab-panel">
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Góc chùm tia phát xạ:</span>
+                  <strong id="valRayAngle">0°</strong>
+                </div>
+                <input type="range" class="slider-input" id="sliderRayAngle" min="-60" max="60" step="5" value="0">
+              </div>
+
+              <div class="lab-readout">
+                <div class="readout-item">
+                  <span>Nguồn phát tia:</span>
+                  <strong id="readoutRaySource" style="color: var(--gold-accent);">Tiêu điểm F₁(-4; 0)</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Điểm phản xạ trên gương:</span>
+                  <strong id="readoutReflectPoint" style="color: var(--cyan-neon);">M(x; y)</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Hướng phản xạ:</span>
+                  <strong id="readoutRayTarget" style="color: #34d399;">Hội tụ chính xác tại F₂(4; 0)</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff;">⚔️ Đấu Trường SGK: Bài Tập 7.19 Đến 7.25</h3>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">10 câu hỏi trắc nghiệm tương tác tức thì kiểm tra kiến thức Elip, Hypebol và Parabol.</p>
+        </div>
+        <div class="arena-score-box">
+          <div>Tiến Độ: <span id="arenaProgress">0/10</span></div>
+          <div>Điểm Arena: <span id="arenaScore">0 XP</span></div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Bài 22: Ba Đường Conic</h3>
+
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">🪐</div>
+          <div class="badge-name">Nhà Thiên Văn Elip</div>
+          <div class="badge-desc">Khám phá tiêu cự và tâm sai đường Elip trong Lab 1.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">⏳</div>
+          <div class="badge-name">Bậc Thầy Hypebol & Parabol</div>
+          <div class="badge-desc">Vận hành máy vẽ đường Hypebol và Parabol chuẩn xác.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">💡</div>
+          <div class="badge-name">Chuyên Gia Quang Học Conic</div>
+          <div class="badge-desc">Mô phỏng thành công đặc tính phản xạ gương Elip và Parabol.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Binh Conic</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK (>= 8/10 câu).</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng Conic 10</div>
+          <div class="badge-desc">Đạt điểm tuyệt đối 10/10 câu hỏi Đấu Trường SGK!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 22: BA ĐƯỜNG CONIC (TOÁN 10 TẬP 2)</strong><br>
+            Nắm vững bản chất hình học, thành thạo lập phương trình chính tắc của Elip, Hypebol, Parabol, thấu hiểu tính chất quang học và làm chủ bài toán thực tế trong đời sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KIỆN TƯỚNG BA ĐƯỜNG CONIC XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_bai21/index.html" class="nav-btn prev">
+        ⬅️ Bài 21: Đường Tròn Trong Mặt Phẳng Toạ Độ
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Toán 10 KNTT • Tập Hai • Chương VII
+      </span>
+      <a href="../toan10_ontap_chuong7/index.html" class="nav-btn next">
+        Ôn Tập Chương VII: Phương Pháp Toạ Độ ➡️
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Đại Kiện Tướng</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Kiện Tướng Ba Đường Conic">👑</div>
+        <div class="avatar-choice" data-avatar="🪐" data-title="Nhà Du Hành Quỹ Đạo Elip">🪐</div>
+        <div class="avatar-choice" data-avatar="⏳" data-title="Pháp Sư Tiêu Điểm Hypebol">⏳</div>
+        <div class="avatar-choice" data-avatar="📡" data-title="Kỹ Sư Phản Xạ Parabol">📡</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Quang Học Toạ Độ">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ Không Gian">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Tiêu Cự Chuẩn Xác">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Thủ Khoa Olympic Toán 10">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

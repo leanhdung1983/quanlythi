@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 19: Phương Trình Đường Thẳng - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Hình Học Toạ Độ</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương VII: Phương Pháp Toạ Độ Trong Mặt Phẳng • Toán 10 KNTT</span>
+      <h1>BÀI 19: PHƯƠNG TRÌNH ĐƯỜNG THẲNG</h1>
+      <p>
+        Làm chủ các dạng biểu diễn đường thẳng trong mặt phẳng toạ độ $Oxy$: Vectơ pháp tuyến $\vec{n}$, vectơ chỉ phương $\vec{u}$, phương trình tổng quát $ax+by+c=0$, phương trình tham số, phương trình đoạn chắn và ứng dụng giải bài toán chuyển động thực tế.
+      </p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: VTPT & VTCP -->
+        <div class="concept-card">
+          <h3 class="card-title"><i>🧭</i> 1. Vectơ Pháp Tuyến & Vectơ Chỉ Phương</h3>
+          <div class="concept-box cyan">
+            <h4>Vectơ chỉ phương (VTCP) $\vec{u}$</h4>
+            <p>
+              Vectơ $\vec{u} \ne \vec{0}$ được gọi là vectơ chỉ phương của đường thẳng $\Delta$ nếu giá của $\vec{u}$ song song hoặc trùng với $\Delta$.<br>
+              • Nếu $\vec{u}$ là VTCP thì $k\vec{u}$ ($k \ne 0$) cũng là VTCP của $\Delta$.<br>
+              • Đường thẳng đi qua hai điểm phân biệt $A, B$ có một VTCP là $\overrightarrow{AB}$.
+            </p>
+          </div>
+          <div class="concept-box gold">
+            <h4>Vectơ pháp tuyến (VTPT) $\vec{n}$</h4>
+            <p>
+              Vectơ $\vec{n} \ne \vec{0}$ được gọi là vectơ pháp tuyến của đường thẳng $\Delta$ nếu giá của $\vec{n}$ vuông góc với $\Delta$.<br>
+              • Nếu $\vec{n}$ là VTPT thì $k\vec{n}$ ($k \ne 0$) cũng là VTPT của $\Delta$.
+            </p>
+          </div>
+          <div class="rule-box gold">
+            <strong>Mối quan hệ vuông góc cốt lõi:</strong><br>
+            $\vec{n} \perp \vec{u} \iff \vec{n} \cdot \vec{u} = 0$.<br>
+            Nếu $\Delta$ có VTPT $\vec{n} = (a; b)$ thì có một VTCP là $\vec{u} = (-b; a)$ hoặc $(b; -a)$.
+          </div>
+        </div>
+
+        <!-- Card 2: Phương trình tổng quát -->
+        <div class="concept-card">
+          <h3 class="card-title"><i>📐</i> 2. Phương Trình Tổng Quát Của Đường Thẳng</h3>
+          <div class="concept-box emerald">
+            <h4>Định nghĩa phương trình tổng quát</h4>
+            <p>
+              Phương trình $ax + by + c = 0$ ($a^2 + b^2 > 0$) được gọi là phương trình tổng quát của đường thẳng $\Delta$.<br>
+              Khi đó, $\Delta$ có một VTPT là $\vec{n} = (a; b)$.
+            </p>
+          </div>
+          <div class="formula-box">
+            <strong>Đường thẳng đi qua $M_0(x_0; y_0)$ có VTPT $\vec{n} = (a; b)$:</strong>
+            $$a(x - x_0) + b(y - y_0) = 0 \iff ax + by + (-ax_0 - by_0) = 0$$
+          </div>
+          <div class="concept-box">
+            <h4>Các trường hợp riêng đặc biệt:</h4>
+            <p>
+              • $a = 0 \implies by + c = 0 \iff y = -\dfrac{c}{b}$: đường thẳng song song hoặc trùng trục hoành $Ox$.<br>
+              • $b = 0 \implies ax + c = 0 \iff x = -\dfrac{c}{a}$: đường thẳng song song hoặc trùng trục tung $Oy$.<br>
+              • $c = 0 \implies ax + by = 0$: đường thẳng đi qua gốc toạ độ $O(0; 0)$.<br>
+              • Trục hoành $Ox$ có phương trình: $y = 0$.<br>
+              • Trục tung $Oy$ có phương trình: $x = 0$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3: Phương trình tham số & chính tắc -->
+        <div class="concept-card">
+          <h3 class="card-title"><i>⏱️</i> 3. Phương Trình Tham Số & Chính Tắc</h3>
+          <div class="concept-box cyan">
+            <h4>Phương trình tham số của đường thẳng</h4>
+            <p>
+              Đường thẳng $\Delta$ đi qua điểm $M_0(x_0; y_0)$ và có VTCP $\vec{u} = (u_1; u_2)$ có phương trình tham số:
+            </p>
+            <div class="formula-box">
+              $$\begin{cases} x = x_0 + u_1 t \\ y = y_0 + u_2 t \end{cases} \quad (t \in \mathbb{R})$$
+            </div>
+            <p>Mỗi giá trị cụ thể của tham số $t$ cho ta toạ độ của một điểm $M(x; y)$ nằm trên đường thẳng $\Delta$.</p>
+          </div>
+          <div class="concept-box">
+            <h4>Phương trình chính tắc (khi $u_1 \ne 0, u_2 \ne 0$)</h4>
+            <p>Khử tham số $t$ từ hệ phương trình tham số ta được phương trình chính tắc:</p>
+            <div class="formula-box">
+              $$\dfrac{x - x_0}{u_1} = \dfrac{y - y_0}{u_2}$$
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Các dạng phương trình khác -->
+        <div class="concept-card">
+          <h3 class="card-title"><i>🚀</i> 4. Phương Trình Đoạn Chắn & Hệ Số Góc</h3>
+          <div class="concept-box gold">
+            <h4>Phương trình theo đoạn chắn (Bài tập 7.5 SGK)</h4>
+            <p>
+              Đường thẳng đi qua hai điểm $A(a; 0)$ trên trục $Ox$ và $B(0; b)$ trên trục $Oy$ ($a \ne 0, b \ne 0$) có phương trình đoạn chắn:
+            </p>
+            <div class="formula-box">
+              $$\dfrac{x}{a} + \dfrac{y}{b} = 1$$
+            </div>
+          </div>
+          <div class="concept-box emerald">
+            <h4>Phương trình theo hệ số góc</h4>
+            <p>
+              Nếu $b \ne 0$, phương trình tổng quát có thể viết về dạng $y = kx + m$, trong đó $k = -\dfrac{a}{b}$ là hệ số góc của đường thẳng.<br>
+              Ý nghĩa hình học: $k = \tan\alpha$, với $\alpha$ là góc tạo bởi tia $Ox$ và đường thẳng.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1: Máy Khám Phá Phương Trình Đường Thẳng -->
+        <div class="card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Máy Thử Nghiệm Phương Trình Đường Thẳng Oxy</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+            Điều chỉnh hệ số $a, b, c$ của phương trình tổng quát $ax + by + c = 0$. Quan sát trực quan đường thẳng, vectơ pháp tuyến $\vec{n} = (a; b)$ (màu đỏ neon) và vectơ chỉ phương $\vec{u} = (-b; a)$ (màu xanh ngọc).
+          </p>
+
+          <div class="lab-container">
+            <div class="lab-canvas-box">
+              <canvas id="lineCanvas" width="460" height="360"></canvas>
+            </div>
+
+            <div class="lab-panel">
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Hệ số a:</span>
+                  <strong id="valA">2</strong>
+                </div>
+                <input type="range" class="slider-input" id="sliderA" min="-5" max="5" step="1" value="2">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Hệ số b:</span>
+                  <strong id="valB">1</strong>
+                </div>
+                <input type="range" class="slider-input" id="sliderB" min="-5" max="5" step="1" value="1">
+              </div>
+
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Hệ số c:</span>
+                  <strong id="valC">-4</strong>
+                </div>
+                <input type="range" class="slider-input" id="sliderC" min="-10" max="10" step="1" value="-4">
+              </div>
+
+              <div class="lab-readout">
+                <div class="readout-item">
+                  <span>Phương trình tổng quát:</span>
+                  <strong id="readoutGeneral" style="color: var(--cyan-neon);">2x + y - 4 = 0</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Vectơ pháp tuyến:</span>
+                  <strong id="readoutNormal" style="color: #fb7185;">$\vec{n} = (2; 1)$</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Vectơ chỉ phương:</span>
+                  <strong id="readoutDirection" style="color: #34d399;">$\vec{u} = (-1; 2)$</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Hệ số góc k:</span>
+                  <strong id="readoutSlope">k = -2</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Giao điểm Ox, Oy:</span>
+                  <strong id="readoutIntercepts">Ox(2; 0), Oy(0; 4)</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Radar Chuyến Bay -->
+        <div class="card">
+          <h3 class="card-title"><i>✈️</i> Lab 2: Radar Giám Sát Chuyến Bay Hà Nội - Đà Nẵng</h3>
+          <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+            Mô phỏng bài toán thực tế 7.6 SGK: Toạ độ máy bay theo thời gian $t$ (giờ):
+            $x = 21,2 - \dfrac{153}{40}t$ (Vĩ độ Bắc), $y = 105,8 + \dfrac{9}{5}t$ (Kinh độ Đông). Kéo thanh trượt thời gian để theo dõi máy bay vượt vĩ tuyến 17 và hạ cánh tại Đà Nẵng!
+          </p>
+
+          <div class="lab-container">
+            <div class="lab-canvas-box">
+              <canvas id="flightCanvas" width="460" height="360"></canvas>
+            </div>
+
+            <div class="lab-panel">
+              <div class="control-group">
+                <div class="control-label">
+                  <span>Thời gian bay t (giờ):</span>
+                  <strong id="valT">0.00 giờ</strong>
+                </div>
+                <input type="range" class="slider-input" id="sliderT" min="0" max="1.333" step="0.05" value="0">
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-primary" id="btnPlayFlight" style="flex: 1; padding: 8px 12px; font-size: 0.85rem;">▶️ Bắt Đầu Bay</button>
+                <button class="btn-icon" id="btnResetFlight" style="padding: 8px 12px; font-size: 0.85rem;">🔄 Đặt Lại</button>
+              </div>
+
+              <div class="lab-readout">
+                <div class="readout-item">
+                  <span>Vị trí hiện tại:</span>
+                  <strong id="flightCoords" style="color: var(--gold-accent);">21,20° B ; 105,80° Đ</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Vĩ tuyến 17° Bắc:</span>
+                  <strong id="lat17Status" style="color: #94a3b8;">Chưa qua vĩ tuyến 17</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Thời gian bay dự kiến:</span>
+                  <strong style="color: var(--cyan-neon);">$t = \dfrac{4}{3} \text{ h (80 phút)}$</strong>
+                </div>
+                <div class="readout-item">
+                  <span>Vận tốc phương vị:</span>
+                  <strong style="color: #34d399;">$\vec{v} = (-3,825; 1,800)$</strong>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h3 style="font-size: 1.2rem; font-weight: 800; color: #fff;">⚔️ Đấu Trường SGK: Bài Tập 7.1 Đến 7.6</h3>
+          <p style="color: var(--text-muted); font-size: 0.88rem;">10 câu hỏi trắc nghiệm tương tác tức thì bám sát 100% bài tập SGK trang 34-35.</p>
+        </div>
+        <div class="arena-score-box">
+          <div>Tiến Độ: <span id="arenaProgress">0/10</span></div>
+          <div>Điểm Arena: <span id="arenaScore">0 XP</span></div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Bài 19: Phương Trình Đường Thẳng</h3>
+
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">🧭</div>
+          <div class="badge-name">Vectơ Chỉ Đường</div>
+          <div class="badge-desc">Thử nghiệm điều khiển VTPT và VTCP trong Lab 1.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Nhà Đo Đạc Tham Số</div>
+          <div class="badge-desc">Chuyển đổi thành thạo giữa dạng tổng quát và tham số.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">✈️</div>
+          <div class="badge-name">Phi Công Radar 17</div>
+          <div class="badge-desc">Mô phỏng hoàn tất chuyến bay và hạ cánh an toàn trong Lab 2.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Binh Toạ Độ</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK (>= 8/10 câu).</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng Hình Học 10</div>
+          <div class="badge-desc">Xuất sắc trả lời đúng tuyệt đối 10/10 câu hỏi Đấu Trường SGK!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 19: PHƯƠNG TRÌNH ĐƯỜNG THẲNG (TOÁN 10 TẬP 2)</strong><br>
+            Nắm vững bản chất vectơ pháp tuyến, vectơ chỉ phương, thiết lập thành thạo phương trình tổng quát, phương trình tham số, phương trình đoạn chắn và ứng dụng toạ độ hoá chuyển động thực tế.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KIỆN TƯỚNG HÌNH HỌC TOẠ ĐỘ XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_ontap_chuong6/index.html" class="nav-btn prev">
+        ⬅️ Ôn Tập Chương VI
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Toán 10 KNTT • Tập Hai • Chương VII
+      </span>
+      <a href="../toan10_bai20/index.html" class="nav-btn next">
+        Bài 20: Vị Trí Tương Đối, Góc & Khoảng Cách ➡️
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Hidden on startup) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Đại Kiện Tướng</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Kiện Tướng Hình Học Toạ Độ">👑</div>
+        <div class="avatar-choice" data-avatar="🧭" data-title="Nhà Thám Hiểm Không Gian Oxy">🧭</div>
+        <div class="avatar-choice" data-avatar="✈️" data-title="Cơ Trưởng Đường Bay Logic">✈️</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Vectơ Mặt Phẳng">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Giải Tích Hình Học">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ Toạ Độ">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Đường Thẳng Chuẩn Xác">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Thủ Khoa Olympic Toán 10">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,501 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Cuối Chương IV: Vectơ - Toán 10 KNTT</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Top HUD Gamification Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Toàn Năng Chương IV</span>
+        </div>
+      </div>
+          <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <div class="banner-badge">TOÁN 10 - TẬP 1 • CHƯƠNG IV: VECTƠ</div>
+      <h1 class="banner-title">BÀI TẬP CUỐI CHƯƠNG IV: TỔNG HỢP TOÀN DIỆN VECTƠ</h1>
+      <p class="banner-desc">
+        Hệ thống hóa toàn bộ kiến thức nền tảng của Chương IV: Khái niệm vectơ, ba quy tắc vàng cộng trừ, tích vectơ với số, toạ độ trên mặt phẳng $Oxy$, tích vô hướng và các ứng dụng Vật lí - Hình học thực tế. Chinh phục 100% bài tập SGK Kết Nối Tri Thức trang 71 - 72!
+      </p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="tab-theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="tab-labs">🧪 Phòng Thí Nghiệm Tương Tác</button>
+      <button class="nav-tab" data-tab="tab-arena">⚔️ Đấu Trường SGK (10 Câu)</button>
+      <button class="nav-tab" data-tab="tab-badges">🏆 Huy Hiệu & Giấy Chứng Nhận</button>
+    </nav>
+
+    <!-- Tab 1: Knowledge Theory Cards -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="concept-grid">
+        <!-- Card 1: Khái niệm & Bản chất Hình học Vectơ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🏹</span>
+            <h3>1. Khái Niệm & Bản Chất Hình Học Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Vectơ</strong> là một đoạn thẳng có hướng (có điểm đầu và điểm cuối xác định), kí hiệu $\vec{a}$ hoặc $\overrightarrow{AB}$.</p>
+            <p>• <strong>Độ dài vectơ</strong> là khoảng cách giữa điểm đầu và điểm cuối, kí hiệu $|\vec{a}|$ hoặc $|\overrightarrow{AB}| = AB$.</p>
+            <p>• <strong>Hai vectơ cùng phương:</strong> Giá của chúng song song hoặc trùng nhau. Hai vectơ cùng phương thì có thể <em>cùng hướng</em> hoặc <em>ngược hướng</em>.</p>
+            <p>• <strong>Hai vectơ bằng nhau:</strong> $\vec{a} = \vec{b} \iff |\vec{a}| = |\vec{b}|$ và $\vec{a}, \vec{b}$ cùng hướng.</p>
+            <p>• <strong>Vectơ-không ($\vec{0}$):</strong> Điểm đầu trùng điểm cuối, độ dài bằng $0$, cùng phương và cùng hướng với mọi vectơ.</p>
+          </div>
+        </div>
+
+        <!-- Card 2: Các Quy Tắc Vàng Cộng & Trừ Vectơ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">➕</span>
+            <h3>2. Ba Quy Tắc Vàng Cộng & Trừ Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Quy tắc Ba điểm (nối đuôi):</strong> Với 3 điểm $A, B, C$ bất kì:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\overrightarrow{AB} + \overrightarrow{BC} = \overrightarrow{AC}$$</p>
+            </div>
+            <p>• <strong>Quy tắc Hình bình hành (chung gốc):</strong> Nếu $ABCD$ là hình bình hành thì:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\overrightarrow{AB} + \overrightarrow{AD} = \overrightarrow{AC}$$</p>
+            </div>
+            <p>• <strong>Quy tắc Hiệu (chung gốc):</strong> $\overrightarrow{AB} = \overrightarrow{OB} - \overrightarrow{OA}$ với mọi gốc $O$.</p>
+            <p>• <strong>Tính chất trung điểm và trọng tâm:</strong></p>
+            <p>- $I$ là trung điểm $AB \iff \overrightarrow{IA} + \overrightarrow{IB} = \vec{0} \iff \overrightarrow{MA} + \overrightarrow{MB} = 2\overrightarrow{MI}$.</p>
+            <p>- $G$ là trọng tâm $\Delta ABC \iff \overrightarrow{GA} + \overrightarrow{GB} + \overrightarrow{GC} = \vec{0} \iff \overrightarrow{MA} + \overrightarrow{MB} + \overrightarrow{MC} = 3\overrightarrow{MG}$.</p>
+          </div>
+        </div>
+
+        <!-- Card 3: Tích Vectơ Với Số & Phân Tích Vectơ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🔢</span>
+            <h3>3. Tích Vectơ Với Một Số & Phân Tích Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>• Cho số $k \in \mathbb{R}$ và $\vec{a} \neq \vec{0}$, tích $k\vec{a}$ là một vectơ có:</p>
+            <p>- Độ dài: $|k\vec{a}| = |k| \cdot |\vec{a}|$.</p>
+            <p>- Hướng: Cùng hướng với $\vec{a}$ khi $k > 0$, ngược hướng khi $k < 0$.</p>
+            <p>• <strong>Điều kiện cùng phương:</strong> $\vec{a}, \vec{b}$ ($\vec{b} \neq \vec{0}$) cùng phương $\iff \exists k \in \mathbb{R}: \vec{a} = k\vec{b}$.</p>
+            <p>• <strong>Vectơ đơn vị:</strong> Chuẩn hóa $\vec{u} = \frac{1}{|\vec{a}|}\vec{a}$ luôn có độ dài bằng $1$ và cùng hướng với $\vec{a}$.</p>
+            <p>• <strong>Định lí phân tích (Bài 4.33 & 4.34 SGK):</strong> Cho hai vectơ không cùng phương $\vec{a}, \vec{b}$, mọi vectơ $\vec{x}$ đều biểu diễn duy nhất dưới dạng $\vec{x} = m\vec{a} + n\vec{b}$.</p>
+          </div>
+        </div>
+
+        <!-- Card 4: Toạ Độ Vectơ & Điểm Trên Mặt Phẳng Oxy -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📐</span>
+            <h3>4. Toạ Độ Vectơ & Điểm Trên Oxy</h3>
+          </div>
+          <div class="concept-body">
+            <p>• Hệ trục toạ độ $(O; \vec{i}, \vec{j})$ với $\vec{i} = (1;0), \vec{j} = (0;1)$ và $|\vec{i}| = |\vec{j}| = 1, \vec{i} \perp \vec{j}$.</p>
+            <p>• $\vec{u} = x\vec{i} + y\vec{j} \iff \vec{u} = (x; y)$. Điểm $M(x; y) \iff \overrightarrow{OM} = (x; y)$.</p>
+            <p>• <strong>Toạ độ vectơ qua hai điểm:</strong> Với $A(x_A; y_A), B(x_B; y_B)$:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\overrightarrow{AB} = (x_B - x_A; y_B - y_A), \quad AB = \sqrt{(x_B - x_A)^2 + (y_B - y_A)^2}$$</p>
+            </div>
+            <p>• <strong>Phép toán toạ độ:</strong> Cho $\vec{u} = (x_1; y_1), \vec{v} = (x_2; y_2)$:</p>
+            <p>- $\vec{u} \pm \vec{v} = (x_1 \pm x_2; y_1 \pm y_2), \quad k\vec{u} = (kx_1; ky_1)$.</p>
+            <p>- Hai vectơ cùng phương $\iff x_1 y_2 - x_2 y_1 = 0$ (hoặc $\frac{x_1}{x_2} = \frac{y_1}{y_2}$).</p>
+          </div>
+        </div>
+
+        <!-- Card 5: Tích Vô Hướng & Biểu Thức Toạ Độ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⚡</span>
+            <h3>5. Tích Vô Hướng & Góc Giữa Hai Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Định nghĩa hình học:</strong> $\vec{a} \cdot \vec{b} = |\vec{a}| \cdot |\vec{b}| \cdot \cos(\vec{a}, \vec{b})$.</p>
+            <p>• <strong>Biểu thức toạ độ trên $Oxy$:</strong></p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\vec{a} \cdot \vec{b} = x_1 x_2 + y_1 y_2$$</p>
+            </div>
+            <p>• <strong>Góc giữa hai vectơ:</strong></p>
+            <div class="formula-box">
+              <p>$$\cos(\vec{a}, \vec{b}) = \frac{\vec{a} \cdot \vec{b}}{|\vec{a}| \cdot |\vec{b}|} = \frac{x_1 x_2 + y_1 y_2}{\sqrt{x_1^2 + y_1^2} \cdot \sqrt{x_2^2 + y_2^2}}$$</p>
+            </div>
+            <p>• <strong>Điều kiện vuông góc:</strong> $\vec{a} \perp \vec{b} \iff \vec{a} \cdot \vec{b} = 0 \iff x_1 x_2 + y_1 y_2 = 0$.</p>
+          </div>
+        </div>
+
+        <!-- Card 6: Ứng Dụng Thực Tế & Hình Học Giải Tích Tam Giác -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🚀</span>
+            <h3>6. Ứng Dụng Vật Lí & Giải Tích Tam Giác</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Công cơ học của lực không đổi:</strong> $A = \vec{F} \cdot \vec{s} = |\vec{F}| \cdot |\vec{s}| \cdot \cos\alpha$.</p>
+            <p>• <strong>Tổng hợp chuyển động canô và dòng nước:</strong> Vận tốc thực của canô đối với bờ: $\vec{v} = \vec{v}_r + \vec{v}_n$ (Bài 4.39 SGK).</p>
+            <p>• <strong>Đặc trưng tam giác trong hệ $Oxy$ (Bài 4.35 SGK):</strong></p>
+            <p>- Trọng tâm $G\left(\frac{x_A+x_B+x_C}{3}; \frac{y_A+y_B+y_C}{3}\right)$.</p>
+            <p>- Tam giác vuông tại $B \iff \overrightarrow{BA} \cdot \overrightarrow{BC} = 0 \implies S_{ABC} = \frac{1}{2}BA \cdot BC$.</p>
+            <p>- Đẳng thức hình bình hành: $\overrightarrow{MA} + \overrightarrow{MC} = \overrightarrow{MB} + \overrightarrow{MD}$ (Bài 4.34 SGK).</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1: Comprehensive Master Vector Radar Analyzer -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">📡</span>
+            <div>
+              <h3>Lab 1: Master Radar: Phân Tích Tổng Hợp Vectơ & Góc Trên Oxy</h3>
+              <p>Mô phỏng thời gian thực hai vectơ $\vec{u}$ và $\vec{v}$. Khám phá toạ độ, độ dài, vectơ tổng $\vec{u}+\vec{v}$, hiệu $\vec{u}-\vec{v}$, tích vô hướng và góc giữa hai vectơ.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="radarCanvas" width="600" height="400"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Toạ độ $\vec{u} = (u_x; u_y)$: <span id="uCoordVal">(3.0; 2.0)</span></label>
+                <div style="display: flex; gap: 10px;">
+                  <span style="min-width: 30px; font-weight: bold; color: var(--cyan-neon);">u_x:</span>
+                  <input type="range" id="uxSlider" min="-6" max="6" value="3" step="0.5">
+                  <span style="min-width: 30px; font-weight: bold; color: var(--cyan-neon);">u_y:</span>
+                  <input type="range" id="uySlider" min="-6" max="6" value="2" step="0.5">
+                </div>
+              </div>
+              <div class="slider-group">
+                <label>Toạ độ $\vec{v} = (v_x; v_y)$: <span id="vCoordVal">(1.0; 4.0)</span></label>
+                <div style="display: flex; gap: 10px;">
+                  <span style="min-width: 30px; font-weight: bold; color: var(--gold);">v_x:</span>
+                  <input type="range" id="vxSlider" min="-6" max="6" value="1" step="0.5">
+                  <span style="min-width: 30px; font-weight: bold; color: var(--gold);">v_y:</span>
+                  <input type="range" id="vySlider" min="-6" max="6" value="4" step="0.5">
+                </div>
+              </div>
+              <div class="control-row" style="margin-top: 10px;">
+                <button class="lab-btn" id="btnPresetPerp">📐 Mẫu Vuông Góc [Bài 4.28]</button>
+                <button class="lab-btn" id="btnPresetCollinear">➡️ Mẫu Cùng Phương [Bài 4.27]</button>
+                <button class="lab-btn" id="btnPresetUnit">🎯 Vectơ Đơn Vị [Bài 4.29]</button>
+                <button class="lab-btn" id="btnPresetAngle135">🧭 Góc 135° [Bài 4.30]</button>
+              </div>
+            </div>
+            <div class="lab-output" id="radarOutput">
+              <div class="output-item">Độ dài: $|\vec{u}| =$ <span class="badge-cyan" id="outULen">3.61</span>, $|\vec{v}| =$ <span class="badge-gold" id="outVLen">4.12</span></div>
+              <div class="output-item">Tổng $\vec{u}+\vec{v} =$ <span class="badge-green" id="outSumVec">(4.0; 6.0)</span>, Hiệu $\vec{u}-\vec{v} =$ <span class="badge-blue" id="outDiffVec">(2.0; -2.0)</span></div>
+              <div class="output-item">Tích vô hướng $\vec{u}\cdot\vec{v} =$ <span class="badge-gold" id="outDotProduct">+11.00</span> | Góc $(\vec{u}, \vec{v}) =$ <span class="badge-cyan" id="outAngle">42.3°</span></div>
+              <div class="output-item">Quan hệ: <span class="badge-green" id="outRelation">Hai vectơ độc lập (không cùng phương, không vuông góc)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Triangle Vector Analytic Solver (Bài 4.35 & 4.34) -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">📐</span>
+            <div>
+              <h3>Lab 2: Giải Tích Tam Giác & Hình Bình Hành Bằng Vectơ</h3>
+              <p>Mô phỏng bài toán 4.35 & 4.34 SGK: Thay đổi 3 đỉnh $A, B, C$ trên mặt phẳng toạ độ để kiểm tra tích vô hướng $\overrightarrow{BA}\cdot\overrightarrow{BC}$, tính diện tích, tìm trọng tâm $G$ và đỉnh $D$ của hình bình hành.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="triangleCanvas" width="600" height="380"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Đỉnh $A$: <span id="labelA">(2; 1)</span></label>
+                <div style="display: flex; gap: 8px;">
+                  <span>X:</span><input type="range" id="axSlider" min="-6" max="6" value="2" step="1">
+                  <span>Y:</span><input type="range" id="aySlider" min="-6" max="6" value="1" step="1">
+                </div>
+              </div>
+              <div class="slider-group">
+                <label>Đỉnh $B$: <span id="labelB">(-2; 5)</span></label>
+                <div style="display: flex; gap: 8px;">
+                  <span>X:</span><input type="range" id="bxSlider" min="-6" max="6" value="-2" step="1">
+                  <span>Y:</span><input type="range" id="bySlider" min="-6" max="6" value="5" step="1">
+                </div>
+              </div>
+              <div class="slider-group">
+                <label>Đỉnh $C$: <span id="labelC">(-5; 2)</span></label>
+                <div style="display: flex; gap: 8px;">
+                  <span>X:</span><input type="range" id="cxSlider" min="-6" max="6" value="-5" step="1">
+                  <span>Y:</span><input type="range" id="cySlider" min="-6" max="6" value="2" step="1">
+                </div>
+              </div>
+              <div class="control-row" style="margin-top: 10px;">
+                <button class="lab-btn" id="btnPreset435">⭐ Mẫu Chuẩn Bài 4.35 SGK (A(2;1), B(-2;5), C(-5;2))</button>
+                <button class="lab-btn" id="btnToggleParallelogram">🔄 Bật/Tắt Hình Bình Hành BCAD</button>
+              </div>
+            </div>
+            <div class="lab-output" id="triOutput">
+              <div class="output-item">$\overrightarrow{BA} =$ <span class="badge-cyan" id="outBA">(4; -4)</span>, $\overrightarrow{BC} =$ <span class="badge-gold" id="outBC">(-3; -3)</span></div>
+              <div class="output-item">Tích $\overrightarrow{BA}\cdot\overrightarrow{BC} =$ <span class="badge-green" id="outTriDot">0</span> <strong style="color: var(--emerald);" id="outTriType">(Tam giác vuông tại B!)</strong></div>
+              <div class="output-item">Độ dài cạnh: $BA =$ <span id="outBALen">5.66</span>, $BC =$ <span id="outBCLen">4.24</span> | Diện tích $S_{ABC} =$ <span class="badge-gold" id="outArea">12.00</span></div>
+              <div class="output-item">Trọng tâm $G =$ <span class="badge-blue" id="outG">(-1.67; 2.67)</span> | Đỉnh HBH $D =$ <span class="badge-green" id="outD">(-1; -2)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena SGK Quiz (10 MCQs) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2 style="color: var(--cyan-neon); font-size: 1.4rem;">⚔️ Đấu Trường Ôn Tập Cuối Chương IV: Vectơ SGK</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">10 câu hỏi bao phủ 100% trắc nghiệm và tự luận trọng tâm Bài 4.27 - 4.39 SGK trang 71 - 72.</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Tổng Kết Chương IV: Vectơ</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Nhà Thông Thái Vectơ</div>
+          <div class="badge-desc">Đọc kĩ Bản đồ Tri thức và làm chủ toàn bộ 6 khối kiến thức nền tảng của Chương IV.</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">📡</div>
+          <div class="badge-name">Thống Lĩnh Radar Oxy</div>
+          <div class="badge-desc">Tương tác thành thạo Master Radar trong Lab 1 với việc phân tích toạ độ, tổng hiệu và góc.</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Kỹ Sư Giải Tích Hình Học</div>
+          <div class="badge-desc">Làm chủ Lab 2 với việc kiểm tra tam giác vuông, tính diện tích và toạ độ hình bình hành.</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Chiến Thần Đấu Trường Tổng Hợp</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi ôn tập tổng hợp SGK Chương IV.</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Toàn Năng Chương IV</div>
+          <div class="badge-desc">Xuất sắc mở khóa trọn vẹn 5/5 huy hiệu và tốt nghiệp toàn bộ Chương IV: Vectơ!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc toàn bộ nội dung ôn tập và hệ thống bài tập thực hành <strong>BÀI TẬP CUỐI CHƯƠNG IV: VECTƠ (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững bản chất hình học của vectơ, làm chủ ba quy tắc vàng cộng trừ, biểu thức toạ độ trên mặt phẳng $Oxy$, tích vô hướng và các ứng dụng thực tế trong cơ học và hình học giải tích phẳng.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG TOÀN NĂNG CHƯƠNG IV: VECTƠ 👑</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày 17 tháng 10 năm 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn-primary" id="btnPrintCert">
+          🖨️ In Giấy Chứng Nhận A4
+        </button>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_bai11/index.html" class="nav-btn prev">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <small>Bài trước</small>
+          <strong>Bài 11: Tích Vô Hướng Của Hai Vectơ</strong>
+        </div>
+      </a>
+      <a href="../toan10_bai12/index.html" class="nav-btn next">
+        <div class="nav-text">
+          <small>Bài tiếp theo</small>
+          <strong>Bài 12: Số Gần Đúng Và Sai Số</strong>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <h3 class="modal-title">Chọn Avatar Đại Kiện Tướng</h3>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑">👑</button>
+        <button class="avatar-choice" data-avatar="🚀">🚀</button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button class="avatar-choice" data-avatar="🦁">🦁</button>
+        <button class="avatar-choice" data-avatar="💎">💎</button>
+        <button class="avatar-choice" data-avatar="🦉">🦉</button>
+        <button class="avatar-choice" data-avatar="🎯">🎯</button>
+        <button class="avatar-choice" data-avatar="🏅">🏅</button>
+      </div>
+      <button class="btn-secondary" id="closeAvatarModal">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

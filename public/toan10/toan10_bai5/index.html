@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 5: Giá Trị Lượng Giác Của Một Góc Từ 0° Đến 180° - Toán 10</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Vòng Tròn Đơn Vị</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương III • Bài 5 • Toán 10 Tập 1 (Trang 33 - 37)</span>
+      <h1>BÀI 5: GIÁ TRỊ LƯỢNG GIÁC CỦA MỘT GÓC TỪ 0° ĐẾN 180°</h1>
+      <p>Mở rộng khái niệm lượng giác từ góc nhọn lên góc bất kì từ $0^\circ$ đến $180^\circ$ thông qua nửa đường tròn đơn vị! Nắm vững quan hệ hai góc bù nhau, góc phụ nhau, các hệ thức lượng giác cơ bản và ứng dụng giải bài toán thực tiễn chuyển động vòng quay đu quay.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức Lượng Giác</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Đơn Vị & Đu Quay (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Bài 3.1 - 3.4)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-badge">Định Nghĩa Nền Tảng</span>
+            <h3>1. Nửa Đường Tròn Đơn Vị & Tọa Độ Điểm M</h3>
+          </div>
+          <div class="card-body">
+            <p>Trong mặt phẳng tọa độ $Oxy$, nửa đường tròn tâm $O(0;0)$, bán kính $R = 1$ nằm phía trên trục hoành ($y \ge 0$) được gọi là <strong>nửa đường tròn đơn vị</strong>.</p>
+            <p>Với mỗi góc $\alpha$ ($0^\circ \le \alpha \le 180^\circ$), có duy nhất điểm $M(x_0; y_0)$ trên nửa đường tròn sao cho $\widehat{xOM} = \alpha$:</p>
+            <div class="formula-box">
+              $$\sin \alpha = y_0 \quad \text{(tung độ của M)}$$
+              $$\cos \alpha = x_0 \quad \text{(hoành độ của M)}$$
+              $$\tan \alpha = \frac{y_0}{x_0} = \frac{\sin \alpha}{\cos \alpha} \quad (\alpha \ne 90^\circ, x_0 \ne 0)$$
+              $$\cot \alpha = \frac{x_0}{y_0} = \frac{\cos \alpha}{\sin \alpha} \quad (\alpha \ne 0^\circ, 180^\circ, y_0 \ne 0)$$
+            </div>
+            <div class="callout tip">
+              <strong>💡 Dấu của giá trị lượng giác:</strong>
+              <ul style="margin-left: 18px; margin-top: 6px;">
+                <li>Khi $\alpha$ nhọn ($0^\circ < \alpha < 90^\circ$): $\sin \alpha > 0$, $\cos \alpha > 0$, $\tan \alpha > 0$, $\cot \alpha > 0$.</li>
+                <li>Khi $\alpha$ tù ($90^\circ < \alpha < 180^\circ$): $\sin \alpha > 0$, $\cos \alpha < 0$, $\tan \alpha < 0$, $\cot \alpha < 0$.</li>
+                <li>Với mọi $\alpha \in [0^\circ, 180^\circ]$ thì luôn có: $0 \le \sin \alpha \le 1$ và $-1 \le \cos \alpha \le 1$.</li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-badge">Định Lí Cốt Lõi</span>
+            <h3>2. Mối Quan Hệ Hai Góc Bù Nhau & Phụ Nhau</h3>
+          </div>
+          <div class="card-body">
+            <p><strong>A. Hai góc bù nhau ($\alpha$ và $180^\circ - \alpha$):</strong> Điểm $M$ và $M'$ đối xứng nhau qua trục tung $Oy$.</p>
+            <div class="formula-box">
+              $$\sin(180^\circ - \alpha) = \sin \alpha$$
+              $$\cos(180^\circ - \alpha) = -\cos \alpha$$
+              $$\tan(180^\circ - \alpha) = -\tan \alpha \quad (\alpha \ne 90^\circ)$$
+              $$\cot(180^\circ - \alpha) = -\cot \alpha \quad (0^\circ < \alpha < 180^\circ)$$
+            </div>
+            <p><strong>B. Hai góc phụ nhau ($\alpha$ và $90^\circ - \alpha$):</strong> Sin góc này bằng côsin góc kia, tang góc này bằng côtang góc kia:</p>
+            <div class="formula-box">
+              $$\sin(90^\circ - \alpha) = \cos \alpha; \quad \cos(90^\circ - \alpha) = \sin \alpha$$
+              $$\tan(90^\circ - \alpha) = \cot \alpha; \quad \cot(90^\circ - \alpha) = \tan \alpha$$
+            </div>
+            <div class="callout warning">
+              <strong>🎯 Khẩu Quyết Vàng:</strong> "Sin bù, cos đối, phụ chéo". Khi lấy góc bù, duy nhất hàm $\sin$ giữ nguyên giá trị, còn $\cos, \tan, \cot$ đều đổi dấu!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card full-width">
+          <div class="card-header">
+            <span class="card-badge">Bảng Tra Cứu Góc Đặc Biệt & Hệ Thức Cơ Bản</span>
+            <h3>3. Bảng Giá Trị Lượng Giác & Các Hệ Thức Cơ Bản SGK</h3>
+          </div>
+          <div class="card-body">
+            <div class="table-responsive">
+              <table class="trig-table">
+                <thead>
+                  <tr>
+                    <th>Góc $\alpha$</th>
+                    <th>$0^\circ$</th>
+                    <th>$30^\circ$</th>
+                    <th>$45^\circ$</th>
+                    <th>$60^\circ$</th>
+                    <th>$90^\circ$</th>
+                    <th>$120^\circ$</th>
+                    <th>$135^\circ$</th>
+                    <th>$150^\circ$</th>
+                    <th>$180^\circ$</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td><strong>$\sin \alpha$</strong></td>
+                    <td>$0$</td>
+                    <td>$\frac{1}{2}$</td>
+                    <td>$\frac{\sqrt{2}}{2}$</td>
+                    <td>$\frac{\sqrt{3}}{2}$</td>
+                    <td>$1$</td>
+                    <td>$\frac{\sqrt{3}}{2}$</td>
+                    <td>$\frac{\sqrt{2}}{2}$</td>
+                    <td>$\frac{1}{2}$</td>
+                    <td>$0$</td>
+                  </tr>
+                  <tr>
+                    <td><strong>$\cos \alpha$</strong></td>
+                    <td>$1$</td>
+                    <td>$\frac{\sqrt{3}}{2}$</td>
+                    <td>$\frac{\sqrt{2}}{2}$</td>
+                    <td>$\frac{1}{2}$</td>
+                    <td>$0$</td>
+                    <td>$-\frac{1}{2}$</td>
+                    <td>$-\frac{\sqrt{2}}{2}$</td>
+                    <td>$-\frac{\sqrt{3}}{2}$</td>
+                    <td>$-1$</td>
+                  </tr>
+                  <tr>
+                    <td><strong>$\tan \alpha$</strong></td>
+                    <td>$0$</td>
+                    <td>$\frac{\sqrt{3}}{3}$</td>
+                    <td>$1$</td>
+                    <td>$\sqrt{3}$</td>
+                    <td>||</td>
+                    <td>$-\sqrt{3}$</td>
+                    <td>$-1$</td>
+                    <td>$-\frac{\sqrt{3}}{3}$</td>
+                    <td>$0$</td>
+                  </tr>
+                  <tr>
+                    <td><strong>$\cot \alpha$</strong></td>
+                    <td>||</td>
+                    <td>$\sqrt{3}$</td>
+                    <td>$1$</td>
+                    <td>$\frac{\sqrt{3}}{3}$</td>
+                    <td>$0$</td>
+                    <td>$-\frac{\sqrt{3}}{3}$</td>
+                    <td>$-1$</td>
+                    <td>$-\sqrt{3}$</td>
+                    <td>||</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <div class="formula-box" style="margin-top: 16px;">
+              <p><strong>4 Hệ Thức Lượng Giác Cơ Bản Bắt Buộc Ghi Nhớ (Bài 3.3 SGK):</strong></p>
+              $$\sin^2 \alpha + \cos^2 \alpha = 1$$
+              $$1 + \tan^2 \alpha = \frac{1}{\cos^2 \alpha} \quad (\alpha \ne 90^\circ)$$
+              $$1 + \cot^2 \alpha = \frac{1}{\sin^2 \alpha} \quad (0^\circ < \alpha < 180^\circ)$$
+              $$\tan \alpha \cdot \cot \alpha = 1 \quad (\alpha \notin \{0^\circ; 90^\circ; 180^\circ\})$$
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1: Unit Semicircle Canvas -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-badge">Phòng Thí Nghiệm 1</span>
+            <h3>🧪 Nửa Đường Tròn Đơn Vị Động & Đối Xứng Bù Nhau</h3>
+          </div>
+          <div class="card-body">
+            <p>Kéo thanh trượt góc $\alpha$ hoặc chọn góc đặc biệt để quan sát điểm $M(x_0; y_0)$ di chuyển trên nửa đường tròn đơn vị. Bật tính năng góc bù để thấy rõ điểm $M'$ đối xứng qua trục $Oy$!</p>
+            
+            <div class="canvas-wrapper">
+              <canvas id="semicircleCanvas" width="460" height="280"></canvas>
+            </div>
+
+            <div class="control-panel">
+              <div class="slider-row">
+                <label for="angleSlider">Góc $\alpha$: <span id="angleVal" style="color: var(--cyan-neon); font-weight: 700;">60°</span></label>
+                <input type="range" id="angleSlider" min="0" max="180" value="60" step="1">
+              </div>
+
+              <div class="btn-group-chips">
+                <button class="chip-btn" data-angle="30">30°</button>
+                <button class="chip-btn" data-angle="45">45°</button>
+                <button class="chip-btn active" data-angle="60">60°</button>
+                <button class="chip-btn" data-angle="90">90°</button>
+                <button class="chip-btn" data-angle="120">120°</button>
+                <button class="chip-btn" data-angle="135">135°</button>
+                <button class="chip-btn" data-angle="150">150°</button>
+              </div>
+
+              <div style="margin-top: 10px; display: flex; align-items: center; gap: 8px;">
+                <input type="checkbox" id="chkShowSupplementary" checked>
+                <label for="chkShowSupplementary" style="cursor: pointer; font-size: 0.9rem; color: var(--gold);">
+                  Hiển thị điểm đối xứng góc bù $180^\circ - \alpha$ ($M'$)
+                </label>
+              </div>
+
+              <div class="readout-box" id="circleReadout">
+                <div class="readout-item"><span>Điểm M:</span> <strong id="mCoord">(0.50; 0.87)</strong></div>
+                <div class="readout-item"><span>$\sin \alpha$:</span> <strong id="mSin">0.8660</strong></div>
+                <div class="readout-item"><span>$\cos \alpha$:</span> <strong id="mCos">0.5000</strong></div>
+                <div class="readout-item"><span>$\tan \alpha$:</span> <strong id="mTan">1.7321</strong></div>
+                <div class="readout-item"><span>$\cot \alpha$:</span> <strong id="mCot">0.5774</strong></div>
+                <div class="readout-item"><span>$\sin^2 + \cos^2$:</span> <strong id="mPythagoras" style="color: var(--emerald);">1.0000</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Ferris Wheel Simulation -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-badge">Phòng Thí Nghiệm 2</span>
+            <h3>🎡 Mô Phỏng Vòng Quay Đu Quay (Vận Dụng SGK Trang 37)</h3>
+          </div>
+          <div class="card-body">
+            <p>Vòng quay có bán kính $R = 75$ m, tâm vòng quay ở độ cao $90$ m so với mặt đất. Đu quay thực hiện 1 vòng hết đúng $30$ phút. Bạn lên cabin ở vị trí thấp nhất ($h = 15$ m).</p>
+            
+            <div class="canvas-wrapper">
+              <canvas id="ferrisCanvas" width="460" height="280"></canvas>
+            </div>
+
+            <div class="control-panel">
+              <div class="slider-row">
+                <label for="timeSlider">Thời gian quay $t$: <span id="timeVal" style="color: var(--gold); font-weight: 700;">20 phút</span></label>
+                <input type="range" id="timeSlider" min="0" max="30" value="20" step="0.5">
+              </div>
+
+              <div class="btn-group-chips">
+                <button class="chip-btn-ferris" data-time="0">0 phút (Bắt đầu)</button>
+                <button class="chip-btn-ferris" data-time="7.5">7.5 phút (Ngang tâm)</button>
+                <button class="chip-btn-ferris" data-time="15">15 phút (Đỉnh cao nhất)</button>
+                <button class="chip-btn-ferris active" data-time="20">20 phút (SGK hỏi)</button>
+                <button class="chip-btn-ferris" data-time="30">30 phút (Hết 1 vòng)</button>
+              </div>
+
+              <div class="readout-box" id="ferrisReadout" style="margin-top: 12px;">
+                <div class="readout-item"><span>Góc quét cabin:</span> <strong id="ferrisAngle">240°</strong></div>
+                <div class="readout-item"><span>$\cos(12^\circ \cdot t)$:</span> <strong id="ferrisCos">-0.500</strong></div>
+                <div class="readout-item full-width-readout" style="grid-column: span 2;">
+                  <span>Độ cao thực tế của cabin:</span>
+                  <strong id="ferrisHeight" style="color: var(--emerald); font-size: 1.15rem;">h = 90 - 75×(-0.5) = 127.5 m</strong>
+                </div>
+              </div>
+
+              <div class="callout tip" style="margin-top: 10px; font-size: 0.88rem;">
+                <strong>Công thức độ cao tổng quát:</strong> $h(t) = 90 - 75 \cdot \cos\left(\frac{360^\circ}{30} \cdot t\right) = 90 - 75 \cos(12^\circ \cdot t)$ (mét).
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2 style="color: var(--cyan-neon); font-size: 1.4rem;">⚔️ Đấu Trường Lượng Giác SGK</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">Vượt qua 10 thử thách trắc nghiệm bao phủ toàn bộ Bài 3.1 - 3.4 & bài toán đu quay SGK.</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Lượng Giác K10</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-circle">
+          <div class="badge-icon">🧭</div>
+          <div class="badge-name">Bậc Thầy Nửa Đường Tròn</div>
+          <div class="badge-desc">Khám phá vị trí điểm M, xác định chính xác tung độ sin và hoành độ cos.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-symmetry">
+          <div class="badge-icon">🔄</div>
+          <div class="badge-name">Chuyên Gia Góc Bù & Phụ</div>
+          <div class="badge-desc">Nắm vững quy tắc vàng "Sin bù, cos đối, tang cot đối nhau".</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-ferris">
+          <div class="badge-icon">🎡</div>
+          <div class="badge-name">Kỹ Sư Vòng Quay Đu Quay</div>
+          <div class="badge-desc">Giải mã xuất sắc mô hình lượng giác thực tiễn tính độ cao cabin 127.5 m.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-arena">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Thần Đấu Trường Lượng Giác</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK Bài 5.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-master">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng Lượng Giác K10</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và hoàn thành xuất sắc toàn diện Bài 5!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc bài học và hệ thống bài tập thực hành <strong>BÀI 5: GIÁ TRỊ LƯỢNG GIÁC CỦA MỘT GÓC TỪ 0° ĐẾN 180° (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững bản chất nửa đường tròn đơn vị, thành thạo công thức lượng giác hai góc bù nhau, góc phụ nhau, sử dụng linh hoạt các hệ thức lượng giác cơ bản và giải quyết thành công các bài toán vận dụng thực tiễn cuộc sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG LƯỢNG GIÁC K10 XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-icon" onclick="window.print()" style="background: #312e81; color: #fff; border-color: #6366f1; margin: 0 auto;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_ontap_chuong2/index.html" class="nav-btn prev">
+        ⬅️ Tổng Ôn Chương II: BPT & Hệ BPT Bậc Nhất Hai Ẩn
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Toán 10 Tập 1 • Bài 5: GTLG từ 0° đến 180° (Trang 33 - 37)
+      </span>
+      <a href="../toan10_bai6/index.html" class="nav-btn next">
+        Bài 6: Hệ Thức Lượng Trong Tam Giác ➡️
+      </a>
+    </footer>
+
+    <!-- Avatar Selection Modal -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-content">
+        <h3 class="modal-title">Chọn Nhân Vật Đại Diện 🌟</h3>
+        <div class="avatar-grid">
+          <button class="avatar-choice" data-avatar="👑">👑</button>
+          <button class="avatar-choice" data-avatar="🚀">🚀</button>
+          <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+          <button class="avatar-choice" data-avatar="🦁">🦁</button>
+          <button class="avatar-choice" data-avatar="💎">💎</button>
+          <button class="avatar-choice" data-avatar="🦉">🦉</button>
+          <button class="avatar-choice" data-avatar="🎯">🎯</button>
+          <button class="avatar-choice" data-avatar="🏅">🏅</button>
+        </div>
+        <button class="btn-primary" id="btnCloseAvatarModal" style="width: 100%;">Xác Nhận Avatar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

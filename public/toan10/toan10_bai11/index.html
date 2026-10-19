@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 11: Tích Vô Hướng Của Hai Vectơ - Toán 10 Kết Nối Tri Thức</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <div class="user-name" id="userNameDisplay">Chiến Binh Logic 🌟</div>
+          <div class="user-title" id="userTitle">Đại Kiện Tướng Trực Giao Vectơ</div>
+        </div>
+      </div>
+
+            <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <div class="banner-badge">CHƯƠNG IV: VECTƠ • BÀI 11 (SGK TRANG 66 - 71)</div>
+      <h1 class="lesson-title">TÍCH VÔ HƯỚNG CỦA HAI VECTƠ</h1>
+      <p class="lesson-subtitle">
+        Khám phá phép nhân giữa hai vectơ tạo thành một đại lượng vô hướng: Làm chủ công thức góc, điều kiện vuông góc, biểu thức toạ độ và giải mã bài toán công cơ học trong Vật lí!
+      </p>
+    </section>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="lesson-tabs">
+      <button class="nav-tab active" data-tab="theory">
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">Bản Đồ Tri Thức</span>
+      </button>
+      <button class="nav-tab" data-tab="labs">
+        <span class="tab-icon">🧪</span>
+        <span class="tab-text">Phòng Thí Nghiệm Tương Tác</span>
+      </button>
+      <button class="nav-tab" data-tab="arena">
+        <span class="tab-icon">⚔️</span>
+        <span class="tab-text">Đấu Trường SGK</span>
+      </button>
+      <button class="nav-tab" data-tab="badges">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-text">Huy Hiệu & Vinh Danh</span>
+      </button>
+    </nav>
+
+    <!-- Tab 1: Theory Knowledge Map -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="concept-cards-grid">
+        <!-- Card 1: Góc giữa hai vectơ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📐</span>
+            <h3>1. Góc Giữa Hai Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Định nghĩa:</strong> Cho hai vectơ $\vec{u}, \vec{v} \neq \vec{0}$. Từ điểm $A$ tuỳ ý, vẽ $\overrightarrow{AB} = \vec{u}, \overrightarrow{AC} = \vec{v}$. Khi đó số đo góc $\widehat{BAC}$ ($0^\circ \le \widehat{BAC} \le 180^\circ$) được gọi là <strong>góc giữa hai vectơ $\vec{u}$ và $\vec{v}$</strong>, kí hiệu $(\vec{u}, \vec{v})$.</p>
+            <div class="formula-box">
+              <p>• Hai vectơ vuông góc: $(\vec{u}, \vec{v}) = 90^\circ \iff \vec{u} \perp \vec{v}$</p>
+              <p>• Cùng hướng: $(\vec{u}, \vec{v}) = 0^\circ$ • Ngược hướng: $(\vec{u}, \vec{v}) = 180^\circ$</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Định nghĩa tích vô hướng -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⚡</span>
+            <h3>2. Định Nghĩa Tích Vô Hướng</h3>
+          </div>
+          <div class="concept-body">
+            <p>Tích vô hướng của hai vectơ $\vec{u}$ và $\vec{v}$ là một <strong>số thực</strong> (đại lượng vô hướng), xác định bởi:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\vec{u} \cdot \vec{v} = |\vec{u}| \cdot |\vec{v}| \cdot \cos(\vec{u}, \vec{v})$$</p>
+            </div>
+            <p>• <strong>Bình phương vô hướng:</strong> $\vec{u}^2 = |\vec{u}|^2 \implies |\vec{u}| = \sqrt{\vec{u}^2}$</p>
+            <div class="rule-box gold">
+              <strong>💡 Dấu của tích vô hướng:</strong><br>
+              • $\vec{u} \cdot \vec{v} > 0 \iff$ Góc nhọn ($0^\circ \le \alpha < 90^\circ$)<br>
+              • $\vec{u} \cdot \vec{v} < 0 \iff$ Góc tù ($90^\circ < \alpha \le 180^\circ$)<br>
+              • $\vec{u} \cdot \vec{v} = 0 \iff \vec{u} \perp \vec{v}$ (điều kiện vuông góc)
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Biểu thức toạ độ -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🎯</span>
+            <h3>3. Biểu Thức Toạ Độ Của Tích Vô Hướng</h3>
+          </div>
+          <div class="concept-body">
+            <p>Trong mặt phẳng toạ độ $Oxy$, cho $\vec{u} = (x; y)$ và $\vec{v} = (x'; y')$:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\vec{u} \cdot \vec{v} = x x' + y y'$$</p>
+              <p>• Độ dài: $|\vec{u}| = \sqrt{x^2 + y^2}$</p>
+              <p>• Cosin góc: $\cos(\vec{u}, \vec{v}) = \frac{x x' + y y'}{\sqrt{x^2 + y^2} \cdot \sqrt{x'^2 + y'^2}}$</p>
+              <p>• Vuông góc: $\vec{u} \perp \vec{v} \iff x x' + y y' = 0$</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4: Tính chất tích vô hướng -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⚖️</span>
+            <h3>4. Các Tính Chất & Hằng Đẳng Thức Vectơ</h3>
+          </div>
+          <div class="concept-body">
+            <p>Với các vectơ $\vec{u}, \vec{v}, \vec{w}$ và số thực $k$:</p>
+            <div class="formula-box">
+              <p>• Giao hoán: $\vec{u} \cdot \vec{v} = \vec{v} \cdot \vec{u}$</p>
+              <p>• Phân phối: $\vec{u} \cdot (\vec{v} + \vec{w}) = \vec{u} \cdot \vec{v} + \vec{u} \cdot \vec{w}$</p>
+              <p>• Kết hợp: $(k\vec{u}) \cdot \vec{v} = k(\vec{u} \cdot \vec{v}) = \vec{u} \cdot (k\vec{v})$</p>
+              <p>• Hằng đẳng thức: $(\vec{u} \pm \vec{v})^2 = \vec{u}^2 \pm 2\vec{u}\cdot\vec{v} + \vec{v}^2$</p>
+              <p>• Hiệu hai bình phương: $(\vec{u} + \vec{v})(\vec{u} - \vec{v}) = \vec{u}^2 - \vec{v}^2$</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5: Ứng dụng Vật lí: Công cơ học -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⚙️</span>
+            <h3>5. Ứng Dụng Vật Lí: Công Cơ Học Của Lực</h3>
+          </div>
+          <div class="concept-body">
+            <p>Một lực không đổi $\vec{F}$ tác dụng vào vật làm vật dịch chuyển một đoạn thẳng biểu thị bởi vectơ độ dịch chuyển $\vec{s}$.</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$A = \vec{F} \cdot \vec{s} = |\vec{F}| \cdot |\vec{s}| \cdot \cos\alpha$$</p>
+            </div>
+            <p>• $\alpha < 90^\circ \implies A > 0$: Công phát động.</p>
+            <p>• $\alpha > 90^\circ \implies A < 0$: Công cản trở chuyển động.</p>
+            <p>• $\alpha = 90^\circ \implies A = 0$: Lực vuông góc phương chuyển động không sinh công!</p>
+          </div>
+        </div>
+
+        <!-- Card 6: Hệ thức Leibniz & Diện tích tam giác -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">💎</span>
+            <h3>6. Hệ Thức Trọng Tâm & Diện Tích Tam Giác</h3>
+          </div>
+          <div class="concept-body">
+            <p>• <strong>Hệ thức Leibniz (Bài 4.26 SGK Trang 70):</strong> Cho tam giác $ABC$ có trọng tâm $G$. Với mọi điểm $M$ trong mặt phẳng:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$MA^2 + MB^2 + MC^2 = 3MG^2 + GA^2 + GB^2 + GC^2$$</p>
+            </div>
+            <p>• <strong>Công thức diện tích tam giác theo tích vô hướng:</strong></p>
+            <div class="formula-box">
+              <p>$$S_{ABC} = \frac{1}{2}\sqrt{\overrightarrow{AB}^2 \cdot \overrightarrow{AC}^2 - (\overrightarrow{AB} \cdot \overrightarrow{AC})^2}$$</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1: Interactive Dot Product Visualizer -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">⚡</span>
+            <div>
+              <h3>Lab 1: Máy Tính Góc & Tích Vô Hướng Vectơ Trực Quan</h3>
+              <p>Kéo thay đổi góc $\alpha$ giữa hai vectơ $\vec{u}$ và $\vec{v}$ để quan sát dấu của tích vô hướng và điều kiện vuông góc thời gian thực.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="dotCanvas" width="600" height="380"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Góc giữa hai vectơ $\alpha$: <span id="angleVal">60°</span></label>
+                <input type="range" id="angleSlider" min="0" max="180" value="60" step="5">
+              </div>
+              <div class="slider-group">
+                <label>Độ dài vectơ $|\vec{u}|$: <span id="uLenVal">5.0</span></label>
+                <input type="range" id="uLenSlider" min="2" max="7" value="5" step="0.5">
+              </div>
+              <div class="slider-group">
+                <label>Độ dài vectơ $|\vec{v}|$: <span id="vLenVal">4.0</span></label>
+                <input type="range" id="vLenSlider" min="2" max="6" value="4" step="0.5">
+              </div>
+              <div class="control-row" style="margin-top: 10px;">
+                <button class="lab-btn" id="btnSnap90">📐 Vuông Góc (90°)</button>
+                <button class="lab-btn" id="btnSnap0">➡️ Cùng Hướng (0°)</button>
+                <button class="lab-btn" id="btnSnap180">⬅️ Ngược Hướng (180°)</button>
+                <button class="lab-btn" id="btnSnap45">Mẫu 45° [Bài 4.21b]</button>
+              </div>
+            </div>
+            <div class="lab-output" id="lab1DotOutput">
+              <div class="output-item">Giá trị $\cos\alpha$: <span class="badge-gold" id="outCosVal">0.500</span></div>
+              <div class="output-item">Tích vô hướng $\vec{u} \cdot \vec{v}$: <span class="badge-cyan" id="outDotVal">+10.00</span></div>
+              <div class="output-item">Trạng thái: <span class="badge-green" id="outStatusVal">Tích Dương (Góc Nhọn)</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Physics Work Simulation Lab -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">⚙️</span>
+            <div>
+              <h3>Lab 2: Mô Phỏng Vật Lí: Công Cơ Học $A = \vec{F} \cdot \vec{s}$</h3>
+              <p>Mô phỏng lực kéo $\vec{F}$ di chuyển kiện hàng trên mặt sàn. Quan sát thành phần lực tiếp tuyến sinh công và lực pháp tuyến không sinh công.</p>
+            </div>
+          </div>
+          <div class="lab-body">
+            <div class="canvas-wrapper">
+              <canvas id="workCanvas" width="600" height="340"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Góc kéo $\alpha$ so với mặt đất: <span id="pullAngleVal">30°</span></label>
+                <input type="range" id="pullAngleSlider" min="0" max="180" value="30" step="5">
+              </div>
+              <div class="slider-group">
+                <label>Độ lớn lực kéo $|\vec{F}|$: <span id="forceVal">50 N</span></label>
+                <input type="range" id="forceSlider" min="10" max="100" value="50" step="5">
+              </div>
+              <div class="slider-group">
+                <label>Độ dịch chuyển $s$: <span id="distVal">10 m</span></label>
+                <input type="range" id="distSlider" min="2" max="20" value="10" step="1">
+              </div>
+            </div>
+            <div class="lab-output" id="lab2WorkOutput">
+              <div class="output-item">Công cơ học $A = F s \cos\alpha$: <span class="badge-gold" id="outWorkVal">433.0 J</span></div>
+              <div class="output-item">Lực tiếp tuyến $F_t = F\cos\alpha$: <span class="badge-blue" id="outFtVal">43.3 N (Sinh công)</span></div>
+              <div class="output-item">Lực pháp tuyến $F_n = F\sin\alpha$: <span class="badge-cyan" id="outFnVal">25.0 N (Không sinh công)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena SGK Quiz (10 MCQs) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2 style="color: var(--cyan-neon); font-size: 1.4rem;">⚔️ Đấu Trường Tích Vô Hướng Vectơ SGK</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">10 câu hỏi trắc nghiệm bao phủ 100% các dạng bài tập SGK Bài 4.21 - 4.26 trang 66 - 71.</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Tích Vô Hướng K10</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Thấu Thị Góc Vectơ</div>
+          <div class="badge-desc">Đọc kĩ Bản đồ Tri thức và làm chủ định nghĩa góc giữa hai vectơ từ $0^\circ$ đến $180^\circ$.</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">⚡</div>
+          <div class="badge-name">Bậc Thầy Tích Vô Hướng</div>
+          <div class="badge-desc">Tương tác và làm chủ Lab 1 với việc xác định dấu tích vô hướng và tính chất trực giao.</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">⚙️</div>
+          <div class="badge-name">Kỹ Sư Công Cơ Học</div>
+          <div class="badge-desc">Mô phỏng lực kéo và tính toán công cơ học $A = \vec{F} \cdot \vec{s}$ trong Lab 2.</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Chiến Thần Đấu Trường Vô Hướng</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK Bài 11.</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Trực Giao Vectơ</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc toàn bộ Bài 11!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc bài học và hệ thống bài tập thực hành <strong>BÀI 11: TÍCH VÔ HƯỚNG CỦA HAI VECTƠ (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững bản chất định nghĩa tích vô hướng và góc giữa hai vectơ, làm chủ biểu thức toạ độ, điều kiện vuông góc, các hằng đẳng thức vectơ và ứng dụng tính công cơ học, tìm toạ độ trực tâm tam giác và hệ thức Leibniz.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG TRỰC GIAO VECTƠ XUẤT SẮC 👑</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày 17 tháng 10 năm 2026</span>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn-primary" id="btnPrintCert">
+          🖨️ In Giấy Chứng Nhận A4
+        </button>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_bai10/index.html" class="nav-btn prev">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <small>Bài trước</small>
+          <strong>Bài 10: Vectơ Trong Mặt Phẳng Toạ Độ</strong>
+        </div>
+      </a>
+      <a href="../toan10_ontap_chuong4/index.html" class="nav-btn next">
+        <div class="nav-text">
+          <small>Bài tiếp theo</small>
+          <strong>Bài Tập Cuối Chương IV: Vectơ</strong>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <h3 class="modal-title">Chọn Avatar Đại Kiện Tướng</h3>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑">👑</button>
+        <button class="avatar-choice" data-avatar="🚀">🚀</button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button class="avatar-choice" data-avatar="🦁">🦁</button>
+        <button class="avatar-choice" data-avatar="💎">💎</button>
+        <button class="avatar-choice" data-avatar="🦉">🦉</button>
+        <button class="avatar-choice" data-avatar="🎯">🎯</button>
+        <button class="avatar-choice" data-avatar="🏅">🏅</button>
+      </div>
+      <button class="btn-secondary" id="closeAvatarModal">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

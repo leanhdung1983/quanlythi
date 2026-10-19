@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 12: Số Gần Đúng và Sai Số - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <div class="user-name" id="userNameDisplay">Chiến Binh Logic</div>
+          <div class="user-title" id="userTitleDisplay">Nhà Khai Phá Số Liệu</div>
+        </div>
+      </div>
+
+            <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <div class="banner-badge">CHƯƠNG V • BÀI 12 • TOÁN 10 KNTT</div>
+      <h1 class="lesson-title">Số Gần Đúng và Sai Số</h1>
+      <p class="lesson-subtitle">Làm chủ sai số tuyệt đối, sai số tương đối, quy tắc làm tròn khoa học và khoảng tin cậy của các phép đo thực tế trong tự nhiên & vũ trụ học.</p>
+    </section>
+
+    <!-- Lesson Tabs Navigation -->
+    <nav class="lesson-tabs">
+      <button class="nav-tab active" data-tab="theory">
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">Bản Đồ Tri Thức</span>
+      </button>
+      <button class="nav-tab" data-tab="labs">
+        <span class="tab-icon">🧪</span>
+        <span class="tab-text">Phòng Thí Nghiệm Sai Số</span>
+      </button>
+      <button class="nav-tab" data-tab="arena">
+        <span class="tab-icon">⚔️</span>
+        <span class="tab-text">Đấu Trường SGK</span>
+      </button>
+      <button class="nav-tab" data-tab="badges">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-text">Huy Hiệu & Vinh Danh</span>
+      </button>
+    </nav>
+
+    <!-- Tab 1: Theory (Bản Đồ Tri Thức) -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="concept-cards-grid">
+        <!-- Card 1 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🎯</span>
+            <h3>1. Số Đúng và Số Gần Đúng</h3>
+          </div>
+          <div class="concept-body">
+            <p>Trong thực tế đo đạc và tính toán, ta thường không biết hoặc khó biết được giá trị chính xác tuyệt đối (gọi là <strong>số đúng</strong>, kí hiệu là $\bar{a}$) mà chỉ tìm được giá trị xấp xỉ nó. Giá trị này được gọi là <strong>số gần đúng</strong>, kí hiệu là $a$.</p>
+            <div class="formula-box">
+              <p class="math-highlight">$\bar{a} \text{ : Số đúng (thực tế, lý thuyết tuyệt đối)}$</p>
+              <p class="math-highlight">$a \text{ : Số gần đúng (kết quả đo đạc, xấp xỉ)}$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>💡 Ví dụ thực tế SGK:</strong> Chiều cao đỉnh Everest công bố năm 2020 là $8\,848,86\text{ m}$ là số gần đúng; đường chéo hình vuông cạnh $1$ có số đúng là $\sqrt{2}$, số gần đúng là $1,41$; chu vi đường tròn bán kính $1\text{ cm}$ có số đúng là $2\pi\text{ cm}$, số gần đúng là $6,28\text{ cm}$.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📏</span>
+            <h3>2. Sai Số Tuyệt Đối & Độ Chính Xác $d$</h3>
+          </div>
+          <div class="concept-body">
+            <p>Giá trị $\Delta_a = |a - \bar{a}|$ phản ánh mức độ sai lệch giữa số đúng $\bar{a}$ và số gần đúng $a$, được gọi là <strong>sai số tuyệt đối</strong> của số gần đúng $a$.</p>
+            <div class="formula-box">
+              <p class="math-highlight">$\Delta_a = |a - \bar{a}| = |\bar{a} - a|$</p>
+            </div>
+            <p>Vì không biết $\bar{a}$ nên ta thường đánh giá $\Delta_a \le d$ ($d > 0$). Khi đó ta viết:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$\bar{a} = a \pm d \iff a - d \le \bar{a} \le a + d$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>⭐ Định nghĩa Độ chính xác:</strong> Số $d$ được gọi là <strong>độ chính xác</strong> của số gần đúng $a$. Khoảng $[a - d; a + d]$ là khoảng tin cậy chứa số đúng. Trong thực tế, độ chính xác $d$ của dụng cụ đo bằng <em>một nửa đơn vị của vạch chia nhỏ nhất</em> trên thước đo.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⚖️</span>
+            <h3>3. Sai Số Tương Đối $\delta_a$</h3>
+          </div>
+          <div class="concept-body">
+            <p>Để so sánh chất lượng của hai phép đo có quy mô kích thước khác nhau (ví dụ: đo bao gạo $5\text{ kg}$ sai số $0,2\text{ kg}$ vs đo bao $20\text{ kg}$ sai số $0,5\text{ kg}$), người ta dùng <strong>sai số tương đối</strong>:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$\delta_a = \frac{\Delta_a}{|a|} \le \frac{d}{|a|}$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>💎 Quy tắc Vàng:</strong> Sai số tương đối thường được viết dưới dạng phần trăm (%). Tỉ số $\frac{d}{|a|}$ càng nhỏ thì chất lượng phép đo hay tính toán càng chính xác, độ tin cậy càng cao!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🔄</span>
+            <h3>4. Quy Tắc Quy Tròn Số Gần Đúng</h3>
+          </div>
+          <div class="concept-body">
+            <p>Số thu được sau khi thực hiện làm tròn số được gọi là <strong>số quy tròn</strong>. Quy tắc làm tròn:</p>
+            <ul>
+              <li><strong>Đối với chữ số hàng làm tròn:</strong> Giữ nguyên nếu chữ số ngay bên phải nhỏ hơn $5$; tăng $1$ đơn vị nếu chữ số ngay bên phải lớn hơn hoặc bằng $5$.</li>
+              <li><strong>Đối với các chữ số sau hàng làm tròn:</strong> Bỏ đi nếu ở phần thập phân; thay bằng các chữ số $0$ nếu ở phần số nguyên.</li>
+            </ul>
+            <div class="formula-box">
+              <p class="math-highlight">$\text{Ví dụ: } 2\,359,3 \xrightarrow{\text{hàng chục}} 2\,360$</p>
+              <p class="math-highlight">$18,693 \xrightarrow{\text{hàng phần trăm}} 18,69$</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⚙️</span>
+            <h3>5. Quy Tròn Dựa Vào Độ Chính Xác $d$</h3>
+          </div>
+          <div class="concept-body">
+            <p>Khi thay số đúng bởi số quy tròn đến một hàng nào đó thì sai số tuyệt đối của số quy tròn không vượt quá nửa đơn vị của hàng làm tròn.</p>
+            <div class="rule-box gold">
+              <strong>🌟 Quy tắc cốt lõi SGK:</strong> Cho số gần đúng $a$ với độ chính xác $d$. Khi làm tròn số $a$ mà không chỉ rõ hàng làm tròn thì ta <strong>làm tròn số $a$ đến hàng thấp nhất mà $d$ nhỏ hơn 1 đơn vị của hàng đó</strong> (tức là làm tròn đến hàng liền trên hàng của chữ số khác 0 đầu tiên bên trái của $d$).
+            </div>
+            <div class="formula-box">
+              <p class="math-highlight">$a = 581\,268 \pm 200 \implies d = 200 < 1\,000 \implies \text{Làm tròn đến hàng nghìn: } 581\,000$</p>
+              <p class="math-highlight">$a = 18,2857 \pm 0,01 \implies d = 0,01 < 0,1 \implies \text{Làm tròn đến hàng phần mười: } 18,3$</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🌌</span>
+            <h3>6. Ứng Dụng Thực Tiễn & Thiên Văn Học</h3>
+          </div>
+          <div class="concept-body">
+            <p>Trong vật lí thiên văn, các phép đo hằng số vũ trụ luôn đi kèm độ chính xác $d$ và sai số tương đối $\delta_a$:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\text{Tuổi vũ trụ: } T_1 = 13,807 \pm 0,026 \text{ tỉ năm } (\delta_1 \approx 0,188\%)$$</p>
+              <p class="math-highlight">$$T_2 = 13,799 \pm 0,021 \text{ tỉ năm } (\delta_2 \approx 0,152\%) \implies \text{PP 2 chính xác hơn!}$$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>🚀 Hằng số Hubble:</strong> So sánh 3 phương pháp đo hằng số Hubble $H_0$ trong SGK Bài 5.4: Phương pháp có sai số tương đối bé nhất đem lại kết quả đáng tin cậy nhất trong mô hình giãn nở vũ trụ.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs (Phòng Thí Nghiệm) -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1: Máy Mô Phỏng Khoảng Tin Cậy & Sai Số Tuyệt Đối -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">📏</span>
+            <h3>Lab 1: Mô Phỏng Khoảng Tin Cậy Đo Đạc $a \pm d$ & Sai Số Tuyệt Đối</h3>
+          </div>
+          <div class="lab-body">
+            <p class="lab-desc">Kéo thanh trượt để thay đổi giá trị đo được $a$ và độ chính xác $d$. Quan sát trực quan thước đo tỉ lệ và khoảng tin cậy $[a-d; a+d]$ trên trục số thực tế.</p>
+            <div class="canvas-wrapper">
+              <canvas id="errorCanvas" width="800" height="260"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Số gần đúng đo được $a$: <strong id="valA">13.1</strong> cm</label>
+                <input type="range" id="sliderA" min="5.0" max="25.0" step="0.1" value="13.1">
+              </div>
+              <div class="slider-group">
+                <label>Độ chính xác $d$: <strong id="valD">0.2</strong> cm</label>
+                <input type="range" id="sliderD" min="0.05" max="1.50" step="0.05" value="0.2">
+              </div>
+              <div class="control-row">
+                <button class="lab-btn" id="btnPresetEverest">🏔️ Núi Everest ($8\,848 \pm 5\text{m}$)</button>
+                <button class="lab-btn" id="btnPresetRice">🌾 Bao gạo ($5 \pm 0,2\text{kg}$)</button>
+                <button class="lab-btn" id="btnPresetCup">🧪 Ống đong nước ($13,1 \pm 0,1\text{cm}^3$)</button>
+              </div>
+            </div>
+            <div class="lab-output">
+              <div class="output-item">
+                <span>Khoảng tin cậy chứa số đúng $\bar{a}$:</span>
+                <strong class="badge-gold" id="outInterval">[12.90 ; 13.30]</strong>
+              </div>
+              <div class="output-item">
+                <span>Sai số tuyệt đối tối đa $\Delta_a$:</span>
+                <strong class="badge-cyan" id="outMaxError">&le; 0.20 cm</strong>
+              </div>
+              <div class="output-item">
+                <span>Sai số tương đối $\delta_a$:</span>
+                <strong class="badge-green" id="outRelError">&le; 1.53 %</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Máy Quy Tròn Thông Minh & So Sánh Hai Phép Đo -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">⚖️</span>
+            <h3>Lab 2: Máy Quy Tròn Khoa Học & So Sánh Chất Lượng Đo Đạc (A vs B)</h3>
+          </div>
+          <div class="lab-body">
+            <p class="lab-desc">Khảo sát cơ chế quy tròn số theo độ chính xác $d$ của SGK và đọ sức sai số tương đối giữa hai dây chuyền sản xuất hay hai phương pháp đo đạc vũ trụ.</p>
+            <div class="canvas-wrapper">
+              <canvas id="compareCanvas" width="800" height="260"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="control-row">
+                <button class="lab-btn active" id="btnCaseProduction">🏭 Case 1: Dây chuyền gạo (5kg vs 20kg)</button>
+                <button class="lab-btn" id="btnCaseCosmo">🌌 Case 2: Tuổi Vũ Trụ (T1 vs T2)</button>
+                <button class="lab-btn" id="btnCaseHubble">🔭 Case 3: Hằng số Hubble (Bài 5.4 SGK)</button>
+              </div>
+              <div class="slider-group">
+                <label>Độ chính xác phép đo 1 ($d_1$): <strong id="valD1">0.20</strong></label>
+                <input type="range" id="sliderD1" min="0.01" max="1.0" step="0.01" value="0.20">
+              </div>
+              <div class="slider-group">
+                <label>Độ chính xác phép đo 2 ($d_2$): <strong id="valD2">0.50</strong></label>
+                <input type="range" id="sliderD2" min="0.01" max="2.0" step="0.01" value="0.50">
+              </div>
+            </div>
+            <div class="lab-output">
+              <div class="output-item">
+                <span>Sai số tương đối Phép đo 1:</span>
+                <strong class="badge-cyan" id="outDelta1">4.00 %</strong>
+              </div>
+              <div class="output-item">
+                <span>Sai số tương đối Phép đo 2:</span>
+                <strong class="badge-gold" id="outDelta2">2.50 %</strong>
+              </div>
+              <div class="output-item">
+                <span>Kết luận chất lượng phép đo:</span>
+                <strong class="badge-green" id="outWinner">Phép đo 2 chính xác hơn!</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena SGK Quiz (10 MCQs) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div class="arena-title-group">
+          <h2>⚔️ Đấu Trường Tri Thức: Bài 12</h2>
+          <p>10 câu hỏi trắc nghiệm bám sát 100% bài tập SGK Kết Nối Tri Thức Trang 77. Bấm trực tiếp vào đáp án để nhận phản hồi tức thì!</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+      <div id="quizContainer"></div>
+    </section>
+
+    <!-- Tab 4: Badges & Honours -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Khởi Động Đo Đạc</div>
+          <div class="badge-desc">Đọc và khám phá toàn bộ Bản Đồ Tri Thức Số Gần Đúng</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Kỹ Sư Hiệu Chuẩn</div>
+          <div class="badge-desc">Thao tác thành thạo cả 2 phòng thí nghiệm sai số & quy tròn</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Bách Phát Bách Trúng</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng liên tiếp 3 câu trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Chuyên Gia Đo Lường</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Số Liệu</div>
+          <div class="badge-desc">Xuất sắc trả lời đúng tuyệt đối 10/10 câu hỏi SGK (200 XP)</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <div class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+          <div class="cert-subtitle">Chương Trình Giáo Dục Phổ Thông Mới - Môn Toán Lớp 10</div>
+        </div>
+        <div class="cert-body">
+          <p class="cert-intro">Chứng nhận học sinh danh dự:</p>
+          <div class="cert-name-box">
+            <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          </div>
+          <p class="cert-content">
+            Đã hoàn thành xuất sắc toàn diện bài học chuyên đề:<br>
+            <strong>BÀI 12: SỐ GẦN ĐÚNG VÀ SAI SỐ</strong><br>
+            Đạt chuẩn kiến thức: Sai số tuyệt đối, Sai số tương đối, Quy tắc làm tròn số khoa học và Ứng dụng thực tiễn đo lường vũ trụ.
+          </p>
+        </div>
+        <div class="cert-footer">
+          <div class="cert-seal">
+            <div class="seal-inner">
+              <span>★ TOÁN 10 ★</span>
+              <span>KNTT</span>
+              <span>CHỨNG NHẬN</span>
+            </div>
+          </div>
+          <div class="cert-sign">
+            <p class="cert-date" id="certDate">Đà Nẵng, ngày 17 tháng 10 năm 2026</p>
+            <p class="cert-signer-title">TỔ TRƯỞNG CHUYÊN MÔN TOÁN</p>
+            <div class="cert-signature-img">Ths. Nguyễn Văn Toán</div>
+            <p class="cert-signer-name">BAN HỌC LIỆU SỐ E-LEARNING</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+    <!-- Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a class="nav-btn prev" href="../toan10_ontap_chuong4/index.html">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <span class="nav-sub">Bài trước</span>
+          <span class="nav-main">Ôn Tập Cuối Chương IV</span>
+        </div>
+      </a>
+      <a class="nav-btn next" href="../toan10_bai13/index.html">
+        <div class="nav-text" style="text-align: right;">
+          <span class="nav-sub">Bài tiếp theo</span>
+          <span class="nav-main">Bài 13: Các Số Đặc Trưng Đo Xu Thế Trung Tâm</span>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Avatar Picker -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <h3 class="modal-title">Chọn Nhân Vật Đại Diện</h3>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑">👑 Đại Kiện Tướng</button>
+        <button class="avatar-choice" data-avatar="🚀">🚀 Phi Hành Gia</button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️ Phù Thủy Toán</button>
+        <button class="avatar-choice" data-avatar="🦁">🦁 Sư Tử Dũng Mãnh</button>
+        <button class="avatar-choice" data-avatar="💎">💎 Kim Cương</button>
+        <button class="avatar-choice" data-avatar="🦉">🦉 Cú Thông Thái</button>
+        <button class="avatar-choice" data-avatar="🎯">🎯 Xạ Thủ Logic</button>
+        <button class="avatar-choice" data-avatar="🏅">🏅 Quán Quân</button>
+      </div>
+      <button class="btn-secondary" id="closeAvatarModalBtn" style="margin-top: 16px; width: 100%;">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

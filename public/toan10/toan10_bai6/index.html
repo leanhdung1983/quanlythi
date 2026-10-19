@@ -1,0 +1,468 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 6: Hệ Thức Lượng Trong Tam Giác - Toán 10</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Hệ Thức Lượng Tam Giác</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương III • Bài 6 • Toán 10 Tập 1 (Trang 38 - 43)</span>
+      <h1>BÀI 6: HỆ THỨC LƯỢNG TRONG TAM GIÁC</h1>
+      <p>Làm chủ Định lí côsin, Định lí sin, hệ thống 5 công thức tính diện tích tam giác và công thức Heron huyền thoại! Ứng dụng giải quyết các bài toán trắc địa đo khoảng cách Tháp Rùa, hải trình tàu biển và thiết kế hầm xuyên núi.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức Hệ Thức Lượng</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Tam Giác & Trắc Địa (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Bài 3.5 - 3.11)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: Cosine Law -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-badge">Định Lí Trọng Tâm 1</span>
+            <h3>1. Định Lí Côsin Trong Tam Giác</h3>
+          </div>
+          <div class="card-body">
+            <p>Trong tam giác $ABC$, bình phương một cạnh bằng tổng bình phương hai cạnh kia trừ đi hai lần tích của hai cạnh đó với côsin của góc xen giữa:</p>
+            <div class="formula-box">
+              $$a^2 = b^2 + c^2 - 2bc \cos A$$
+              $$b^2 = c^2 + a^2 - 2ca \cos B$$
+              $$c^2 = a^2 + b^2 - 2ab \cos C$$
+            </div>
+            <p><strong>Hệ quả tính số đo góc:</strong></p>
+            <div class="formula-box">
+              $$\cos A = \frac{b^2 + c^2 - a^2}{2bc}; \quad \cos B = \frac{c^2 + a^2 - b^2}{2ca}; \quad \cos C = \frac{a^2 + b^2 - c^2}{2ab}$$
+            </div>
+            <div class="callout tip">
+              <strong>💡 Quan sát đặc biệt:</strong> Khi góc $A = 90^\circ$, ta có $\cos 90^\circ = 0 \implies a^2 = b^2 + c^2$. Định lí Pythagore chính là trường hợp đặc biệt của định lí côsin!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2: Sine Law -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-badge">Định Lí Trọng Tâm 2</span>
+            <h3>2. Định Lí Sin & Bán Kính Đường Tròn Ngoại Tiếp</h3>
+          </div>
+          <div class="card-body">
+            <p>Trong tam giác $ABC$, tỉ số giữa độ dài mỗi cạnh và sin của góc đối diện là không đổi và bằng đường kính của đường tròn ngoại tiếp tam giác:</p>
+            <div class="formula-box">
+              $$\frac{a}{\sin A} = \frac{b}{\sin B} = \frac{c}{\sin C} = 2R$$
+            </div>
+            <p><strong>Các hệ quả tính cạnh và bán kính $R$:</strong></p>
+            <div class="formula-box">
+              $$a = 2R \sin A; \quad b = 2R \sin B; \quad c = 2R \sin C$$
+              $$R = \frac{a}{2\sin A} = \frac{b}{2\sin B} = \frac{c}{2\sin C}$$
+            </div>
+            <div class="callout warning">
+              <strong>🎯 Khi nào dùng định lí sin?</strong> Khi biết 1 cạnh và 2 góc (tính 2 cạnh còn lại), hoặc biết 2 cạnh và 1 góc đối diện để tìm góc còn lại và bán kính $R$.
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3: Area Formulas & Heron -->
+        <div class="concept-card full-width">
+          <div class="card-header">
+            <span class="card-badge">Bộ 5 Công Thức Diện Tích Toàn Diện</span>
+            <h3>3. Các Công Thức Tính Diện Tích Tam Giác & Công Thức Heron</h3>
+          </div>
+          <div class="card-body">
+            <p>Kí hiệu $p = \frac{a + b + c}{2}$ là nửa chu vi, $r$ là bán kính đường tròn nội tiếp, $R$ là bán kính đường tròn ngoại tiếp, $h_a, h_b, h_c$ là các đường cao tương ứng:</p>
+            
+            <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); margin-top: 14px;">
+              <div class="formula-box">
+                <span style="color: var(--cyan-neon); font-weight: 700;">1. Theo Đường Cao:</span>
+                $$S = \frac{1}{2} a h_a = \frac{1}{2} b h_b = \frac{1}{2} c h_c$$
+              </div>
+              <div class="formula-box">
+                <span style="color: var(--cyan-neon); font-weight: 700;">2. Theo Sin Góc Xen Giữa:</span>
+                $$S = \frac{1}{2} bc \sin A = \frac{1}{2} ca \sin B = \frac{1}{2} ab \sin C$$
+              </div>
+              <div class="formula-box">
+                <span style="color: var(--cyan-neon); font-weight: 700;">3. Qua Bán Kính Ngoại Tiếp R:</span>
+                $$S = \frac{abc}{4R} \iff R = \frac{abc}{4S}$$
+              </div>
+              <div class="formula-box">
+                <span style="color: var(--cyan-neon); font-weight: 700;">4. Qua Bán Kính Nội Tiếp r:</span>
+                $$S = pr = \frac{a+b+c}{2} \cdot r \iff r = \frac{S}{p}$$
+              </div>
+            </div>
+
+            <div class="formula-box" style="margin-top: 16px; border-color: var(--gold);">
+              <h4 style="color: var(--gold); margin-bottom: 6px;">🏛️ 5. Công Thức Heron (Tính Diện Tích Trực Tiếp Khi Biết 3 Cạnh):</h4>
+              $$S = \sqrt{p(p - a)(p - b)(p - c)}$$
+              <p style="font-size: 0.9rem; color: var(--text-secondary); margin-top: 6px;">
+                Được phát minh bởi nhà toán học cổ đại Heron xứ Alexandria. Công thức giúp tính chính xác diện tích mọi tam giác bất kì mà không cần dựng đường cao hay tính góc!
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1: Dynamic Triangle Solver -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-badge">Phòng Thí Nghiệm 1</span>
+            <h3>🧪 Giải Tam Giác Động, Đường Tròn Ngoại Tiếp (R) & Nội Tiếp (r)</h3>
+          </div>
+          <div class="card-body">
+            <p>Điều chỉnh độ dài 3 cạnh $a, b, c$ bằng thanh trượt để quan sát trực tiếp sự biến đổi của hình dạng tam giác, tâm và bán kính $R, r$ cùng các thông số giải tam giác tức thì!</p>
+            
+            <div class="canvas-wrapper">
+              <canvas id="triangleCanvas" width="460" height="290"></canvas>
+            </div>
+
+            <div class="control-panel">
+              <div class="slider-row">
+                <label for="sideA">Cạnh a (BC): <span id="sideAVal" style="color: var(--cyan-neon); font-weight: 700;">7</span></label>
+                <input type="range" id="sideA" min="3" max="15" value="7" step="0.5">
+              </div>
+              <div class="slider-row">
+                <label for="sideB">Cạnh b (AC): <span id="sideBVal" style="color: var(--indigo-light); font-weight: 700;">8</span></label>
+                <input type="range" id="sideB" min="3" max="15" value="8" step="0.5">
+              </div>
+              <div class="slider-row">
+                <label for="sideC">Cạnh c (AB): <span id="sideCVal" style="color: var(--gold); font-weight: 700;">9</span></label>
+                <input type="range" id="sideC" min="3" max="15" value="9" step="0.5">
+              </div>
+
+              <div style="display: flex; gap: 14px; margin-top: 8px;">
+                <label style="font-size: 0.85rem; cursor: pointer; color: var(--cyan-neon);">
+                  <input type="checkbox" id="chkCircum" checked> Hiện đường tròn ngoại tiếp (R)
+                </label>
+                <label style="font-size: 0.85rem; cursor: pointer; color: var(--emerald);">
+                  <input type="checkbox" id="chkIncircle" checked> Hiện đường tròn nội tiếp (r)
+                </label>
+              </div>
+
+              <div class="readout-box" id="triReadout">
+                <div class="readout-item"><span>Góc A:</span> <strong id="angleA">48.2°</strong></div>
+                <div class="readout-item"><span>Góc B:</span> <strong id="angleB">58.4°</strong></div>
+                <div class="readout-item"><span>Góc C:</span> <strong id="angleC">73.4°</strong></div>
+                <div class="readout-item"><span>Nửa chu vi p:</span> <strong id="semiP">12.0</strong></div>
+                <div class="readout-item"><span>Diện tích S (Heron):</span> <strong id="areaS" style="color: var(--emerald);">26.83</strong></div>
+                <div class="readout-item"><span>Bán kính R:</span> <strong id="radiusR" style="color: var(--cyan-neon);">4.70</strong></div>
+                <div class="readout-item"><span>Bán kính r:</span> <strong id="radiusr" style="color: var(--emerald);">2.24</strong></div>
+                <div class="readout-item"><span>Đường cao h_a:</span> <strong id="heightHa">7.67</strong></div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Field Surveying Simulator -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-badge">Phòng Thí Nghiệm 2</span>
+            <h3>🏛️ Trắc Địa Thực Địa: Đo Khoảng Cách Tháp Rùa (Ví dụ 4 SGK)</h3>
+          </div>
+          <div class="card-body">
+            <p>Tái hiện bài toán đo khoảng cách tới Tháp Rùa từ bờ hồ Hoàn Kiếm bằng 2 cọc tiêu $A, B$ trên bờ. Kéo góc ngắm $\widehat{CAB}$ và $\widehat{CBA}$ để máy trắc địa tự động giải tam giác bằng Định lí sin!</p>
+            
+            <div class="canvas-wrapper">
+              <canvas id="surveyCanvas" width="460" height="290"></canvas>
+            </div>
+
+            <div class="control-panel">
+              <div class="slider-row">
+                <label for="baseDist">Khoảng cách 2 cọc tiêu AB: <span id="baseDistVal" style="color: var(--cyan-neon); font-weight: 700;">40 m</span></label>
+                <input type="range" id="baseDist" min="20" max="100" value="40" step="5">
+              </div>
+              <div class="slider-row">
+                <label for="sightAngleA">Góc ngắm tại A (CAB): <span id="sightAngleAVal" style="color: var(--gold); font-weight: 700;">65°</span></label>
+                <input type="range" id="sightAngleA" min="20" max="85" value="65" step="1">
+              </div>
+              <div class="slider-row">
+                <label for="sightAngleB">Góc ngắm tại B (CBA): <span id="sightAngleBVal" style="color: var(--rose); font-weight: 700;">55°</span></label>
+                <input type="range" id="sightAngleB" min="20" max="85" value="55" step="1">
+              </div>
+
+              <div class="readout-box" id="surveyReadout" style="margin-top: 10px;">
+                <div class="readout-item"><span>Góc ngắm Tháp C:</span> <strong id="angleC_survey">60.0°</strong></div>
+                <div class="readout-item"><span>Khoảng cách AC:</span> <strong id="distAC" style="color: var(--emerald); font-size: 1.05rem;">37.8 m</strong></div>
+                <div class="readout-item"><span>Khoảng cách BC:</span> <strong id="distBC" style="color: var(--cyan-neon); font-size: 1.05rem;">41.8 m</strong></div>
+                <div class="readout-item"><span>Khoảng cách vuông góc:</span> <strong id="distPerp">34.3 m</strong></div>
+              </div>
+
+              <div class="callout tip" style="margin-top: 10px; font-size: 0.88rem;">
+                <strong>Công thức Định lí Sin:</strong> $AC = \frac{AB \cdot \sin B}{\sin(180^\circ - A - B)}$.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2 style="color: var(--cyan-neon); font-size: 1.4rem;">⚔️ Đấu Trường Hệ Thức Lượng SGK</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">10 câu hỏi bao phủ 100% các dạng bài tập SGK Bài 3.5 - 3.11 trang 42 - 43.</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Hệ Thức Lượng K10</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-cosine">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Bậc Thầy Định Lí Côsin</div>
+          <div class="badge-desc">Tính chuẩn xác độ dài cạnh thứ ba và số đo các góc tam giác.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-sine">
+          <div class="badge-icon">🌐</div>
+          <div class="badge-name">Chuyên Gia Đường Tròn Ngoại Tiếp</div>
+          <div class="badge-desc">Vận dụng thành thạo định lí sin và xác định bán kính R.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-survey">
+          <div class="badge-icon">🏛️</div>
+          <div class="badge-name">Kỹ Sư Trắc Địa & Hải Trình</div>
+          <div class="badge-desc">Đo thành công khoảng cách Tháp Rùa và giải bài toán hầm xuyên núi.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-arena">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Thần Đấu Trường Hệ Thức Lượng</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK Bài 6.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-master">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng Hình Học Tam Giác K10</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc toàn bộ Bài 6!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc bài học và hệ thống bài tập thực hành <strong>BÀI 6: HỆ THỨC LƯỢNG TRONG TAM GIÁC (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững bản chất Định lí côsin, Định lí sin, làm chủ 5 công thức tính diện tích tam giác và công thức Heron, giải quyết thành thạo các bài toán trắc địa đo đạc khoảng cách thực tế và hải trình hàng hải.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG HỆ THỨC LƯỢNG TAM GIÁC XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-icon" onclick="window.print()" style="background: #312e81; color: #fff; border-color: #6366f1; margin: 0 auto;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_bai5/index.html" class="nav-btn prev">
+        ⬅️ Bài 5: Giá Trị Lượng Giác Của Một Góc Từ 0° Đến 180°
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Toán 10 Tập 1 • Bài 6: Hệ Thức Lượng Trong Tam Giác (Trang 38 - 43)
+      </span>
+      <a href="../toan10_ontap_chuong3/index.html" class="nav-btn next">
+        Bài Tập Cuối Chương III ➡️
+      </a>
+    </footer>
+
+    <!-- Avatar Selection Modal -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-content">
+        <h3 class="modal-title">Chọn Nhân Vật Đại Diện 🌟</h3>
+        <div class="avatar-grid">
+          <button class="avatar-choice" data-avatar="👑">👑</button>
+          <button class="avatar-choice" data-avatar="🚀">🚀</button>
+          <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+          <button class="avatar-choice" data-avatar="🦁">🦁</button>
+          <button class="avatar-choice" data-avatar="💎">💎</button>
+          <button class="avatar-choice" data-avatar="🦉">🦉</button>
+          <button class="avatar-choice" data-avatar="🎯">🎯</button>
+          <button class="avatar-choice" data-avatar="🏅">🏅</button>
+        </div>
+        <button class="btn-primary" id="btnCloseAvatarModal" style="width: 100%;">Xác Nhận Avatar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 23: Quy Tắc Đếm - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Quy Tắc Đếm</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">TOÁN 10 • CHƯƠNG VIII • ĐẠI SỐ TỔ HỢP</span>
+      <h1>BÀI 23: QUY TẮC ĐẾM</h1>
+      <p>Làm chủ hai quy tắc đếm nền tảng của toán học: Quy tắc cộng (các phương án độc lập) và Quy tắc nhân (các công đoạn liên tiếp), kết hợp mô hình trực quan hoá bằng sơ đồ hình cây.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: THEORY -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: Quy tắc cộng -->
+        <div class="card concept-card">
+          <div class="card-icon">➕</div>
+          <h3>1. Quy Tắc Cộng (Các Phương Án Rời Nhau)</h3>
+          <p>Giả sử một công việc có thể được thực hiện theo một trong hai phương án $A$ hoặc $B$:</p>
+          <ul>
+            <li>Phương án $A$ có $m$ cách thực hiện;</li>
+            <li>Phương án $B$ có $n$ cách thực hiện;</li>
+            <li>Hai phương án $A$ và $B$ không trùng bất kì cách nào.</li>
+          </ul>
+          <div class="formula-box">
+            $$\text{Số cách hoàn thành công việc: } N = m + n$$
+          </div>
+          <div class="rule-box gold">
+            Mở rộng: Nếu công việc có thể thực hiện theo một trong $k$ phương án độc lập đôi một không trùng nhau lần lượt có $m_1, m_2, \dots, m_k$ cách thì tổng số cách là: $m_1 + m_2 + \dots + m_k$.
+          </div>
+        </div>
+
+        <!-- Card 2: Quy tắc nhân -->
+        <div class="card concept-card">
+          <div class="card-icon">✖️</div>
+          <h3>2. Quy Tắc Nhân (Các Công Đoạn Nối Tiếp)</h3>
+          <p>Giả sử một công việc phải hoàn thành qua hai công đoạn liên tiếp nhau:</p>
+          <ul>
+            <li>Công đoạn một có $m_1$ cách thực hiện;</li>
+            <li>Với mỗi cách thực hiện công đoạn một, có $m_2$ cách thực hiện công đoạn hai.</li>
+          </ul>
+          <div class="formula-box">
+            $$\text{Số cách hoàn thành công việc: } N = m_1 \cdot m_2$$
+          </div>
+          <div class="rule-box gold">
+            Mở rộng: Nếu công việc gồm $k$ công đoạn nối tiếp nhau, mỗi công đoạn độc lập có $m_1, m_2, \dots, m_k$ cách thì số cách hoàn thành công việc là tích: $m_1 \cdot m_2 \cdots m_k$.
+          </div>
+        </div>
+
+        <!-- Card 3: Sơ đồ hình cây -->
+        <div class="card concept-card">
+          <div class="card-icon">🌳</div>
+          <h3>3. Sơ Đồ Hình Cây (Tree Diagram)</h3>
+          <p>Sơ đồ hình cây là công cụ hình học trực quan giúp mô hình hoá quá trình đếm:</p>
+          <ul>
+            <li><strong>Gốc cây:</strong> Điểm xuất phát của bài toán (bắt đầu lựa chọn).</li>
+            <li><strong>Nhánh cây tầng 1:</strong> Thể hiện các lựa chọn ở công đoạn thứ nhất.</li>
+            <li><strong>Nhánh cây tầng 2:</strong> Từ mỗi ngọn nhánh tầng 1, phân nhánh thể hiện các lựa chọn ở công đoạn thứ hai.</li>
+            <li><strong>Ngọn cuối cùng:</strong> Mỗi đường đi từ gốc đến ngọn ứng với một kết quả hoàn chỉnh của công việc.</li>
+          </ul>
+          <div class="formula-box">
+            $$\text{Số kết quả khả dĩ} = \text{Tổng số nhánh ngọn cuối cùng}$$
+          </div>
+        </div>
+
+        <!-- Card 4: Nhận diện và phân biệt -->
+        <div class="card concept-card">
+          <div class="card-icon">🎯</div>
+          <h3>4. Bí Quyết Phân Biệt: Cộng Hay Nhân?</h3>
+          <p>Để không bao giờ nhầm lẫn giữa hai quy tắc cơ bản:</p>
+          <div class="formula-box">
+            $$\text{HOẶC (Phương án độc lập)} \longrightarrow \text{Dùng Quy Tắc CỘNG } (+)$$
+            $$\text{VÀ (Công đoạn nối tiếp)} \longrightarrow \text{Dùng Quy Tắc NHÂN } (\times)$$
+          </div>
+          <div class="rule-box gold">
+            Quy tắc thực hành: Nếu bỏ qua bước 1 mà công việc VẪN HOÀN THÀNH thì dùng Quy tắc cộng. Nếu bỏ qua bước 1 mà công việc CHƯA THỂ HOÀN THÀNH thì bắt buộc dùng Quy tắc nhân!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: LABS -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-wrapper">
+        <!-- Lab 1: Sơ đồ cây phân nhánh thời trang -->
+        <div class="card lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">THÍ NGHIỆM 1</span>
+            <h3>🧪 Máy Vẽ Sơ Đồ Cây Tương Tác: Bài Toán Phối Đồ Đa Tầng</h3>
+          </div>
+          <p>Khảo sát quy tắc nhân bằng cách thay đổi số lượng Áo, Quần và Mũ. Quan sát sơ đồ cây tự động mở rộng từng nhánh thời gian thực:</p>
+
+          <div class="lab-controls">
+            <div class="slider-group">
+              <label>Số loại Áo: <span id="valAo">3</span> (Công đoạn 1)</label>
+              <input type="range" id="slAo" min="1" max="4" step="1" value="3">
+            </div>
+            <div class="slider-group">
+              <label>Số loại Quần: <span id="valQuan">2</span> (Công đoạn 2)</label>
+              <input type="range" id="slQuan" min="1" max="3" step="1" value="2">
+            </div>
+            <div class="slider-group">
+              <label>Số loại Mũ: <span id="valMu">2</span> (Công đoạn 3)</label>
+              <input type="range" id="slMu" min="1" max="3" step="1" value="2">
+            </div>
+          </div>
+
+          <div class="canvas-container">
+            <canvas id="treeCanvas" width="620" height="380"></canvas>
+          </div>
+
+          <div class="lab-output" id="treeOutput">
+            Đang khởi tạo sơ đồ cây...
+          </div>
+        </div>
+
+        <!-- Lab 2: Máy Tạo Mã & Mật Khẩu Tổ Hợp -->
+        <div class="card lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">THÍ NGHIỆM 2</span>
+            <h3>🧪 Phòng Thí Nghiệm Tạo Mã Số &amp; Mật Khẩu (Password Generator)</h3>
+          </div>
+          <p>Thực nghiệm bài toán thực tế (SGK tr. 60 &amp; tr. 65): Phân tích số khả năng tạo mật khẩu và số tự nhiên theo các ràng buộc khác nhau:</p>
+
+          <div class="lab-controls">
+            <div class="btn-group" style="display: flex; gap: 10px; margin-bottom: 12px;">
+              <button class="btn-primary" id="btnModePass1" style="flex: 1;">🔐 3 Chữ Số Bất Kì</button>
+              <button class="btn-primary" id="btnModePass2" style="flex: 1;">🔤 1 Chữ Cái + 2 Số</button>
+              <button class="btn-primary" id="btnModePass3" style="flex: 1;">🔢 3 Số Khác Nhau</button>
+            </div>
+            <div style="text-align: center; margin-top: 5px;">
+              <button class="btn-primary" id="btnGenSample" style="background: linear-gradient(135deg, #10b981, #06b6d4);">🎲 Tạo Ngẫu Nhiên 5 Mẫu Hợp Lệ</button>
+            </div>
+          </div>
+
+          <div class="canvas-container" style="min-height: 160px; display: flex; align-items: center; justify-content: center; background: rgba(15, 23, 42, 0.6); border-radius: 12px; border: 1px solid rgba(255,255,255,0.1); margin-top: 10px;">
+            <div id="sampleDisplay" style="font-size: 1.3rem; font-family: monospace; color: #38bdf8; text-align: center; padding: 15px;">
+              Bấm nút "Tạo Ngẫu Nhiên" để xem thử nghiệm!
+            </div>
+          </div>
+
+          <div class="lab-output" id="codeOutput" style="margin-top: 15px;">
+            Đang tải dữ liệu bài toán đếm...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ARENA -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ ĐẤU TRƯỜNG QUY TẮC ĐẾM</h2>
+          <p>10 câu hỏi chuẩn mực bám sát SGK Kết Nối Tri Thức (Bài 8.1 đến 8.5 trang 65). Nhận phản hồi tức thì, tích lũy XP và bứt phá bảng vàng!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="score-line">Tiến Độ: <span id="arenaProgress">0/10</span></div>
+          <div class="score-line">Điểm Arena: <span id="arenaScore">0 XP</span></div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: BADGES -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-wrapper">
+        <h2>🏆 HUY HIỆU VINH DANH BÀI 23</h2>
+        <p>Chinh phục toàn bộ 5 huy hiệu để nhận Giấy Chứng Nhận Chuyên Gia Quy Tắc Đếm!</p>
+
+        <div class="badge-grid">
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon">🌟</div>
+            <div class="badge-name">Khởi Đầu Quy Tắc</div>
+            <div class="badge-desc">Khám phá toàn bộ Bản Đồ Tri Thức về Quy tắc cộng và nhân.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon">🌳</div>
+            <div class="badge-name">Bậc Thầy Sơ Đồ Cây</div>
+            <div class="badge-desc">Thực nghiệm tương tác với cả 2 phòng thí nghiệm mô phỏng.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon">⚡</div>
+            <div class="badge-name">Tư Duy Nhạy Bén</div>
+            <div class="badge-desc">Trả lời chính xác từ 5 câu hỏi trong Đấu Trường.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <div class="badge-name">Chiến Tướng Đại Số Tổ Hợp</div>
+            <div class="badge-desc">Đạt tối thiểu 160 XP trong Đấu Trường SGK.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <div class="badge-name">Đại Kiện Tướng Quy Tắc Đếm</div>
+            <div class="badge-desc">Đạt điểm số tuyệt đối 200/200 XP (10/10 câu đúng).</div>
+          </div>
+        </div>
+
+        <!-- Certificate Container -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-header">
+              <span class="school-name">TRƯỜNG THPT LƯƠNG THẾ VINH</span>
+              <span class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</span>
+              <span class="cert-subtitle">Bài 23: Quy Tắc Đếm • Đại Số Tổ Hợp</span>
+            </div>
+
+            <div class="cert-body">
+              <p>Chứng nhận học sinh:</p>
+              <h3 class="student-name" id="certStudentName">Chiến Binh Logic</h3>
+              <p>Đã xuất sắc hoàn thành nội dung lý thuyết bản đồ tri thức, làm chủ phòng thí nghiệm sơ đồ cây và vượt qua bộ câu hỏi đánh giá năng lực Bài 23: Quy Tắc Đếm theo chương trình GDPT môn Toán 10.</p>
+
+              <div class="cert-stats">
+                <div class="c-stat">Điểm Arena: <b id="certScore">0</b>/200 XP</div>
+                <div class="c-stat">Xếp loại: <b id="certRank">Xuất Sắc</b></div>
+                <div class="c-stat">Cấp sao: <b id="certStars">⭐⭐⭐⭐⭐</b></div>
+              </div>
+            </div>
+
+            <div class="cert-footer">
+              <div class="cert-seal">
+                <div class="seal-inner">CHỨNG NHẬN<br>TOÁN 10 KNTT</div>
+              </div>
+              <div class="cert-sign">
+                <div class="sign-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</div>
+                <div class="sign-role">GIÁO VIÊN BỘ MÔN</div>
+                <div class="signature">Tổ Toán THPT Lương Thế Vinh</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan10_ontap_chuong7/index.html" class="nav-btn prev">⬅️ Ôn Tập Chương VII</a>
+      <a href="../toan10_bai24/index.html" class="nav-btn next">Bài 24: Hoán Vị, Chỉnh Hợp &amp; Tổ Hợp ➡️</a>
+    </footer>
+  </div>
+
+  <!-- Modal Overlay (Hidden initially) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker">
+        <button class="av-opt" data-av="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+        <button class="av-opt" data-av="🧙‍♂️" data-name="Phù Thủy Tổ Hợp">🧙‍♂️ Phù Thủy Tổ Hợp</button>
+        <button class="av-opt" data-av="🌳" data-name="Kiến Trúc Sư Sơ Đồ Cây">🌳 Kiến Trúc Sư Sơ Đồ Cây</button>
+        <button class="av-opt" data-av="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+        <button class="av-opt" data-av="⚡" data-name="Tia Chớp Phản Xạ">⚡ Tia Chớp Phản Xạ</button>
+        <button class="av-opt" data-av="💎" data-name="Bậc Thầy Thuật Toán">💎 Bậc Thầy Thuật Toán</button>
+        <button class="av-opt" data-av="🚀" data-name="Nhà Thám Hiểm Không Gian">🚀 Nhà Thám Hiểm Không Gian</button>
+        <button class="av-opt" data-av="🛡️" data-name="Hiệp Sĩ Toán Học">🛡️ Hiệp Sĩ Toán Học</button>
+      </div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-primary" id="btnCloseModal">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

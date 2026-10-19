@@ -1,0 +1,461 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 3: Bất Phương Trình Bậc Nhất Hai Ẩn - Toán 10 Kết Nối Tri Thức</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kiện Tướng Tọa Độ & Miền Nghiệm</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương II: Bất Phương Trình & Hệ BPT • Toán 10 Tập 1 (Trang 22 - 25)</span>
+      <h1>BÀI 3: BẤT PHƯƠNG TRÌNH BẬC NHẤT HAI ẨN</h1>
+      <p>Làm chủ phương pháp hình học tọa độ để giải bất phương trình: Dạng tổng quát $ax + by < c$, quy tắc thử điểm $O(0;0)$, biểu diễn nửa mặt phẳng bờ $d$ trên mặt phẳng $Oxy$ và giải quyết các bài toán tối ưu kinh tế thực tiễn!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức BPT</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Mặt Phẳng Nghiệm (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Bài 2.1 - 2.3)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <h3 class="card-title"><i>📐</i> 1. Định Nghĩa Bất Phương Trình Bậc Nhất Hai Ẩn</h3>
+          <div class="concept-box">
+            <h4>Dạng tổng quát</h4>
+            <p>
+              Là bất phương trình có một trong các dạng:<br>
+              $$ax + by < c; \quad ax + by \le c; \quad ax + by > c; \quad ax + by \ge c$$
+              trong đó $x, y$ là các ẩn; $a, b, c$ là các số thực cho trước với $a^2 + b^2 \ne 0$ (tức $a$ và $b$ không đồng thời bằng $0$).
+            </p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Nghiệm của bất phương trình</h4>
+            <p>
+              • Mỗi cặp số $(x_0; y_0)$ sao cho $ax_0 + by_0 < c$ là một bất đẳng thức đúng được gọi là một <strong>nghiệm</strong> của bất phương trình.<br>
+              • <strong>Đặc tính quan trọng:</strong> Bất phương trình bậc nhất hai ẩn luôn có <strong>vô số nghiệm</strong>.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <h3 class="card-title"><i>🗺️</i> 2. Biểu Diễn Miền Nghiệm Trên Mặt Phẳng $Oxy$</h3>
+          <div class="concept-box emerald">
+            <h4>Đường thẳng bờ $d: ax + by = c$</h4>
+            <p>
+              • Trong mặt phẳng tọa độ $Oxy$, đường thẳng $d: ax + by = c$ chia mặt phẳng thành hai nửa mặt phẳng đối nhau.<br>
+              • Một trong hai nửa mặt phẳng (kể cả bờ hoặc không kể bờ) là tập hợp các điểm $(x; y)$ thỏa mãn bất phương trình, được gọi là <strong>miền nghiệm</strong>.
+            </p>
+          </div>
+          <div class="concept-box gold">
+            <h4>Quy tắc 3 bước xác định miền nghiệm</h4>
+            <p>
+              1. <strong>Vẽ đường thẳng $d: ax + by = c$</strong> (vẽ nét liền nếu có dấu $\le, \ge$; vẽ nét đứt nếu có dấu $<, >$).<br>
+              2. <strong>Chọn điểm thử:</strong> Lấy $M(x_0; y_0) \notin d$ (thường chọn gốc $O(0;0)$ nếu $c \ne 0$). Tính giá trị $ax_0 + by_0$ rồi so sánh với $c$.<br>
+              3. <strong>Kết luận:</strong> Nửa mặt phẳng chứa $M$ là miền nghiệm nếu $M$ thỏa mãn BPT; ngược lại, nửa mặt phẳng không chứa $M$ là miền nghiệm. Gạch bỏ phần không phải nghiệm.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <h3 class="card-title"><i>💡</i> 3. Điểm Thử Đặc Biệt Khi Đường Thẳng Đi Qua Gốc $O$</h3>
+          <div class="concept-box rose">
+            <h4>Khi $c = 0$ (Đường thẳng qua gốc tọa độ)</h4>
+            <p>
+              • Khi đường thẳng $d: ax + by = 0$ đi qua gốc tọa độ $O(0;0)$, ta <strong>không thể</strong> lấy $O(0;0)$ làm điểm thử.<br>
+              • Thay vào đó, ta linh hoạt chọn một điểm thuận tiện nằm trên các trục tọa độ nhưng không thuộc $d$, ví dụ $M(1; 0)$ hoặc $N(0; 1)$ để kiểm tra.
+            </p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Ý nghĩa hình học của bờ $d$</h4>
+            <p>
+              • Dấu $\le$ hoặc $\ge$: Miền nghiệm bao gồm cả các điểm nằm trên đường thẳng bờ $d$.<br>
+              • Dấu $<$ hoặc $>$: Miền nghiệm không bao gồm đường thẳng bờ $d$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <h3 class="card-title"><i>🏭</i> 4. Ứng Dụng Thực Tiễn Trong Kinh Tế</h3>
+          <div class="concept-box gold">
+            <h4>Bài toán tối ưu & ràng buộc thực tế</h4>
+            <p>
+              • <strong>Rạp chiếu phim:</strong> $50x + 100y \ge 20000 \Leftrightarrow x + 2y \ge 400$ ($x, y$ là số vé bán ra).<br>
+              • <strong>Cước viễn thông:</strong> $x + 2y < 200$ (phút gọi nội mạng & ngoại mạng).<br>
+              • <strong>Thuê xe ô tô:</strong> Ràng buộc tổng chi phí không vượt quá ngân sách cho trước.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1: Máy Khảo Sát Miền Nghiệm Oxy -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🎨</i> Lab 1: Máy Vẽ Trực Quan Miền Nghiệm $ax + by \le c$ Trên Mặt Phẳng $Oxy$</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
+          Tùy chỉnh các hệ số $a, b, c$ và dấu bất phương trình. Canvas 2D sẽ tự động vẽ đường thẳng bờ $d$, tô màu phát sáng nửa mặt phẳng nghiệm, gạch sọc phần loại bỏ và kiểm tra trực tiếp điểm thử!
+        </p>
+
+        <div class="lab-grid-layout">
+          <div class="lab-controls">
+            <div class="form-row">
+              <label>Hệ số $a$:</label>
+              <input type="number" id="coeffA" class="num-input-small" value="1" step="1">
+            </div>
+            <div class="form-row" style="margin-top: 8px;">
+              <label>Hệ số $b$:</label>
+              <input type="number" id="coeffB" class="num-input-small" value="2" step="1">
+            </div>
+            <div class="form-row" style="margin-top: 8px;">
+              <label>Dấu BPT:</label>
+              <select id="selectIneq" class="logic-select" style="width: auto;">
+                <option value="<=">&le; (Nhỏ hơn hoặc bằng)</option>
+                <option value="<">< (Nhỏ hơn)</option>
+                <option value=">=">&ge; (Lớn hơn hoặc bằng)</option>
+                <option value=">">> (Lớn hơn)</option>
+              </select>
+            </div>
+            <div class="form-row" style="margin-top: 8px;">
+              <label>Hệ số tự do $c$:</label>
+              <input type="number" id="coeffC" class="num-input-small" value="4" step="1">
+            </div>
+
+            <div style="margin-top: 14px; padding: 12px; background: rgba(30,41,59,0.8); border-radius: var(--radius-sm); border: 1px solid var(--border-color);">
+              <label style="font-weight: 700; color: var(--gold); display: block; margin-bottom: 6px;">Thử nghiệm tọa độ điểm $M(x_0; y_0)$:</label>
+              <div style="display: flex; gap: 10px; align-items: center;">
+                <span>$x_0$:</span><input type="number" id="testPointX" class="num-input-small" value="0" step="1">
+                <span>$y_0$:</span><input type="number" id="testPointY" class="num-input-small" value="0" step="1">
+              </div>
+            </div>
+
+            <button class="btn-primary" id="btnUpdatePlane" style="margin-top: 14px; width: 100%;">Cập Nhật Miền Nghiệm ⚡</button>
+
+            <div id="planeResultText" style="margin-top: 14px; font-size: 0.9rem; line-height: 1.5; color: var(--text-secondary);">
+              Đang tính toán miền nghiệm...
+            </div>
+          </div>
+
+          <div class="lab-canvas-box">
+            <canvas id="planeCanvas" width="500" height="380" style="max-width: 100%; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.82rem; margin-top: 8px;">
+              <span style="color: #10b981;">● Nửa mặt phẳng nghiệm</span>
+              <span style="color: #f43f5e;">/// Phần bị gạch bỏ</span>
+              <span style="color: #fbbf24;">★ Điểm thử M</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2: Bài toán thực tế Rạp Chiếu Phim -->
+      <div class="card">
+        <h3 class="card-title"><i>🎬</i> Lab 2: Máy Mô Phỏng Doanh Thu & Điểm Hòa Vốn Rạp Chiếu Phim</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+          Mô phỏng tình huống mở đầu SGK trang 22 & Ví dụ 5 trang 25: Bán 2 loại vé (50k & 100k) để rạp chiếu phim không bị bù lỗ (tối thiểu 20 triệu đồng): $x + 2y \ge 400$.
+        </p>
+
+        <div class="lab-grid-layout">
+          <div class="lab-controls">
+            <div class="form-group">
+              <label style="font-size: 0.88rem; font-weight: 600; color: #38bdf8;">Số vé Loại 1 bán ra ($x$ vé - 50.000đ):</label>
+              <input type="range" id="sliderTicketX" min="0" max="400" value="150" step="10" style="width: 100%; margin: 8px 0;">
+              <span id="lblTicketX" style="font-weight: 700; color: #fff;">150 vé</span>
+            </div>
+
+            <div class="form-group" style="margin-top: 12px;">
+              <label style="font-size: 0.88rem; font-weight: 600; color: #f43f5e;">Số vé Loại 2 bán ra ($y$ vé - 100.000đ):</label>
+              <input type="range" id="sliderTicketY" min="0" max="300" value="150" step="10" style="width: 100%; margin: 8px 0;">
+              <span id="lblTicketY" style="font-weight: 700; color: #fff;">150 vé</span>
+            </div>
+
+            <div class="cinema-status-box" id="cinemaStatusBox" style="margin-top: 16px; padding: 14px; border-radius: var(--radius-sm); background: rgba(30,41,59,0.9); border-left: 4px solid var(--emerald);">
+              <h4 id="cinemaStatusTitle" style="color: #10b981; margin-bottom: 6px;">Tình Trạng: CÓ LÃI 🎉</h4>
+              <p id="cinemaStatusDesc" style="font-size: 0.88rem;"></p>
+            </div>
+          </div>
+
+          <div class="lab-canvas-box">
+            <canvas id="cinemaCanvas" width="500" height="340" style="max-width: 100%; display: block; margin: 0 auto;"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena (Quiz Bài 2.1 - 2.3) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-card">
+        <div class="arena-progress">
+          <span id="arenaProgressText">Câu hỏi 1 / 10</span>
+          <span id="arenaScoreText">Điểm: 0 XP</span>
+        </div>
+
+        <div class="arena-question-text" id="arenaQuestion">Đang tải câu hỏi...</div>
+
+        <div class="arena-options" id="arenaOptions">
+          <!-- Dynamic Options -->
+        </div>
+
+        <div class="arena-feedback" id="arenaFeedback">
+          <!-- Explanation with MathML -->
+        </div>
+
+        <div class="arena-actions">
+          <button class="btn-primary" id="btnNextQuestion" style="display: none;">Câu Tiếp Theo ➡️</button>
+          <button class="btn-primary" id="btnRestartArena" style="display: none;">Làm Lại Đấu Trường 🔄</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Bài 3: Bất Phương Trình Bậc Nhất Hai Ẩn</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-def">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Nhận Diện BPT Bậc Nhất</div>
+          <div class="badge-desc">Phân biệt chính xác bất phương trình bậc nhất hai ẩn với các dạng bậc cao.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-plane">
+          <div class="badge-icon">🗺️</div>
+          <div class="badge-name">Bậc Thầy Nửa Mặt Phẳng</div>
+          <div class="badge-desc">Biểu diễn xuất sắc đường thẳng bờ d và tô màu miền nghiệm trên Oxy.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-cinema">
+          <div class="badge-icon">🎬</div>
+          <div class="badge-name">Chuyên Gia Kinh Tế Rạp Phim</div>
+          <div class="badge-desc">Giải mã thành công bài toán điểm hòa vốn và mô hình vé xem phim.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-arena">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Thần Đấu Trường SGK</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK 2.1 - 2.3.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-master">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng BPT 10</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc Bài 3!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 3: BẤT PHƯƠNG TRÌNH BẬC NHẤT HAI ẨN (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững phương pháp hình học tọa độ, kỹ năng thử điểm gốc $O(0;0)$, biểu diễn nửa mặt phẳng bờ $d$ trên mặt phẳng $Oxy$ và giải quyết thành thạo các bài toán mô hình kinh tế thực tiễn.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu vinh danh: <span id="certHonorsTitle">KIỆN TƯỚNG TỌA ĐỘ VÀ MIỀN NGHIỆM XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-icon" onclick="window.print()" style="background: #312e81; color: #fff; border-color: #6366f1; margin: 0 auto;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_ontap_chuong1/index.html" class="nav-btn prev">
+        ⬅️ Bài Tập Cuối Chương I
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Toán 10 Tập 1 • Bài 3: Bất Phương Trình Bậc Nhất Hai Ẩn
+      </span>
+      <a href="../toan10_bai4/index.html" class="nav-btn next">
+        Bài 4: Hệ Bất Phương Trình Bậc Nhất Hai Ẩn ➡️
+      </a>
+    </footer>
+
+    <!-- Avatar Selection Modal -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-content">
+        <h3 class="modal-title">Chọn Nhân Vật Đại Diện 🌟</h3>
+        <div class="avatar-grid">
+          <button class="avatar-choice" data-avatar="👑">👑</button>
+          <button class="avatar-choice" data-avatar="🚀">🚀</button>
+          <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+          <button class="avatar-choice" data-avatar="🦁">🦁</button>
+          <button class="avatar-choice" data-avatar="💎">💎</button>
+          <button class="avatar-choice" data-avatar="🦉">🦉</button>
+          <button class="avatar-choice" data-avatar="🎯">🎯</button>
+          <button class="avatar-choice" data-avatar="🏅">🏅</button>
+        </div>
+        <button class="btn-primary" id="btnCloseAvatarModal" style="width: 100%;">Xác Nhận Avatar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

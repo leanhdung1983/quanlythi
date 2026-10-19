@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 16: Hàm Số Bậc Hai - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <div class="user-name" id="userNameDisplay">Chiến Binh Logic</div>
+          <div class="user-title" id="userTitleDisplay">Chuyên Gia Khảo Sát Parabol</div>
+        </div>
+      </div>
+
+            <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <div class="lesson-banner">
+      <div class="banner-badge-group">
+        <span class="banner-badge">CHƯƠNG VI: HÀM SỐ, ĐỒ THỊ VÀ ỨNG DỤNG</span>
+        <span class="banner-badge highlight">TOÁN 10 KNTT • BÀI 16</span>
+      </div>
+      <h1 class="lesson-title">BÀI 16: HÀM SỐ BẬC HAI</h1>
+      <p class="lesson-subtitle">
+        Làm chủ cấu trúc đường cong parabol, toạ độ đỉnh, trục đối xứng, bảng biến thiên và các mô hình tối ưu thực tế từ kiến trúc cổng vòm đến quỹ đạo chuyển động.
+      </p>
+    </div>
+
+    <!-- Main Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">Bản Đồ Tri Thức</span>
+      </button>
+      <button class="nav-tab" data-tab="labs">
+        <span class="tab-icon">🧪</span>
+        <span class="tab-text">Phòng Thí Nghiệm</span>
+      </button>
+      <button class="nav-tab" data-tab="arena">
+        <span class="tab-icon">⚔️</span>
+        <span class="tab-text">Đấu Trường SGK</span>
+      </button>
+      <button class="nav-tab" data-tab="badges">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-text">Huy Hiệu & Vinh Danh</span>
+      </button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="concept-card highlight-border">
+          <div class="concept-card-header">
+            <span class="concept-icon">📐</span>
+            <h3>1. Định Nghĩa & Dạng Chuẩn Tắc</h3>
+          </div>
+          <div class="concept-body">
+            <p>
+              Hàm số bậc hai là hàm số được cho bằng biểu thức dạng:
+            </p>
+            <div class="formula-box">
+              $$y = ax^2 + bx + c \quad (a \neq 0)$$
+            </div>
+            <ul>
+              <li><strong>Tập xác định:</strong> $D = \mathbb{R}$.</li>
+              <li><strong>Biệt thức:</strong> $\Delta = b^2 - 4ac$ (hoặc $\Delta' = b'^2 - ac$ với $b = 2b'$).</li>
+              <li><strong>Dạng chính tắc:</strong> $y = a\left(x + \dfrac{b}{2a}\right)^2 - \dfrac{\Delta}{4a}$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card">
+          <div class="concept-card-header">
+            <span class="concept-icon">🎯</span>
+            <h3>2. Đỉnh & Trục Đối Xứng Của Parabol</h3>
+          </div>
+          <div class="concept-body">
+            <p>Đồ thị của hàm số bậc hai là một đường cong gọi là <strong>parabol</strong> $(\mathcal{P})$:</p>
+            <div class="formula-box">
+              $$\text{Đỉnh } I\left(-\dfrac{b}{2a}; -\dfrac{\Delta}{4a}\right), \quad \text{Trục đối xứng: } x = -\dfrac{b}{2a}$$
+            </div>
+            <ul>
+              <li>Trục đối xứng đi qua đỉnh $I$ và song song (hoặc trùng) với trục tung $Oy$.</li>
+              <li>Parabol cắt trục tung tại điểm $C(0; c)$.</li>
+              <li>Nếu $\Delta > 0$, parabol cắt trục hoành tại 2 điểm phân biệt $(x_1; 0)$ và $(x_2; 0)$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card highlight-border">
+          <div class="concept-card-header">
+            <span class="concept-icon">📊</span>
+            <h3>3. Chiều Biến Thiên & Bảng Biến Thiên</h3>
+          </div>
+          <div class="concept-body">
+            <div class="comparison-grid">
+              <div class="comp-box success-border">
+                <h4>Trường Hợp $a > 0$ (Bề lõm quay lên)</h4>
+                <p>Đỉnh $I$ là điểm thấp nhất của đồ thị.</p>
+                <ul>
+                  <li>Nghịch biến trên khoảng $\left(-\infty; -\dfrac{b}{2a}\right)$.</li>
+                  <li>Đồng biến trên khoảng $\left(-\dfrac{b}{2a}; +\infty\right)$.</li>
+                  <li>Giá trị nhỏ nhất: $y_{\min} = -\dfrac{\Delta}{4a}$ tại $x = -\dfrac{b}{2a}$.</li>
+                </ul>
+              </div>
+              <div class="comp-box danger-border">
+                <h4>Trường Hợp $a < 0$ (Bề lõm quay xuống)</h4>
+                <p>Đỉnh $I$ là điểm cao nhất của đồ thị.</p>
+                <ul>
+                  <li>Đồng biến trên khoảng $\left(-\infty; -\dfrac{b}{2a}\right)$.</li>
+                  <li>Nghịch biến trên khoảng $\left(-\dfrac{b}{2a}; +\infty\right)$.</li>
+                  <li>Giá trị lớn nhất: $y_{\max} = -\dfrac{\Delta}{4a}$ tại $x = -\dfrac{b}{2a}$.</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="concept-card">
+          <div class="concept-card-header">
+            <span class="concept-icon">🌉</span>
+            <h3>4. Ứng Dụng Thực Tế & Mô Hình Parabol</h3>
+          </div>
+          <div class="concept-body">
+            <p>Hàm số bậc hai xuất hiện tự nhiên trong các quy luật vật lý và kiến trúc:</p>
+            <div class="mini-rule-box">
+              <strong>1. Quỹ đạo ném xiên:</strong> $y = -\dfrac{g}{2v_0^2\cos^2\alpha}x^2 + (\tan\alpha)x + h$.<br>
+              <strong>2. Kiến trúc vòm cổng:</strong> Cổng Parabol Đại học Bách Khoa Hà Nội, cầu vòm cáp treo.<br>
+              <strong>3. Tối ưu kinh tế:</strong> Doanh thu $R(x) = x(a - bx) = -bx^2 + ax$, cực đại tại đỉnh $x = \dfrac{a}{2b}$.
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1 -->
+        <div class="lab-card">
+          <div class="lab-card-header">
+            <div class="lab-badge">THÍ NGHIỆM 1</div>
+            <h3>Khảo Sát Parabol Động $y = ax^2 + bx + c$</h3>
+            <p class="lab-desc">Kéo các thanh trượt $a, b, c$ để quan sát tức thời sự dịch chuyển của đỉnh $I$, trục đối xứng và sự đảo chiều bề lõm.</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="sliderA">Hệ số $a$: <span id="valA" class="dyn-val">1.0</span></label>
+              <input type="range" id="sliderA" min="-3" max="3" step="0.2" value="1">
+            </div>
+            <div class="control-group">
+              <label for="sliderB">Hệ số $b$: <span id="valB" class="dyn-val">-2.0</span></label>
+              <input type="range" id="sliderB" min="-6" max="6" step="0.5" value="-2">
+            </div>
+            <div class="control-group">
+              <label for="sliderC">Hệ số $c$: <span id="valC" class="dyn-val">-1.0</span></label>
+              <input type="range" id="sliderC" min="-5" max="5" step="0.5" value="-1">
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="canvasParabola" width="700" height="380"></canvas>
+          </div>
+
+          <div class="lab-analysis-box" id="parabolaAnalysis">
+            <!-- Dynamic stats for Parabola -->
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="lab-card">
+          <div class="lab-card-header">
+            <div class="lab-badge">THÍ NGHIỆM 2</div>
+            <h3>Mô Phỏng Quỹ Đạo Ném & Cổng Parabol Bách Khoa</h3>
+            <p class="lab-desc">Trực quan hóa bài tập 6.12 (Cổng ĐH Bách Khoa) và bài tập 6.14 (Quỹ đạo ném pháo $y = -\frac{3}{1000}x^2 + x$).</p>
+          </div>
+          <div class="lab-controls">
+            <div class="control-group">
+              <label for="selectMode">Chọn kịch bản mô phỏng:</label>
+              <select id="selectMode" class="select-input">
+                <option value="projectile">BT 6.14: Quỹ đạo vật ném (Tầm cao & Tầm xa)</option>
+                <option value="gate">BT 6.12: Cổng Parabol Đại học Bách Khoa</option>
+              </select>
+            </div>
+            <div class="control-group" id="groupProjectile">
+              <label for="sliderLaunch">Tọa độ x vật bay (m): <span id="valLaunch" class="dyn-val">166.7 m</span></label>
+              <input type="range" id="sliderLaunch" min="0" max="334" step="2" value="166">
+            </div>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="canvasSim2" width="700" height="340"></canvas>
+          </div>
+
+          <div class="taxi-receipt-card" id="sim2Details">
+            <!-- Physics details dynamically rendered -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>ĐẤU TRƯỜNG TRI THỨC BÀI 16</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm chuẩn mực từ các bài tập 6.7 đến 6.14 trong SGK Toán 10 KNTT.</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="arena-progress" id="arenaProgress">Tiến độ: 0/10</div>
+          <div class="arena-score" id="arenaScore">Điểm Arena: 0 XP</div>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quizContainer">
+        <!-- Rendered dynamically via app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-dashboard">
+        <h2>BỘ HUY HIỆU DANH GIÁ</h2>
+        <p class="section-desc">Chinh phục đỉnh cao Parabol, mở khóa toàn bộ danh hiệu học tập xuất sắc.</p>
+
+        <div class="badge-gallery">
+          <div class="badge-item locked" id="badge-0">
+            <div class="badge-icon-box">🌟</div>
+            <div class="badge-info">
+              <div class="badge-title">Kiến Trúc Sư Parabol</div>
+              <div class="badge-desc">Làm chủ phương trình bậc hai và đồ thị parabol</div>
+            </div>
+            <div class="badge-status">Đã mở</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon-box">🎯</div>
+            <div class="badge-info">
+              <div class="badge-title">Thợ Săn Tọa Độ Đỉnh</div>
+              <div class="badge-desc">Xác định chuẩn xác đỉnh $I$ và trục đối xứng</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon-box">🚀</div>
+            <div class="badge-info">
+              <div class="badge-title">Xạ Thủ Quỹ Đạo</div>
+              <div class="badge-desc">Khám phá tầm cao và tầm xa của mô hình ném vật</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon-box">⚔️</div>
+            <div class="badge-info">
+              <div class="badge-title">Chiến Binh Bậc Hai</div>
+              <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường SGK</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon-box">👑</div>
+            <div class="badge-info">
+              <div class="badge-title">Đại Kiện Tướng Parabol</div>
+              <div class="badge-desc">Đạt 200/200 XP tuyệt đối trong toàn bài học</div>
+            </div>
+            <div class="badge-status">Khóa</div>
+          </div>
+        </div>
+
+        <!-- A4 Printable Certificate -->
+        <div class="cert-outer-box">
+          <div class="cert-action-bar">
+            <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+          </div>
+
+          <div class="cert-container" id="gradCert">
+            <div class="cert-inner-frame">
+              <div class="cert-header">
+                <div class="cert-school">SỞ GIÁO DỤC VÀ ĐÀO TẠO ĐÀ NẴNG</div>
+                <div class="cert-school" style="font-weight: 700; font-size: 16pt;">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+                <div class="cert-divider">✦ ✦ ✦</div>
+              </div>
+
+              <div class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</div>
+              <div class="cert-subtitle">CHỨNG NHẬN HỌC SINH ĐÃ LÀM CHỦ KIẾN THỨC BÀI HỌC</div>
+
+              <div class="cert-body">
+                <p class="cert-present">Chứng nhận em:</p>
+                <div class="cert-student-name" id="certStudentName">Chiến Binh Logic</div>
+                <p class="cert-text">
+                  Đã hoàn thành xuất sắc toàn bộ chương trình lý thuyết, thực hành phòng thí nghiệm và vượt qua thử thách trắc nghiệm của bài học:
+                </p>
+                <div class="cert-lesson-name">BÀI 16: HÀM SỐ BẬC HAI (TOÁN 10 KẾT NỐI TRI THỨC)</div>
+                <div class="cert-stats-row">
+                  <div class="cert-stat">Tổng điểm tích lũy: <strong id="certXp">0 XP</strong></div>
+                  <div class="cert-stat">Xếp hạng: <strong id="certRank">Kiện Tướng Parabol</strong></div>
+                </div>
+              </div>
+
+              <div class="cert-footer">
+                <div class="cert-date" id="certDateText">Đà Nẵng, ngày 17 tháng 10 năm 2026</div>
+                <div class="cert-signature-area">
+                  <div class="cert-sign-title">TỔ TRƯỞNG CHUYÊN MÔN TOÁN</div>
+                  <div class="cert-sign-name">TS. Hoàng Văn Minh</div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a class="nav-btn prev" href="../toan10_bai15/index.html">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <span class="nav-sub">Bài trước</span>
+          <span class="nav-main">Bài 15: Hàm Số</span>
+        </div>
+      </a>
+      <a class="nav-btn next" href="../toan10_bai17/index.html">
+        <div class="nav-text" style="text-align: right;">
+          <span class="nav-sub">Bài tiếp theo</span>
+          <span class="nav-main">Bài 17: Dấu Của Tam Thức Bậc Hai</span>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Đổi Avatar -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <div class="modal-header">
+        <h3>CHỌN NHÂN VẬT ĐẠI DIỆN</h3>
+        <button class="modal-close" id="closeAvatarBtn">✕</button>
+      </div>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑"><span class="avatar-ico">👑</span><span>Đại Kiện Tướng</span></button>
+        <button class="avatar-choice" data-avatar="🚀"><span class="avatar-ico">🚀</span><span>Phi Hành Gia</span></button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️"><span class="avatar-ico">🧙‍♂️</span><span>Phù Thủy Parabol</span></button>
+        <button class="avatar-choice" data-avatar="🦁"><span class="avatar-ico">🦁</span><span>Sư Tử Dũng Mãnh</span></button>
+        <button class="avatar-choice" data-avatar="💎"><span class="avatar-ico">💎</span><span>Bậc Thầy Cực Trị</span></button>
+        <button class="avatar-choice" data-avatar="🦉"><span class="avatar-ico">🦉</span><span>Cú Thông Thái</span></button>
+        <button class="avatar-choice" data-avatar="🎯"><span class="avatar-ico">🎯</span><span>Xạ Thủ Tọa Độ Đỉnh</span></button>
+        <button class="avatar-choice" data-avatar="🏅"><span class="avatar-ico">🏅</span><span>Quán Quân Mô Hình</span></button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

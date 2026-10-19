@@ -1,0 +1,518 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 2: Tập Hợp & Các Phép Toán - Toán 10 Kết Nối Tri Thức</title>
+    <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kiện Tướng Tập Hợp Toán 10</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương I: Mệnh Đề & Tập Hợp • Toán 10 Tập 1</span>
+      <h1>BÀI 2: TẬP HỢP VÀ CÁC PHÉP TOÁN TRÊN TẬP HỢP</h1>
+      <p>Làm chủ ngôn ngữ nền tảng của toán học hiện đại: Khái niệm tập hợp, tập con, biểu đồ Ven, các tập con của số thực $\mathbb{R}$ và thành thạo các phép toán Giao ($\cap$), Hợp ($\cup$), Hiệu ($\setminus$) & Phần bù!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức Tập Hợp</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Ven & Trục Số (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Bài 1.8-1.16)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <h3 class="card-title"><i>📦</i> 1. Các Khái Niệm Cơ Bản Về Tập Hợp</h3>
+          <div class="concept-box">
+            <h4>Phần tử & Cách mô tả tập hợp</h4>
+            <p>
+              • $a \in S$: phần tử $a$ thuộc tập hợp $S$.<br>
+              • $a \notin S$: phần tử $a$ không thuộc tập hợp $S$.<br>
+              • <strong>2 cách mô tả:</strong><br>
+              &nbsp;&nbsp;+ <em>Cách 1:</em> Liệt kê các phần tử (Ví dụ: $D = \{7; 11; 13; 17; 19\}$).<br>
+              &nbsp;&nbsp;+ <em>Cách 2:</em> Chỉ ra tính chất đặc trưng (Ví dụ: $D = \{n \in \mathbb{N} \mid n \text{ là số nguyên tố}, 5 < n < 20\}$).
+            </p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Tập rỗng & Số phần tử</h4>
+            <p>
+              • Số phần tử của tập hợp $S$ kí hiệu là $n(S)$.<br>
+              • Tập hợp không chứa phần tử nào được gọi là <strong>tập rỗng</strong>, kí hiệu là $\emptyset$.<br>
+              • <em>Ví dụ:</em> Tập hợp nghiệm thực của phương trình $x^2 + 1 = 0$ là tập rỗng $\emptyset$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <h3 class="card-title"><i>🎯</i> 2. Tập Con & Hai Tập Hợp Bằng Nhau</h3>
+          <div class="concept-box gold">
+            <h4>Tập con ($T \subset S$)</h4>
+            <p>
+              • Nếu mọi phần tử của tập hợp $T$ đều là phần tử của tập hợp $S$ thì $T$ là tập con của $S$, kí hiệu $T \subset S$ (hoặc $S \supset T$).<br>
+              • Mệnh đề logic: $\forall x, x \in T \Rightarrow x \in S$.<br>
+              • <strong>Quy ước vàng:</strong> Tập rỗng $\emptyset$ là tập con của mọi tập hợp ($\emptyset \subset S$ với mọi $S$).<br>
+              • Người ta thường minh họa tập hợp bằng một hình phẳng khép kín gọi là <strong>biểu đồ Ven</strong>.
+            </p>
+          </div>
+          <div class="concept-box emerald">
+            <h4>Hai tập hợp bằng nhau ($S = T$)</h4>
+            <p>
+              • Hai tập hợp $S$ và $T$ bằng nhau khi và chỉ khi $S \subset T$ và $T \subset S$, kí hiệu $S = T$.<br>
+              • Tức là mọi phần tử của $S$ cũng là phần tử của $T$ và ngược lại.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card">
+          <h3 class="card-title"><i>🔢</i> 3. Các Tập Hợp Số & Tập Con Của $\mathbb{R}$</h3>
+          <div class="concept-box rose">
+            <h4>Mối quan hệ bao hàm giữa các tập hợp số</h4>
+            <p>
+              $$\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q} \subset \mathbb{R}$$
+              • $\mathbb{N}$: Tập các số tự nhiên $\{0; 1; 2; ...\}$.<br>
+              • $\mathbb{Z}$: Tập các số nguyên $\{...; -2; -1; 0; 1; 2; ...\}$.<br>
+              • $\mathbb{Q}$: Tập các số hữu tỉ $\{\frac{a}{b} \mid a, b \in \mathbb{Z}, b \ne 0\}$.<br>
+              • $\mathbb{R}$: Tập các số thực (gồm số hữu tỉ và số vô tỉ).
+            </p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Các khoảng, đoạn, nửa khoảng trên trục số $\mathbb{R}$</h4>
+            <p>
+              • <strong>Khoảng:</strong> $(a; b) = \{x \in \mathbb{R} \mid a < x < b\}$; $(a; +\infty) = \{x \in \mathbb{R} \mid x > a\}$.<br>
+              • <strong>Đoạn:</strong> $[a; b] = \{x \in \mathbb{R} \mid a \le x \le b\}$.<br>
+              • <strong>Nửa khoảng:</strong> $[a; b) = \{x \in \mathbb{R} \mid a \le x < b\}$; $(a; b] = \{x \in \mathbb{R} \mid a < x \le b\}$; $[a; +\infty) = \{x \in \mathbb{R} \mid x \ge a\}$; $(-\infty; b] = \{x \in \mathbb{R} \mid x \le b\}$.
+            </p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card">
+          <h3 class="card-title"><i>⚡</i> 4. Các Phép Toán Trên Tập Hợp</h3>
+          <div class="concept-box emerald">
+            <h4>Giao của hai tập hợp ($S \cap T$)</h4>
+            <p>Là tập hợp gồm các phần tử vừa thuộc $S$ vừa thuộc $T$:<br>
+               $$S \cap T = \{x \mid x \in S \text{ và } x \in T\}$$
+            </p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Hợp của hai tập hợp ($S \cup T$)</h4>
+            <p>Là tập hợp gồm các phần tử thuộc $S$ hoặc thuộc $T$:<br>
+               $$S \cup T = \{x \mid x \in S \text{ hoặc } x \in T\}$$
+            </p>
+          </div>
+          <div class="concept-box gold">
+            <h4>Hiệu ($S \setminus T$) & Phần bù ($C_S T$)</h4>
+            <p>
+              • <strong>Hiệu:</strong> $S \setminus T = \{x \mid x \in S \text{ và } x \notin T\}$.<br>
+              • <strong>Phần bù:</strong> Khi $T \subset S$, hiệu $S \setminus T$ được gọi là phần bù của $T$ trong $S$, kí hiệu $C_S T$.<br>
+              • <strong>Công thức số phần tử:</strong> $n(A \cup B) = n(A) + n(B) - n(A \cap B)$.
+            </p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1: Interactive Venn Diagram -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🎨</i> Lab 1: Máy Thử Nghiệm Biểu Đồ Ven Động 2D</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
+          Chọn các phép toán tập hợp bên dưới để quan sát vùng tô màu phát sáng trên Biểu đồ Ven thời gian thực, danh sách phần tử và công thức tính số phần tử $n(A \cup B)$!
+        </p>
+
+        <div class="venn-lab-container">
+          <div class="venn-controls-panel">
+            <div style="margin-bottom: 14px;">
+              <label style="font-weight: 700; display: block; margin-bottom: 6px;">Chọn phép toán muốn quan sát:</label>
+              <div class="op-button-group">
+                <button class="op-btn active" data-op="intersect">Giao: $A \cap B$</button>
+                <button class="op-btn" data-op="union">Hợp: $A \cup B$</button>
+                <button class="op-btn" data-op="diffAB">Hiệu: $A \setminus B$</button>
+                <button class="op-btn" data-op="diffBA">Hiệu: $B \setminus A$</button>
+              </div>
+            </div>
+
+            <div class="set-input-group">
+              <div>
+                <label style="font-size: 0.88rem; font-weight: 600; color: var(--cyan-neon);">Tập hợp A (phần tử cách nhau bởi dấu phẩy):</label>
+                <input type="text" class="text-input" id="inputA" value="1, 2, 3, 4, 5">
+              </div>
+              <div style="margin-top: 10px;">
+                <label style="font-size: 0.88rem; font-weight: 600; color: #f43f5e;">Tập hợp B (phần tử cách nhau bởi dấu phẩy):</label>
+                <input type="text" class="text-input" id="inputB" value="4, 5, 6, 7, 8">
+              </div>
+              <button class="btn-primary" id="btnUpdateVenn" style="margin-top: 12px; width: 100%;">Cập Nhật Biểu Đồ Ven ⚡</button>
+            </div>
+
+            <!-- Dynamic Result Box -->
+            <div class="venn-result-box" id="vennResultBox">
+              <h4 id="vennOpTitle" style="color: var(--indigo-light); margin-bottom: 8px;">Kết Quả Phép Toán:</h4>
+              <p id="vennResultSet" style="font-size: 1.05rem; font-weight: 700; margin-bottom: 6px;"></p>
+              <p id="vennFormulaText" style="font-size: 0.88rem; color: var(--text-muted);"></p>
+            </div>
+          </div>
+
+          <!-- Canvas Venn Box -->
+          <div class="venn-canvas-box">
+            <canvas id="vennCanvas" width="460" height="320" style="max-width: 100%; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: center; gap: 20px; font-size: 0.85rem; margin-top: 10px;">
+              <span style="color: #38bdf8;">● Vùng Tập A: <strong id="lblCountA">5</strong></span>
+              <span style="color: #10b981;">● Giao A ∩ B: <strong id="lblCountInter">2</strong></span>
+              <span style="color: #f43f5e;">● Vùng Tập B: <strong id="lblCountB">5</strong></span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2: Interactive Real Number Line -->
+      <div class="card">
+        <h3 class="card-title"><i>📏</i> Lab 2: Máy Biểu Diễn Trục Số Khoảng & Đoạn Tương Tác</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+          Tùy chỉnh hai khoảng/đoạn trên tập số thực $\mathbb{R}$. Quan sát trục số vẽ trực quan với ngoặc tròn $($ $)$, ngoặc vuông $[$ $]$ và gạch sọc phần bị loại bỏ!
+        </p>
+
+        <div class="numline-container">
+          <div class="numline-controls-grid">
+            <!-- Interval A -->
+            <div class="interval-panel" style="border-left: 4px solid var(--cyan-neon);">
+              <h4 style="color: var(--cyan-neon); margin-bottom: 10px;">Tập Con A trên $\mathbb{R}$:</h4>
+              <div class="interval-controls">
+                <div class="row">
+                  <span>Mút trái $a$:</span>
+                  <select id="bracketA1" class="bracket-select">
+                    <option value="[">[ (Đoạn/Nửa khoảng)</option>
+                    <option value="(">( (Khoảng)</option>
+                  </select>
+                  <input type="number" id="valA1" class="num-input-small" value="-2" step="1">
+                </div>
+                <div class="row" style="margin-top: 8px;">
+                  <span>Mút phải $b$:</span>
+                  <input type="number" id="valA2" class="num-input-small" value="3" step="1">
+                  <select id="bracketA2" class="bracket-select">
+                    <option value="]">] (Đoạn/Nửa khoảng)</option>
+                    <option value=")">) (Khoảng)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Interval B -->
+            <div class="interval-panel" style="border-left: 4px solid #f43f5e;">
+              <h4 style="color: #f43f5e; margin-bottom: 10px;">Tập Con B trên $\mathbb{R}$:</h4>
+              <div class="interval-controls">
+                <div class="row">
+                  <span>Mút trái $c$:</span>
+                  <select id="bracketB1" class="bracket-select">
+                    <option value="(">( (Khoảng)</option>
+                    <option value="[">[ (Đoạn/Nửa khoảng)</option>
+                  </select>
+                  <input type="number" id="valB1" class="num-input-small" value="0" step="1">
+                </div>
+                <div class="row" style="margin-top: 8px;">
+                  <span>Mút phải $d$:</span>
+                  <input type="number" id="valB2" class="num-input-small" value="5" step="1">
+                  <select id="bracketB2" class="bracket-select">
+                    <option value=")">) (Khoảng)</option>
+                    <option value="]">] (Đoạn/Nửa khoảng)</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Operation Selector for Number Line -->
+          <div style="margin: 18px 0 12px; display: flex; align-items: center; gap: 12px; flex-wrap: wrap;">
+            <span style="font-weight: 700;">Xem kết quả phép toán:</span>
+            <div class="op-button-group">
+              <button class="num-op-btn active" data-numop="intersect">$A \cap B$</button>
+              <button class="num-op-btn" data-numop="union">$A \cup B$</button>
+              <button class="num-op-btn" data-numop="diffAB">$A \setminus B$</button>
+            </div>
+          </div>
+
+          <!-- Canvas Number Line -->
+          <div style="background: rgba(0,0,0,0.4); padding: 16px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.1);">
+            <canvas id="numLineCanvas" width="700" height="240" style="width: 100%; display: block; margin: 0 auto;"></canvas>
+            <div id="numLineResultBox" style="margin-top: 14px; padding: 12px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); font-size: 0.95rem;">
+              Đang tính toán kết quả trục số...
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena (Quiz) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-card">
+        <div class="arena-progress">
+          <span id="arenaProgressText">Câu hỏi 1 / 10</span>
+          <span id="arenaScoreText">Điểm: 0 XP</span>
+        </div>
+
+        <div class="arena-question-text" id="arenaQuestion">Đang tải câu hỏi...</div>
+
+        <div class="arena-options" id="arenaOptions">
+          <!-- Dynamic Buttons -->
+        </div>
+
+        <div class="arena-feedback" id="arenaFeedback">
+          <!-- Explanation -->
+        </div>
+
+        <div class="arena-actions">
+          <button class="btn-primary" id="btnNextQuestion" style="display: none;">Câu Tiếp Theo ➡️</button>
+          <button class="btn-primary" id="btnRestartArena" style="display: none;">Làm Lại Đấu Trường 🔄</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Bài 2: Tập Hợp</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-subset">
+          <div class="badge-icon">📦</div>
+          <div class="badge-name">Nhà Khai Phá Tập Hợp</div>
+          <div class="badge-desc">Thành thạo khái niệm tập con và quan hệ bao hàm N ⊂ Z ⊂ Q ⊂ R.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-venn">
+          <div class="badge-icon">🎨</div>
+          <div class="badge-name">Bậc Thầy Biểu Đồ Ven</div>
+          <div class="badge-desc">Thực hiện thành thạo cả 4 phép toán Giao, Hợp, Hiệu trong Lab 1.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-interval">
+          <div class="badge-icon">📏</div>
+          <div class="badge-name">Chuyên Gia Trục Số</div>
+          <div class="badge-desc">Biểu diễn xuất sắc các khoảng, đoạn, nửa khoảng trên trục số thực.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-arena">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Thần Đấu Trường SGK</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường 10 câu hỏi SGK 1.8-1.16.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-master">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng Tập Hợp 10</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc Bài 2!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 2: TẬP HỢP VÀ CÁC PHÉP TOÁN TRÊN TẬP HỢP (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững các phép toán Giao ($\cap$), Hợp ($\cup$), Hiệu ($\setminus$) & Phần bù, sử dụng thành thạo Biểu đồ Ven và biểu diễn chuẩn xác các khoảng, đoạn, nửa khoảng trên trục số thực $\mathbb{R}$.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KIỆN TƯỚNG TẬP HỢP XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-icon" onclick="window.print()" style="background: #312e81; color: #fff; border-color: #6366f1; margin: 0 auto;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../toan10_bai1/index.html" class="nav-btn prev">
+        ⬅️ Bài 1: Mệnh Đề Toán Học
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Toán 10 Tập 1 • Bài 2: Tập Hợp & Các Phép Toán
+      </span>
+      <a href="../toan10_ontap_chuong1/index.html" class="nav-btn next">
+        Bài Tập Cuối Chương I ➡️
+      </a>
+    </footer>
+
+    <!-- Avatar Selection Modal -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-content">
+        <h3 class="modal-title">Chọn Nhân Vật Đại Diện 🌟</h3>
+        <div class="avatar-grid">
+          <button class="avatar-choice" data-avatar="👑">👑</button>
+          <button class="avatar-choice" data-avatar="🚀">🚀</button>
+          <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️</button>
+          <button class="avatar-choice" data-avatar="🦁">🦁</button>
+          <button class="avatar-choice" data-avatar="💎">💎</button>
+          <button class="avatar-choice" data-avatar="🦉">🦉</button>
+          <button class="avatar-choice" data-avatar="🎯">🎯</button>
+          <button class="avatar-choice" data-avatar="🏅">🏅</button>
+        </div>
+        <button class="btn-primary" id="btnCloseAvatarModal" style="width: 100%;">Xác Nhận Avatar</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

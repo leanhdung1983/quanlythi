@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 27: Thực Hành Tính Xác Suất - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Tổ Hợp & Cây Xác Suất</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG IX • TÍNH XÁC SUẤT THEO ĐỊNH NGHĨA CỔ ĐIỂN</span>
+      <h1>Bài 27: Thực Hành Tính Xác Suất Theo Định Nghĩa Cổ Điển</h1>
+      <p>Ứng dụng linh hoạt phương pháp tổ hợp, sơ đồ hình cây và công thức biến cố đối $P(\overline{E}) = 1 - P(E)$ để giải các bài toán xác suất thực tế.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">01</span>
+            <h3>Phương Pháp Tổ Hợp Tính Xác Suất</h3>
+          </div>
+          <p>Trong nhiều bài toán, thay vì liệt kê từng phần tử rất tốn thời gian, ta sử dụng <strong>Đại số tổ hợp</strong> (quy tắc đếm, hoán vị, chỉnh hợp, tổ hợp) để tính $n(\Omega)$ và $n(E)$.</p>
+          <div class="formula-box">
+            <div class="formula-title">Công Thức Cốt Lõi</div>
+            <p>• Số cách chọn không phân biệt thứ tự $k$ phần tử từ $n$ phần tử:</p>
+            <p class="math-highlight">$$C_n^k = \frac{n!}{k!(n-k)!}$$</p>
+            <p>• Xác suất biến cố $E$:</p>
+            <p class="math-highlight">$$P(E) = \frac{n(E)}{n(\Omega)} = \frac{C_a^r \cdot C_b^s}{C_{a+b}^k}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">MẸO GIẢI TOÁN</span>
+            <p>Đại số tổ hợp được gọi là <em>"sự kiểm đếm không cần phải liệt kê"</em>. Luôn xác định rõ việc chọn có phân biệt thứ tự hay không.</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">02</span>
+            <h3>Phương Pháp Sơ Đồ Hình Cây</h3>
+          </div>
+          <p>Khi phép thử được hình thành từ một <strong>chuỗi hành động liên tiếp</strong> (chẳng hạn gieo đồng xu liên tiếp nhiều lần, sinh con liên tiếp, rút bi từng lần...), ta sử dụng sơ đồ hình cây.</p>
+          <div class="formula-box">
+            <div class="formula-title">Đặc Trưng Sơ Đồ Cây</div>
+            <p>• Mỗi nhánh rẽ biểu diễn một kết quả của một giai đoạn.</p>
+            <p>• Mỗi đường đi từ gốc đến ngọn biểu diễn một phần tử của không gian mẫu $\Omega$.</p>
+            <p class="math-highlight">Số đường đi từ gốc tới ngọn chính là $n(\Omega)$.</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">ƯU ĐIỂM SƠ ĐỒ CÂY</span>
+            <p>Giúp quan sát trực quan toàn bộ không gian mẫu, không bao giờ bỏ sót trường hợp và dễ dàng xác định các kết quả thuận lợi.</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">03</span>
+            <h3>Xác Suất Của Biến Cố Đối</h3>
+          </div>
+          <p>Cho $E$ là một biến cố liên quan đến phép thử. Xác suất của biến cố đối $\overline{E}$ liên hệ với xác suất của $E$ bởi công thức:</p>
+          <div class="formula-box">
+            <div class="formula-title">Công Thức Biến Cố Đối</div>
+            <p class="math-highlight">$$P(\overline{E}) = 1 - P(E) \iff P(E) = 1 - P(\overline{E})$$</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">KHI NÀO DÙNG BIẾN CỐ ĐỐI?</span>
+            <p>Trong các bài toán xuất hiện cụm từ <strong>"có ít nhất một"</strong>, việc tính trực tiếp phải chia nhiều trường hợp, ta nên tính gián tiếp thông qua biến cố đối <em>"không có ... nào"</em>.</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">04</span>
+            <h3>Quy Trình 3 Bước Tính Xác Suất Chuẩn</h3>
+          </div>
+          <div class="formula-box">
+            <div class="formula-title">Quy Trình Chuẩn Mực</div>
+            <p><strong>Bước 1:</strong> Xác định phép thử và tính số phần tử của không gian mẫu $n(\Omega)$ bằng tổ hợp hoặc sơ đồ cây.</p>
+            <p><strong>Bước 2:</strong> Mô tả biến cố $E$ (hoặc biến cố đối $\overline{E}$) và tính số kết quả thuận lợi $n(E)$ (hoặc $n(\overline{E})$).</p>
+            <p><strong>Bước 3:</strong> Tính xác suất $P(E) = \frac{n(E)}{n(\Omega)}$ hoặc $P(E) = 1 - \frac{n(\overline{E})}{n(\Omega)}$.</p>
+          </div>
+          <div class="rule-box gold">
+            <span class="rule-tag">KIỂM TRA TỰ ĐỘNG</span>
+            <p>Luôn kiểm tra điều kiện $0 \le P(E) \le 1$. Nếu $P(E) > 1$ hoặc $P(E) < 0$, chắc chắn phép đếm $n(E)$ hoặc $n(\Omega)$ đã bị nhầm lẫn!</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1 -->
+        <div class="concept-card lab-card">
+          <div class="card-header">
+            <span class="card-num">LAB 1</span>
+            <h3>Mô Phỏng Hộp Bi & Tính Xác Suất Tổ Hợp</h3>
+          </div>
+          <p>Tùy chỉnh số lượng bi Đỏ ($a$) và bi Xanh ($b$) trong hộp. Rút ngẫu nhiên $k$ viên bi. Khảo sát công thức tổ hợp $P(E) = \frac{C_a^r C_b^{k-r}}{C_{a+b}^k}$ và kiểm chứng bằng thực nghiệm rút ngẫu nhiên.</p>
+          
+          <div class="lab-controls" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(130px, 1fr)); gap: 10px; margin-bottom: 15px;">
+            <div>
+              <label style="font-size: 13px; color: #f87171;">Bi Đỏ ($a$): <span id="valRed">6</span></label>
+              <input type="range" id="rangeRed" min="1" max="10" value="6" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 13px; color: #38bdf8;">Bi Xanh ($b$): <span id="valBlue">4</span></label>
+              <input type="range" id="rangeBlue" min="1" max="10" value="4" style="width: 100%;">
+            </div>
+            <div>
+              <label style="font-size: 13px; color: #facc15;">Rút Ra ($k$): <span id="valK">3</span></label>
+              <input type="range" id="rangeK" min="1" max="6" value="3" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-bottom: 15px;">
+            <button class="btn-primary" id="btnDraw1">🎱 Rút 1 Lần</button>
+            <button class="btn-primary" id="btnDraw50">⚡ Rút 50 Lần</button>
+            <button class="btn-primary" id="btnDraw500">🚀 Rút 500 Lần</button>
+            <button class="btn-icon" id="btnResetBox">🔄 Đặt Lại</button>
+          </div>
+
+          <canvas id="urnCanvas" width="540" height="180" style="width: 100%; max-width: 540px; background: rgba(15, 23, 42, 0.6); border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 0 auto;"></canvas>
+          <div class="lab-output" id="urnOutput" style="margin-top: 15px; padding: 12px; background: rgba(99, 102, 241, 0.1); border-left: 4px solid #818cf8; border-radius: 8px; font-size: 14px;">
+            Đang tải dữ liệu mô phỏng...
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="concept-card lab-card">
+          <div class="card-header">
+            <span class="card-num">LAB 2</span>
+            <h3>Sơ Đồ Cây Tương Tác: Khảo Sát Giới Tính 3 Con</h3>
+          </div>
+          <p>Mô phỏng phép thử sinh 3 người con (hoặc gieo đồng xu 3 lần: Sấp/Ngửa). Sơ đồ hình cây trực quan phân nhánh 3 giai đoạn ($2^3 = 8$ kết quả). Click vào các biến cố để các nhánh phát sáng!</p>
+          
+          <div class="lab-controls" style="margin-bottom: 15px;">
+            <label for="treeCondition" style="display: block; margin-bottom: 8px; font-weight: bold; color: #a5b4fc;">Chọn Biến Cố Khảo Sát:</label>
+            <select id="treeCondition" style="padding: 10px; border-radius: 8px; background: #0f172a; color: #fff; border: 1px solid #6366f1; width: 100%; font-size: 14px;">
+              <option value="at_least_1_boy">1. Có ít nhất một người con trai (Bài 9.6b)</option>
+              <option value="first_girl">2. Con đầu là con gái (Bài 9.6a)</option>
+              <option value="exact_1_boy">3. Có đúng một con trai và hai con gái (Luyện tập 3)</option>
+              <option value="all_same">4. Cả ba con cùng một giới tính</option>
+              <option value="no_boy">5. Không có con trai nào (Biến cố đối)</option>
+            </select>
+          </div>
+
+          <canvas id="treeCanvas" width="540" height="240" style="width: 100%; max-width: 540px; background: rgba(15, 23, 42, 0.6); border-radius: 12px; border: 1px solid rgba(99, 102, 241, 0.3); display: block; margin: 0 auto;"></canvas>
+          <div class="lab-output" id="treeOutput" style="margin-top: 15px; padding: 12px; background: rgba(6, 182, 212, 0.1); border-left: 4px solid #06b6d4; border-radius: 8px; font-size: 14px;">
+            Đang tính toán sơ đồ cây...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Thực Hành Xác Suất Cổ Điển</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm chuẩn SGK Toán 10 KNTT. Bấm trực tiếp vào đáp án để nhận phản hồi và tích lũy XP!</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="progress-label" id="arenaProgress">Tiến Độ: 0/10</div>
+          <div class="score-display" id="arenaScore">Điểm Arena: 0 XP</div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-wrapper">
+        <h2 style="text-align: center; margin-bottom: 25px; color: #f8fafc;">🏆 Bảng Vàng Vinh Danh & Huy Hiệu</h2>
+        <div class="badges-grid">
+          <div class="badge-item locked" id="badge-1">
+            <div class="badge-icon">📖</div>
+            <div class="badge-name">Thành Thạo Tổ Hợp</div>
+            <div class="badge-desc">Đọc và nắm vững các phương pháp tính xác suất trong Bản Đồ Tri Thức.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-2">
+            <div class="badge-icon">🧪</div>
+            <div class="badge-name">Nhà Mô Phỏng Cây Nhị Phân</div>
+            <div class="badge-desc">Khám phá sơ đồ cây và thực nghiệm rút bi trong phòng thí nghiệm.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-3">
+            <div class="badge-icon">⚡</div>
+            <div class="badge-name">Kỹ Sư Xác Suất</div>
+            <div class="badge-desc">Vượt qua tối thiểu 5 câu hỏi trong Đấu Trường SGK.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <div class="badge-name">Chiến Tướng Thực Hành</div>
+            <div class="badge-desc">Đạt tối thiểu 160 XP trong Đấu Trường Toán Học.</div>
+          </div>
+
+          <div class="badge-item locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <div class="badge-name">Đại Kiện Tướng Xác Suất</div>
+            <div class="badge-desc">Đạt điểm số tuyệt đối 200/200 XP (10/10 câu chính xác).</div>
+          </div>
+        </div>
+
+        <!-- Certificate Container -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-header">
+              <span class="school-name">TRƯỜNG THPT LƯƠNG THẾ VINH</span>
+              <span class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</span>
+              <span class="cert-subtitle">Bài 27: Thực Hành Tính Xác Suất Theo Định Nghĩa Cổ Điển</span>
+            </div>
+            <div class="cert-body">
+              <p class="cert-text">Chứng nhận học sinh:</p>
+              <h3 class="student-name" id="certStudentName">Chiến Binh Logic</h3>
+              <p class="cert-desc">Đã hoàn thành xuất sắc các nội dung học tập, thí nghiệm mô phỏng và vượt qua các thử thách trong Đấu Trường Toán Học Bài 27 theo chương trình SGK Toán 10 Kết Nối Tri Thức Với Cuộc Sống.</p>
+              <div class="cert-score-line">
+                <span>Tổng điểm đạt được: <strong id="certXP">0</strong> XP</span> • 
+                <span>Xếp loại: <strong id="certRank">Xuất Sắc</strong></span>
+              </div>
+            </div>
+            <div class="cert-footer">
+              <div class="cert-seal">★ CHUẨN KIẾN THỨC ★</div>
+              <div class="cert-sign">
+                <div class="sign-date" id="certDate">Đà Nẵng, ngày 18 tháng 10 năm 2026</div>
+                <div class="sign-role">GIÁO VIÊN BỘ MÔN</div>
+                <div class="signature">Tổ Toán THPT Lương Thế Vinh</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan10_bai26/index.html" class="nav-btn prev">⬅️ Bài 26: Xác Suất Cổ Điển</a>
+      <a href="../toan10_ontap_chuong9/index.html" class="nav-btn next">Ôn Tập Chương IX ➡️</a>
+    </footer>
+  </div>
+
+  <!-- Modal Overlay (Hidden initially) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker">
+        <button class="av-opt" data-av="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+        <button class="av-opt" data-av="🧙‍♂️" data-name="Phù Thủy Xác Suất">🧙‍♂️ Phù Thủy Xác Suất</button>
+        <button class="av-opt" data-av="🎲" data-name="Bậc Thầy Laplace">🎲 Bậc Thầy Laplace</button>
+        <button class="av-opt" data-av="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+        <button class="av-opt" data-av="⚡" data-name="Tia Chớp Phản Xạ">⚡ Tia Chớp Phản Xạ</button>
+        <button class="av-opt" data-av="💎" data-name="Đại Sư Ngẫu Nhiên">💎 Đại Sư Ngẫu Nhiên</button>
+        <button class="av-opt" data-av="🚀" data-name="Phi Hành Gia Logic">🚀 Phi Hành Gia Logic</button>
+        <button class="av-opt" data-av="🛡️" data-name="Hiệp Sĩ Toán Học">🛡️ Hiệp Sĩ Toán Học</button>
+      </div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-primary" id="btnCloseModal">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

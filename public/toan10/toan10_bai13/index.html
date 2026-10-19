@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 13: Các Số Đặc Trưng Đo Xu Thế Trung Tâm - Toán 10 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <div class="user-name" id="userNameDisplay">Chiến Binh Logic</div>
+          <div class="user-title" id="userTitleDisplay">Chuyên Gia Thống Kê</div>
+        </div>
+      </div>
+
+            <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <div class="banner-badge">CHƯƠNG V • BÀI 13 • TOÁN 10 KNTT</div>
+      <h1 class="lesson-title">Các Số Đặc Trưng Đo Xu Thế Trung Tâm</h1>
+      <p class="lesson-subtitle">Làm chủ bộ tứ đại diện của mẫu số liệu: Số Trung Bình, Trung Vị, Tứ Phân Vị và Mốt. Khám phá bản lĩnh của Trung Vị khi đối mặt với giá trị ngoại lai.</p>
+    </section>
+
+    <!-- Lesson Tabs Navigation -->
+    <nav class="lesson-tabs">
+      <button class="nav-tab active" data-tab="theory">
+        <span class="tab-icon">📖</span>
+        <span class="tab-text">Bản Đồ Tri Thức</span>
+      </button>
+      <button class="nav-tab" data-tab="labs">
+        <span class="tab-icon">🧪</span>
+        <span class="tab-text">Phòng Thí Nghiệm Xu Thế</span>
+      </button>
+      <button class="nav-tab" data-tab="arena">
+        <span class="tab-icon">⚔️</span>
+        <span class="tab-text">Đấu Trường SGK</span>
+      </button>
+      <button class="nav-tab" data-tab="badges">
+        <span class="tab-icon">🏆</span>
+        <span class="tab-text">Huy Hiệu & Vinh Danh</span>
+      </button>
+    </nav>
+
+    <!-- Tab 1: Theory (Bản Đồ Tri Thức) -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="concept-cards-grid">
+        <!-- Card 1 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📊</span>
+            <h3>1. Số Trung Bình ($\bar{x}$)</h3>
+          </div>
+          <div class="concept-body">
+            <p>Số trung bình (số trung bình cộng) của mẫu số liệu $x_1, x_2, \dots, x_n$ kí hiệu là $\bar{x}$, là giá trị san bằng tổng thể, đại diện cho vị trí trung tâm của mẫu số liệu:</p>
+            <div class="formula-box">
+              <p class="math-highlight">$\bar{x} = \frac{x_1 + x_2 + \dots + x_n}{n}$</p>
+            </div>
+            <p>Với mẫu số liệu cho dưới dạng bảng tần số gồm $k$ giá trị với các tần số $m_1, m_2, \dots, m_k$ ($n = \sum m_i$):</p>
+            <div class="formula-box">
+              <p class="math-highlight">$\bar{x} = \frac{m_1 x_1 + m_2 x_2 + \dots + m_k x_k}{n}$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>💡 Ý nghĩa:</strong> Cho biết mức độ trung bình của toàn bộ dữ liệu. Rất phù hợp khi các số liệu phân bố đều đặn và không có giá trị bất thường (dị biệt).
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">⚖️</span>
+            <h3>2. Trung Vị ($M_e$) - Số Đứng Giữa</h3>
+          </div>
+          <div class="concept-body">
+            <p>Để tìm trung vị ($M_e$), ta sắp xếp mẫu số liệu theo thứ tự <strong>không giảm</strong>:</p>
+            <ul>
+              <li>Nếu kích thước mẫu $n$ là <strong>số lẻ</strong>: Trung vị là giá trị ở chính giữa (vị trí thứ $\frac{n+1}{2}$).</li>
+              <li>Nếu kích thước mẫu $n$ là <strong>số chẵn</strong>: Trung vị là trung bình cộng của hai giá trị chính giữa (vị trí $\frac{n}{2}$ và $\frac{n}{2} + 1$).</li>
+            </ul>
+            <div class="formula-box">
+              <p class="math-highlight">$n \text{ lẻ} \implies M_e = x_{\frac{n+1}{2}}$</p>
+              <p class="math-highlight">$n \text{ chẵn} \implies M_e = \frac{x_{\frac{n}{2}} + x_{\frac{n}{2}+1}}{2}$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>⭐ Điểm Vượt Trội:</strong> Trung vị <em>không bao giờ bị ảnh hưởng bởi các giá trị bất thường</em> (outliers), do đó là số đo đại diện chuẩn mực nhất khi dữ liệu có độ lệch lớn!
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">📐</span>
+            <h3>3. Tứ Phân Vị ($Q_1, Q_2, Q_3$)</h3>
+          </div>
+          <div class="concept-body">
+            <p>Tứ phân vị chia mẫu số liệu đã sắp xếp thành 4 phần đều nhau, mỗi phần chứa đúng $25\%$ số quan sát:</p>
+            <ul>
+              <li><strong>$Q_2$ (Trung vị):</strong> Chia toàn bộ mẫu thành nửa bên trái và nửa bên phải.</li>
+              <li><strong>$Q_1$ (Tứ phân vị dưới):</strong> Là trung vị của nửa số liệu bên trái $Q_2$ (không bao gồm $Q_2$ nếu $n$ lẻ).</li>
+              <li><strong>$Q_3$ (Tứ phân vị trên):</strong> Là trung vị của nửa số liệu bên phải $Q_2$ (không bao gồm $Q_2$ nếu $n$ lẻ).</li>
+            </ul>
+            <div class="formula-box">
+              <p class="math-highlight">$$x_{\min} \xrightarrow{25\%} Q_1 \xrightarrow{25\%} Q_2 (M_e) \xrightarrow{25\%} Q_3 \xrightarrow{25\%} x_{\max}$$</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🎯</span>
+            <h3>4. Mốt Của Mẫu Số Liệu ($M_o$)</h3>
+          </div>
+          <div class="concept-body">
+            <p><strong>Mốt</strong> (kí hiệu là $M_o$) của mẫu số liệu là giá trị xuất hiện với tần số lớn nhất.</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$M_o = x_i \text{ có tần số } m_i \text{ đạt giá trị cực đại}$$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>🌟 Lưu ý quan trọng:</strong>
+              <br>• Một mẫu số liệu có thể có một mốt, nhiều mốt (đa mốt), hoặc không có mốt nào nếu tất cả các giá trị xuất hiện với tần số ngang nhau.
+              <br>• Mốt là số đặc trưng duy nhất áp dụng được cho cả dữ liệu định tính (phi số, ví dụ khảo sát thị hiếu người tiêu dùng).
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 5 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🛡️</span>
+            <h3>5. Chiến Lược Lựa Chọn Số Đo Đại Diện</h3>
+          </div>
+          <div class="concept-body">
+            <p>Khi nào nên dùng số trung bình, trung vị hay mốt?</p>
+            <ul>
+              <li><strong>Dùng Số trung bình ($\bar{x}$):</strong> Khi mẫu số liệu đồng đều, các giá trị tập trung quanh một tâm, không có giá trị dị biệt (ví dụ chiều cao lớp học, điểm thi chuẩn).</li>
+              <li><strong>Dùng Trung vị ($M_e$):</strong> Khi mẫu số liệu có giá trị ngoại lai cực lớn hoặc cực bé (ví dụ thu nhập công ty, số mặt trăng các hành tinh, diện tích đất đai).</li>
+              <li><strong>Dùng Mốt ($M_o$):</strong> Khi cần quan tâm đến thị hiếu phổ biến nhất (ví dụ cỡ giày bán chạy nhất, khung giờ xe buýt đông khách nhất).</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 6 -->
+        <div class="concept-card">
+          <div class="concept-header">
+            <span class="concept-icon">🏫</span>
+            <h3>6. Nghiên Cứu Tình Huống SGK: Lớp A vs Lớp B</h3>
+          </div>
+          <div class="concept-body">
+            <p>Khảo sát điểm tiếng Anh của hai lớp A và B (mỗi lớp 25 bạn, HĐ1 SGK Trang 78):</p>
+            <div class="formula-box">
+              <p class="math-highlight">$$\bar{x}_A = 6,12 \quad ; \quad M_e(A) = 6 \quad ; \quad M_o(A) = 7$$</p>
+              <p class="math-highlight">$$\bar{x}_B = 6,64 \quad ; \quad M_e(B) = 7 \quad ; \quad M_o(B) = 7$$</p>
+            </div>
+            <div class="rule-box gold">
+              <strong>✨ Kết luận sư phạm:</strong> Cả số trung bình và trung vị của Lớp B đều cao hơn Lớp A ($\bar{x}_B > \bar{x}_A$ và $M_e(B) > M_e(A)$), cho thấy phương pháp học tập áp dụng tại Lớp B mang lại hiệu quả tổng thể vượt trội hơn!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs (Phòng Thí Nghiệm) -->
+    <section class="tab-content" id="tab-labs">
+      <div class="labs-container">
+        <!-- Lab 1: Máy Khảo Sát Giá Trị Bất Thường (Outlier Simulator) -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">📈</span>
+            <h3>Lab 1: Máy Đo Xu Thế Trung Tâm & Khảo Sát Giá Trị Dị Biệt (Outlier)</h3>
+          </div>
+          <div class="lab-body">
+            <p class="lab-desc">Kéo thanh trượt để thay đổi giá trị của phần tử ngoại lai (ví dụ lương của Giám đốc hoặc điểm thi dị biệt). Quan sát sự dịch chuyển tức thì của Số Trung Bình so với sự kiên định của Trung Vị trên đồ thị Dot Plot.</p>
+            <div class="canvas-wrapper">
+              <canvas id="tendencyCanvas" width="800" height="260"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="slider-group">
+                <label>Giá trị phần tử dị biệt (Outlier $x_k$): <strong id="valOutlier">20</strong> (triệu đồng)</label>
+                <input type="range" id="sliderOutlier" min="4" max="60" step="1" value="20">
+              </div>
+              <div class="control-row">
+                <button class="lab-btn active" id="btnCaseSalary">💼 HĐ3 SGK: Lương Công Ty (4, 4, 4, 4, 4, X)</button>
+                <button class="lab-btn" id="btnCaseWhale">🐋 LT2 SGK: Chiều Dài Cá Voi (31, 48, 51, 52, 53, 53, X)</button>
+                <button class="lab-btn" id="btnCaseMoon">🪐 Bài 5.8a SGK: Mặt Trăng Hành Tinh</button>
+              </div>
+            </div>
+            <div class="lab-output">
+              <div class="output-item">
+                <span>Số Trung Bình $\bar{x}$:</span>
+                <strong class="badge-gold" id="outMean">6.67 tr</strong>
+              </div>
+              <div class="output-item">
+                <span>Trung Vị $M_e$:</span>
+                <strong class="badge-green" id="outMedian">4.00 tr</strong>
+              </div>
+              <div class="output-item">
+                <span>Mốt $M_o$:</span>
+                <strong class="badge-cyan" id="outMode">4.00 tr</strong>
+              </div>
+              <div class="output-item">
+                <span>Đánh giá độ ổn định:</span>
+                <strong class="badge-gold" id="outInsight">Trung Vị không đổi!</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Máy Tính Tứ Phân Vị & Phân Vùng 4 Khoảng 25% -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-icon">📊</span>
+            <h3>Lab 2: Phân Tích Tứ Phân Vị & Bản Đồ Phân Bố Mẫu Số Liệu (4 x 25%)</h3>
+          </div>
+          <div class="lab-body">
+            <p class="lab-desc">Khám phá cách $Q_1, Q_2, Q_3$ chia mẫu số liệu thành 4 dải phân vị. So sánh trực quan sự phân bố điểm số của Lớp A và Lớp B trong SGK Kết Nối Tri Thức.</p>
+            <div class="canvas-wrapper">
+              <canvas id="quartileCanvas" width="800" height="260"></canvas>
+            </div>
+            <div class="lab-controls">
+              <div class="control-row">
+                <button class="lab-btn active" id="btnClassA">📘 Lớp A (25 học sinh)</button>
+                <button class="lab-btn" id="btnClassB">📗 Lớp B (25 học sinh)</button>
+                <button class="lab-btn" id="btnNatri">🥣 Hàm lượng Natri ngũ cốc (Ví dụ 3)</button>
+              </div>
+            </div>
+            <div class="lab-output">
+              <div class="output-item">
+                <span>Tứ phân vị dưới $Q_1$:</span>
+                <strong class="badge-cyan" id="outQ1">5.00</strong>
+              </div>
+              <div class="output-item">
+                <span>Trung vị $Q_2$ ($M_e$):</span>
+                <strong class="badge-green" id="outQ2">6.00</strong>
+              </div>
+              <div class="output-item">
+                <span>Tứ phân vị trên $Q_3$:</span>
+                <strong class="badge-gold" id="outQ3">7.00</strong>
+              </div>
+              <div class="output-item">
+                <span>Số Trung Bình $\bar{x}$:</span>
+                <strong class="badge-cyan" id="outMeanClass">6.12</strong>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena SGK Quiz (10 MCQs) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div class="arena-title-group">
+          <h2>⚔️ Đấu Trường Tri Thức: Bài 13</h2>
+          <p>10 câu hỏi trắc nghiệm bám sát 100% bài tập SGK Kết Nối Tri Thức Trang 82-84. Bấm trực tiếp vào đáp án để nhận phản hồi tức thì!</p>
+        </div>
+        <div class="arena-score-box">
+          <span>Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span>Điểm Arena: <strong id="arenaScore" style="color: var(--emerald);">0 XP</strong></span>
+        </div>
+      </div>
+      <div id="quizContainer"></div>
+    </section>
+
+    <!-- Tab 4: Badges & Honours -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Thấu Thị Xu Thế</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản Đồ Tri Thức về 4 số đo xu thế trung tâm</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Phân Tích Dữ Liệu</div>
+          <div class="badge-desc">Thao tác mô phỏng dị biệt và phân chia tứ phân vị trong Lab</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chuỗi Thắng Bất Diệt</div>
+          <div class="badge-desc">Trả lời chính xác liên tiếp 3 câu hỏi trong Đấu Trường SGK</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Trung Vị</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường Bài 13</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Thống Kê</div>
+          <div class="badge-desc">Đạt điểm tuyệt đối 200/200 XP xuất sắc toàn diện 10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <div class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+          <div class="cert-subtitle">Chương Trình Giáo Dục Phổ Thông Mới - Môn Toán Lớp 10</div>
+        </div>
+        <div class="cert-body">
+          <p class="cert-intro">Chứng nhận học sinh danh dự:</p>
+          <div class="cert-name-box">
+            <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          </div>
+          <p class="cert-content">
+            Đã hoàn thành xuất sắc toàn diện bài học chuyên đề:<br>
+            <strong>BÀI 13: CÁC SỐ ĐẶC TRƯNG ĐO XU THẾ TRUNG TÂM</strong><br>
+            Đạt chuẩn kiến thức: Số Trung Bình, Trung Vị, Tứ Phân Vị, Mốt và Chiến lược chọn đại lượng thích hợp trong thực tế thống kê.
+          </p>
+        </div>
+        <div class="cert-footer">
+          <div class="cert-seal">
+            <div class="seal-inner">
+              <span>★ TOÁN 10 ★</span>
+              <span>KNTT</span>
+              <span>CHỨNG NHẬN</span>
+            </div>
+          </div>
+          <div class="cert-sign">
+            <p class="cert-date" id="certDate">Đà Nẵng, ngày 17 tháng 10 năm 2026</p>
+            <p class="cert-signer-title">TỔ TRƯỞNG CHUYÊN MÔN TOÁN</p>
+            <div class="cert-signature-img">Ths. Nguyễn Văn Toán</div>
+            <p class="cert-signer-name">BAN HỌC LIỆU SỐ E-LEARNING</p>
+          </div>
+        </div>
+      </div>
+
+      <div style="text-align: center; margin-top: 24px;">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+    <!-- Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a class="nav-btn prev" href="../toan10_bai12/index.html">
+        <span class="nav-arrow">←</span>
+        <div class="nav-text">
+          <span class="nav-sub">Bài trước</span>
+          <span class="nav-main">Bài 12: Số Gần Đúng và Sai Số</span>
+        </div>
+      </a>
+      <a class="nav-btn next" href="../toan10_bai14/index.html">
+        <div class="nav-text" style="text-align: right;">
+          <span class="nav-sub">Bài tiếp theo</span>
+          <span class="nav-main">Bài 14: Các Số Đặc Trưng Đo Độ Phân Tán</span>
+        </div>
+        <span class="nav-arrow">→</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Modal Avatar Picker -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <h3 class="modal-title">Chọn Nhân Vật Đại Diện</h3>
+      <div class="avatar-grid">
+        <button class="avatar-choice" data-avatar="👑">👑 Đại Kiện Tướng</button>
+        <button class="avatar-choice" data-avatar="🚀">🚀 Phi Hành Gia</button>
+        <button class="avatar-choice" data-avatar="🧙‍♂️">🧙‍♂️ Phù Thủy Toán</button>
+        <button class="avatar-choice" data-avatar="🦁">🦁 Sư Tử Dũng Mãnh</button>
+        <button class="avatar-choice" data-avatar="💎">💎 Kim Cương</button>
+        <button class="avatar-choice" data-avatar="🦉">🦉 Cú Thông Thái</button>
+        <button class="avatar-choice" data-avatar="🎯">🎯 Xạ Thủ Logic</button>
+        <button class="avatar-choice" data-avatar="🏅">🏅 Quán Quân</button>
+      </div>
+      <button class="btn-secondary" id="closeAvatarModalBtn" style="margin-top: 16px; width: 100%;">Đóng</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>

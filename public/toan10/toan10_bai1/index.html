@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 1: Mệnh Đề - Toán 10 Kết Nối Tri Thức</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kiện Tướng Suy Luận Toán 10</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none; display: inline-flex; align-items: center;" title="Quay về Trang Chủ Danh Mục Bài Học">🏠 Trang Chủ</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương I: Mệnh Đề & Tập Hợp • Toán 10</span>
+      <h1>BÀI 1: MỆNH ĐỀ TOÁN HỌC</h1>
+      <p>Khám phá nền tảng tư duy suy luận logic, các mệnh đề kéo theo, mệnh đề tương đương, phản ví dụ và các ký hiệu toán học phổ quát: Với mọi (∀) & Tồn tại (∃)!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức Logic</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Logic (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Bài 1.1-1.7)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Bằng Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <h3 class="card-title"><i>💡</i> 1. Mệnh Đề & Mệnh Đề Chứa Biến</h3>
+          <div class="concept-box">
+            <h4>Mệnh đề toán học là gì?</h4>
+            <p>• Là một câu khẳng định có tính <strong>đúng</strong> hoặc <strong>sai</strong> rõ ràng.<br>
+               • Một mệnh đề không thể vừa đúng vừa sai.<br>
+               • <em>Lưu ý:</em> Câu nghi vấn (?), câu cảm thán (!), câu mệnh lệnh không phải là mệnh đề.</p>
+          </div>
+          <div class="concept-box cyan">
+            <h4>Mệnh đề chứa biến P(x)</h4>
+            <p>Là câu khẳng định chứa biến số (ví dụ: $P(n): "n \text{ chia hết cho } 3"$). Bản thân nó chưa phải mệnh đề, chỉ trở thành mệnh đề khi thay $n$ bằng một giá trị cụ thể.</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <h3 class="card-title"><i>🔄</i> 2. Phủ Định & Mệnh Đề Kéo Theo</h3>
+          <div class="concept-box rose">
+            <h4>Mệnh đề phủ định $\overline{P}$</h4>
+            <p>Mệnh đề "Không phải $P$" gọi là mệnh đề phủ định của $P$, ký hiệu $\overline{P}$.<br>
+               • Nếu $P$ đúng thì $\overline{P}$ sai; nếu $P$ sai thì $\overline{P}$ đúng.</p>
+          </div>
+          <div class="concept-box gold">
+            <h4>Mệnh đề kéo theo ($P \Rightarrow Q$)</h4>
+            <p>• Phát biểu: "Nếu $P$ thì $Q$". Ký hiệu: $P \Rightarrow Q$.<br>
+               • <strong>Quy tắc vàng:</strong> Mệnh đề $P \Rightarrow Q$ <strong>chỉ sai khi $P$ đúng mà $Q$ sai</strong> (khi $P$ sai, mệnh đề kéo theo luôn đúng!).<br>
+               • Trong định lý toán học: $P$ là giả thiết (điều kiện đủ để có $Q$), $Q$ là kết luận (điều kiện cần để có $P$).</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <h3 class="card-title"><i>⚖️</i> 3. Mệnh Đề Tương Đương & Ký Hiệu Lượng Từ (∀, ∃)</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 16px;">
+            <div class="concept-box emerald">
+              <h4>Mệnh đề tương đương ($P \Leftrightarrow Q$)</h4>
+              <p>• Phát biểu: "$P$ khi và chỉ khi $Q$" hoặc "$P$ tương đương $Q$".<br>
+                 • $P \Leftrightarrow Q$ đúng khi và chỉ khi cả hai mệnh đề kéo theo $P \Rightarrow Q$ và $Q \Rightarrow P$ cùng đúng (tức $P$ và $Q$ cùng đúng hoặc cùng sai).<br>
+                 • Ta nói: $P$ là điều kiện cần và đủ để có $Q$.</p>
+            </div>
+            <div class="concept-box cyan">
+              <h4>Ký hiệu Với Mọi (∀)</h4>
+              <p>• Ký hiệu $\forall$: đọc là "với mọi" hoặc "với tất cả".<br>
+                 • Ví dụ: "$\forall x \in \mathbb{R}, x^2 \ge 0$" (Mọi số thực đều có bình phương không âm).<br>
+                 • <strong>Phủ định:</strong> Phủ định của $\forall x \in X, P(x)$ là $\exists x \in X, \overline{P(x)}$.</p>
+            </div>
+            <div class="concept-box gold">
+              <h4>Ký hiệu Tồn Tại (∃)</h4>
+              <p>• Ký hiệu $\exists$: đọc là "tồn tại", "có ít nhất một".<br>
+                 • Ví dụ: "$\exists n \in \mathbb{N}, n^2 = n$" (Tồn tại số tự nhiên bình phương bằng chính nó).<br>
+                 • <strong>Phủ định:</strong> Phủ định của $\exists x \in X, P(x)$ là $\forall x \in X, \overline{P(x)}$.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1: Truth Table & Logic Circuit -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>⚡</i> Lab 1: Máy Thử Nghiệm Bảng Chân Trị & Mạch Logic Tương Tác</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.9rem;">
+          Thay đổi trạng thái chân trị của $P$ và $Q$ (Đúng / Sai). Quan sát ngay kết quả chân trị của các mệnh đề suy luận và mạch đèn báo tín hiệu!
+        </p>
+
+        <div class="logic-lab-container">
+          <!-- Control Switches -->
+          <div class="logic-switch-panel">
+            <div class="logic-input-row">
+              <span style="font-weight: 700; font-size: 1rem;">Mệnh đề P:</span>
+              <button class="toggle-switch-btn true" id="btnToggleP">P: ĐÚNG (T)</button>
+            </div>
+
+            <div class="logic-input-row">
+              <span style="font-weight: 700; font-size: 1rem;">Mệnh đề Q:</span>
+              <button class="toggle-switch-btn false" id="btnToggleQ">Q: SAI (F)</button>
+            </div>
+
+            <!-- Calculated Results -->
+            <div style="background: rgba(0,0,0,0.3); padding: 14px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.1);">
+              <h4 style="color: var(--indigo-light); margin-bottom: 8px; font-size: 0.95rem;">Kết Quả Chân Trị Tức Thì:</h4>
+              <p style="margin-bottom: 6px;">• Phủ định $\overline{P}$: <span class="truth-tag false" id="resNotP">SAI</span></p>
+              <p style="margin-bottom: 6px;">• Kéo theo $P \Rightarrow Q$: <span class="truth-tag false" id="resImplies">SAI</span> <em>(Vì P Đúng nhưng Q Sai!)</em></p>
+              <p style="margin-bottom: 6px;">• Đảo $Q \Rightarrow P$: <span class="truth-tag true" id="resConverse">ĐÚNG</span></p>
+              <p style="margin-bottom: 6px;">• Tương đương $P \Leftrightarrow Q$: <span class="truth-tag false" id="resEquiv">SAI</span></p>
+            </div>
+
+            <table class="truth-table-view">
+              <thead>
+                <tr>
+                  <th>P</th>
+                  <th>Q</th>
+                  <th>$\overline{P}$</th>
+                  <th>$P \Rightarrow Q$</th>
+                  <th>$Q \Rightarrow P$</th>
+                  <th>$P \Leftrightarrow Q$</th>
+                </tr>
+              </thead>
+              <tbody id="truthTableBody">
+                <!-- Rows highlighted dynamically -->
+              </tbody>
+            </table>
+          </div>
+
+          <!-- Canvas Circuit Visual -->
+          <div class="circuit-canvas-box">
+            <h4 style="color: var(--cyan-neon); margin-bottom: 8px; font-size: 0.95rem;">Mô Phỏng Mạch Logic $P \Rightarrow Q$</h4>
+            <canvas id="circuitCanvas" width="400" height="260" style="max-width: 100%; display: block; margin: 0 auto;"></canvas>
+            <p style="font-size: 0.8rem; color: var(--text-muted); margin-top: 10px;" id="circuitExplanation">
+              Đèn TẮT vì giả thiết P thông mạch nhưng kết luận Q bị ngắt quãng!
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2: Counterexample Explorer -->
+      <div class="card">
+        <h3 class="card-title"><i>🎯</i> Lab 2: Máy Phản Ví Dụ & Khảo Sát Lượng Từ (∀, ∃)</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 14px; font-size: 0.9rem;">
+          Một mệnh đề chứa ký hiệu "Với mọi ($\forall$)" chỉ cần <strong>1 phản ví dụ</strong> là bị bẻ gãy thành SAI! Ngược lại, mệnh đề "Tồn tại ($\exists$)" chỉ cần <strong>1 minh chứng</strong> là trở thành ĐÚNG.
+        </p>
+
+        <div class="quantifier-container">
+          <div>
+            <label style="font-size: 0.88rem; color: var(--text-secondary); display: block; margin-bottom: 6px;">Chọn mệnh đề khảo sát:</label>
+            <select class="statement-select" id="statementSelect">
+              <option value="1">1. "∀x ∈ ℝ, x² - 4 = 0" (Với mọi số thực x, bình phương trừ 4 bằng 0)</option>
+              <option value="2">2. "∀x ∈ ℝ, x² + 1 > 0" (Với mọi số thực x, bình phương cộng 1 luôn dương)</option>
+              <option value="3">3. "∃n ∈ ℕ, n² = n" (Tồn tại số tự nhiên n sao cho n² = n)</option>
+              <option value="4">4. "∀n ∈ ℕ, n chia hết cho 2" (Mọi số tự nhiên đều là số chẵn)</option>
+            </select>
+          </div>
+
+          <div style="background: rgba(0,0,0,0.3); padding: 16px; border-radius: var(--radius-sm); border: 1px solid rgba(255,255,255,0.1);">
+            <div class="test-number-box">
+              <span style="font-weight: 600;">Thử nghiệm với giá trị x (hoặc n) = </span>
+              <input type="number" class="num-input" id="inputTestVal" value="3" step="1">
+              <button class="btn-primary" id="btnTestValue" style="padding: 8px 16px;">Kiểm Tra Ngay ⚡</button>
+            </div>
+            
+            <div id="testResultBox" style="margin-top: 14px; padding: 12px; border-radius: var(--radius-sm); background: rgba(255,255,255,0.05); font-size: 0.92rem;">
+              Nhập số và bấm "Kiểm Tra Ngay" để tìm phản ví dụ hoặc chứng minh!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena (Quiz) -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-card">
+        <div class="arena-progress">
+          <span id="arenaProgressText">Câu hỏi 1 / 10</span>
+          <span id="arenaScoreText">Điểm: 0 XP</span>
+        </div>
+
+        <div class="arena-question-text" id="arenaQuestion">Đang tải câu hỏi...</div>
+
+        <div class="arena-options" id="arenaOptions">
+          <!-- Dynamic Buttons -->
+        </div>
+
+        <div class="arena-feedback" id="arenaFeedback">
+          <!-- Explanation -->
+        </div>
+
+        <div class="arena-actions">
+          <button class="btn-primary" id="btnNextQuestion" style="display: none;">Câu Tiếp Theo ➡️</button>
+          <button class="btn-primary" id="btnRestartArena" style="display: none;">Làm Lại Đấu Trường 🔄</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="color: var(--indigo-light); margin-bottom: 16px; font-size: 1.2rem;">🏆 5 Huy Hiệu Vinh Danh Bài 1: Mệnh Đề</h3>
+      
+      <div class="badges-grid">
+        <div class="badge-item locked" id="badge-truth">
+          <div class="badge-icon">💡</div>
+          <div class="badge-name">Thám Tử Chân Trị</div>
+          <div class="badge-desc">Thử nghiệm thành công 4 trường hợp chân trị trong Lab 1.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-implies">
+          <div class="badge-icon">⚡</div>
+          <div class="badge-name">Bậc Thầy Kéo Theo</div>
+          <div class="badge-desc">Hiểu rõ nguyên lý mệnh đề kéo theo P ⇒ Q.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-quantifier">
+          <div class="badge-icon">🎯</div>
+          <div class="badge-name">Kính Lúp Phản Ví Dụ</div>
+          <div class="badge-desc">Tìm được ít nhất 1 phản ví dụ bẻ gãy mệnh đề ∀ trong Lab 2.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-arena">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Chiến Binh Logic</div>
+          <div class="badge-desc">Đạt từ 8/10 câu đúng trong Đấu Trường Mệnh Đề.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-master">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Đại Kiện Tướng Logic 10</div>
+          <div class="badge-desc">Mở khóa toàn bộ 4 huy hiệu và tốt nghiệp xuất sắc Bài 1!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 1: MỆNH ĐỀ TOÁN HỌC (TOÁN 10 TẬP 1)</strong><br>
+            Nắm vững bản chất mệnh đề, mệnh đề phủ định, mệnh đề kéo theo, mệnh đề tương đương và thuần thục suy luận logic với lượng từ Với mọi (∀) & Tồn tại (∃).
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KIỆN TƯỚNG SUY LUẬN LOGIC XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-icon" onclick="window.print()" style="background: #312e81; color: #fff; border-color: #6366f1; margin: 0 auto;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <span style="color: var(--text-muted); font-size: 0.88rem;">
+        Toán 10 Tập 1 • Bài 1: Mệnh Đề
+      </span>
+      <a href="../toan10_bai2/index.html" class="nav-btn next">
+        Bài 2: Tập Hợp & Các Phép Toán ➡️
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Đại Kiện Tướng</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Kiện Tướng Suy Luận Hoàng Gia">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Nhà Thám Hiểm Không Gian Logic">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số & Giải Tích">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Phản Biện Quả Cảm">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Tư Duy Trừu Tượng">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ Tối Cao">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Chứng Minh Phản Chứng">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Thủ Khoa Olympic Toán 10">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Tự động quét và render KaTeX toàn bộ trang ngay khi tải xong
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+
+  <!-- Learning Hub Platform Bridge -->
+  <script>
+  (function() {
+    function sendProgressToPlatform() {
+      try {
+        if (!window.parent || window.parent === window) return;
+        let score = 10;
+        if (typeof arenaScore === 'number' && arenaScore > 0) {
+          score = Math.min(10, Math.max(0, Math.round((arenaScore / 200) * 10)));
+        } else if (typeof appState !== 'undefined') {
+          if (typeof appState.xp === 'number' && appState.xp > 0) {
+            score = Math.min(10, Math.max(0, Math.round((appState.xp / 200) * 10)));
+          } else if (appState.answered && typeof quizData !== 'undefined' && quizData.length > 0) {
+            let correct = 0;
+            for (const [qid, ans] of Object.entries(appState.answered)) {
+              const q = quizData.find(item => item.id == qid);
+              if (q) {
+                if (ans === true) correct++;
+                else if (typeof ans === 'number' && q.options && q.options[ans] && q.options[ans].correct) correct++;
+              }
+            }
+            score = Math.min(10, Math.max(0, Math.round((correct / quizData.length) * 10)));
+          }
+        }
+        window.parent.postMessage({
+          type: 'LESSON_COMPLETE',
+          score: score,
+          url: window.location.pathname
+        }, '*');
+      } catch (e) {
+        console.warn('Bridge error:', e);
+      }
+    }
+    window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
+    
+    // Auto-listen to completion triggers
+    document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
+      // Whenever badges tab is clicked or certificate viewed
+      document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
+        el.addEventListener('click', function() {
+          sendProgressToPlatform();
+        });
+      });
+      // Watch for arena completion
+      var origFinishArena = window.finishArena;
+      if (typeof origFinishArena === 'function') {
+        window.finishArena = function() {
+          origFinishArena.apply(this, arguments);
+          sendProgressToPlatform();
+        };
+      }
+      var observer = new MutationObserver(function() {
+        var summary = document.getElementById('arenaSummaryBanner') || document.getElementById('arenaSummary');
+        if (summary && summary.style.display !== 'none') {
+          sendProgressToPlatform();
+        }
+      });
+      observer.observe(document.body, { childList: true, subtree: true, attributes: true, attributeFilter: ['style', 'class'] });
+    });
+  })();
+  </script>
+
+</body>
+</html>
