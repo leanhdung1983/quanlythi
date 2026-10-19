@@ -306,7 +306,7 @@
 
   <script src="app.js"></script>
 
-  <!-- Learning Hub Platform Bridge -->
+    <!-- Learning Hub Platform Bridge -->
   <script>
   (function() {
     function sendProgressToPlatform() {
@@ -330,16 +330,38 @@
         }
         window.parent.postMessage({
           type: 'LESSON_COMPLETE',
-          score: score
+          score: score,
+          url: window.location.pathname
         }, '*');
       } catch (e) {
         console.warn('Bridge error:', e);
       }
     }
     window.notifyLessonComplete = sendProgressToPlatform;
+
+    function switchTab(name) {
+      if (!name) return;
+      var tabKey = name.replace('#', '').replace('tab-', '');
+      var btn = document.querySelector('.nav-tab[data-tab="' + tabKey + '"]');
+      if (btn) btn.click();
+    }
+    window.switchLessonTab = switchTab;
+
+    window.addEventListener('hashchange', function() {
+      switchTab(window.location.hash);
+    });
+
+    window.addEventListener('message', function(ev) {
+      if (ev.data && ev.data.type === 'SWITCH_TAB') {
+        switchTab(ev.data.tab);
+      }
+    });
     
     // Auto-listen to completion triggers
     document.addEventListener('DOMContentLoaded', function() {
+      if (window.location.hash) {
+        setTimeout(function() { switchTab(window.location.hash); }, 150);
+      }
       // Whenever badges tab is clicked or certificate viewed
       document.querySelectorAll('[data-tab="badges"], [data-tab="cert"], .btn-primary, #btnGoToBadges, #btnViewCert, #btnDownloadCert, #btnPrintCert').forEach(function(el) {
         el.addEventListener('click', function() {
