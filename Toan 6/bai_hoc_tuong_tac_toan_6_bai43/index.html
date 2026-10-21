@@ -1,0 +1,316 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 43: Xác suất thực nghiệm - Toán 6 Tập 2 Kết Nối Tri Thức</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">🎯</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Toán Học 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Xác Suất Thực Nghiệm</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Xếp hạng Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương IX: Dữ liệu và xác suất thực nghiệm</span>
+      <h1>BÀI 43: XÁC SUẤT THỰC NGHIỆM</h1>
+      <p>Lượng hóa khả năng xảy ra của các sự kiện trong thực tế qua tỉ số vàng k/n, khám phá quy luật số lớn và giải mã các trò chơi may rủi thú vị!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức & Quy Tắc Vàng</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Xác Suất Hội Tụ (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Hỏi 9.29-9.32)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Giấy Chứng Nhận</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <div class="card">
+          <h3 class="card-title"><i>📏</i> 1. Thước Đo Khả Năng Xảy Ra (Từ 0 Đến 1)</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Khi thực hiện thí nghiệm hoặc trò chơi, khả năng xảy ra một sự kiện được thể hiện bằng một con số từ <strong>0 đến 1</strong> (hoặc từ 0% đến 100%).
+          </p>
+
+          <div class="prob-scale-container">
+            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 0.9rem;">
+              <span style="color: #ef4444;">Không xảy ra (0 hay 0%)</span>
+              <span style="color: #f59e0b;">Có thể xảy ra (1/2)</span>
+              <span style="color: #10b981;">Chắc chắn xảy ra (1 hay 100%)</span>
+            </div>
+            <div class="prob-scale-bar"></div>
+            <div class="scale-ticks">
+              <span>0</span>
+              <span>1/2 (50%)</span>
+              <span>1</span>
+            </div>
+          </div>
+
+          <div class="concept-box">
+            <h4>Ý nghĩa thực tiễn (Hình 9.28 SGK)</h4>
+            <p>• Khả năng bằng 0: Sự kiện đó <strong>không bao giờ xảy ra</strong> (ví dụ: gieo xúc xắc ra mặt 7 chấm).<br>
+               • Khả năng bằng 1: Sự kiện đó <strong>chắc chắn xảy ra</strong> (ví dụ: gieo xúc xắc ra số chấm nhỏ hơn 7).</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>➗</i> 2. Công Thức Xác Suất Thực Nghiệm</h3>
+          <p style="color: var(--text-muted); font-size: 0.95rem;">
+            Thực hiện một thí nghiệm $n$ lần lặp lại độc lập. Giả sử sự kiện $A$ xảy ra đúng $k$ lần trong $n$ lần đó.
+          </p>
+
+          <div class="formula-display">
+            <div class="formula-tex">Xác suất thực nghiệm = k / n</div>
+            <div class="formula-desc">
+              <strong>k</strong>: Số lần sự kiện xảy ra &nbsp;|&nbsp; <strong>n</strong>: Tổng số lần thực hiện thí nghiệm
+            </div>
+          </div>
+
+          <div class="concept-box indigo">
+            <h4>Đặc điểm quan trọng (SGK Trang 94)</h4>
+            <p>Xác suất thực nghiệm phụ thuộc vào <strong>người thực hiện</strong> thí nghiệm và <strong>số lần</strong> người đó thực hiện thí nghiệm. Khi số lần $n$ càng lớn, xác suất thực nghiệm càng ổn định và tiến dần về xác suất lý thuyết!</p>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1;">
+          <h3 class="card-title"><i>🗣️</i> Tranh Luận Vuông & Tròn (SGK Trang 95)</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="concept-box amber">
+              <h4>Bạn Vuông (50 lần tung)</h4>
+              <p>Gieo đồng xu 50 lần, thấy có 30 lần mặt sấp. Vuông tính: Xác suất thực nghiệm mặt sấp là: <strong>30/50 = 60%</strong>.</p>
+            </div>
+            <div class="concept-box">
+              <h4>Bạn Tròn (100 lần tung)</h4>
+              <p>Tròn lấy đồng xu đó gieo 100 lần, thấy có 55 lần mặt sấp. Tròn tính: Xác suất thực nghiệm mặt sấp là: <strong>55/100 = 55%</strong>.</p>
+            </div>
+          </div>
+          <div class="concept-box" style="border-left-color: #38bdf8; margin-top: 10px;">
+            <p><strong>Kết luận trọng tài:</strong> Cả hai bạn đều nói <strong>ĐÚNG</strong>! Vì xác suất thực nghiệm phản ánh đúng kết quả thực tế mà mỗi bạn ghi nhận được trong lượt thử nghiệm độc lập của mình.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🧪</i> Lab 1: Máy Tính & Mô Phỏng Xác Suất Thực Nghiệm Trực Quan</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+          Chọn các kịch bản thực tế trong SGK và chạy mô phỏng ngẫu nhiên từ 10 đến 1000 lần để quan sát biểu đồ cột tần số và sự hội tụ của xác suất thực nghiệm $k/n$!
+        </p>
+
+        <div class="lab-sim-controls">
+          <div class="sim-buttons">
+            <span style="font-size: 0.85rem; color: var(--text-muted); align-self: center;">Kịch bản:</span>
+            <button class="btn-sim active" data-scenario="xucXacChan">🎲 Xúc xắc ra mặt chẵn (9.29)</button>
+            <button class="btn-sim" data-scenario="tamBiaXanh">🎡 Tấm bìa ô Xanh (9.30)</button>
+            <button class="btn-sim" data-scenario="rutBiDo">🔴 Lấy viên bi đỏ (9.31)</button>
+            <button class="btn-sim" data-scenario="haiXucXacHon6">🎲🎲 Tổng 2 xúc xắc > 6</button>
+          </div>
+
+          <div style="display: flex; gap: 8px; align-items: center;">
+            <span style="font-size: 0.85rem; color: var(--text-muted);">Thực hiện n lần:</span>
+            <button class="btn-icon" data-rolls="10">+10 lần</button>
+            <button class="btn-icon" data-rolls="50">+50 lần</button>
+            <button class="btn-icon" data-rolls="100">+100 lần</button>
+            <button class="btn-icon" data-rolls="500">+500 lần</button>
+            <button class="btn-icon" id="resetSimBtn" style="color: var(--accent-red);">🔄 Đặt lại</button>
+          </div>
+        </div>
+
+        <div class="canvas-chart-wrapper">
+          <canvas id="simCanvas" width="900" height="360"></canvas>
+        </div>
+
+        <div class="sim-stats-grid">
+          <div class="sim-stat-box">
+            <h5>Tổng số lần thực hiện (n)</h5>
+            <p id="statN">0</p>
+          </div>
+          <div class="sim-stat-box">
+            <h5>Số lần sự kiện xảy ra (k)</h5>
+            <p id="statK" style="color: var(--accent-emerald);">0</p>
+          </div>
+          <div class="sim-stat-box">
+            <h5>Xác suất thực nghiệm (k/n)</h5>
+            <p id="statRatio" style="color: var(--accent-gold);">0%</p>
+          </div>
+          <div class="sim-stat-box">
+            <h5>Xác suất lý thuyết kỳ vọng</h5>
+            <p id="statTheory" style="color: #38bdf8;">50%</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2 -->
+      <div class="card">
+        <h3 class="card-title"><i>🎲🎲</i> Lab 2: Giải Mã Trò Chơi Xúc Xắc Chẵn - Lẻ (Trang 97)</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 14px;">
+          Gieo 2 con xúc xắc cùng lúc: Nếu <strong>tích số chấm là số chẵn</strong> $\implies$ Người E (Even) được 1 điểm. Nếu <strong>tích số chấm là số lẻ</strong> $\implies$ Người O (Odd) được 1 điểm. Ai đạt 20 điểm trước là thắng! Thử dự đoán xem ai có khả năng thắng cao hơn?
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 16px;">
+          <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid var(--accent-emerald); border-radius: var(--radius-sm); padding: 16px; text-align: center;">
+            <h4 style="color: var(--accent-emerald); font-size: 1.15rem;">Người Chơi E (Tích Chẵn)</h4>
+            <div id="scoreE" style="font-size: 2.2rem; font-weight: 900; color: #34d399; margin: 8px 0;">0 / 20</div>
+            <p style="font-size: 0.85rem; color: #cbd5e1;">Cần ra ít nhất 1 mặt chẵn</p>
+          </div>
+
+          <div style="background: rgba(239, 68, 68, 0.1); border: 1px solid var(--accent-red); border-radius: var(--radius-sm); padding: 16px; text-align: center;">
+            <h4 style="color: var(--accent-red); font-size: 1.15rem;">Người Chơi O (Tích Lẻ)</h4>
+            <div id="scoreO" style="font-size: 2.2rem; font-weight: 900; color: #f87171; margin: 8px 0;">0 / 20</div>
+            <p style="font-size: 0.85rem; color: #cbd5e1;">Bắt buộc cả 2 mặt đều phải lẻ</p>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-bottom: 16px;">
+          <button class="btn-icon" id="rollPairBtn" style="background: linear-gradient(135deg, #10b981, #6366f1); color: #070d18; font-weight: 800; font-size: 1rem; padding: 10px 24px;">
+            🎲 Gieo 2 Xúc Xắc 1 Lượt!
+          </button>
+          <button class="btn-icon" id="autoMatchBtn" style="background: rgba(255, 255, 255, 0.08); color: #fff;">
+            ⚡ Tự động đấu tới 20 điểm
+          </button>
+        </div>
+
+        <div class="concept-box" style="border-left-color: var(--accent-indigo);">
+          <h4>💡 Lời giải toán học bí mật:</h4>
+          <p>
+            Trong $6 \times 6 = 36$ khả năng: Tích là số lẻ CHỈ xảy ra khi cả hai con đều ra số lẻ ($\{1, 3, 5\} \times \{1, 3, 5\} = 9$ khả năng). Tích là số chẵn có tới $36 - 9 = 27$ khả năng! Do đó <strong>người chơi E có xác suất thắng tới 75%</strong>, còn người O chỉ có 25%!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div class="quiz-progress">
+          <span style="font-weight: 700; color: #fff;">Tiến độ đấu trường:</span>
+          <span id="arenaProgressText" style="color: var(--text-highlight); font-weight: 800;">0/10</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="arenaProgressBar"></div>
+          </div>
+        </div>
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.9rem;">Điểm đấu trường: </span>
+          <strong id="arenaScore" style="color: var(--accent-gold); font-size: 1.15rem;">0</strong>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- 10 Questions injected by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 16px;">🏆 5 Huy Hiệu Danh Dự Xác Suất Thực Nghiệm</h3>
+      <div class="badges-grid" id="badgesGrid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">➗</div>
+          <div class="badge-name">Thợ Rèn Tỉ Số k/n</div>
+          <div class="badge-desc">Tính chuẩn xác suất thực nghiệm từ số lần biến cố xảy ra chia cho tổng số phép thử.</div>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">📊</div>
+          <div class="badge-name">Nhà Mô Phỏng Dữ Liệu</div>
+          <div class="badge-desc">Chạy mô phỏng hơn 100 lần phép thử trong Lab 1 và quan sát quy luật số lớn.</div>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">⚖️</div>
+          <div class="badge-name">Trọng Tài Tích Chẵn Lẻ</div>
+          <div class="badge-desc">Giải mã xác suất áp đảo 75% của người chơi E trong trò chơi xúc xắc Trang 97.</div>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">🔴</div>
+          <div class="badge-name">Bậc Thầy Kiểm Đếm</div>
+          <div class="badge-desc">Chinh phục hoàn hảo các bài toán túi bi của Khoa và thùng bóng màu của Bình (9.31, 9.32).</div>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Sư Xác Suất Thực Nghiệm</div>
+          <div class="badge-desc">Đạt trọn vẹn 5 sao và hoàn thành xuất sắc 10/10 câu hỏi Đấu trường SGK!</div>
+        </div>
+      </div>
+
+      <div class="cert-section">
+        <button class="btn-icon" id="unlockCertBtn" style="font-size: 1.05rem; padding: 12px 24px; background: linear-gradient(135deg, #10b981, #6366f1); color: #070d18; font-weight: 800;">
+          📜 Mở Khóa & In Giấy Chứng Nhận
+        </button>
+
+        <div class="certificate-paper" id="certificatePaper">
+          <div class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</div>
+          <div class="cert-sub">CHUYÊN GIA XÁC SUẤT THỰC NGHIỆM - TOÁN 6 KẾT NỐI TRI THỨC</div>
+          
+          <p style="color: #64748b; font-size: 0.9rem;">Trao tặng danh hiệu cao quý cho:</p>
+          <div class="cert-recipient" id="certName">Chiến Binh Toán Học</div>
+
+          <p class="cert-text">
+            Đã làm chủ công thức tỉ số xác suất thực nghiệm k/n, thấu hiểu thước đo khả năng từ 0 đến 1 và xuất sắc chinh phục toàn bộ 10/10 thử thách bài tập trong <strong>Bài 43: Xác suất thực nghiệm</strong> (Trang 94 - 96, SGK Toán 6 Tập Hai).
+          </p>
+
+          <div class="cert-footer">
+            <div class="cert-seal">🏅</div>
+            <div class="cert-sign">
+              <strong>HỘI ĐỒNG TOÁN HỌC SGK KNTT</strong><br>
+              <em>Chứng thực xuất sắc</em><br>
+              <span id="certDate">Ngày cấp: 2026</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button class="btn-icon" onclick="window.print()" style="background: #059669; color: #fff;">🖨️ In Chứng Chỉ A4</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../bai_hoc_tuong_tac_toan_6_bai42/index.html" class="nav-btn prev">
+        ⬅️ Bài 42: Kết Quả Có Thể Và Sự Kiện
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">
+        Toán 6 Tập 2 • Bài 43 (Trang 94–96)
+      </span>
+      <a href="../bai_hoc_tuong_tac_toan_6_on_tap_chuong_9/index.html" class="nav-btn next">
+        Ôn Tập Cuối Chương IX ➡️
+      </a>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

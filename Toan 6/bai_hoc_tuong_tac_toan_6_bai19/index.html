@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 19: Hình Chữ Nhật • Hình Thoi • Hình Bình Hành • Hình Thang Cân - Toán 6 KNTT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">💎</div>
+      <h1 class="start-title">CHINH PHỤC CÁC TỨ GIÁC ĐẶC BIỆT</h1>
+      <p class="start-subtitle">Toán 6 • Bài 19: Hình chữ nhật • Hình thoi • Hình bình hành • Hình thang cân</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật của bạn:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="💎">💎</button>
+        <button class="avatar-btn" data-avatar="📐">📐</button>
+        <button class="avatar-btn" data-avatar="🚀">🚀</button>
+        <button class="avatar-btn" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button class="avatar-btn" data-avatar="👑">👑</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên nhà hình học trẻ:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Kỹ Sư Hình Học Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU KHÁM PHÁ ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">💎</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Kỹ Sư Hình Học Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Tứ Giác</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương IV: Một Số Hình Phẳng Trong Thực Tiễn • Bài 19</div>
+      <h1 class="hero-title">HÌNH CHỮ NHẬT • HÌNH THOI • HÌNH BÌNH HÀNH • HÌNH THANG CÂN</h1>
+      <p class="hero-desc">
+        Tìm hiểu 4 loại tứ giác quan trọng nhất trong đời sống và kỹ thuật: từ cánh cổng xếp, mặt bàn học, cánh buồm lộng gió cho đến những chiếc thang leo vững chãi!
+      </p>
+    </section>
+
+    <!-- PHẦN 1: TAB CÁC HÌNH -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">📐</div>
+        <div>
+          <h2 class="section-title">1. Khám Phá Đặc Điểm 4 Tứ Giác Quen Thuộc</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Chọn từng hình để xem cấu trúc cạnh, góc và đường chéo</span>
+        </div>
+      </div>
+
+      <div class="shapes-tab-bar">
+        <button class="shape-tab-btn active" data-tab="rect">1. Hình chữ nhật</button>
+        <button class="shape-tab-btn" data-tab="rhombus">2. Hình thoi</button>
+        <button class="shape-tab-btn" data-tab="parallelogram">3. Hình bình hành</button>
+        <button class="shape-tab-btn" data-tab="trapezoid">4. Hình thang cân</button>
+      </div>
+
+      <!-- TAB 1: HÌNH CHỮ NHẬT -->
+      <div class="shape-tab-pane active" id="pane-rect">
+        <div class="rule-box">
+          <strong>📌 TÍNH CHẤT HÌNH CHỮ NHẬT ABCD:</strong>
+          <ul style="margin-left: 20px; margin-top: 8px;">
+            <li>Bốn góc ở các đỉnh đều là <strong>góc vuông ($90^\circ$)</strong>.</li>
+            <li>Các cặp cạnh đối diện <strong>song song và bằng nhau</strong>: $AB \parallel CD, AB = CD$; $AD \parallel BC, AD = BC$.</li>
+            <li>Hai đường chéo <strong>bằng nhau</strong> ($AC = BD$) và cắt nhau tại trung điểm của mỗi đường.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 2: HÌNH THOI -->
+      <div class="shape-tab-pane" id="pane-rhombus">
+        <div class="rule-box ruby">
+          <strong>📌 TÍNH CHẤT HÌNH THOI ABCD:</strong>
+          <ul style="margin-left: 20px; margin-top: 8px;">
+            <li>Bốn cạnh <strong>bằng nhau</strong>: $AB = BC = CD = DA$.</li>
+            <li>Các cặp cạnh đối diện <strong>song song</strong>: $AB \parallel CD, AD \parallel BC$.</li>
+            <li>Hai đường chéo <strong>vuông góc với nhau</strong> ($AC \perp BD$) tại trung điểm của mỗi đường.</li>
+            <li>Các góc đối bằng nhau: $\widehat{A} = \widehat{C}, \widehat{B} = \widehat{D}$.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 3: HÌNH BÌNH HÀNH -->
+      <div class="shape-tab-pane" id="pane-parallelogram">
+        <div class="rule-box">
+          <strong>📌 TÍNH CHẤT HÌNH BÌNH HÀNH ABCD:</strong>
+          <ul style="margin-left: 20px; margin-top: 8px;">
+            <li>Các cặp cạnh đối diện <strong>song song và bằng nhau</strong>: $AB \parallel CD, AB = CD$; $AD \parallel BC, AD = BC$.</li>
+            <li>Các góc đối diện <strong>bằng nhau</strong>: $\widehat{A} = \widehat{C}, \widehat{B} = \widehat{D}$.</li>
+            <li>Hai đường chéo cắt nhau tại <strong>trung điểm của mỗi đường</strong>.</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- TAB 4: HÌNH THANG CÂN -->
+      <div class="shape-tab-pane" id="pane-trapezoid">
+        <div class="rule-box ruby">
+          <strong>📌 TÍNH CHẤT HÌNH THANG CÂN ABCD (đáy AB // CD):</strong>
+          <ul style="margin-left: 20px; margin-top: 8px;">
+            <li>Hai cạnh đáy <strong>song song</strong> với nhau: $AB \parallel CD$.</li>
+            <li>Hai cạnh bên <strong>bằng nhau</strong>: $AD = BC$.</li>
+            <li>Hai góc kề một đáy <strong>bằng nhau</strong>: $\widehat{D} = \widehat{C}$, $\widehat{A} = \widehat{B}$.</li>
+            <li>Hai đường chéo <strong>bằng nhau</strong>: $AC = BD$.</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🔬</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm: Khám Phá Trực Quan Tứ Giác</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Thử nghiệm biến hình & Soi đường chéo đặc biệt</span>
+        </div>
+      </div>
+
+      <!-- LAB 1: BIẾN ĐỔI BÌNH HÀNH -> CHỮ NHẬT -->
+      <div class="interactive-lab">
+        <div class="lab-title">🎛️ Thí Nghiệm 1: Biến Đổi Hình Bình Hành $\longleftrightarrow$ Hình Chữ Nhật</div>
+        <div class="lab-desc">Kéo góc nghiêng $\alpha$ từ $60^\circ$ tới $90^\circ$. Khi góc đạt $90^\circ$, hình bình hành sẽ chuyển thành hình chữ nhật hoàn hảo!</div>
+
+        <div class="lab-controls">
+          <label style="font-weight: 700; color: #475569;">Góc đỉnh $\alpha$: <span id="angle-val">65</span>°</label>
+          <input type="range" id="angle-slider" min="50" max="90" step="1" value="65" style="cursor: pointer;">
+          <button class="lab-btn" id="btn-snap-90">📐 Chỉnh ngay 90° (Hình chữ nhật)</button>
+          <button class="lab-btn" id="btn-toggle-morph-diag">✖️ Bật/Tắt 2 Đường Chéo</button>
+        </div>
+
+        <div class="shape-stage">
+          <svg id="morph-svg" width="340" height="220" viewBox="0 0 340 220"></svg>
+          <div class="shape-readout" id="morph-readout">Đang quan sát Hình Bình Hành (góc nhọn). Kéo đến 90° để xem!</div>
+        </div>
+      </div>
+
+      <!-- LAB 2: SOI ĐƯỜNG CHÉO HÌNH THOI -->
+      <div class="interactive-lab">
+        <div class="lab-title">✨ Thí Nghiệm 2: Kiểm Chứng 2 Đường Chéo Vuông Góc Hình Thoi</div>
+        <div class="lab-desc">Hai đường chéo $AC$ và $BD$ luôn vuông góc với nhau tại trung điểm $O$ và chia hình thoi thành 4 tam giác vuông bằng nhau!</div>
+
+        <div class="lab-controls">
+          <button class="lab-btn" id="btn-toggle-rhombus-perp">📐 Bật/Tắt Ký Hiệu Vuông Góc (90° tại O)</button>
+          <button class="lab-btn" id="btn-toggle-rhombus-triangles">🎨 Tô 4 Tam Giác Vuông Con</button>
+        </div>
+
+        <div class="shape-stage">
+          <svg id="rhombus-svg" width="320" height="240" viewBox="0 0 320 240"></svg>
+          <div class="shape-readout" id="rhombus-readout">Hình thoi $ABCD$: $AB=BC=CD=DA$. Hai đường chéo $AC \perp BD$ tại trung điểm $O$.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: ĐẤU TRƯỜNG LUYỆN TẬP SGK -->
+    <section class="lesson-card" id="luyen-tap">
+      <div class="section-header">
+        <div class="section-icon-badge">⚔️</div>
+        <div>
+          <h2 class="section-title">3. Đấu Trường Luyện Tập SGK (Bài 4.8 – 4.15)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Chinh phục 10 câu hỏi để nhận trọn 10 sao và mở khóa Huy hiệu Tứ Giác</span>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quiz-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- PHẦN 4: HUY HIỆU & CHỨNG NHẬN -->
+    <section class="lesson-card" id="thanh-tich">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">Bảng Thành Tích & Huy Hiệu Vinh Dự</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa trọn bộ 5 huy hiệu đặc biệt</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">🔲</div>
+          <div class="badge-card-name">Bậc Thầy Chữ Nhật</div>
+          <div class="badge-card-desc">Thao tác thanh trượt góc 90 độ tạo hình chữ nhật</div>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">💎</div>
+          <div class="badge-card-name">Chuyên Gia Hình Thoi</div>
+          <div class="badge-card-desc">Khám phá tính chất 2 đường chéo vuông góc</div>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🧭</div>
+          <div class="badge-card-name">Nhà Phân Loại Tứ Giác</div>
+          <div class="badge-card-desc">Đọc và duyệt qua tất cả 4 thẻ tứ giác</div>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Binh Bất Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu đúng liên tiếp</div>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Đại Sư Tứ Giác Phẳng</div>
+          <div class="badge-card-desc">Chinh phục xuất sắc toàn bộ 10 câu SGK</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN IN ĐƯỢC -->
+      <div class="certificate-wrapper" id="printable-cert">
+        <div class="cert-seal">💎</div>
+        <div class="cert-super-title">BỘ GIÁO DỤC VÀ ĐÀO TẠO • HỌC LIỆU SỐ TOÁN 6</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.1rem; color: #64748b;">Chứng nhận trao tặng cho kỹ sư hình học:</p>
+        <div class="cert-student-name" id="cert-name">Kỹ Sư Hình Học Lớp 6</div>
+        <p style="font-size: 1.15rem; color: #3730a3; max-width: 650px; margin: 0 auto;">
+          Đã xuất sắc hoàn thành trọn vẹn chương trình bài học tương tác:
+          <br><strong style="color: #4f46e5; font-size: 1.25rem;">BÀI 19: HÌNH CHỮ NHẬT • HÌNH THOI • HÌNH BÌNH HÀNH • HÌNH THANG CÂN</strong>
+          <br>Bộ sách Toán 6 - Kết Nối Tri Thức Với Cuộc Sống.
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">Điểm số: <span id="cert-score">0</span> XP</div>
+          <div class="cert-stat-badge">Số sao: <span id="cert-stars">0</span> ⭐</div>
+          <div class="cert-stat-badge">Hạng: <span id="cert-rank">Tập Sự</span></div>
+          <div class="cert-stat-badge">Ngày cấp: <span id="cert-date">--/--/----</span></div>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-around; font-weight: 700; color: #475569;">
+          <div>
+            <p>Hệ Thống Đào Tạo Tương Tác</p>
+            <p style="margin-top: 30px; color: #4f46e5;">(Đã ký điện tử)</p>
+          </div>
+          <div>
+            <p>Giáo Viên Bộ Môn Toán 6</p>
+            <p style="margin-top: 30px; color: #4f46e5;">(Chứng nhận hoàn thành)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button onclick="window.print()" class="btn-cert btn-print">🖨️ In Giấy Chứng Nhận A4</button>
+        <button id="btn-replay-lesson" class="btn-cert btn-replay">🔄 Học Lại Bài Này</button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai18/index.html" class="btn-cert btn-prev-lesson">⬅️ Bài 18: Tam giác đều, hình vuông...</a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai20/index.html" class="btn-cert btn-next-lesson">Bài 20: Chu vi và diện tích tứ giác ➔</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

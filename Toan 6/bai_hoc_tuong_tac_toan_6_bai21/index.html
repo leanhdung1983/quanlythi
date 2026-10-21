@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 21: Hình Có Trục Đối Xứng - Toán 6 KNTT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">🦋</div>
+      <h1 class="start-title">CHINH PHỤC TRỤC ĐỐI XỨNG</h1>
+      <p class="start-subtitle">Toán 6 • Bài 21: Hình có trục đối xứng (Chương V: Tính Đối Xứng Của Hình Phẳng)</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật của bạn:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="🦋">🦋</button>
+        <button class="avatar-btn" data-avatar="🪞">🪞</button>
+        <button class="avatar-btn" data-avatar="🌸">🌸</button>
+        <button class="avatar-btn" data-avatar="🎨">🎨</button>
+        <button class="avatar-btn" data-avatar="👑">👑</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên nhà thám hiểm đối xứng:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Họa Sĩ Đối Xứng Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU KHÁM PHÁ ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">🦋</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Họa Sĩ Đối Xứng Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Đối Xứng</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương V: Tính Đối Xứng Của Hình Phẳng • Bài 21</div>
+      <h1 class="hero-title">HÌNH CÓ TRỤC ĐỐI XỨNG</h1>
+      <p class="hero-desc">
+        Khám phá quy luật đối xứng diệu kỳ của thế giới tự nhiên và nghệ thuật: từ đôi cánh bướm rực rỡ, lá cây phong, tháp Eiffel tráng lệ đến những chữ cái in hoa và biển báo giao thông!
+      </p>
+    </section>
+
+    <!-- PHẦN 1: KHÁI NIỆM & HÌNH THỰC TẾ -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🪞</div>
+        <div>
+          <h2 class="section-title">1. Khái Niệm Trục Đối Xứng & Ý Nghĩa Hình Học</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Đường gấp $d$ làm cho hai nửa hình trùng khít lên nhau</span>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <strong>📌 ĐỊNH NGHĨA HÌNH CÓ TRỤC ĐỐI XỨNG:</strong>
+        <p style="margin-top: 6px;">
+          Đường thẳng $d$ chia hình thành hai phần mà nếu <strong>gấp hình theo đường thẳng $d$</strong> thì hai phần đó <strong>chồng khít lên nhau</strong>.
+          <br>Khi đó, hình được gọi là <strong>hình có trục đối xứng</strong> và đường thẳng $d$ gọi là <strong>trục đối xứng</strong> của hình.
+        </p>
+      </div>
+
+      <div class="symm-grid">
+        <div class="symm-card">
+          <div class="symm-icon">🔺</div>
+          <div class="symm-name">Tam giác đều</div>
+          <div class="symm-count">3 trục đối xứng</div>
+        </div>
+        <div class="symm-card">
+          <div class="symm-icon">🟦</div>
+          <div class="symm-name">Hình vuông</div>
+          <div class="symm-count">4 trục đối xứng</div>
+        </div>
+        <div class="symm-card">
+          <div class="symm-icon">🔲</div>
+          <div class="symm-name">Hình chữ nhật</div>
+          <div class="symm-count">2 trục đối xứng</div>
+        </div>
+        <div class="symm-card">
+          <div class="symm-icon">💎</div>
+          <div class="symm-name">Hình thoi</div>
+          <div class="symm-count">2 trục đối xứng</div>
+        </div>
+        <div class="symm-card">
+          <div class="symm-icon">🔶</div>
+          <div class="symm-name">Hình thang cân</div>
+          <div class="symm-count">1 trục đối xứng</div>
+        </div>
+        <div class="symm-card">
+          <div class="symm-icon">⚪</div>
+          <div class="symm-name">Hình tròn</div>
+          <div class="symm-count">Vô số trục đối xứng</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: PHÒNG THÍ NGHIỆM GẤP GƯƠNG VÀ QUÉT LASER -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🔬</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm: Mô Phỏng Gấp Giấy & Quét Trục</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Trực quan hóa cách hai nửa trùng khít nhau qua trục $d$</span>
+        </div>
+      </div>
+
+      <!-- LAB 1: MÁY GẤP GƯƠNG -->
+      <div class="interactive-lab">
+        <div class="lab-title">🪞 Thí Nghiệm 1: Máy Gấp Gương Phản Chiếu (Mirror Fold)</div>
+        <div class="lab-desc">Chọn hình dưới đây và bấm nút "Gấp Nếp Theo Trục d" để xem nửa bên trái lật úp chồng khít lên nửa bên phải:</div>
+
+        <div class="lab-controls">
+          <button class="lab-btn active" id="btn-shape-butterfly">🦋 Cánh Bướm</button>
+          <button class="lab-btn" id="btn-shape-heart">❤️ Trái Tim</button>
+          <button class="lab-btn" id="btn-shape-letter-a">🅰️ Chữ Cái A</button>
+          <button class="lab-btn" id="btn-shape-letter-h">🔤 Chữ Cái H (2 trục)</button>
+        </div>
+
+        <div class="lab-controls">
+          <button class="lab-btn" id="btn-fold-action">📖 Gấp Nếp Trùng Khít</button>
+          <button class="lab-btn" id="btn-unfold-action">🔄 Mở Phẳng Ra</button>
+        </div>
+
+        <div class="shape-stage">
+          <svg id="mirror-svg" width="340" height="240" viewBox="0 0 340 240"></svg>
+          <div class="shape-readout" id="mirror-readout">Đang xem hình phẳng mở rộng với trục đối xứng d màu đỏ ở chính giữa.</div>
+        </div>
+      </div>
+
+      <!-- LAB 2: MÁY QUÉT LASER TRỤC ĐỐI XỨNG CÁC ĐA GIÁC -->
+      <div class="interactive-lab">
+        <div class="lab-title">⚡ Thí Nghiệm 2: Máy Quét Laser Phát Hiện Toàn Bộ Trục Đối Xứng</div>
+        <div class="lab-desc">Bấm vào từng hình hình học để kích hoạt tia laser quét toàn bộ các đường trục đối xứng:</div>
+
+        <div class="lab-controls">
+          <button class="lab-btn active" id="btn-laser-tri">Tam giác đều (3 trục)</button>
+          <button class="lab-btn" id="btn-laser-sq">Hình vuông (4 trục)</button>
+          <button class="lab-btn" id="btn-laser-rect">Hình chữ nhật (2 trục)</button>
+          <button class="lab-btn" id="btn-laser-rhombus">Hình thoi (2 trục)</button>
+          <button class="lab-btn" id="btn-laser-circle">Hình tròn (Vô số trục)</button>
+        </div>
+
+        <div class="shape-stage">
+          <svg id="laser-svg" width="320" height="240" viewBox="0 0 320 240"></svg>
+          <div class="shape-readout" id="laser-readout">Đang hiển thị trục đối xứng của Tam Giác Đều: có 3 trục đi qua 3 đỉnh và trung điểm cạnh đối diện.</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: ĐẤU TRƯỜNG LUYỆN TẬP SGK -->
+    <section class="lesson-card" id="luyen-tap">
+      <div class="section-header">
+        <div class="section-icon-badge">⚔️</div>
+        <div>
+          <h2 class="section-title">3. Đấu Trường Luyện Tập SGK (Bài 5.1 – 5.6)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Chinh phục 10 thử thách để thu thập 10 sao và nhận Huy hiệu Danh dự</span>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quiz-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- PHẦN 4: HUY HIỆU & CHỨNG NHẬN -->
+    <section class="lesson-card" id="thanh-tich">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">Bảng Thành Tích & Huy Hiệu Vinh Dự</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa trọn bộ 5 huy hiệu đối xứng</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">🪞</div>
+          <div class="badge-card-name">Bậc Thầy Gấp Gương</div>
+          <div class="badge-card-desc">Thực hiện gấp nếp đối xứng thành công các hình</div>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">⚡</div>
+          <div class="badge-card-name">Máy Quét Trục Siêu Đẳng</div>
+          <div class="badge-card-desc">Khám phá toàn bộ trục đối xứng của các đa giác</div>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🅰️</div>
+          <div class="badge-card-name">Chuyên Gia Chữ Cái</div>
+          <div class="badge-card-desc">Nhận diện chính xác trục đối xứng của chữ cái</div>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Binh Bất Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu đúng liên tiếp</div>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Đại Kiện Tướng Trục Đối Xứng</div>
+          <div class="badge-card-desc">Chinh phục xuất sắc toàn bộ 10 câu SGK</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN IN ĐƯỢC -->
+      <div class="certificate-wrapper" id="printable-cert">
+        <div class="cert-seal">🦋</div>
+        <div class="cert-super-title">BỘ GIÁO DỤC VÀ ĐÀO TẠO • HỌC LIỆU SỐ TOÁN 6</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.1rem; color: #64748b;">Chứng nhận trao tặng cho họa sĩ đối xứng:</p>
+        <div class="cert-student-name" id="cert-name">Họa Sĩ Đối Xứng Lớp 6</div>
+        <p style="font-size: 1.15rem; color: #6d28d9; max-width: 650px; margin: 0 auto;">
+          Đã xuất sắc hoàn thành trọn vẹn chương trình bài học tương tác:
+          <br><strong style="color: #8b5cf6; font-size: 1.25rem;">BÀI 21: HÌNH CÓ TRỤC ĐỐI XỨNG</strong>
+          <br>Bộ sách Toán 6 - Kết Nối Tri Thức Với Cuộc Sống.
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">Điểm số: <span id="cert-score">0</span> XP</div>
+          <div class="cert-stat-badge">Số sao: <span id="cert-stars">0</span> ⭐</div>
+          <div class="cert-stat-badge">Hạng: <span id="cert-rank">Tập Sự</span></div>
+          <div class="cert-stat-badge">Ngày cấp: <span id="cert-date">--/--/----</span></div>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-around; font-weight: 700; color: #475569;">
+          <div>
+            <p>Hệ Thống Đào Tạo Tương Tác</p>
+            <p style="margin-top: 30px; color: #8b5cf6;">(Đã ký điện tử)</p>
+          </div>
+          <div>
+            <p>Giáo Viên Bộ Môn Toán 6</p>
+            <p style="margin-top: 30px; color: #8b5cf6;">(Chứng nhận hoàn thành)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button onclick="window.print()" class="btn-cert btn-print">🖨️ In Giấy Chứng Nhận A4</button>
+        <button id="btn-replay-lesson" class="btn-cert btn-replay">🔄 Học Lại Bài Này</button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai20/index.html" class="btn-cert btn-prev-lesson">⬅️ Bài 20: Chu vi và diện tích tứ giác</a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai22/index.html" class="btn-cert btn-next-lesson">Bài 22: Hình có tâm đối xứng ➔</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

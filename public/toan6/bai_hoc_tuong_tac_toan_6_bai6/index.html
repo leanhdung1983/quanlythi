@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 6: Luỹ Thừa Với Số Mũ Tự Nhiên - Toán 6 Kết Nối Tri Thức</title>
+  <meta name="description" content="Website học liệu số tương tác và mini game học tập Bài 6: Luỹ thừa với số mũ tự nhiên - Toán 6 Tập 1 Kết Nối Tri Thức Với Cuộc Sống.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU GAME (START SCREEN) -->
+  <div id="start-modal" class="modal-overlay">
+    <div class="start-card">
+      <div class="start-badge-icon">🚀</div>
+      <h1 class="start-title">CHINH PHỤC VŨ TRỤ LUỸ THỪA</h1>
+      <p class="start-subtitle">Toán 6 • Bài 6: Luỹ Thừa Với Số Mũ Tự Nhiên (SGK Trang 22 – 24)</p>
+
+      <div class="avatar-selector-title">Chọn Phi Hành Gia Của Bạn:</div>
+      <div class="avatar-grid" id="avatar-selector">
+        <div class="avatar-option selected" data-avatar="👨‍🚀">👨‍🚀</div>
+        <div class="avatar-option" data-avatar="🧙‍♂️">🧙‍♂️</div>
+        <div class="avatar-option" data-avatar="🤖">🤖</div>
+        <div class="avatar-option" data-avatar="🧭">🧭</div>
+        <div class="avatar-option" data-avatar="🦄">🦄</div>
+        <div class="avatar-option" data-avatar="🧠">🧠</div>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">👤 Tên phi hành gia / học sinh:</label>
+        <input type="text" id="student-name-input" class="name-input" placeholder="Nhập họ và tên của em..." value="Nhà Thám Hiểm Toán Học" maxlength="25">
+      </div>
+
+      <button id="btn-start" class="btn-start-game" onclick="startGame()">
+        <span>🎮 BẮT ĐẦU NHẬP CUỘC</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- GAME HUD (THANH TRẠNG THÁI CỐ ĐỊNH TRÊN CÙNG) -->
+  <header class="game-hud">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">👨‍🚀</div>
+        <div class="hud-user-info">
+          <span class="hud-username" id="hud-name-display">Nhà Thám Hiểm</span>
+          <span class="hud-title-rank" id="hud-rank-display">Tân Binh Vũ Trụ</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="hud-badge score" title="Điểm kinh nghiệm">
+          🪙 <span id="hud-score">0</span>
+        </div>
+        <div class="hud-badge stars" title="Số sao vàng đạt được">
+          ⭐ <span id="hud-stars">0</span>
+        </div>
+        <div class="hud-badge streak" id="hud-streak-badge" title="Chuỗi trả lời đúng liên tiếp">
+          🔥 <span id="hud-streak">0</span> Combo
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button class="btn-icon" id="btn-sound-toggle" onclick="toggleSound()" title="Bật/Tắt âm thanh">
+          🔊
+        </button>
+        <button class="btn-icon" onclick="scrollToCertificate()" title="Xem Giấy Chứng Nhận">
+          📜
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NỘI DUNG CHÍNH -->
+  <main class="main-wrapper">
+
+    <!-- HERO BANNER -->
+    <div class="lesson-hero">
+      <div class="lesson-tag">Chương I: Tập hợp các số tự nhiên • SGK Trang 22 - 24</div>
+      <h1>BÀI 6: LUỸ THỪA VỚI SỐ MŨ TỰ NHIÊN</h1>
+      <p>
+        Khám phá bí mật đằng sau truyền thuyết bàn cờ vua Ấn Độ, làm chủ phép nhân & chia cùng cơ số, bẻ khóa các con số khổng lồ của vũ trụ và cơ thể người!
+      </p>
+    </div>
+
+    <!-- THANH ĐIỀU HƯỚNG NHANH -->
+    <nav class="nav-pills">
+      <a href="#khoi-dong" class="nav-pill active">♟️ 1. Bàn Cờ Vua</a>
+      <a href="#co-may-luy-thua" class="nav-pill">⚡ 2. Cỗ Máy Luỹ Thừa</a>
+      <a href="#nhan-chia-cung-co-so" class="nav-pill">🎯 3. Nhân & Chia Cùng Cơ Số</a>
+      <a href="#vu-tru-sinh-hoc" class="nav-pill">🌌 4. Vũ Trụ & Tế Bào</a>
+      <a href="#dau-truong-quiz" class="nav-pill">🏆 5. Đấu Trường 10 Câu</a>
+      <a href="#chung-nhan-vinh-danh" class="nav-pill">📜 6. Giấy Chứng Nhận</a>
+    </nav>
+
+    <!-- ====================================================================
+         SECTION 1: BÀN CỜ VUA & HẠT THÓC KỲ DIỆU (KHỞI ĐỘNG SGK TRANG 22)
+         ==================================================================== -->
+    <section id="khoi-dong" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">♟️</div>
+        <div class="card-header-text">
+          <h2>1. Truyền Thuyết Bàn Cờ Vua & Hạt Thóc Kỳ Diệu (SGK Trang 22)</h2>
+          <p>Nhấp vào từng ô cờ để xem số hạt thóc nhân đôi siêu tốc theo cấp số nhân!</p>
+        </div>
+      </div>
+
+      <div style="background: #fffbeb; border: 2px solid #fde68a; border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+        📖 <strong>Truyền thuyết Ấn Độ:</strong> Người phát minh ra bàn cờ vua chọn phần thưởng là số thóc rải trên 64 ô cờ: 
+        Ô thứ 1 để 1 hạt thóc, ô thứ 2 để 2 hạt, ô thứ 3 để 4 hạt, ô thứ 4 để 8 hạt,... Cứ như thế, số hạt ở ô sau <strong>gấp đôi</strong> ô trước. 
+        <em>Liệu nhà vua có đủ thóc để thưởng không?</em>
+      </div>
+
+      <div class="chess-interactive-panel">
+        <div style="text-align: center; font-weight: 700; margin-bottom: 12px; color: #1e293b;">
+          👉 Click vào các ô cờ ở hàng đầu tiên (Ô 1 ➔ Ô 8) để xem số hạt thóc tăng lên chóng mặt:
+        </div>
+
+        <div class="chess-grid-container" id="chessboard-grid">
+          <!-- Rendered by JS: 64 squares -->
+        </div>
+
+        <div class="chess-info-box" id="chess-info-display">
+          <div class="chess-info-formula" id="chess-formula-text">Ô thứ 1: 1 hạt thóc = 2⁰</div>
+          <div id="chess-desc-text" style="color: #475569;">
+            Hãy nhấp vào các ô tiếp theo để xem điều kỳ diệu của luỹ thừa của 2!
+          </div>
+        </div>
+
+        <!-- HĐ1 TƯƠNG TÁC -->
+        <div style="background: #f1f5f9; border-radius: 12px; padding: 18px; margin-top: 20px;">
+          <h3 style="color: #1e293b; margin-bottom: 8px;">
+            🧩 Hoạt động 1 (HĐ1 SGK): Để tìm số hạt thóc ở ô thứ 8, ta cần bao nhiêu thừa số 2 nhân với nhau?
+          </h3>
+          <div style="display: flex; gap: 10px; flex-wrap: wrap; margin-top: 10px;">
+            <button class="nav-pill" onclick="checkHD1(6)">A. 6 thừa số 2</button>
+            <button class="nav-pill" onclick="checkHD1(7)">B. 7 thừa số 2 (Đúng! 2⁷ = 128)</button>
+            <button class="nav-pill" onclick="checkHD1(8)">C. 8 thừa số 2</button>
+          </div>
+          <div id="hd1-feedback" style="margin-top: 10px; font-weight: 700; min-height: 24px;"></div>
+        </div>
+
+        <!-- VẬN DỤNG 1: CON SỐ KHỔNG LỒ 2^64 - 1 -->
+        <div style="background: #ede9fe; border-left: 5px solid #7c3aed; border-radius: 8px; padding: 15px; margin-top: 15px;">
+          💡 <strong>Vận dụng 1 (SGK):</strong> Số hạt thóc ở ô thứ 7 là <strong>2⁶ = 64 hạt</strong>.<br>
+          Tổng số thóc trên cả 64 ô là <strong>2⁶⁴ - 1 ≈ 18 tỉ tỉ hạt</strong> (khoảng <strong>369 tỉ tấn thóc</strong>)! Toàn bộ sản lượng lúa gạo của toàn Trái Đất trong hàng trăm năm cũng không đủ trả thưởng!
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 2: CỖ MÁY LUỸ THỪA a^n & SỐ CHÍNH PHƯƠNG (SGK TRANG 22 - 23)
+         ==================================================================== -->
+    <section id="co-may-luy-thua" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">⚡</div>
+        <div class="card-header-text">
+          <h2>2. Định Nghĩa Luỹ Thừa & Bộ Sưu Tập Số Chính Phương</h2>
+          <p>Luỹ thừa bậc n của số tự nhiên a là tích của n thừa số bằng nhau (aⁿ = a • a • ... • a)</p>
+        </div>
+      </div>
+
+      <!-- ĐỊNH NGHĨA TRỌNG TÂM -->
+      <div style="background: #fdf4ff; border: 2px solid #f0abfc; border-radius: 14px; padding: 18px 22px; margin-bottom: 20px;">
+        <h3 style="color: #86198f; margin-bottom: 6px;">📌 QUY TẮC CỐT LÕI (SGK Trang 22):</h3>
+        <p style="font-size: 1.15rem; color: #4a044e; margin-bottom: 10px;">
+          <strong>Luỹ thừa bậc n của số tự nhiên a</strong> là tích của <strong>n thừa số bằng nhau</strong>, mỗi thừa số bằng a:
+        </p>
+        <div style="text-align: center; font-size: 1.6rem; font-weight: 900; color: #701a75; background: #ffffff; padding: 10px; border-radius: 10px; border: 1px dashed #d946ef;">
+          aⁿ = a • a • ... • a &nbsp;&nbsp;(với n ∈ ℕ*)
+        </div>
+        <p style="margin-top: 10px; font-size: 1rem; color: #4a044e;">
+          • <strong>a</strong> gọi là <strong>cơ số</strong> • <strong>n</strong> gọi là <strong>số mũ</strong>.<br>
+          • Đọc là: <em>"a mũ n"</em> hoặc <em>"a luỹ thừa n"</em>.<br>
+          • Quy ước đặc biệt: <strong>a¹ = a</strong> &nbsp;|&nbsp; <strong>a²</strong> gọi là <strong>bình phương</strong> &nbsp;|&nbsp; <strong>a³</strong> gọi là <strong>lập phương</strong>.
+        </p>
+      </div>
+
+      <!-- CỖ MÁY TÍNH TOÁN LUỸ THỪA ĐỘNG -->
+      <div class="power-machine">
+        <h3 style="text-align: center; margin-bottom: 15px; color: #38bdf8; font-size: 1.3rem;">
+          ⚙️ CỖ MÁY BUNG KHAI TRIỂN LUỸ THỪA aⁿ
+        </h3>
+        <div class="machine-inputs">
+          <div class="machine-box">
+            <label for="machine-base">Cơ số (a)</label>
+            <input type="number" id="machine-base" class="machine-input" value="3" min="1" max="50" oninput="updatePowerMachine()">
+          </div>
+
+          <div class="power-symbol">^</div>
+
+          <div class="machine-box">
+            <label for="machine-exponent">Số mũ (n)</label>
+            <input type="number" id="machine-exponent" class="machine-input" value="4" min="0" max="15" oninput="updatePowerMachine()">
+          </div>
+        </div>
+
+        <div class="machine-result-screen">
+          <div class="machine-expansion" id="machine-expansion-display">
+            3⁴ = 3 • 3 • 3 • 3 (4 thừa số 3)
+          </div>
+          <div class="machine-result-val" id="machine-result-display">
+            = 81
+          </div>
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 8px; margin-top: 15px; flex-wrap: wrap;">
+          <button class="nav-pill" onclick="setPowerPreset(3, 5)">Ví dụ 1a: 3⁵</button>
+          <button class="nav-pill" onclick="setPowerPreset(11, 2)">Ví dụ 1b: 11²</button>
+          <button class="nav-pill" onclick="setPowerPreset(2, 5)">Bài 1.38a: 2⁵</button>
+          <button class="nav-pill" onclick="setPowerPreset(3, 3)">Bài 1.38b: 3³</button>
+          <button class="nav-pill" onclick="setPowerPreset(10, 9)">Bài 1.38d: 10⁹</button>
+        </div>
+      </div>
+
+      <!-- SỐ CHÍNH PHƯƠNG (LUYỆN TẬP 1 & HÌNH VUÔNG CHẤM BI) -->
+      <div style="margin-top: 25px;">
+        <h3 style="color: var(--primary-dark); margin-bottom: 6px;">
+          🟩 Bảng Bình Phương (1² đến 10²) & Số Chính Phương (Luyện tập 1 SGK)
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem;">
+          Số chính phương là bình phương của một số tự nhiên (0, 1, 4, 9, 16, 25...). Các chấm bi có thể xếp vừa vặn thành một hình vuông kỳ diệu!
+        </p>
+
+        <div class="squares-board" id="squares-board-container">
+          <!-- Rendered by JS 1 to 10 -->
+        </div>
+
+        <div id="square-detail-box" style="margin-top: 15px; background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 15px; text-align: center;">
+          <div id="square-detail-title" style="font-size: 1.2rem; font-weight: 800; color: #4338ca;">
+            Nhấp vào ô số bất kì để ngắm hình vuông chấm bi!
+          </div>
+          <div id="square-dots-visual" style="margin-top: 10px;"></div>
+        </div>
+      </div>
+
+      <!-- THÁP SỐ KỲ DIỆU (BÀI 1.40) & TỔNG SỐ LẺ (BÀI 1.43) -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px;">
+        <div class="tower-container">
+          <h4 style="color: #1e40af; margin-bottom: 8px;">✨ Tháp Số Đối Xứng Tuyệt Mỹ (Bài 1.40)</h4>
+          <div class="tower-line">11² = 121</div>
+          <div class="tower-line">111² = 12 321</div>
+          <div class="tower-line" style="color: #dc2626; font-size: 1.35rem;">
+            1 111² = 1 234 321!
+          </div>
+          <p style="font-size: 0.85rem; color: #64748b; margin-top: 6px;">
+            Số chữ số 1 tăng lên đến đâu thì dãy số đếm đối xứng tăng lên đến đó!
+          </p>
+        </div>
+
+        <div class="tower-container" style="background: #f0fdf4; border-color: #86efac;">
+          <h4 style="color: #166534; margin-bottom: 8px;">🔢 Tổng Các Số Lẻ = Bình Phương (Bài 1.43)</h4>
+          <div class="tower-line" style="color: #15803d;">1 + 3 = 4 = 2²</div>
+          <div class="tower-line" style="color: #15803d;">1 + 3 + 5 = 9 = 3²</div>
+          <div class="tower-line" style="color: #15803d;">1 + 3 + 5 + 7 = 16 = 4²</div>
+          <div class="tower-line" style="color: #b91c1c; font-size: 1.35rem;">1 + 3 + 5 + 7 + 9 = 25 = 5²</div>
+          <p style="font-size: 0.85rem; color: #166534; margin-top: 6px;">
+            Tổng của n số lẻ liên tiếp đầu tiên luôn bằng n²!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 3: NHÂN & CHIA CÙNG CƠ SỐ (SGK TRANG 23 - 24)
+         ==================================================================== -->
+    <section id="nhan-chia-cung-co-so" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🎯</div>
+        <div class="card-header-text">
+          <h2>3. Nhân & Chia Hai Luỹ Thừa Cùng Cơ Số</h2>
+          <p>Ghi nhớ 2 tuyệt chiêu: Nhân thì CỘNG số mũ, Chia thì TRỪ số mũ!</p>
+        </div>
+      </div>
+
+      <div class="formula-cards-row">
+        <!-- NHÂN CÙNG CƠ SỐ -->
+        <div class="formula-card multiply">
+          <h3>✖️ PHÉP NHÂN CÙNG CƠ SỐ (SGK Tr.23)</h3>
+          <p>Khi nhân hai luỹ thừa cùng cơ số, ta <strong>giữ nguyên cơ số</strong> và <strong>cộng các số mũ</strong>:</p>
+          <div class="formula-math">aᵐ • aⁿ = aᵐ⁺ⁿ</div>
+          <div class="formula-note">
+            Ví dụ 2: 5⁶ • 5³ = 5⁶⁺³ = 5⁹<br>
+            10⁵ • 10⁴ • 10² = 10⁵⁺⁴⁺² = 10¹¹
+          </div>
+        </div>
+
+        <!-- CHIA CÙNG CƠ SỐ -->
+        <div class="formula-card divide">
+          <h3>➗ PHÉP CHIA CÙNG CƠ SỐ (SGK Tr.24)</h3>
+          <p>Khi chia hai luỹ thừa cùng cơ số (khác 0), ta <strong>giữ nguyên cơ số</strong> và <strong>lấy số mũ bị chia trừ số mũ chia</strong>:</p>
+          <div class="formula-math">aᵐ : aⁿ = aᵐ⁻ⁿ &nbsp;(a ≠ 0, m ≥ n)</div>
+          <div class="formula-note">
+            Ví dụ 3: 2⁶ : 2³ = 2⁶⁻³ = 2³<br>
+            Quy ước vàng: <strong>a⁰ = 1</strong> (với a ≠ 0)
+          </div>
+        </div>
+      </div>
+
+      <!-- ĐẤU TRƯỜNG TÍNH RÚT GỌN SIÊU TỐC -->
+      <div class="speed-arena">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+          <h3 style="color: #0369a1;">⚡ THỬ THÁCH: BẺ KHÓA RÚT GỌN SIÊU TỐC (LUYỆN TẬP 2, 3 & BÀI 1.42)</h3>
+          <span style="font-weight: 800; color: #0284c7;" id="speed-counter">Nhiệm vụ 1/7</span>
+        </div>
+
+        <div class="speed-question-box">
+          <div style="font-size: 0.95rem; color: #64748b; margin-bottom: 6px;">Viết kết quả phép tính dưới dạng một luỹ thừa:</div>
+          <div class="speed-problem-text" id="speed-problem-display">5³ • 5⁷ = ?</div>
+        </div>
+
+        <div class="speed-options-grid" id="speed-options-container">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div id="speed-feedback" style="text-align: center; margin-top: 15px; font-weight: 800; font-size: 1.1rem; min-height: 28px;"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 4: GIẢI MÃ VŨ TRỤ, TẾ BÀO SỐNG & LUỸ THỪA 10 (SGK TRANG 23 - 24)
+         ==================================================================== -->
+    <section id="vu-tru-sinh-hoc" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🌌</div>
+        <div class="card-header-text">
+          <h2>4. Khám Phá Vũ Trụ & Tế Bào Sống (Bài 1.44, 1.45 & Luỹ Thừa Của 10)</h2>
+          <p>Luỹ thừa đưa chúng ta chạm tới kích thước bao la của vũ trụ và thế giới vi mô kì vĩ!</p>
+        </div>
+      </div>
+
+      <!-- VẬN DỤNG 2 & BÀI 1.39: LUỸ THỪA CỦA 10 -->
+      <div style="background: #f8fafc; border: 2px solid #cbd5e1; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+        <h3 style="color: #0f172a; margin-bottom: 8px;">
+          🔢 Viết Số Tự Nhiên Dưới Dạng Tổng Luỹ Thừa Của 10 (Vận dụng 2 & Bài 1.39 SGK)
+        </h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 12px;">
+          Mỗi hàng đơn vị, chục, trăm, nghìn,... đều tương ứng với một luỹ thừa của 10: 10⁰ = 1, 10¹ = 10, 10² = 100, 10³ = 1 000, 10⁴ = 10 000...
+        </p>
+        <div style="background: #ffffff; border: 2px dashed #94a3b8; border-radius: 8px; padding: 12px 16px; font-family: monospace; font-size: 1.05rem;">
+          Mẫu: 4 257 = 4 • 10³ + 2 • 10² + 5 • 10 + 7<br>
+          a) 23 197 = <strong>2 • 10⁴ + 3 • 10³ + 1 • 10² + 9 • 10 + 7</strong><br>
+          b) 203 184 = <strong>2 • 10⁵ + 3 • 10³ + 1 • 10² + 8 • 10 + 4</strong><br>
+          c) 883 001 = <strong>8 • 10⁵ + 8 • 10⁴ + 3 • 10³ + 1</strong>
+        </div>
+      </div>
+
+      <div class="space-bio-grid">
+        <!-- BÀI 1.44: VŨ TRỤ & MẶT TRỜI -->
+        <div class="cosmic-box">
+          <h3>☀️ Trạm Quan Sát Mặt Trời (Bài 1.44 SGK)</h3>
+          <p style="font-size: 0.92rem; color: #cbd5e1;">
+            • Khối lượng Trái Đất: khoảng <strong>60 • 10²⁰ tấn</strong>.<br>
+            • Mặt Trời tiêu thụ: <strong>6 • 10⁶ tấn</strong> khí hydrogen mỗi giây.<br>
+            • Mặt Trời cần bao nhiêu giây để tiêu thụ lượng khí bằng cả Trái Đất?
+          </p>
+
+          <div class="real-world-calc-step" style="color: #38bdf8;">
+            (60 • 10²⁰) : (6 • 10⁶)<br>
+            = (60 : 6) • (10²⁰ : 10⁶)<br>
+            = 10 • 10¹⁴ = <strong>10¹⁵ (giây)</strong>
+          </div>
+          <div style="font-size: 0.85rem; color: #94a3b8;">
+            🚀 10¹⁵ giây tương đương với hơn <strong>31 triệu năm</strong>! Một con số vô cùng khổng lồ!
+          </div>
+        </div>
+
+        <!-- BÀI 1.45: PHÒNG THÍ NGHIỆM TẾ BÀO HỒNG CẦU -->
+        <div class="bio-box">
+          <h3>🩸 Phòng Thí Nghiệm Tế Bào Hồng Cầu (Bài 1.45 SGK)</h3>
+          <p style="font-size: 0.92rem; color: #fecaca;">
+            • Mỗi giây, cơ thể người tạo ra khoảng <strong>25 • 10⁵</strong> tế bào hồng cầu.<br>
+            • Hỏi trong 1 giờ (3 600 giây), cơ thể tạo ra bao nhiêu tế bào hồng cầu?
+          </p>
+
+          <div class="real-world-calc-step" style="color: #f87171;">
+            25 • 10⁵ • 3 600<br>
+            = 25 • 36 • 10² • 10⁵<br>
+            = 900 • 10⁷ = <strong>9 • 10⁹ (tế bào)</strong>
+          </div>
+          <div style="font-size: 0.85rem; color: #fca5a5;">
+            🔬 Trong đúng 1 giờ, cơ thể em đã tự sinh ra <strong>9 tỉ tế bào hồng cầu</strong> để nuôi dưỡng sự sống!
+          </div>
+        </div>
+      </div>
+
+      <!-- EM CÓ BIẾT: ÂM NHẠC & LUỸ THỪA CỦA 2 -->
+      <div style="background: #fdf2f8; border: 2px solid #fbcfe8; border-radius: 12px; padding: 15px 20px; margin-top: 20px;">
+        🎵 <strong>EM CÓ BIẾT? (SGK Trang 24):</strong> Trong âm nhạc, trường độ nốt nhạc tuân theo luỹ thừa của 2:<br>
+        1 nốt tròn = <strong>2¹</strong> nốt trắng = <strong>2²</strong> nốt đen = <strong>2³</strong> nốt móc đơn = <strong>2⁴</strong> nốt móc kép = <strong>2⁵</strong> nốt móc ba!
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 5: ĐẤU TRƯỜNG TRẮC NGHIỆM 10 CÂU (BÀI 1.36 - 1.45 SGK)
+         ==================================================================== -->
+    <section id="dau-truong-quiz" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🏆</div>
+        <div class="card-header-text">
+          <h2>5. Đấu Trường Đỉnh Cao – 10 Câu Hỏi Trắc Nghiệm SGK</h2>
+          <p>Bao quát toàn bộ bài tập 1.36 đến 1.45 SGK trang 24. Nhận điểm, sao và mở khóa huy hiệu!</p>
+        </div>
+      </div>
+
+      <div class="quiz-arena">
+        <div class="quiz-progress-bar-bg">
+          <div class="quiz-progress-bar-fill" id="quiz-progress-bar"></div>
+        </div>
+
+        <div class="quiz-header-status">
+          <span id="quiz-question-number">Câu hỏi 1 / 10</span>
+          <span id="quiz-streak-status">🔥 Combo: 0</span>
+        </div>
+
+        <div class="quiz-question-box">
+          <div class="quiz-question-title" id="quiz-question-title">
+            Đang tải câu hỏi...
+          </div>
+        </div>
+
+        <div class="quiz-answers-grid" id="quiz-answers-container">
+          <!-- 4 option buttons rendered by JS -->
+        </div>
+
+        <div class="quiz-feedback" id="quiz-feedback">
+          <!-- Feedback rendered by JS -->
+        </div>
+
+        <div style="text-align: right;">
+          <button class="btn-next-question" id="btn-next-question" onclick="nextQuizQuestion()">
+            <span>Câu Tiếp Theo ➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 6: BỘ SƯU TẬP HUY HIỆU & GIẤY CHỨNG NHẬN VINH DANH A4
+         ==================================================================== -->
+    <section id="chung-nhan-vinh-danh" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🎖️</div>
+        <div class="card-header-text">
+          <h2>6. Bộ Sưu Tập Huy Hiệu & Giấy Chứng Nhận Vinh Danh</h2>
+          <p>Hoàn thành các thử thách để thăng hạng và in Giấy Chứng Nhận lưu giữ thành tích!</p>
+        </div>
+      </div>
+
+      <!-- LƯỚI HUY HIỆU -->
+      <div class="badges-container">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">♟️</div>
+          <div class="badge-card-name">Nhà Khai Sáng Bàn Cờ</div>
+          <div class="badge-card-desc">Khám phá bí mật ô cờ thứ 8 và số hạt thóc 2⁶⁴-1</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">🟩</div>
+          <div class="badge-card-name">Hiệp Sĩ Chính Phương</div>
+          <div class="badge-card-desc">Bẻ khóa các số chính phương từ 1² đến 10²</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">⚡</div>
+          <div class="badge-card-name">Vua Rút Gọn Cùng Cơ Số</div>
+          <div class="badge-card-desc">Hoàn thành thử thách nhân chia luỹ thừa siêu tốc</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Thần Bất Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu trả lời đúng liên tiếp</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Đại Kiện Tướng Vũ Trụ</div>
+          <div class="badge-card-desc">Hoàn thành Đấu trường đạt từ 80 điểm trở lên</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN CHUẨN IN A4 -->
+      <div class="certificate-wrapper" id="certificate-print-area">
+        <div class="cert-seal">🎖️</div>
+        <div class="cert-super-title">HỌC LIỆU SỐ TOÁN 6 • BỘ SÁCH KẾT NỐI TRI THỨC VỚI CUỘC SỐNG</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.15rem; color: #475569;">Trao tặng cho phi hành gia tài ba:</p>
+        <div class="cert-student-name" id="cert-student-name-display">Nhà Thám Hiểm Toán Học</div>
+        <p style="font-size: 1.15rem; color: #78350f; max-width: 650px; margin: 0 auto; line-height: 1.6;">
+          Đã hoàn thành xuất sắc toàn bộ kiến thức lý thuyết, các hoạt động khám phá và bộ bài tập SGK của <br>
+          <strong>BÀI 6: LUỸ THỪA VỚI SỐ MŨ TỰ NHIÊN</strong>
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">🪙 Điểm số: <span id="cert-score-display">0</span></div>
+          <div class="cert-stat-badge">⭐ Sao vàng: <span id="cert-stars-display">0</span></div>
+          <div class="cert-stat-badge">🏅 Danh hiệu: <span id="cert-rank-display">Tân Binh Vũ Trụ</span></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 35px; padding: 0 40px; color: #64748b; font-style: italic;">
+          <div>Ngày hoàn thành: <span id="cert-date-display">...</span></div>
+          <div>Giáo viên hướng dẫn: AI Antigravity</div>
+        </div>
+      </div>
+
+      <!-- HÀNH ĐỘNG -->
+      <div class="cert-actions">
+        <button class="btn-cert btn-print" onclick="window.print()">
+          🖨️ In / Lưu PDF Giấy Chứng Nhận
+        </button>
+        <button class="btn-cert btn-replay" onclick="restartLesson()">
+          🔄 Chinh Phục Lại Bài 6
+        </button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai5/index.html" class="btn-cert btn-prev-lesson">
+          ⬅️ Về Bài 5: Phép Nhân & Chia
+        </a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai7/index.html" class="btn-cert" style="background: linear-gradient(135deg, #059669, #0284c7); color: #fff; text-decoration: none;">
+          🚀 Tiếp Tục Bài 7: Thứ Tự Phép Tính ➡️
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CANVAS PHÁO HOA ĂN MỪNG -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>

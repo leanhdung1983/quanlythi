@@ -1,0 +1,330 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 17: Hàm Số Liên Tục | Toán 11 Kết Nối Tri Thức</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Bậc Thầy Hàm Số Liền Nét</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương V: Giới Hạn • Hàm Số Liên Tục — SGK Kết Nối Tri Thức</span>
+      <h1>BÀI 17: HÀM SỐ LIÊN TỤC</h1>
+      <p>Khám phá tính trơn tru, liền nét của thế giới giải tích: từ điều kiện liên tục tại một điểm $\lim\limits_{x \to x_0} f(x) = f(x_0)$ đến định lí giá trị trung gian Bolzano kì diệu giúp định vị nghiệm của phương trình phi tuyến!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="concept-card">
+          <div class="card-badge">Trọng Tâm 1</div>
+          <h3>1. Khái Niệm Hàm Số Liên Tục Tại Một Điểm</h3>
+          <p>Cho hàm số $y = f(x)$ xác định trên khoảng $(a; b)$ chứa điểm $x_0$.</p>
+          <div class="formula-box">
+            $$f(x) \text{ liên tục tại } x_0 \iff \lim\limits_{x \to x_0} f(x) = f(x_0)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>3 bước kiểm tra tính liên tục tại $x_0$:</strong>
+            <ol>
+              <li>Hàm số phải <strong>xác định</strong> tại $x_0$ (tức là $f(x_0)$ tồn tại).</li>
+              <li>Tồn tại giới hạn hữu hạn $\lim\limits_{x \to x_0} f(x)$ (tức $\lim\limits_{x \to x_0^+} f(x) = \lim\limits_{x \to x_0^-} f(x)$).</li>
+              <li>Giá trị giới hạn phải <strong>bằng đúng</strong> giá trị hàm số: $\lim\limits_{x \to x_0} f(x) = f(x_0)$.</li>
+            </ol>
+            Nếu vi phạm bất kì điều kiện nào, hàm số được gọi là <strong>gián đoạn tại điểm $x_0$</strong>.
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="concept-card">
+          <div class="card-badge">Trọng Tâm 2</div>
+          <h3>2. Hàm Số Liên Tục Trên Khoảng &amp; Trên Đoạn</h3>
+          <p>Mở rộng khái niệm liên tục trên toàn bộ tập hợp số thực:</p>
+          <div class="formula-box">
+            $$\text{Trên khoảng } (a; b): f(x) \text{ liên tục tại mọi điểm } x \in (a; b)$$
+            $$\text{Trên đoạn } [a; b]: \begin{cases} f(x) \text{ liên tục trên } (a; b) \\ \lim\limits_{x \to a^+} f(x) = f(a) \\ \lim\limits_{x \to b^-} f(x) = f(b) \end{cases}$$
+          </div>
+          <p><strong>Ý nghĩa hình học trực quan:</strong> Đồ thị của một hàm số liên tục trên một khoảng/đoạn là một <strong>đường nét liền không bị đứt đoạn</strong>, có thể vẽ được trọn vẹn mà không cần nhấc bút lên khỏi mặt giấy.</p>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="concept-card">
+          <div class="card-badge">Trọng Tâm 3</div>
+          <h3>3. Tính Liên Tục Của Các Hàm Số Sơ Cấp</h3>
+          <p>Định lí nền tảng cho việc tính toán nhanh giới hạn:</p>
+          <div class="formula-box">
+            $$\text{Các hàm đa thức, phân thức hữu tỉ, lượng giác } (\sin, \cos, \tan, \cot), \text{ hàm căn thức}$$
+            $$\text{đều liên tục trên từng khoảng xác định của chúng.}$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Định lí phép toán đại số:</strong>
+            Nếu $y = f(x)$ và $y = g(x)$ cùng liên tục tại $x_0$ thì:
+            <ul>
+              <li>$f(x) \pm g(x)$ và $f(x) \cdot g(x)$ liên tục tại $x_0$.</li>
+              <li>$\frac{f(x)}{g(x)}$ liên tục tại $x_0$ nếu $g(x_0) \ne 0$.</li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="concept-card">
+          <div class="card-badge">Trọng Tâm 4</div>
+          <h3>4. Định Lí Giá Trị Trung Gian (Định Lí Bolzano)</h3>
+          <p>Vũ khí tối thượng chứng minh sự tồn tại nghiệm của phương trình đại số phi tuyến:</p>
+          <div class="formula-box">
+            $$\begin{cases} f(x) \text{ liên tục trên đoạn } [a; b] \\ f(a) \cdot f(b) < 0 \end{cases} \implies \exists c \in (a; b): f(c) = 0$$
+          </div>
+          <p><strong>Minh họa thực tế:</strong> Nếu đồ thị bắt đầu ở phía dưới trục hoành ($f(a) < 0$) và kết thúc ở phía trên trục hoành ($f(b) > 0$) mà là một đường liền nét, nó <strong>bắt buộc phải cắt ngang qua trục hoành</strong> tại ít nhất một điểm nghiệm $c$!</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <!-- Lab 1 -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">🧪 Phòng Thí Nghiệm 1</span>
+            <h3>Cây Cầu Nối Liền Nét: Hàn Gắn Điểm Gián Đoạn</h3>
+            <p>Điều chỉnh tham số $m$ để hàn gắn hai nhánh đồ thị rẽ nhánh thành một đường cong liên tục liền mạch.</p>
+          </div>
+          <div class="lab-controls">
+            <label for="bridgeFuncSelect">Chọn hàm số phân nhánh:</label>
+            <select id="bridgeFuncSelect" class="form-select">
+              <option value="func1">f(x) = { x² khi x < 1; -x + m khi x ≥ 1 }</option>
+              <option value="func2">f(x) = { sin(x) khi x ≥ 0; -x + m khi x < 0 }</option>
+              <option value="func3">f(x) = { (x² - 4)/(x - 2) khi x ≠ 2; m khi x = 2 }</option>
+            </select>
+            <div class="slider-row">
+              <label for="mSlider">Tham số hàn gắn $m$:</label>
+              <input type="range" id="mSlider" min="-2" max="6" step="0.1" value="0.5">
+              <span class="slider-val" id="mValDisplay">0.50</span>
+            </div>
+            <div class="btn-group">
+              <button class="btn-sm" id="btnAutoBridge">✨ Tự động tìm m chuẩn</button>
+              <button class="btn-sm" id="btnResetLab1">🔄 Đặt lại</button>
+            </div>
+          </div>
+          <canvas id="canvasLab1" width="560" height="320" class="lab-canvas"></canvas>
+          <div class="lab-output" id="lab1Output">
+            Đang đo độ hở khe nứt gián đoạn...
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-tag">🧪 Phòng Thí Nghiệm 2</span>
+            <h3>Máy Quét Nghiệm Bolzano (Định Lí Giá Trị Trung Gian)</h3>
+            <p>Kéo chọn hai đầu mút $[a; b]$ trái dấu để "bẫy" nghiệm thực cắt ngang trục hoành.</p>
+          </div>
+          <div class="lab-controls">
+            <label for="bolzanoFuncSelect">Chọn phương trình nghiên cứu:</label>
+            <select id="bolzanoFuncSelect" class="form-select">
+              <option value="poly5">f(x) = x⁵ + x³ - 10 (SGK Ví dụ 6, nghiệm gần 1.54)</option>
+              <option value="cubic">f(x) = x³ - 3x - 1 (Có 3 nghiệm thực)</option>
+              <option value="trig">f(x) = cos(x) - x (Nghiệm x ≈ 0.739)</option>
+            </select>
+            <div class="slider-row">
+              <label for="aSlider">Đầu mút $a$:</label>
+              <input type="range" id="aSlider" min="-3" max="3" step="0.1" value="0">
+              <span class="slider-val" id="aValDisplay">0.0</span>
+            </div>
+            <div class="slider-row">
+              <label for="bSlider">Đầu mút $b$:</label>
+              <input type="range" id="bSlider" min="-3" max="3" step="0.1" value="2">
+              <span class="slider-val" id="bValDisplay">2.0</span>
+            </div>
+          </div>
+          <canvas id="canvasLab2" width="560" height="320" class="lab-canvas"></canvas>
+          <div class="lab-output" id="lab2Output">
+            Đang phân tích dấu của f(a) và f(b)...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ ĐẤU TRƯỜNG SGK: THỬ THÁCH HÀM SỐ LIÊN TỤC</h2>
+          <p>10 câu hỏi trắc nghiệm chuyên sâu từ bài tập SGK Bài 17. Nhận phản hồi và lời giải chi tiết tức thì!</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-pill">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-pill">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div id="quizContainer" class="quiz-grid"></div>
+    </section>
+
+    <!-- Tab 4: Badges -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-intro">
+        <h2>🏆 HUY HIỆU &amp; GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p>Làm chủ giải tích liên tục để nhận giấy chứng nhận vinh danh danh dự A4.</p>
+      </div>
+      <div class="badge-grid">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-icon">🌉</div>
+          <h4>Người Xây Cầu</h4>
+          <p>Hoàn thành câu hỏi đầu tiên về tính liên tục.</p>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-icon">⚡</div>
+          <h4>Chuỗi Liền Mạch</h4>
+          <p>Đạt chuỗi trả lời đúng liên tiếp 3 câu hỏi.</p>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-icon">🧪</div>
+          <h4>Bậc Thầy Bolzano</h4>
+          <p>Trải nghiệm và thử nghiệm cả 2 phòng thí nghiệm tương tác.</p>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-icon">💎</div>
+          <h4>Kĩ Sư Giải Tích</h4>
+          <p>Đạt tối thiểu 160 XP trong Đấu Trường.</p>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <h4>Đại Kiện Tướng Hàm Số</h4>
+          <p>Đạt điểm tuyệt đối 10/10 câu hỏi SGK.</p>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-border">
+          <div class="cert-inner">
+            <div class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+            <div class="cert-badge-gold">🏅 BẢNG VÀNG DANH DỰ 🏅</div>
+            <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+            <p class="cert-subtitle">Chứng nhận học sinh xuất sắc hoàn thành chuyên đề học tập tương tác</p>
+            <div class="cert-name" id="certStudentName">Chiến Binh Logic</div>
+            <p class="cert-desc">Đã làm chủ xuất sắc toàn bộ kiến thức của <strong>Bài 17: Hàm số liên tục</strong>, bao gồm điều kiện liên tục tại một điểm, tính liên tục của các hàm số sơ cấp và ứng dụng định lí giá trị trung gian Bolzano theo chương trình Toán 11 Kết Nối Tri Thức.</p>
+            <div class="cert-footer">
+              <div class="cert-seal">
+                <div class="seal-circle">CHỨNG NHẬN<br>XUẤT SẮC</div>
+              </div>
+              <div class="cert-date" id="certDateDisplay">Đà Nẵng, ngày 21 tháng 10 năm 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="cert-actions">
+        <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai16/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 16: Giới Hạn Của Hàm Số</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_ontap_chuong5/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương V</span>
+      </a>
+    </footer>
+
+    <!-- Avatar Selection Modal (Hidden on Startup) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-dialog">
+        <div class="modal-header">
+          <h3>Chọn Nhân Vật Đồng Hành</h3>
+          <button class="modal-close" id="avatarModalClose">&times;</button>
+        </div>
+        <div class="modal-body">
+          <div class="avatar-grid">
+            <div class="avatar-option active" data-avatar="👑" data-name="Chiến Binh Logic" data-title="Bậc Thầy Hàm Số Liền Nét">
+              <span class="av-emoji">👑</span>
+              <span class="av-name">Chiến Binh Logic</span>
+            </div>
+            <div class="avatar-option" data-avatar="🧙‍♂️" data-name="Phù Thủy Bolzano" data-title="Pháp Sư Bẫy Nghiệm">
+              <span class="av-emoji">🧙‍♂️</span>
+              <span class="av-name">Phù Thủy Bolzano</span>
+            </div>
+            <div class="avatar-option" data-avatar="🚀" data-name="Phi Hành Gia Cauchy" data-title="Nhà Du Hành Không Gian Liền Nét">
+              <span class="av-emoji">🚀</span>
+              <span class="av-name">Phi Hành Gia Cauchy</span>
+            </div>
+            <div class="avatar-option" data-avatar="⚡" data-name="Tia Chớp Giải Tích" data-title="Hiệp Sĩ Hàn Gắn Gián Đoạn">
+              <span class="av-emoji">⚡</span>
+              <span class="av-name">Tia Chớp Giải Tích</span>
+            </div>
+            <div class="avatar-option" data-avatar="🦊" data-name="Hồ Ly Thông Thái" data-title="Học Giả Giải Tích Cổ Điển">
+              <span class="av-emoji">🦊</span>
+              <span class="av-name">Hồ Ly Thông Thái</span>
+            </div>
+            <div class="avatar-option" data-avatar="🤖" data-name="Cơ Thuật AI" data-title="Siêu Máy Tính Chia Đôi Nghiệm">
+              <span class="av-emoji">🤖</span>
+              <span class="av-name">Cơ Thuật AI</span>
+            </div>
+            <div class="avatar-option" data-avatar="🦉" data-name="Cú Đêm Học Giả" data-title="Bác Học Tô-pô &amp; Giải Tích">
+              <span class="av-emoji">🦉</span>
+              <span class="av-name">Cú Đêm Học Giả</span>
+            </div>
+            <div class="avatar-option" data-avatar="🦄" data-name="Kì Lân Huyền Thoại" data-title="Hộ Vệ Tri Thức Toán Học">
+              <span class="av-emoji">🦄</span>
+              <span class="av-name">Kì Lân Huyền Thoại</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

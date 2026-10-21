@@ -52,21 +52,31 @@ import { youtubeEmbed } from "../../shared/lessonAuthoring";
 import { normalizeGrade } from "../../shared/matrixCatalog";
 import { LEARNING_GRADES, normalizeLearningCatalog } from "../../shared/learningGrades";
 import {
-  GRADE_12_CHAPTERS,
-  GRADE_12_LESSONS,
-  Grade12Lesson,
-} from "../data/grade12Lessons";
+  GRADE_6_CHAPTERS,
+  GRADE_6_LESSONS,
+  Grade6Lesson,
+} from "../data/grade6Lessons";
 import {
   GRADE_10_CHAPTERS,
   GRADE_10_LESSONS,
   Grade10Lesson,
 } from "../data/grade10Lessons";
+import {
+  GRADE_11_CHAPTERS,
+  GRADE_11_LESSONS,
+  Grade11Lesson,
+} from "../data/grade11Lessons";
+import {
+  GRADE_12_CHAPTERS,
+  GRADE_12_LESSONS,
+  Grade12Lesson,
+} from "../data/grade12Lessons";
 
 type Resume = { unitId?: number; lessonId?: string; sectionId?: number | null; updatedAt: number };
 type Panel = "STUDY" | "PRACTICE";
 type LessonSubTab = "all" | "theory" | "labs" | "arena" | "badges";
 
-type InteractiveLesson = Grade10Lesson | Grade12Lesson;
+type InteractiveLesson = Grade6Lesson | Grade10Lesson | Grade11Lesson | Grade12Lesson;
 
 interface GradeProgress {
   completed: boolean;
@@ -99,14 +109,22 @@ export const Learning: React.FC = () => {
 
   // Route parameters
   const unitId = Number(params.get("unit_id") || params.get("unit")) || null;
-  const lessonParam = params.get("lesson") || params.get("lesson12") || params.get("lesson10") || null;
-  
+  const lessonParam =
+    params.get("lesson") ||
+    params.get("lesson6") ||
+    params.get("lesson10") ||
+    params.get("lesson11") ||
+    params.get("lesson12") ||
+    null;
+
   const [grade, setGrade] = useState(() => {
     const g = params.get("grade");
     if (g) return g;
+    if (params.get("lesson6")) return "6";
+    if (params.get("lesson11")) return "11";
     if (params.get("lesson12")) return "12";
     if (params.get("lesson10")) return "10";
-    return "10";
+    return "6";
   });
   const [subject, setSubject] = useState("ALL");
   const [search, setSearch] = useState("");
@@ -125,10 +143,28 @@ export const Learning: React.FC = () => {
   const [interactiveExpanded, setInteractiveExpanded] = useState(false);
 
   // Storage keys for progress
+  const g6StorageKey = "learning_hub:grade6:" + (user?.id || "guest");
+  const [g6Progress, setG6Progress] = useState<Record<string, GradeProgress>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(g6StorageKey) || "{}");
+    } catch {
+      return {};
+    }
+  });
+
   const g10StorageKey = "learning_hub:grade10:" + (user?.id || "guest");
   const [g10Progress, setG10Progress] = useState<Record<string, GradeProgress>>(() => {
     try {
       return JSON.parse(localStorage.getItem(g10StorageKey) || "{}");
+    } catch {
+      return {};
+    }
+  });
+
+  const g11StorageKey = "learning_hub:grade11:" + (user?.id || "guest");
+  const [g11Progress, setG11Progress] = useState<Record<string, GradeProgress>>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(g11StorageKey) || "{}");
     } catch {
       return {};
     }
@@ -173,25 +209,51 @@ export const Learning: React.FC = () => {
 
   const current = catalog.find((u) => Number(u.id) === unitId);
 
-  // Determine current interactive lesson (Grade 10 or 12)
+  // Determine current interactive lesson (Grade 6, 10, 11, or 12)
   const currentInteractiveLesson = useMemo(() => {
     if (!lessonParam) return null;
+    if (grade === "6") {
+      return GRADE_6_LESSONS.find((l) => l.id === lessonParam) || null;
+    }
     if (grade === "10") {
-      return GRADE_10_LESSONS.find((l) => l.id === lessonParam) || GRADE_12_LESSONS.find((l) => l.id === lessonParam) || null;
+      return GRADE_10_LESSONS.find((l) => l.id === lessonParam) || null;
+    }
+    if (grade === "11") {
+      return GRADE_11_LESSONS.find((l) => l.id === lessonParam) || null;
     }
     if (grade === "12") {
-      return GRADE_12_LESSONS.find((l) => l.id === lessonParam) || GRADE_10_LESSONS.find((l) => l.id === lessonParam) || null;
+      return GRADE_12_LESSONS.find((l) => l.id === lessonParam) || null;
     }
-    return GRADE_10_LESSONS.find((l) => l.id === lessonParam) || GRADE_12_LESSONS.find((l) => l.id === lessonParam) || null;
+    return (
+      GRADE_6_LESSONS.find((l) => l.id === lessonParam) ||
+      GRADE_10_LESSONS.find((l) => l.id === lessonParam) ||
+      GRADE_11_LESSONS.find((l) => l.id === lessonParam) ||
+      GRADE_12_LESSONS.find((l) => l.id === lessonParam) ||
+      null
+    );
   }, [lessonParam, grade]);
 
   const currentLessonGrade = useMemo(() => {
-    if (!currentInteractiveLesson) return grade === "12" ? "12" : "10";
+    if (!currentInteractiveLesson) return grade;
+    if (GRADE_6_LESSONS.some((l) => l.id === currentInteractiveLesson.id)) return "6";
     if (GRADE_10_LESSONS.some((l) => l.id === currentInteractiveLesson.id)) return "10";
-    return "12";
+    if (GRADE_11_LESSONS.some((l) => l.id === currentInteractiveLesson.id)) return "11";
+    if (GRADE_12_LESSONS.some((l) => l.id === currentInteractiveLesson.id)) return "12";
+    return grade;
   }, [currentInteractiveLesson, grade]);
 
-  const activeProgress = currentLessonGrade === "10" ? g10Progress : g12Progress;
+  const activeProgress = useMemo(() => {
+    switch (currentLessonGrade) {
+      case "6":
+        return g6Progress;
+      case "11":
+        return g11Progress;
+      case "12":
+        return g12Progress;
+      default:
+        return g10Progress;
+    }
+  }, [currentLessonGrade, g6Progress, g10Progress, g11Progress, g12Progress]);
 
   const active = sections.find((s) => s.id === activeId);
   const completeIds = useMemo(
@@ -294,12 +356,22 @@ export const Learning: React.FC = () => {
       if (event.data?.type === "LESSON_COMPLETE") {
         const score = Number(event.data.score);
         const resolvedScore = Number.isFinite(score) ? Math.max(0, Math.min(10, score)) : 10;
-        
-        // If learning interactive lesson (Grade 10 or 12)
+
+        // If learning interactive lesson (Grade 6, 10, 11, or 12)
         if (currentInteractiveLesson) {
-          const isG10 = currentLessonGrade === "10";
-          const storageKey = isG10 ? g10StorageKey : g12StorageKey;
-          const setProgressFn = isG10 ? setG10Progress : setG12Progress;
+          const targetGrade = currentLessonGrade;
+          let storageKey = g10StorageKey;
+          let setProgressFn = setG10Progress;
+          if (targetGrade === "6") {
+            storageKey = g6StorageKey;
+            setProgressFn = setG6Progress;
+          } else if (targetGrade === "11") {
+            storageKey = g11StorageKey;
+            setProgressFn = setG11Progress;
+          } else if (targetGrade === "12") {
+            storageKey = g12StorageKey;
+            setProgressFn = setG12Progress;
+          }
 
           setProgressFn((prev) => {
             const next = {
@@ -317,7 +389,11 @@ export const Learning: React.FC = () => {
             }
             return next;
           });
-          setNotice(`🎉 Chúc mừng bạn đã hoàn thành Đấu trường với ${resolvedScore * 10}% điểm số! Tiến độ đã được lưu vào hệ thống.`);
+          setNotice(
+            `🎉 Chúc mừng bạn đã hoàn thành Đấu trường với ${
+              resolvedScore * 10
+            }% điểm số! Tiến độ đã được lưu vào hệ thống.`
+          );
         }
 
         // Also mark DB section complete if activeId is set
@@ -329,7 +405,16 @@ export const Learning: React.FC = () => {
 
     window.addEventListener("message", handlePlatformMessage);
     return () => window.removeEventListener("message", handlePlatformMessage);
-  }, [currentInteractiveLesson, currentLessonGrade, activeId, panel, g10StorageKey, g12StorageKey]);
+  }, [
+    currentInteractiveLesson,
+    currentLessonGrade,
+    activeId,
+    panel,
+    g6StorageKey,
+    g10StorageKey,
+    g11StorageKey,
+    g12StorageKey,
+  ]);
 
   // Navigation handlers
   const openInteractiveLesson = (lesson: InteractiveLesson, targetGrade: string) => {
@@ -400,7 +485,13 @@ export const Learning: React.FC = () => {
   };
 
   // Adjacent interactive lesson navigation
-  const currentGradeLessons = currentLessonGrade === "10" ? GRADE_10_LESSONS : GRADE_12_LESSONS;
+  const currentGradeLessons = useMemo(() => {
+    if (currentLessonGrade === "6") return GRADE_6_LESSONS;
+    if (currentLessonGrade === "11") return GRADE_11_LESSONS;
+    if (currentLessonGrade === "12") return GRADE_12_LESSONS;
+    return GRADE_10_LESSONS;
+  }, [currentLessonGrade]);
+
   const currentInteractiveIndex = currentInteractiveLesson
     ? currentGradeLessons.findIndex((l) => l.id === currentInteractiveLesson.id)
     : -1;
@@ -410,6 +501,24 @@ export const Learning: React.FC = () => {
     currentInteractiveIndex >= 0 && currentInteractiveIndex < currentGradeLessons.length - 1
       ? currentGradeLessons[currentInteractiveIndex + 1]
       : null;
+
+  // Grade 6 Catalog calculations
+  const g6CompletedCount = useMemo(() => {
+    return GRADE_6_LESSONS.filter((l) => g6Progress[l.id]?.completed).length;
+  }, [g6Progress]);
+
+  const g6FilteredLessons = useMemo(() => {
+    return GRADE_6_LESSONS.filter((l) => {
+      if (search) {
+        const query = searchLearningText(search);
+        const text = searchLearningText(l.title + " " + l.chapterName + " " + l.tag + " " + l.desc);
+        if (!text.includes(query)) return false;
+      }
+      if (filter === "COMPLETE") return !!g6Progress[l.id]?.completed;
+      if (filter === "IN_PROGRESS") return !g6Progress[l.id]?.completed;
+      return true;
+    });
+  }, [search, filter, g6Progress]);
 
   // Grade 10 Catalog calculations
   const g10CompletedCount = useMemo(() => {
@@ -428,6 +537,24 @@ export const Learning: React.FC = () => {
       return true;
     });
   }, [search, filter, g10Progress]);
+
+  // Grade 11 Catalog calculations
+  const g11CompletedCount = useMemo(() => {
+    return GRADE_11_LESSONS.filter((l) => g11Progress[l.id]?.completed).length;
+  }, [g11Progress]);
+
+  const g11FilteredLessons = useMemo(() => {
+    return GRADE_11_LESSONS.filter((l) => {
+      if (search) {
+        const query = searchLearningText(search);
+        const text = searchLearningText(l.title + " " + l.chapterName + " " + l.tag + " " + l.desc);
+        if (!text.includes(query)) return false;
+      }
+      if (filter === "COMPLETE") return !!g11Progress[l.id]?.completed;
+      if (filter === "IN_PROGRESS") return !g11Progress[l.id]?.completed;
+      return true;
+    });
+  }, [search, filter, g11Progress]);
 
   // Grade 12 Catalog calculations
   const g12CompletedCount = useMemo(() => {
@@ -907,11 +1034,13 @@ export const Learning: React.FC = () => {
                   setParams({ grade: e.target.value });
                 }}
               >
+                <option value="6">Lớp 6 (Toàn khóa 53 bài KNTT)</option>
                 <option value="10">Lớp 10 (Toàn khóa 37 bài KNTT)</option>
+                <option value="11">Lớp 11 (Toàn khóa 46 bài KNTT)</option>
                 <option value="12">Lớp 12 (Toàn khóa 26 bài KNTT)</option>
                 <option value="ALL">Tất cả khối lớp</option>
                 {grades
-                  .filter((g) => g !== "10" && g !== "12")
+                  .filter((g) => !["6", "10", "11", "12"].includes(g))
                   .map((g) => (
                     <option key={g} value={g}>
                       Lớp {g}
@@ -937,8 +1066,125 @@ export const Learning: React.FC = () => {
               </button>
             </section>
 
-            {/* Khi chọn xem LỚP 10: Hiển thị trọn bộ 37 Bài học KNTT tương tác trực tiếp */}
-            {grade === "10" ? (
+            {/* Khi chọn xem LỚP 6: Hiển thị trọn bộ 53 Bài học KNTT tương tác trực tiếp */}
+            {grade === "6" ? (
+              <div className="space-y-6">
+                {/* Hero Banner Khối 6 */}
+                <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-teal-950 to-slate-900 text-white p-6 md:p-8 border border-teal-500/30 shadow-xl">
+                  <div className="absolute right-0 top-0 h-64 w-64 rounded-full border-[40px] border-teal-500/10 translate-x-12 -translate-y-12 pointer-events-none" />
+                  <div className="relative grid md:grid-cols-[1.6fr_1fr] gap-6 items-center">
+                    <div className="space-y-3">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-teal-500/20 text-teal-300 text-[11px] font-bold uppercase tracking-wider border border-teal-400/30">
+                        <Sparkles size={13} className="text-amber-400 animate-pulse" />
+                        Trọn Bộ Toán 6 Kết Nối Tri Thức Với Cuộc Sống
+                      </div>
+                      <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">
+                        Không Gian Học Liệu Số Hóa Toàn Khóa Lớp 6
+                      </h2>
+                      <p className="text-xs md:text-sm text-slate-300 leading-relaxed max-w-xl">
+                        Tích hợp liền mạch toàn bộ 53 bài học hoàn chỉnh ngay trong hệ thống: Thí nghiệm trực quan sinh động, 106+ Phòng thí nghiệm Canvas 2D mô phỏng động, Đấu trường 10 câu hỏi SGK với Web Audio API và Bằng chứng nhận chuẩn in A4.
+                      </p>
+                      <div className="pt-2 flex items-center gap-3">
+                        <span className="text-xs font-semibold text-emerald-400 bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-500/30">
+                          🎯 Đã hoàn thành: {g6CompletedCount}/53 bài học ({Math.round((g6CompletedCount / 53) * 100)}%)
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { n: "53/53", label: "Bài học SGK KNTT" },
+                        { n: "106+", label: "Labs Canvas 2D" },
+                        { n: "530+", label: "Câu hỏi Đấu trường" },
+                        { n: "265", label: "Huy hiệu & Bằng khen" },
+                      ].map((stat) => (
+                        <div
+                          key={stat.label}
+                          className="rounded-2xl bg-white/5 border border-white/10 p-3.5 text-center backdrop-blur-sm"
+                        >
+                          <p className="text-xl font-black text-white">{stat.n}</p>
+                          <p className="text-[11px] text-slate-300 mt-1">{stat.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* Danh sách 10 Chương và 53 Bài học Lớp 6 */}
+                {GRADE_6_CHAPTERS.map((ch) => {
+                  const chLessons = g6FilteredLessons.filter((l) => l.chapterNumber === ch.num);
+                  if (!chLessons.length) return null;
+                  return (
+                    <section key={ch.num} className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-md border ${ch.badgeColor}`}>
+                            {ch.badge}
+                          </span>
+                          <h3 className="font-extrabold text-lg text-slate-900 mt-1">
+                            {ch.name.startsWith("Chương") ? ch.name : `Chương ${ch.num}. ${ch.name}`}
+                          </h3>
+                        </div>
+                        <span className="text-xs text-slate-400 font-medium">
+                          {chLessons.length} bài học
+                        </span>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {chLessons.map((l) => {
+                          const isDone = !!g6Progress[l.id]?.completed;
+                          const score = g6Progress[l.id]?.score;
+                          return (
+                            <article
+                              key={l.id}
+                              className="group bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-teal-950/5 hover:border-teal-300 transition-all duration-200"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-bold rounded-lg bg-teal-50 text-teal-700 px-2.5 py-1 border border-teal-100">
+                                  {l.tag.toUpperCase()}
+                                </span>
+                                {isDone ? (
+                                  <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                                    <CheckCircle2 size={13} />
+                                    {score ? `${score * 10}%` : "Đã học"}
+                                  </span>
+                                ) : (
+                                  <span className="text-[11px] text-slate-400 font-medium">Chưa học</span>
+                                )}
+                              </div>
+
+                              <div>
+                                <h4 className="font-extrabold text-base text-slate-900 leading-snug group-hover:text-teal-600 transition-colors line-clamp-2">
+                                  {l.title}
+                                </h4>
+                                <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">
+                                  {l.desc}
+                                </p>
+                              </div>
+
+                              <div className="flex flex-wrap gap-2 text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-auto">
+                                <span className="font-semibold text-teal-700">🧪 {l.labs ? (l.labs.length > 25 ? l.labs.substring(0, 25) + '…' : l.labs) : '2 Labs'}</span>
+                                <span className="text-slate-300">•</span>
+                                <span className="font-semibold text-emerald-700">⚔️ 10 Quiz</span>
+                                <span className="text-slate-300">•</span>
+                                <span className="font-semibold text-amber-700">🏆 Bằng A4</span>
+                              </div>
+
+                              <button
+                                onClick={() => openInteractiveLesson(l, "6")}
+                                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-teal-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
+                              >
+                                <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
+                                <ArrowRight size={14} />
+                              </button>
+                            </article>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            ) : grade === "10" ? (
               <div className="space-y-6">
                 {/* Hero Banner Khối 10 */}
                 <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 text-white p-6 md:p-8 border border-indigo-500/30 shadow-xl">
@@ -1043,6 +1289,124 @@ export const Learning: React.FC = () => {
                               <button
                                 onClick={() => openInteractiveLesson(l, "10")}
                                 className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-indigo-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
+                              >
+                                <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
+                                <ArrowRight size={14} />
+                              </button>
+                            </article>
+                          );
+                        })}
+                      </div>
+                    </section>
+                  );
+                })}
+              </div>
+            ) : grade === "11" ? (
+              /* Khi chọn xem LỚP 11: Hiển thị trọn bộ 46 Bài học KNTT tương tác trực tiếp */
+              <div className="space-y-6">
+                {/* Hero Banner Khối 11 */}
+                <section className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-900 via-sky-950 to-slate-900 text-white p-6 md:p-8 border border-sky-500/30 shadow-xl">
+                  <div className="absolute right-0 top-0 h-64 w-64 rounded-full border-[40px] border-sky-500/10 translate-x-12 -translate-y-12 pointer-events-none" />
+                  <div className="relative grid md:grid-cols-[1.6fr_1fr] gap-6 items-center">
+                    <div className="space-y-3">
+                      <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-sky-500/20 text-sky-300 text-[11px] font-bold uppercase tracking-wider border border-sky-400/30">
+                        <Sparkles size={13} className="text-amber-400 animate-pulse" />
+                        Trọn Bộ Toán 11 Kết Nối Tri Thức Với Cuộc Sống
+                      </div>
+                      <h2 className="text-2xl md:text-3xl font-black text-white leading-tight">
+                        Không Gian Học Liệu Số Hóa Toàn Khóa Lớp 11
+                      </h2>
+                      <p className="text-xs md:text-sm text-slate-300 leading-relaxed max-w-xl">
+                        Tích hợp liền mạch toàn bộ 46 bài học hoàn chỉnh ngay trong hệ thống: KaTeX offline sắc nét, 92 Phòng thí nghiệm Canvas 2D/3D mô phỏng động, Đấu trường 10 câu trắc nghiệm với âm thanh Web Audio và Bằng chứng nhận chuẩn in A4.
+                      </p>
+                      <div className="pt-2 flex items-center gap-3">
+                        <span className="text-xs font-semibold text-emerald-400 bg-emerald-950/60 px-3 py-1.5 rounded-xl border border-emerald-500/30">
+                          🎯 Đã hoàn thành: {g11CompletedCount}/46 bài học ({Math.round((g11CompletedCount / 46) * 100)}%)
+                        </span>
+                      </div>
+                    </div>
+                    <div className="grid grid-cols-2 gap-3">
+                      {[
+                        { n: "46/46", label: "Bài học SGK KNTT" },
+                        { n: "92", label: "Labs Canvas 2D/3D" },
+                        { n: "460", label: "Câu hỏi Đấu trường" },
+                        { n: "230", label: "Huy hiệu & Bằng khen" },
+                      ].map((stat) => (
+                        <div
+                          key={stat.label}
+                          className="rounded-2xl bg-white/5 border border-white/10 p-3.5 text-center backdrop-blur-sm"
+                        >
+                          <p className="text-xl font-black text-white">{stat.n}</p>
+                          <p className="text-[11px] text-slate-300 mt-1">{stat.label}</p>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </section>
+
+                {/* Danh sách 11 Chương và 46 Bài học Lớp 11 */}
+                {GRADE_11_CHAPTERS.map((ch) => {
+                  const chLessons = g11FilteredLessons.filter((l) => l.chapterNumber === ch.num);
+                  if (!chLessons.length) return null;
+                  return (
+                    <section key={ch.num} className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <div>
+                          <span className={`text-[10px] font-extrabold uppercase px-2.5 py-0.5 rounded-md border ${ch.badgeColor}`}>
+                            {ch.badge}
+                          </span>
+                          <h3 className="font-extrabold text-lg text-slate-900 mt-1">
+                            {ch.name.startsWith("Chuyên Đề") ? ch.name : `Chương ${ch.num}. ${ch.name}`}
+                          </h3>
+                        </div>
+                        <span className="text-xs text-slate-400 font-medium">
+                          {chLessons.length} bài học
+                        </span>
+                      </div>
+
+                      <div className="grid sm:grid-cols-2 xl:grid-cols-3 gap-4">
+                        {chLessons.map((l) => {
+                          const isDone = !!g11Progress[l.id]?.completed;
+                          const score = g11Progress[l.id]?.score;
+                          return (
+                            <article
+                              key={l.id}
+                              className="group bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-sky-950/5 hover:border-sky-300 transition-all duration-200"
+                            >
+                              <div className="flex items-center justify-between">
+                                <span className="text-[10px] font-bold rounded-lg bg-sky-50 text-sky-700 px-2.5 py-1 border border-sky-100">
+                                  {l.tag.toUpperCase()}
+                                </span>
+                                {isDone ? (
+                                  <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
+                                    <CheckCircle2 size={13} />
+                                    {score ? `${score * 10}%` : "Đã học"}
+                                  </span>
+                                ) : (
+                                  <span className="text-[11px] text-slate-400 font-medium">Chưa học</span>
+                                )}
+                              </div>
+
+                              <div>
+                                <h4 className="font-extrabold text-base text-slate-900 leading-snug group-hover:text-sky-600 transition-colors line-clamp-2">
+                                  {l.title}
+                                </h4>
+                                <p className="text-xs text-slate-500 mt-2 line-clamp-2 leading-relaxed">
+                                  {l.desc}
+                                </p>
+                              </div>
+
+                              <div className="flex flex-wrap gap-2 text-[11px] text-slate-600 bg-slate-50 p-2.5 rounded-xl border border-slate-100 mt-auto">
+                                <span className="font-semibold text-sky-700">🧪 {l.labs ? (l.labs.length > 25 ? l.labs.substring(0, 25) + '…' : l.labs) : '2 Labs'}</span>
+                                <span className="text-slate-300">•</span>
+                                <span className="font-semibold text-emerald-700">⚔️ 10 Quiz</span>
+                                <span className="text-slate-300">•</span>
+                                <span className="font-semibold text-amber-700">🏆 Bằng A4</span>
+                              </div>
+
+                              <button
+                                onClick={() => openInteractiveLesson(l, "11")}
+                                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-sky-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
                               >
                                 <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
                                 <ArrowRight size={14} />

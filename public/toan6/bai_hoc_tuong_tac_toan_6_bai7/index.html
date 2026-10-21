@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 7: Thứ Tự Thực Hiện Các Phép Tính - Toán 6 Kết Nối Tri Thức</title>
+  <meta name="description" content="Website học liệu số tương tác và mini game học tập Bài 7: Thứ tự thực hiện các phép tính - Toán 6 Tập 1 Kết Nối Tri Thức Với Cuộc Sống.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU GAME (START SCREEN) -->
+  <div id="start-modal" class="modal-overlay">
+    <div class="start-card">
+      <div class="start-badge-icon">⚖️</div>
+      <h1 class="start-title">ĐẠI PHÁP SƯ BIỂU THỨC</h1>
+      <p class="start-subtitle">Toán 6 • Bài 7: Thứ Tự Thực Hiện Các Phép Tính (SGK Trang 25 – 26)</p>
+
+      <div class="avatar-selector-title">Chọn Người Đại Diện Của Bạn:</div>
+      <div class="avatar-grid" id="avatar-selector">
+        <div class="avatar-option selected" data-avatar="⚖️">⚖️</div>
+        <div class="avatar-option" data-avatar="🧙">🧙</div>
+        <div class="avatar-option" data-avatar="🤖">🤖</div>
+        <div class="avatar-option" data-avatar="🔍">🔍</div>
+        <div class="avatar-option" data-avatar="🛡️">🛡️</div>
+        <div class="avatar-option" data-avatar="🧠">🧠</div>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">👤 Tên của bạn:</label>
+        <input type="text" id="student-name-input" class="name-input" placeholder="Nhập họ và tên của em..." value="Hiệp Sĩ Toán Học" maxlength="25">
+      </div>
+
+      <button id="btn-start" class="btn-start-game" onclick="startGame()">
+        <span>🎮 BẮT ĐẦU TRANH TÀI</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- GAME HUD (THANH TRẠNG THÁI CỐ ĐỊNH TRÊN CÙNG) -->
+  <header class="game-hud">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">⚖️</div>
+        <div class="hud-user-info">
+          <span class="hud-username" id="hud-name-display">Hiệp Sĩ Toán Học</span>
+          <span class="hud-title-rank" id="hud-rank-display">Tập Sự Trật Tự</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="hud-badge score" title="Điểm kinh nghiệm">
+          🪙 <span id="hud-score">0</span>
+        </div>
+        <div class="hud-badge stars" title="Số sao vàng đạt được">
+          ⭐ <span id="hud-stars">0</span>
+        </div>
+        <div class="hud-badge streak" id="hud-streak-badge" title="Chuỗi trả lời đúng liên tiếp">
+          🔥 <span id="hud-streak">0</span> Combo
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button class="btn-icon" id="btn-sound-toggle" onclick="toggleSound()" title="Bật/Tắt âm thanh">
+          🔊
+        </button>
+        <button class="btn-icon" onclick="scrollToCertificate()" title="Xem Giấy Chứng Nhận">
+          📜
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NỘI DUNG CHÍNH -->
+  <main class="main-wrapper">
+
+    <!-- HERO BANNER -->
+    <div class="lesson-hero">
+      <div class="lesson-tag">Chương I: Tập hợp các số tự nhiên • SGK Trang 25 - 26</div>
+      <h1>BÀI 7: THỨ TỰ THỰC HIỆN CÁC PHÉP TÍNH</h1>
+      <p>
+        Bẻ khóa quy tắc vàng về thứ tự ưu tiên: Ai làm trước? Ai làm sau? Làm chủ các dấu ngoặc tròn, vuông, nhọn và bẻ sạch bẫy tính toán!
+      </p>
+    </div>
+
+    <!-- THANH ĐIỀU HƯỚNG NHANH -->
+    <nav class="nav-pills">
+      <a href="#khoi-dong" class="nav-pill active">💬 1. Tranh Luận 5 + 3 × 2</a>
+      <a href="#kim-tu-thap" class="nav-pill">🏛️ 2. Kim Tự Tháp Quy Tắc</a>
+      <a href="#co-may-tung-buoc" class="nav-pill">⚙️ 3. Giải Từng Bước</a>
+      <a href="#toan-thuc-te" class="nav-pill">🏙️ 4. Toán Thực Tế</a>
+      <a href="#dau-truong-quiz" class="nav-pill">🏆 5. Đấu Trường 10 Câu</a>
+      <a href="#chung-nhan-vinh-danh" class="nav-pill">📜 6. Giấy Chứng Nhận</a>
+    </nav>
+
+    <!-- ====================================================================
+         SECTION 1: CUỘC TRANH LUẬN THẾ KỶ 5 + 3 x 2 (KHỞI ĐỘNG SGK TRANG 25)
+         ==================================================================== -->
+    <section id="khoi-dong" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">💬</div>
+        <div class="card-header-text">
+          <h2>1. Cuộc Tranh Luận Thế Kỷ: 5 + 3 × 2 Bằng Mấy? (SGK Trang 25)</h2>
+          <p>Nhấp vào nhân vật mà em cho là đưa ra kết quả đúng để kiểm chứng!</p>
+        </div>
+      </div>
+
+      <div style="background: #ecfdf5; border: 2px solid #a7f3d0; border-radius: 12px; padding: 15px; margin-bottom: 20px;">
+        🤔 <strong>Tình huống khởi động:</strong> Bạn Tròn và Bạn Vuông cùng tính biểu thức: 
+        <span style="font-size: 1.4rem; font-weight: 900; color: #065f46;">5 + 3 × 2</span>. Nhưng hai bạn lại ra hai kết quả hoàn toàn khác nhau! Em đồng ý với ai?
+      </div>
+
+      <div class="debate-arena">
+        <!-- BẠN TRÒN -->
+        <div class="debate-card" id="card-tron" onclick="selectDebate('tron')">
+          <div class="debate-avatar">🟡</div>
+          <div class="debate-claim" style="color: #b45309;">BẠN TRÒN: Bằng 16!</div>
+          <div class="debate-reason">
+            "Mình tính từ trái sang phải: Cộng trước (5 + 3 = 8), rồi nhân sau (8 × 2 = 16)."
+          </div>
+        </div>
+
+        <!-- BẠN VUÔNG -->
+        <div class="debate-card" id="card-vuong" onclick="selectDebate('vuong')">
+          <div class="debate-avatar">🟦</div>
+          <div class="debate-claim" style="color: #0369a1;">BẠN VUÔNG: Bằng 11!</div>
+          <div class="debate-reason">
+            "Mình nhân trước (3 × 2 = 6), rồi mới cộng sau (5 + 6 = 11)."
+          </div>
+        </div>
+      </div>
+
+      <div id="debate-result-box" style="margin-top: 15px; display: none; padding: 18px; border-radius: 12px; font-size: 1.1rem; line-height: 1.6;">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 2: KIM TỰ THÁP QUY TẮC VÀNG (SGK TRANG 25)
+         ==================================================================== -->
+    <section id="kim-tu-thap" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🏛️</div>
+        <div class="card-header-text">
+          <h2>2. Kim Tự Tháp Quy Tắc Vàng Về Thứ Tự Phép Tính (SGK Trang 25)</h2>
+          <p>Thước ngọc khuôn vàng mà mọi nhà toán học trên thế giới đều tuân thủ!</p>
+        </div>
+      </div>
+
+      <div class="pyramid-container">
+        <!-- BIỂU THỨC KHÔNG CÓ NGOẶC -->
+        <div class="pyramid-card no-brackets">
+          <h3>📌 I. BIỂU THỨC KHÔNG CÓ NGOẶC</h3>
+          
+          <div class="pyramid-step" style="background: rgba(255, 255, 255, 0.3);">
+            <div class="step-badge">1</div>
+            <div>
+              <strong>ƯU TIÊN 1: Nâng lên Luỹ thừa</strong><br>
+              <span style="font-size: 0.85rem; opacity: 0.9;">Tính các luỹ thừa aⁿ trước tiên</span>
+            </div>
+          </div>
+
+          <div class="pyramid-step" style="background: rgba(255, 255, 255, 0.22);">
+            <div class="step-badge">2</div>
+            <div>
+              <strong>ƯU TIÊN 2: Nhân và Chia</strong><br>
+              <span style="font-size: 0.85rem; opacity: 0.9;">Thực hiện từ TRÁI sang PHẢI</span>
+            </div>
+          </div>
+
+          <div class="pyramid-step" style="background: rgba(255, 255, 255, 0.15);">
+            <div class="step-badge">3</div>
+            <div>
+              <strong>ƯU TIÊN 3: Cộng và Trừ</strong><br>
+              <span style="font-size: 0.85rem; opacity: 0.9;">Thực hiện từ TRÁI sang PHẢI</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 15px; font-size: 0.95rem; background: rgba(0, 0, 0, 0.2); padding: 10px 14px; border-radius: 8px;">
+            ⚠️ <strong>CẢNH BÁO BẪY KINH ĐIỂN:</strong><br>
+            Biểu thức <code>100 : 5 • 2</code> chỉ có nhân chia, phải làm từ <strong>TRÁI SANG PHẢI</strong>: <br>
+            <code>100 : 5 = 20</code> ➔ <code>20 • 2 = 40</code> (KHÔNG ĐƯỢC ra 10)!
+          </div>
+        </div>
+
+        <!-- BIỂU THỨC CÓ DẤU NGOẶC -->
+        <div class="pyramid-card with-brackets">
+          <h3>📌 II. BIỂU THỨC CÓ DẤU NGOẶC</h3>
+
+          <div class="pyramid-step" style="background: rgba(255, 255, 255, 0.3);">
+            <div class="step-badge">1</div>
+            <div>
+              <strong>ƯU TIÊN 1: Ngoặc tròn ( )</strong><br>
+              <span style="font-size: 0.85rem; opacity: 0.9;">Lớp trong cùng thực hiện đầu tiên</span>
+            </div>
+          </div>
+
+          <div class="pyramid-step" style="background: rgba(255, 255, 255, 0.22);">
+            <div class="step-badge">2</div>
+            <div>
+              <strong>ƯU TIÊN 2: Ngoặc vuông [ ]</strong><br>
+              <span style="font-size: 0.85rem; opacity: 0.9;">Lớp trung gian tiếp theo</span>
+            </div>
+          </div>
+
+          <div class="pyramid-step" style="background: rgba(255, 255, 255, 0.15);">
+            <div class="step-badge">3</div>
+            <div>
+              <strong>ƯU TIÊN 3: Ngoặc nhọn { }</strong><br>
+              <span style="font-size: 0.85rem; opacity: 0.9;">Lớp ngoài cùng thực hiện cuối cùng</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 15px; font-size: 0.95rem; background: rgba(0, 0, 0, 0.2); padding: 10px 14px; border-radius: 8px;">
+            💡 <strong>QUY TẮC BÓC CỦ HÀNH:</strong><br>
+            <code>( ) ➔ [ ] ➔ { }</code><br>
+            Bóc từ ngoặc tròn bên trong, ra ngoặc vuông rồi đến ngoặc nhọn!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 3: CỖ MÁY GIẢI TỪNG BƯỚC (SGK TRANG 26)
+         ==================================================================== -->
+    <section id="co-may-tung-buoc" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">⚙️</div>
+        <div class="card-header-text">
+          <h2>3. Cỗ Máy Giải Biểu Thức Từng Bước (SGK Trang 26)</h2>
+          <p>Xem từng phép tính đổi màu và tính toán chuẩn xác theo đúng thứ tự ưu tiên!</p>
+        </div>
+      </div>
+
+      <div class="step-machine">
+        <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px; flex-wrap: wrap;">
+          <button class="nav-pill active" onclick="loadSampleExpression(1)">Ví dụ a: 8 + 36 : 3 • 2</button>
+          <button class="nav-pill" onclick="loadSampleExpression(2)">Ví dụ b: [1 + 2(5•3 - 2³)] • 7</button>
+          <button class="nav-pill" onclick="loadSampleExpression(3)">Luyện tập 1a: 25•2³ - 3² + 125</button>
+          <button class="nav-pill" onclick="loadSampleExpression(4)">Luyện tập 1b: 2•3² + 5•(2 + 3)</button>
+          <button class="nav-pill" onclick="loadSampleExpression(5)">Bài 1.46c: {2³ + [1 + (3 - 1)²]} : 13</button>
+        </div>
+
+        <div class="step-formula-header" id="step-formula-title">
+          8 + 36 : 3 • 2
+        </div>
+
+        <div class="steps-list" id="steps-render-container">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div style="display: flex; justify-content: center; gap: 12px; margin-top: 20px;">
+          <button class="btn-cert btn-replay" id="btn-next-step" onclick="revealNextStep()" style="background: var(--primary);">
+            ⏩ Xem Bước Tiếp Theo
+          </button>
+          <button class="btn-cert btn-prev-lesson" onclick="resetCurrentExpression()">
+            🔄 Xem Lại Từ Đầu
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 4: TOÁN THỰC TẾ ĐỜI SỐNG & BIỂU THỨC CHỨA CHỮ (SGK TRANG 26)
+         ==================================================================== -->
+    <section id="toan-thuc-te" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🏙️</div>
+        <div class="card-header-text">
+          <h2>4. Bài Toán Thực Tế Đời Sống & Biểu Thức Chứa Chữ (SGK Trang 26)</h2>
+          <p>Ứng dụng thứ tự thực hiện phép tính vào thực tiễn: Lát sàn, mua sắm và chuyển động!</p>
+        </div>
+      </div>
+
+      <!-- BIỂU THỨC CHỨA CHỮ -->
+      <div style="background: #f0fdf4; border: 2px solid #86efac; border-radius: 12px; padding: 18px; margin-bottom: 20px;">
+        <h3 style="color: #166534; margin-bottom: 6px;">📌 BIỂU THỨC CÓ CHỨA CHỮ (Chú ý SGK Trang 26):</h3>
+        <p style="color: #14532d; font-size: 1rem;">
+          Để tính giá trị biểu thức khi cho giá trị các chữ, ta <strong>thay thế giá trị đã cho vào biểu thức</strong> rồi áp dụng đúng thứ tự thực hiện các phép tính.
+        </p>
+      </div>
+
+      <div class="real-life-grid">
+        <!-- VẬN DỤNG: ĐI XE ĐẠP -->
+        <div class="real-card">
+          <div class="real-card-icon">🚴</div>
+          <h3>Vận Dụng: Người Đi Xe Đạp 5 Giờ</h3>
+          <p style="font-size: 0.95rem; color: #475569;">
+            • 3 giờ đầu đi vận tốc 14 km/h.<br>
+            • 2 giờ sau đi vận tốc 9 km/h.<br>
+            • Tổng quãng đường đi được trong 5 giờ?
+          </p>
+          <div class="real-calc-box">
+            Biểu thức quãng đường:<br>
+            S = 14 • 3 + 9 • 2<br>
+            = 42 + 18 = <strong>60 (km)</strong>
+          </div>
+        </div>
+
+        <!-- BÀI 1.48: BÁN TIVI 12 THÁNG -->
+        <div class="real-card">
+          <div class="real-card-icon">📺</div>
+          <h3>Bài 1.48: Bán Tivi Cả Năm (12 Tháng)</h3>
+          <p style="font-size: 0.95rem; color: #475569;">
+            • 8 tháng đầu bán 1 264 tivi.<br>
+            • 4 tháng cuối trung bình bán 164 tivi/tháng.<br>
+            • Trung bình mỗi tháng bán bao nhiêu chiếc?
+          </p>
+          <div class="real-calc-box">
+            Biểu thức trung bình:<br>
+            (1 264 + 164 • 4) : 12<br>
+            = (1 264 + 656) : 12<br>
+            = 1 920 : 12 = <strong>160 (chiếc)</strong>
+          </div>
+        </div>
+
+        <!-- BÀI 1.49: LÁT SÀN CĂN HỘ BÁC CƯỜNG -->
+        <div class="real-card">
+          <div class="real-card-icon">🏠</div>
+          <h3>Bài 1.49: Lát Sàn Căn Hộ Bác Cường</h3>
+          <p style="font-size: 0.95rem; color: #475569;">
+            • Diện tích căn hộ: 105 m², trừ bếp & WC 30 m².<br>
+            • Lát gỗ: 18 m² loại 1 (350k/m²), 57 m² loại 2 (170k/m²).<br>
+            • Công thợ lát cả 75 m² là 30k/m².
+          </p>
+          <div class="real-calc-box">
+            Biểu thức chi phí (nghìn đồng):<br>
+            18 • 350 + 57 • 170 + 75 • 30<br>
+            = 6 300 + 9 690 + 2 250<br>
+            = <strong>18 240 nghìn đồng</strong><br>
+            = <strong>18 240 000 đồng</strong>
+          </div>
+        </div>
+
+        <!-- LUYỆN TẬP 2: HÌNH CHỮ NHẬT ABCD -->
+        <div class="real-card">
+          <div class="real-card-icon">📐</div>
+          <h3>Luyện Tập 2: Diện Tích Hình Chữ Nhật ABCD</h3>
+          <p style="font-size: 0.95rem; color: #475569;">
+            • Chiều rộng: a.<br>
+            • Chiều dài gồm 3 đoạn: a + a + 1 = 2a + 1.<br>
+            • Tính diện tích khi a = 3 cm?
+          </p>
+          <div class="real-calc-box">
+            Biểu thức diện tích:<br>
+            S = a • (2a + 1)<br>
+            Với a = 3 cm:<br>
+            S = 3 • (2 • 3 + 1) = 3 • 7<br>
+            = <strong>21 (cm²)</strong>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 5: ĐẤU TRƯỜNG TRẮC NGHIỆM 10 CÂU (BÀI 1.46 - 1.49 SGK)
+         ==================================================================== -->
+    <section id="dau-truong-quiz" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🏆</div>
+        <div class="card-header-text">
+          <h2>5. Đấu Trường Đỉnh Cao – 10 Câu Hỏi Trắc Nghiệm SGK</h2>
+          <p>Chinh phục 10 thử thách bài tập 1.46 đến 1.49 SGK. Nhận điểm và mở khóa danh hiệu!</p>
+        </div>
+      </div>
+
+      <div class="quiz-arena">
+        <div class="quiz-progress-bar-bg">
+          <div class="quiz-progress-bar-fill" id="quiz-progress-bar"></div>
+        </div>
+
+        <div class="quiz-header-status">
+          <span id="quiz-question-number">Câu hỏi 1 / 10</span>
+          <span id="quiz-streak-status">🔥 Combo: 0</span>
+        </div>
+
+        <div class="quiz-question-box">
+          <div class="quiz-question-title" id="quiz-question-title">
+            Đang tải câu hỏi...
+          </div>
+        </div>
+
+        <div class="quiz-answers-grid" id="quiz-answers-container">
+          <!-- 4 option buttons rendered by JS -->
+        </div>
+
+        <div class="quiz-feedback" id="quiz-feedback">
+          <!-- Feedback rendered by JS -->
+        </div>
+
+        <div style="text-align: right;">
+          <button class="btn-next-question" id="btn-next-question" onclick="nextQuizQuestion()">
+            <span>Câu Tiếp Theo ➔</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 6: BỘ SƯU TẬP HUY HIỆU & GIẤY CHỨNG NHẬN VINH DANH A4
+         ==================================================================== -->
+    <section id="chung-nhan-vinh-danh" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🎖️</div>
+        <div class="card-header-text">
+          <h2>6. Bộ Sưu Tập Huy Hiệu & Giấy Chứng Nhận Vinh Danh</h2>
+          <p>Ghi nhận sự tiến bộ vượt bậc và trật tự tư duy logic của em!</p>
+        </div>
+      </div>
+
+      <!-- LƯỚI HUY HIỆU -->
+      <div class="badges-container">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">⚖️</div>
+          <div class="badge-card-name">Thần Công Lý Tranh Luận</div>
+          <div class="badge-card-desc">Giải mã đúng phép tính 5 + 3 × 2 = 11</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">🏛️</div>
+          <div class="badge-card-name">Bậc Thầy Kim Tự Tháp</div>
+          <div class="badge-card-desc">Khám phá toàn bộ cỗ máy giải biểu thức từng bước</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🔍</div>
+          <div class="badge-card-name">Thợ Săn Bẫy Trái Phải</div>
+          <div class="badge-card-desc">Làm chủ bẫy chia nhân từ trái sang phải 100:5•2</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Bất Bại Combo</div>
+          <div class="badge-card-desc">Đạt chuỗi trả lời đúng liên tiếp 3 câu không sai</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Đại Pháp Sư Biểu Thức</div>
+          <div class="badge-card-desc">Chinh phục Đấu trường đạt từ 80 điểm trở lên</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN CHUẨN IN A4 -->
+      <div class="certificate-wrapper" id="certificate-print-area">
+        <div class="cert-seal">🎖️</div>
+        <div class="cert-super-title">HỌC LIỆU SỐ TOÁN 6 • BỘ SÁCH KẾT NỐI TRI THỨC VỚI CUỘC SỐNG</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.15rem; color: #475569;">Trao tặng cho kiện tướng logic:</p>
+        <div class="cert-student-name" id="cert-student-name-display">Hiệp Sĩ Toán Học</div>
+        <p style="font-size: 1.15rem; color: #065f46; max-width: 650px; margin: 0 auto; line-height: 1.6;">
+          Đã hoàn thành xuất sắc toàn bộ kiến thức lý thuyết, quy tắc kim tự tháp và bộ bài tập SGK của <br>
+          <strong>BÀI 7: THỨ TỰ THỰC HIỆN CÁC PHÉP TÍNH</strong>
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">🪙 Điểm số: <span id="cert-score-display">0</span></div>
+          <div class="cert-stat-badge">⭐ Sao vàng: <span id="cert-stars-display">0</span></div>
+          <div class="cert-stat-badge">🏅 Danh hiệu: <span id="cert-rank-display">Tập Sự Trật Tự</span></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 35px; padding: 0 40px; color: #64748b; font-style: italic;">
+          <div>Ngày hoàn thành: <span id="cert-date-display">...</span></div>
+          <div>Giáo viên hướng dẫn: AI Antigravity</div>
+        </div>
+      </div>
+
+      <!-- HÀNH ĐỘNG -->
+      <div class="cert-actions">
+        <button class="btn-cert btn-print" onclick="window.print()">
+          🖨️ In / Lưu PDF Giấy Chứng Nhận
+        </button>
+        <button class="btn-cert btn-replay" onclick="restartLesson()">
+          🔄 Chinh Phục Lại Bài 7
+        </button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai6/index.html" class="btn-cert btn-prev-lesson">
+          ⬅️ Về Bài 6: Luỹ Thừa
+        </a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai8/index.html" class="btn-cert btn-next-lesson">
+          ➡️ Tiến Đến Bài 8: Quan Hệ Chia Hết
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CANVAS PHÁO HOA ĂN MỪNG -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>

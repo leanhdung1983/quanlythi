@@ -1,0 +1,1067 @@
+/* ==========================================================================
+   CSS CHO BÀI 7: THỨ TỰ THỰC HIỆN CÁC PHÉP TÍNH - TOÁN 6 (KẾT NỐI TRI THỨC)
+   Chủ đề: Emerald Jade & Royal Sapphire (Thước ngọc khuôn vàng & Trật tự toán học)
+   ========================================================================== */
+
+:root {
+  --primary: #059669;
+  --primary-light: #10b981;
+  --primary-dark: #064e3b;
+  --secondary: #0284c7;
+  --secondary-light: #38bdf8;
+  --accent: #f59e0b;
+  --accent-light: #fbbf24;
+  --success: #10b981;
+  --error: #ef4444;
+  --bg-main: #f8fafc;
+  --bg-card: #ffffff;
+  --text-main: #0f172a;
+  --text-muted: #475569;
+  --border: #e2e8f0;
+  --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 6px 18px rgba(5, 150, 105, 0.08);
+  --shadow-lg: 0 12px 28px rgba(5, 150, 105, 0.15);
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  background-color: var(--bg-main);
+  color: var(--text-main);
+  line-height: 1.6;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.08) 0px, transparent 50%),
+    radial-gradient(at 100% 100%, rgba(2, 132, 199, 0.08) 0px, transparent 50%);
+}
+
+/* ==========================================================================
+   MODAL BẮT ĐẦU GAME (START SCREEN)
+   ========================================================================== */
+.modal-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.85);
+  backdrop-filter: blur(8px);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+  padding: 20px;
+  transition: opacity 0.4s ease, visibility 0.4s ease;
+}
+
+.modal-overlay.hidden {
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+.start-card {
+  background: #ffffff;
+  border-radius: var(--radius-lg);
+  padding: 35px 30px;
+  max-width: 520px;
+  width: 100%;
+  text-align: center;
+  box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.35);
+  border: 3px solid #34d399;
+  position: relative;
+  animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+
+@keyframes popIn {
+  from { transform: scale(0.85); opacity: 0; }
+  to { transform: scale(1); opacity: 1; }
+}
+
+.start-badge-icon {
+  font-size: 3.5rem;
+  margin-bottom: 10px;
+  display: inline-block;
+  animation: floatAnim 3s ease-in-out infinite;
+}
+
+@keyframes floatAnim {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-8px); }
+}
+
+.start-title {
+  font-size: 1.85rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+  margin-bottom: 6px;
+}
+
+.start-subtitle {
+  color: var(--text-muted);
+  font-size: 1rem;
+  margin-bottom: 22px;
+}
+
+.avatar-selector-title {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.avatar-grid {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 22px;
+  flex-wrap: wrap;
+}
+
+.avatar-option {
+  font-size: 2rem;
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+  border: 3px solid #e2e8f0;
+  background: #f1f5f9;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.25s ease;
+}
+
+.avatar-option:hover {
+  transform: translateY(-4px) scale(1.1);
+  border-color: var(--primary-light);
+}
+
+.avatar-option.selected {
+  border-color: var(--primary);
+  background: #d1fae5;
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.25);
+  transform: scale(1.12);
+}
+
+.name-input-group {
+  margin-bottom: 25px;
+  text-align: left;
+}
+
+.name-input-group label {
+  display: block;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 8px;
+  font-size: 0.95rem;
+}
+
+.name-input {
+  width: 100%;
+  padding: 14px 18px;
+  font-size: 1.1rem;
+  font-weight: 600;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.name-input:focus {
+  border-color: var(--primary);
+  box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.2);
+}
+
+.btn-start-game {
+  width: 100%;
+  padding: 15px;
+  background: linear-gradient(135deg, var(--primary) 0%, #047857 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  font-size: 1.25rem;
+  font-weight: 800;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(5, 150, 105, 0.35);
+  transition: transform 0.2s, box-shadow 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
+
+.btn-start-game:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 25px rgba(5, 150, 105, 0.45);
+}
+
+/* ==========================================================================
+   GAME HUD (THANH TRẠNG THÁI CỐ ĐỊNH TRÊN CÙNG)
+   ========================================================================== */
+.game-hud {
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(12px);
+  border-bottom: 2px solid rgba(5, 150, 105, 0.15);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  padding: 10px 20px;
+}
+
+.hud-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
+.hud-profile {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.hud-avatar {
+  font-size: 1.8rem;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #d1fae5;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid var(--primary);
+}
+
+.hud-user-info {
+  display: flex;
+  flex-direction: column;
+}
+
+.hud-username {
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: var(--primary-dark);
+}
+
+.hud-title-rank {
+  font-size: 0.8rem;
+  color: var(--secondary);
+  font-weight: 700;
+}
+
+.hud-stats {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.hud-badge {
+  background: #f1f5f9;
+  padding: 6px 14px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 0.95rem;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  border: 1px solid #cbd5e1;
+}
+
+.hud-badge.score {
+  color: #b45309;
+  background: #fef3c7;
+  border-color: #fde68a;
+}
+
+.hud-badge.stars {
+  color: #0369a1;
+  background: #e0f2fe;
+  border-color: #bae6fd;
+}
+
+.hud-badge.streak {
+  color: #b91c1c;
+  background: #fee2e2;
+  border-color: #fca5a5;
+  transition: transform 0.2s ease;
+}
+
+.hud-badge.streak.bump {
+  animation: streakBump 0.4s ease;
+}
+
+@keyframes streakBump {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.3); }
+  100% { transform: scale(1); }
+}
+
+.hud-controls {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-icon {
+  background: #f1f5f9;
+  border: 2px solid #cbd5e1;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.15rem;
+  transition: all 0.2s ease;
+}
+
+.btn-icon:hover {
+  background: #d1fae5;
+  border-color: var(--primary);
+  transform: scale(1.08);
+}
+
+/* ==========================================================================
+   MAIN CONTAINER & NAVIGATION PILLS
+   ========================================================================== */
+.main-wrapper {
+  max-width: 1050px;
+  margin: 0 auto;
+  padding: 25px 20px 80px 20px;
+}
+
+.lesson-hero {
+  background: linear-gradient(135deg, #064e3b 0%, #059669 50%, #0284c7 100%);
+  color: #ffffff;
+  padding: 35px 30px;
+  border-radius: var(--radius-lg);
+  margin-bottom: 25px;
+  box-shadow: 0 15px 35px -10px rgba(5, 150, 105, 0.4);
+  position: relative;
+  overflow: hidden;
+}
+
+.lesson-hero::before {
+  content: '()[]{}';
+  position: absolute;
+  right: 10px;
+  bottom: -20px;
+  font-size: 6rem;
+  font-weight: 900;
+  opacity: 0.12;
+  pointer-events: none;
+  letter-spacing: 5px;
+}
+
+.lesson-tag {
+  display: inline-block;
+  background: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(4px);
+  padding: 5px 14px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.lesson-hero h1 {
+  font-size: 2.3rem;
+  font-weight: 900;
+  margin-bottom: 10px;
+  line-height: 1.25;
+}
+
+.lesson-hero p {
+  font-size: 1.15rem;
+  max-width: 780px;
+  opacity: 0.95;
+}
+
+.nav-pills {
+  display: flex;
+  gap: 10px;
+  overflow-x: auto;
+  padding-bottom: 12px;
+  margin-bottom: 25px;
+  scrollbar-width: thin;
+}
+
+.nav-pill {
+  white-space: nowrap;
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  padding: 8px 18px;
+  border-radius: 999px;
+  font-size: 0.92rem;
+  font-weight: 700;
+  color: #475569;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.nav-pill:hover, .nav-pill.active {
+  background: var(--primary);
+  color: #ffffff;
+  border-color: var(--primary);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(5, 150, 105, 0.25);
+}
+
+/* ==========================================================================
+   LESSON SECTION CARDS
+   ========================================================================== */
+.lesson-card {
+  background: var(--bg-card);
+  border-radius: var(--radius-lg);
+  padding: 30px;
+  margin-bottom: 30px;
+  border: 1px solid #e2e8f0;
+  box-shadow: var(--shadow-md);
+  transition: box-shadow 0.3s ease;
+}
+
+.lesson-card:hover {
+  box-shadow: var(--shadow-lg);
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  margin-bottom: 22px;
+  border-bottom: 2px dashed #f1f5f9;
+  padding-bottom: 15px;
+}
+
+.card-icon {
+  font-size: 2.2rem;
+  width: 58px;
+  height: 58px;
+  border-radius: var(--radius-md);
+  background: #d1fae5;
+  color: var(--primary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.card-header-text h2 {
+  font-size: 1.55rem;
+  font-weight: 800;
+  color: var(--primary-dark);
+}
+
+.card-header-text p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+}
+
+/* ==========================================================================
+   SECTION 1: KHỞI ĐỘNG TRANH LUẬN 5 + 3 x 2
+   ========================================================================== */
+.debate-arena {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin: 20px 0;
+}
+
+@media (max-width: 650px) {
+  .debate-arena {
+    grid-template-columns: 1fr;
+  }
+}
+
+.debate-card {
+  border: 3px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 22px;
+  text-align: center;
+  background: #f8fafc;
+  cursor: pointer;
+  transition: all 0.25s ease;
+}
+
+.debate-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--secondary);
+  box-shadow: var(--shadow-md);
+}
+
+.debate-card.selected-wrong {
+  border-color: #ef4444;
+  background: #fef2f2;
+}
+
+.debate-card.selected-correct {
+  border-color: #10b981;
+  background: #ecfdf5;
+  box-shadow: 0 0 20px rgba(16, 185, 129, 0.3);
+}
+
+.debate-avatar {
+  font-size: 3.5rem;
+  margin-bottom: 8px;
+}
+
+.debate-claim {
+  font-size: 1.35rem;
+  font-weight: 900;
+  margin-bottom: 6px;
+}
+
+.debate-reason {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+}
+
+/* ==========================================================================
+   SECTION 2: KIM TỰ THÁP QUY TẮC VÀNG
+   ========================================================================== */
+.pyramid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-top: 20px;
+}
+
+@media (max-width: 768px) {
+  .pyramid-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+.pyramid-card {
+  border-radius: var(--radius-md);
+  padding: 25px;
+  color: #ffffff;
+  box-shadow: var(--shadow-md);
+}
+
+.pyramid-card.no-brackets {
+  background: linear-gradient(135deg, #065f46 0%, #059669 100%);
+}
+
+.pyramid-card.with-brackets {
+  background: linear-gradient(135deg, #075985 0%, #0284c7 100%);
+}
+
+.pyramid-card h3 {
+  font-size: 1.3rem;
+  font-weight: 800;
+  margin-bottom: 12px;
+}
+
+.pyramid-step {
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 10px;
+  padding: 10px 14px;
+  margin-bottom: 8px;
+  font-size: 1.05rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.pyramid-step .step-badge {
+  background: #ffffff;
+  color: #0f172a;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.9rem;
+  font-weight: 900;
+  flex-shrink: 0;
+}
+
+/* ==========================================================================
+   SECTION 3: CỖ MÁY GIẢI TỪNG BƯỚC (STEP-BY-STEP SIMULATOR)
+   ========================================================================== */
+.step-machine {
+  background: #f8fafc;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 25px;
+  margin-top: 20px;
+}
+
+.step-formula-header {
+  text-align: center;
+  font-size: 1.8rem;
+  font-weight: 900;
+  color: var(--primary-dark);
+  margin-bottom: 20px;
+  background: #ffffff;
+  padding: 15px;
+  border-radius: 12px;
+  border: 2px dashed #a7f3d0;
+}
+
+.steps-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.step-item {
+  background: #ffffff;
+  border-left: 6px solid #cbd5e1;
+  border-radius: 8px;
+  padding: 14px 18px;
+  font-size: 1.15rem;
+  font-weight: 700;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.2s ease;
+  box-shadow: var(--shadow-sm);
+}
+
+.step-item.active {
+  border-left-color: var(--primary);
+  background: #ecfdf5;
+  transform: translateX(4px);
+}
+
+.step-item .step-action-desc {
+  font-size: 0.9rem;
+  color: #059669;
+  font-weight: 600;
+}
+
+/* ==========================================================================
+   SECTION 4: BÀI TOÁN THỰC TẾ ĐỜI SỐNG (REAL-WORLD CARDS)
+   ========================================================================== */
+.real-life-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+  margin-top: 20px;
+}
+
+.real-card {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-md);
+  padding: 22px;
+  box-shadow: var(--shadow-sm);
+  transition: all 0.25s ease;
+}
+
+.real-card:hover {
+  transform: translateY(-4px);
+  border-color: var(--primary);
+  box-shadow: var(--shadow-md);
+}
+
+.real-card-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.real-card h3 {
+  font-size: 1.2rem;
+  color: var(--primary-dark);
+  margin-bottom: 8px;
+}
+
+.real-calc-box {
+  background: #f1f5f9;
+  border-radius: 8px;
+  padding: 12px;
+  font-family: monospace;
+  font-size: 1.05rem;
+  margin-top: 12px;
+  color: #1e293b;
+}
+
+/* ==========================================================================
+   SECTION 5: ĐẤU TRƯỜNG TRẮC NGHIỆM 10 CÂU (QUIZ ARENA)
+   ========================================================================== */
+.quiz-arena {
+  background: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: var(--radius-lg);
+  padding: 25px;
+}
+
+.quiz-progress-bar-bg {
+  width: 100%;
+  height: 10px;
+  background: #e2e8f0;
+  border-radius: 999px;
+  overflow: hidden;
+  margin-bottom: 20px;
+}
+
+.quiz-progress-bar-fill {
+  height: 100%;
+  width: 10%;
+  background: linear-gradient(90deg, var(--primary) 0%, var(--secondary) 100%);
+  transition: width 0.3s ease;
+}
+
+.quiz-header-status {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.quiz-question-box {
+  background: #f8fafc;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 22px;
+  margin-bottom: 20px;
+}
+
+.quiz-question-title {
+  font-size: 1.25rem;
+  font-weight: 800;
+  color: #0f172a;
+  line-height: 1.4;
+}
+
+.quiz-answers-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.quiz-btn {
+  background: #ffffff;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 14px 20px;
+  text-align: left;
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #1e293b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.quiz-btn:hover:not(:disabled) {
+  border-color: var(--primary);
+  background: #ecfdf5;
+  transform: translateX(4px);
+}
+
+.quiz-btn .opt-badge {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: #f1f5f9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 800;
+  color: #475569;
+  flex-shrink: 0;
+}
+
+.quiz-btn.correct {
+  background: #d1fae5;
+  border-color: #10b981;
+  color: #065f46;
+}
+
+.quiz-btn.correct .opt-badge {
+  background: #10b981;
+  color: #ffffff;
+}
+
+.quiz-btn.wrong {
+  background: #fee2e2;
+  border-color: #ef4444;
+  color: #991b1b;
+}
+
+.quiz-btn.wrong .opt-badge {
+  background: #ef4444;
+  color: #ffffff;
+}
+
+.quiz-feedback {
+  border-radius: var(--radius-md);
+  padding: 18px 22px;
+  font-size: 1rem;
+  line-height: 1.5;
+  margin-bottom: 20px;
+  display: none;
+}
+
+.quiz-feedback.show {
+  display: block;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-6px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.quiz-feedback.success {
+  background: #ecfdf5;
+  border: 2px solid #10b981;
+  color: #065f46;
+}
+
+.quiz-feedback.danger {
+  background: #fff1f2;
+  border: 2px solid #f43f5e;
+  color: #9f1239;
+}
+
+.btn-next-question {
+  background: linear-gradient(135deg, var(--primary) 0%, #047857 100%);
+  color: #ffffff;
+  border: none;
+  border-radius: var(--radius-md);
+  padding: 14px 28px;
+  font-size: 1.15rem;
+  font-weight: 800;
+  cursor: pointer;
+  display: none;
+  box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3);
+  transition: transform 0.2s;
+}
+
+.btn-next-question.show {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.btn-next-question:hover {
+  transform: translateY(-2px);
+}
+
+/* ==========================================================================
+   SECTION 6: HUY HIỆU & GIẤY CHỨNG NHẬN VINH DANH A4
+   ========================================================================== */
+.badges-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.badge-card {
+  background: #f8fafc;
+  border: 2px solid #cbd5e1;
+  border-radius: var(--radius-md);
+  padding: 20px 15px;
+  text-align: center;
+  transition: all 0.3s ease;
+  position: relative;
+}
+
+.badge-card.unlocked {
+  background: #ffffff;
+  border-color: #f59e0b;
+  box-shadow: 0 8px 20px rgba(245, 158, 11, 0.15);
+  transform: translateY(-4px);
+}
+
+.badge-card.locked {
+  filter: grayscale(1);
+  opacity: 0.6;
+}
+
+.badge-card-icon {
+  font-size: 2.8rem;
+  margin-bottom: 8px;
+}
+
+.badge-card-name {
+  font-weight: 800;
+  font-size: 1rem;
+  color: #1e293b;
+  margin-bottom: 4px;
+}
+
+.badge-card-desc {
+  font-size: 0.8rem;
+  color: #64748b;
+}
+
+/* KHUNG GIẤY CHỨNG NHẬN */
+.certificate-wrapper {
+  background: #ffffff;
+  border: 12px double #065f46;
+  border-radius: 20px;
+  padding: 40px 30px;
+  text-align: center;
+  margin-top: 30px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.08);
+  position: relative;
+  background-image: 
+    radial-gradient(#d1fae5 10%, transparent 11%),
+    radial-gradient(#d1fae5 10%, transparent 11%);
+  background-size: 30px 30px;
+  background-position: 0 0, 15px 15px;
+}
+
+.cert-seal {
+  font-size: 4rem;
+  margin-bottom: 10px;
+}
+
+.cert-super-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #065f46;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+.cert-title {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #047857;
+  margin: 10px 0 15px 0;
+  text-transform: uppercase;
+}
+
+.cert-student-name {
+  font-size: 2.2rem;
+  font-weight: 900;
+  color: #065f46;
+  text-decoration: underline;
+  text-decoration-color: #f59e0b;
+  margin: 15px 0;
+}
+
+.cert-stats-grid {
+  display: flex;
+  justify-content: center;
+  gap: 25px;
+  margin: 25px 0;
+  flex-wrap: wrap;
+}
+
+.cert-stat-badge {
+  background: #ffffff;
+  border: 2px solid #a7f3d0;
+  padding: 10px 20px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1.05rem;
+  color: #065f46;
+  box-shadow: var(--shadow-sm);
+}
+
+.cert-actions {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-top: 30px;
+  flex-wrap: wrap;
+}
+
+.btn-cert {
+  padding: 12px 24px;
+  border-radius: 999px;
+  font-weight: 800;
+  font-size: 1rem;
+  cursor: pointer;
+  border: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-print {
+  background: #0f172a;
+  color: #ffffff;
+}
+
+.btn-replay {
+  background: var(--accent);
+  color: #ffffff;
+}
+
+.btn-prev-lesson {
+  background: #e2e8f0;
+  color: #334155;
+}
+
+.btn-cert:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+/* ==========================================================================
+   CANVAS CONFETTI
+   ========================================================================== */
+#confetti-canvas {
+  position: fixed;
+  inset: 0;
+  width: 100vw;
+  height: 100vh;
+  pointer-events: none;
+  z-index: 10000;
+}
+
+/* ==========================================================================
+   PRINT MEDIA QUERIES (CHUẨN KHỔ A4 KHI IN GIẤY CHỨNG NHẬN)
+   ========================================================================== */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .certificate-wrapper, .certificate-wrapper * {
+    visibility: visible;
+  }
+  .certificate-wrapper {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    margin: 0;
+    padding: 40px;
+    border: 8px double #065f46;
+    box-shadow: none;
+  }
+  .cert-actions, .game-hud, .modal-overlay, #confetti-canvas {
+    display: none !important;
+  }
+}

@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 26: Phép Nhân Và Phép Chia Phân Số - Toán 6 KNTT Tập 2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">✖️</div>
+      <h1 class="start-title">CHINH PHỤC NHÂN CHIA PHÂN SỐ TOÁN 6</h1>
+      <p class="start-subtitle">Toán 6 Tập 2 • Bài 26: Phép nhân và phép chia phân số</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật đồng hành của em:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="🚴">🚴</button>
+        <button class="avatar-btn" data-avatar="⚙️">⚙️</button>
+        <button class="avatar-btn" data-avatar="🚀">🚀</button>
+        <button class="avatar-btn" data-avatar="💎">💎</button>
+        <button class="avatar-btn" data-avatar="👑">👑</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên nhà toán học nhí:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Kỹ Sư Số Học Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU BÀI HỌC ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">🚴</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Kỹ Sư Số Học Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Nhân Chia</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương VI: Phân Số • Toán 6 Tập Hai</div>
+      <h1 class="hero-title">BÀI 26: PHÉP NHÂN VÀ PHÉP CHIA PHÂN SỐ</h1>
+      <p class="hero-desc">
+        Thành thạo quy tắc nhân tử với tử, mẫu với mẫu; hiểu rõ bản chất phân số nghịch đảo; biến phép chia phân số thành phép nhân đảo ngược; áp dụng tính chất phân phối để tính nhanh và giải các bài toán thực tiễn!
+      </p>
+    </section>
+
+    <!-- PHẦN 1: BẢN ĐỒ KIẾN THỨC BÀI 26 -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🗺️</div>
+        <div>
+          <h2 class="section-title">1. Bản Đồ Kiến Thức Trọng Tâm</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Quy tắc nhân, chia phân số & phân số nghịch đảo</span>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <strong>📌 CÁC QUY TẮC BẮT BUỘC THUỘC LÒNG:</strong>
+        <ul style="margin-left: 20px; margin-top: 8px;">
+          <li><strong>Quy tắc nhân phân số:</strong> Muốn nhân hai phân số, ta nhân các tử với nhau và nhân các mẫu với nhau: $\frac{a}{b} \cdot \frac{c}{d} = \frac{a \cdot c}{b \cdot d}$.</li>
+          <li><strong>Nhân với số nguyên:</strong> $a \cdot \frac{b}{c} = \frac{a \cdot b}{c}$.</li>
+          <li><strong>Tính chất phép nhân:</strong>
+            <br>• Giao hoán: $a \cdot b = b \cdot a$
+            <br>• Kết hợp: $(a \cdot b) \cdot c = a \cdot (b \cdot c)$
+            <br>• Nhân với 1: $a \cdot 1 = a$
+            <br>• Phân phối đối với phép cộng: $a \cdot (b + c) = a \cdot b + a \cdot c$
+          </li>
+          <li><strong>Phân số nghịch đảo:</strong> Hai số là nghịch đảo của nhau nếu tích của chúng bằng 1. Phân số nghịch đảo của $\frac{a}{b}$ ($a, b \ne 0$) là $\frac{b}{a}$.</li>
+          <li><strong>Quy tắc chia phân số:</strong> Muốn chia một phân số cho một phân số khác 0, ta nhân số bị chia với phân số nghịch đảo của số chia: $\frac{a}{b} : \frac{c}{d} = \frac{a}{b} \cdot \frac{d}{c} = \frac{a \cdot d}{b \cdot c}$.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🔬</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm: Cỗ Máy Nhân Chia & Mô Phỏng Chuyển Động</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Khám phá cơ chế đảo ngược phân số và tính toán chuyển động xe đạp</span>
+        </div>
+      </div>
+
+      <!-- LAB 1: CỖ MÁY NHÂN CHIA PHÂN SỐ TỰ ĐỘNG -->
+      <div class="interactive-lab">
+        <div class="lab-title">⚙️ Thí Nghiệm 1: Cỗ Máy Nhân Chia & Đảo Ngược Phân Số</div>
+        <div class="lab-desc">
+          Nhập hai phân số và chọn phép nhân hoặc chia để quan sát từng bước rút gọn chéo và nghịch đảo:
+        </div>
+
+        <div class="lab-controls">
+          <label style="font-weight: 700;">Phân số 1:</label>
+          <input type="number" id="lab-a1" value="-5" style="width: 55px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+          <span>/</span>
+          <input type="number" id="lab-b1" value="9" style="width: 55px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+
+          <select id="lab-op" style="padding: 6px 10px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold; margin: 0 8px;">
+            <option value="*">✖️ Nhân (·)</option>
+            <option value="/">➗ Chia (:)</option>
+          </select>
+
+          <label style="font-weight: 700;">Phân số 2:</label>
+          <input type="number" id="lab-a2" value="12" style="width: 55px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+          <span>/</span>
+          <input type="number" id="lab-b2" value="25" style="width: 55px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+
+          <button class="lab-btn" id="btn-calc-mult-div" style="margin-left: 10px;">⚡ Tính & Giải Trình</button>
+        </div>
+
+        <div class="stage-card" id="mult-lab-output">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+
+      <!-- LAB 2: MÔ PHỎNG CHUYỂN ĐỘNG XE ĐẠP & DIỆN TÍCH HCN (BT 6.30 & 6.31) -->
+      <div class="interactive-lab">
+        <div class="lab-title">🚴 Thí Nghiệm 2: Mô Phỏng Vận Tốc Xe Đạp (BT 6.30) & Chiều Rộng HCN (BT 6.31)</div>
+        <div class="lab-desc">
+          Xem ứng dụng trực tiếp phép nhân và chia phân số vào thực tiễn:
+        </div>
+
+        <div class="lab-controls">
+          <button class="lab-btn active" id="btn-lab-bike">🚲 BT 6.30: Xe Đạp Nam (15 km/h, 20 phút)</button>
+          <button class="lab-btn" id="btn-lab-rect">📐 BT 6.31: HCN S = 21/10 cm², d = 7/2 cm</button>
+          <button class="lab-btn" id="btn-lab-fraction-class">👥 BT 6.33: Lớp 6A (Toán 1/3, Văn 1/2)</button>
+        </div>
+
+        <div class="stage-card" id="sim-lab-output">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: ĐẤU TRƯỜNG LUYỆN TẬP SGK -->
+    <section class="lesson-card" id="luyen-tap">
+      <div class="section-header">
+        <div class="section-icon-badge">⚔️</div>
+        <div>
+          <h2 class="section-title">3. Đấu Trường Luyện Tập SGK (Bài 6.27 – 6.33)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Chinh phục 10 bài toán nhân chia phân số, tính hợp lý và tìm x</span>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quiz-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- PHẦN 4: HUY HIỆU & CHỨNG NHẬN -->
+    <section class="lesson-card" id="thanh-tich">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">Bảng Thành Tích & Huy Hiệu Vinh Dự</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa trọn bộ 5 huy hiệu Bài 26</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">⚙️</div>
+          <div class="badge-card-name">Bậc Thầy Phép Nhân</div>
+          <div class="badge-card-desc">Thực hiện thành công các phép nhân phân số và rút gọn chéo</div>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">🔄</div>
+          <div class="badge-card-name">Chuyên Gia Số Nghịch Đảo</div>
+          <div class="badge-card-desc">Biến đổi thành thạo phép chia thành phép nhân với phân số nghịch đảo</div>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🚲</div>
+          <div class="badge-card-name">Tay Đua Số Học</div>
+          <div class="badge-card-desc">Giải xuất sắc bài toán chuyển động xe đạp của bạn Nam</div>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Binh Bất Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu đúng liên tiếp</div>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Đại Kiện Tướng Nhân Chia</div>
+          <div class="badge-card-desc">Chinh phục xuất sắc toàn bộ 10 câu hỏi SGK Bài 26</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN IN ĐƯỢC -->
+      <div class="certificate-wrapper" id="printable-cert">
+        <div class="cert-seal">✖️</div>
+        <div class="cert-super-title">BỘ GIÁO DỤC VÀ ĐÀO TẠO • HỌC LIỆU SỐ TOÁN 6</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.1rem; color: #64748b;">Chứng nhận trao tặng cho kỹ sư số học:</p>
+        <div class="cert-student-name" id="cert-name">Kỹ Sư Số Học Lớp 6</div>
+        <p style="font-size: 1.15rem; color: #1e3a8a; max-width: 650px; margin: 0 auto;">
+          Đã xuất sắc hoàn thành trọn vẹn chương trình bài học tương tác:
+          <br><strong style="color: #d97706; font-size: 1.25rem;">BÀI 26: PHÉP NHÂN VÀ PHÉP CHIA PHÂN SỐ</strong>
+          <br>Bộ sách Toán 6 Tập Hai - Kết Nối Tri Thức Với Cuộc Sống.
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">Điểm số: <span id="cert-score">0</span> XP</div>
+          <div class="cert-stat-badge">Số sao: <span id="cert-stars">0</span> ⭐</div>
+          <div class="cert-stat-badge">Hạng: <span id="cert-rank">Tập Sự</span></div>
+          <div class="cert-stat-badge">Ngày cấp: <span id="cert-date">--/--/----</span></div>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-around; font-weight: 700; color: #475569;">
+          <div>
+            <p>Hệ Thống Đào Tạo Tương Tác</p>
+            <p style="margin-top: 30px; color: #d97706;">(Đã ký điện tử)</p>
+          </div>
+          <div>
+            <p>Giáo Viên Bộ Môn Toán 6</p>
+            <p style="margin-top: 30px; color: #d97706;">(Chứng nhận hoàn thành)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button onclick="window.print()" class="btn-cert btn-print">🖨️ In Giấy Chứng Nhận A4</button>
+        <button id="btn-replay-lesson" class="btn-cert btn-replay">🔄 Học Lại Bài Này</button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai25/index.html" class="btn-cert btn-prev-lesson">⬅️ Bài 25: Phép Cộng & Phép Trừ</a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai27/index.html" class="btn-cert btn-next-lesson">Bài 27: Hai Bài Toán Phân Số ➔</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

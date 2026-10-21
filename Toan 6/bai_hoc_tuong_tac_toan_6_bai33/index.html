@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 33: Điểm Nằm Giữa Hai Điểm. Tia - Toán 6 KNTT Tập 2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">🪐</div>
+      <h1 class="start-title">KHÁM PHÁ KHÔNG GIAN HÌNH HỌC</h1>
+      <p class="start-subtitle">Toán 6 Tập 2 • Chương VIII: Những hình hình học cơ bản • Bài 33 (SGK Trang 48 - 50)</p>
+
+      <span class="avatar-selector-label">Chọn phi hành gia hình học:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="🪐">🪐</button>
+        <button class="avatar-btn" data-avatar="🌟">🌟</button>
+        <button class="avatar-btn" data-avatar="🚀">🚀</button>
+        <button class="avatar-btn" data-avatar="🔭">🔭</button>
+        <button class="avatar-btn" data-avatar="☀️">☀️</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên nhà thám hiểm toán học:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Nhà Thám Hiểm Toán 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU KHÁM PHÁ ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">🪐</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Nhà Thám Hiểm Toán 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Không Gian</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương VIII • Hình Học Phẳng & Vũ Trụ</div>
+      <h1 class="hero-title">BÀI 33: ĐIỂM NẰM GIỮA HAI ĐIỂM. TIA</h1>
+      <p class="hero-desc">
+        Khám phá trật tự thẳng hàng kỳ diệu của các điểm trong hình học phẳng và vũ trụ bao la: Nhận biết điểm nằm giữa, hai điểm cùng phía / khác phía, khái niệm tia, hai tia đối nhau, hai tia trùng nhau và hiện tượng Nhật thực - Nguyệt thực ngoạn mục!
+      </p>
+    </section>
+
+    <!-- SECTION 1: BẢN ĐỒ KIẾN THỨC & QUY TẮC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">📌</div>
+        <div>
+          <h2 class="section-title">1. Bản Đồ Trọng Tâm Khái Niệm Bài 33</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Điểm nằm giữa, quan hệ vị trí cùng phía/khác phía và khái niệm tia</span>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <strong>📌 CÁC QUY TẮC VÀ ĐỊNH NGHĨA TRỌNG TÂM CẦN GHI NHỚ:</strong>
+        <ul style="margin-left: 20px; margin-top: 8px;">
+          <li><strong>1. Điểm nằm giữa hai điểm:</strong> Trong ba điểm thẳng hàng, có một và chỉ một điểm nằm giữa hai điểm còn lại.</li>
+          <li><strong>2. Vị trí cùng phía & khác phía:</strong> Cho ba điểm thẳng hàng theo thứ tự $A, B, C$ ($B$ nằm giữa $A$ và $C$):
+            <br>• Hai điểm $A$ và $B$ nằm <strong>cùng phía</strong> đối với điểm $C$.
+            <br>• Hai điểm $B$ và $C$ nằm <strong>cùng phía</strong> đối với điểm $A$.
+            <br>• Hai điểm $A$ và $C$ nằm <strong>khác phía</strong> đối với điểm $B$.
+          </li>
+          <li><strong>3. Khái niệm Tia:</strong> Điểm $O$ trên đường thẳng $xy$ chia đường thẳng thành hai phần. Hình gồm điểm $O$ và một phần đường thẳng bị chia ra bởi điểm $O$ được gọi là một <strong>tia gốc O</strong> (kí hiệu tia $Ox$, tia $Oy$).</li>
+          <li><strong>4. Hai tia đối nhau:</strong> Hai tia chung gốc tạo thành một đường thẳng được gọi là <strong>hai tia đối nhau</strong> (ví dụ tia $Ox$ và tia $Oy$ đối nhau).
+            <br><em>Lưu ý quan trọng:</em> Hai tia đối nhau <strong>bắt buộc phải có chung gốc</strong>!
+          </li>
+          <li><strong>5. Hai tia trùng nhau:</strong> Nếu điểm $B$ thuộc tia $Ax$ thì tia $Ax$ còn được gọi là tia $AB$. Hai tia $Ax$ và $AB$ là hai tia trùng nhau.</li>
+        </ul>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-item">
+          <h3><span>📍</span> Điểm Nằm Giữa</h3>
+          <p>Trên đường thẳng có thứ tự $A - B - C$, điểm $B$ nằm giữa hai điểm $A$ và $C$.</p>
+        </div>
+        <div class="concept-item">
+          <h3><span>↔️</span> Hai Tia Đối Nhau</h3>
+          <p>Chung một gốc $O$ và hướng về hai phía ngược nhau, hợp thành đúng một đường thẳng trọn vẹn.</p>
+        </div>
+        <div class="concept-item">
+          <h3><span>🌘</span> Nhật Thực & Nguyệt Thực</h3>
+          <p>Khi 3 thiên thể thẳng hàng: Mặt Trăng ở giữa $\to$ <strong>Nhật thực</strong>; Trái Đất ở giữa $\to$ <strong>Nguyệt thực</strong>.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC (2 LABS) -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🧪</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm Trực Quan Hóa (Interactive Labs)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mô hình tương tác điểm nằm giữa, đổi gốc tia và mô phỏng thiên văn vũ trụ</span>
+        </div>
+      </div>
+
+      <div class="lab-container">
+        <!-- LAB 1: CANVAS TƯƠNG TÁC ĐIỂM VÀ TIA -->
+        <div class="lab-box">
+          <div class="lab-title"><span>🎨</span> Lab 1: Máy Khám Phá Trực Quan Điểm Nằm Giữa & Tia</div>
+          <p class="lab-instruction">
+            Kéo thả các điểm $A, B, C, D$ trên trục đường thẳng $xy$. Nhấn các nút chức năng để máy tính tự động phân tích điểm nằm giữa, vị trí cùng phía/khác phía và các cặp tia đối nhau!
+          </p>
+
+          <div class="geo-stage">
+            <div class="canvas-wrapper">
+              <canvas id="geo-canvas" width="650" height="260"></canvas>
+            </div>
+
+            <div class="geo-controls">
+              <button id="btn-preset-sgk86" class="btn-hud-tool">✨ Thiết lập Hình 8.21 (A-C-B-D)</button>
+              <button id="btn-preset-sgk87" class="btn-hud-tool">📏 Thiết lập Hình 8.22 (A-B-C)</button>
+              <button id="btn-highlight-between" class="btn-hud-tool">🔍 Tô sáng Điểm Nằm Giữa</button>
+              <button id="btn-highlight-rays" class="btn-hud-tool">↔️ Xem Các Cặp Tia Đối</button>
+            </div>
+
+            <div class="geo-info-box" id="geo-info-box">
+              <strong>Phân tích tọa độ:</strong> Kéo các điểm trên đường thẳng hoặc chọn bài mẫu để xem phân tích trực quan theo chuẩn SGK!
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 2: MÔ PHỎNG VŨ TRỤ THIÊN VĂN (NHẬT THỰC & NGUYỆT THỰC) -->
+        <div class="lab-box">
+          <div class="lab-title"><span>🌌</span> Lab 2: Mô Phỏng Thiên Văn Vũ Trụ: Nhật Thực & Nguyệt Thực (SGK Trang 50)</div>
+          <p class="lab-instruction">
+            Nhật thực và Nguyệt thực là minh chứng tuyệt đẹp về điểm nằm giữa trong tự nhiên khi Mặt Trời, Trái Đất và Mặt Trăng thẳng hàng!
+          </p>
+
+          <div class="astro-stage">
+            <div class="astro-card">
+              <h4><span>☀️</span> Chế Độ 1: Hiện Tượng Nhật Thực (Solar Eclipse)</h4>
+              <p style="font-size: 0.9rem; margin-bottom: 8px;">
+                <strong>Vị trí thẳng hàng:</strong> Mặt Trời — <strong>Mặt Trăng</strong> — Trái Đất.
+                <br><em>Mặt Trăng nằm giữa</em> che khuất ánh sáng từ Mặt Trời chiếu tới Trái Đất.
+              </p>
+              <button id="btn-sim-solar" class="btn-hud-tool" style="width: 100%; margin-bottom: 8px; background: #fef3c7; border-color: #f59e0b; color: #b45309;">
+                🌕 Mô Phỏng Nhật Thực (Mặt Trăng Ở Giữa)
+              </button>
+              <div id="solar-desc" style="font-size: 0.85rem; background: var(--surface-alt); padding: 8px; border-radius: 6px; display: none;">
+                🌑 <strong>Đặc điểm:</strong> Ban ngày trời bỗng tối sầm như hoàng hôn, quầng sáng của Mặt Trời tạo thành vòng lửa quanh Mặt Trăng.
+              </div>
+            </div>
+
+            <div class="astro-card">
+              <h4><span>🌕</span> Chế Độ 2: Hiện Tượng Nguyệt Thực (Lunar Eclipse)</h4>
+              <p style="font-size: 0.9rem; margin-bottom: 8px;">
+                <strong>Vị trí thẳng hàng:</strong> Mặt Trời — <strong>Trái Đất</strong> — Mặt Trăng.
+                <br><em>Trái Đất nằm giữa</em> che ánh sáng Mặt Trời chiếu đến Mặt Trăng, Mặt Trăng đi vào vùng bóng tối.
+              </p>
+              <button id="btn-sim-lunar" class="btn-hud-tool" style="width: 100%; margin-bottom: 8px; background: #e0e7ff; border-color: #4f46e5; color: #3730a3;">
+                🔴 Mô Phỏng Nguyệt Thực (Trái Đất Ở Giữa)
+              </button>
+              <div id="lunar-desc" style="font-size: 0.85rem; background: var(--surface-alt); padding: 8px; border-radius: 6px; display: none;">
+                🔴 <strong>Đặc điểm:</strong> Trăng tròn chuyển sang màu đỏ sẫm ma mị (Mặt Trăng máu) do khí quyển Trái Đất khúc xạ tia đỏ.
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem; text-align: center;">
+            <canvas id="astro-canvas" width="650" height="200" style="margin: 0 auto; border: 2px solid var(--border); border-radius: 12px; background: #0f172a;"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: ĐẤU TRƯỜNG SGK (10 BÀI TẬP SGK 8.6 - 8.9) -->
+    <section class="lesson-card">
+      <div class="arena-header">
+        <div class="section-header" style="margin-bottom: 0; border-bottom: none;">
+          <div class="section-icon-badge">⚔️</div>
+          <div>
+            <h2 class="section-title">3. Đấu Trường Toán Học SGK (Bài 8.6 - 8.9 & Thiên Văn)</h2>
+            <span style="font-size: 0.85rem; color: #64748b;">10 câu hỏi bao phủ 100% bài tập SGK trang 50 và các bài học ứng dụng</span>
+          </div>
+        </div>
+        <div style="font-weight: 700; color: var(--primary);" id="quiz-progress-text">0/10 Hoàn thành</div>
+      </div>
+
+      <div id="quiz-container">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- SECTION 4: DANH HIỆU & GIẤY KHEN A4 -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">4. Bảng Vinh Danh & Chứng Chỉ A4</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa 5 huy hiệu vinh danh và xuất chứng nhận A4</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-item" id="badge-1">
+          <div class="badge-icon">🪐</div>
+          <div class="badge-name">Thám Hiểm Tia</div>
+          <div class="badge-req">Đạt 200 XP</div>
+        </div>
+        <div class="badge-item" id="badge-2">
+          <div class="badge-icon">🎯</div>
+          <div class="badge-name">Định Vị Điểm Nằm Giữa</div>
+          <div class="badge-req">Đúng liên tiếp 3 câu</div>
+        </div>
+        <div class="badge-item" id="badge-3">
+          <div class="badge-icon">↔️</div>
+          <div class="badge-name">Chuyên Gia Tia Đối</div>
+          <div class="badge-req">Đạt 500 XP</div>
+        </div>
+        <div class="badge-item" id="badge-4">
+          <div class="badge-icon">🌌</div>
+          <div class="badge-name">Nhà Thiên Văn Học</div>
+          <div class="badge-req">Đúng câu Nhật - Nguyệt thực</div>
+        </div>
+        <div class="badge-item" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Bài 33</div>
+          <div class="badge-req">Đạt trọn vẹn 10/10 sao</div>
+        </div>
+      </div>
+
+      <div class="cert-section">
+        <button id="btn-print-cert" class="btn-print-cert">🖨️ In Giấy Chứng Nhận Thành Tích A4</button>
+      </div>
+    </section>
+
+    <!-- NAVIGATION FOOTER -->
+    <footer class="nav-footer">
+      <a href="../bai_hoc_tuong_tac_toan_6_bai32/index.html" class="btn-nav">
+        <span>⬅️</span> Bài 32: Điểm và đường thẳng
+      </a>
+      <a href="../bai_hoc_tuong_tac_toan_6_bai34/index.html" class="btn-nav">
+        Bài 34: Đoạn thẳng. Độ dài đoạn thẳng <span>➡️</span>
+      </a>
+    </footer>
+  </main>
+
+  <!-- PRINTABLE CERTIFICATE CONTAINER (Chỉ xuất hiện khi in hoặc nhấn nút In) -->
+  <div id="printable-certificate" style="display: none;">
+    <div class="cert-frame">
+      <div style="font-size: 3rem; margin-bottom: 10px;">🌟🏆🌟</div>
+      <h1 style="color: #4f46e5; font-size: 2.2rem; margin-bottom: 8px;">GIẤY CHỨNG NHẬN THÀNH TÍCH TOÁN HỌC</h1>
+      <p style="font-size: 1.1rem; color: #475569; margin-bottom: 20px;">
+        Chương trình Toán 6 Tập 2 — Kết Nối Tri Thức Với Cuộc Sống
+      </p>
+      <div style="border-top: 2px dashed #818cf8; border-bottom: 2px dashed #818cf8; padding: 20px; margin: 20px 0;">
+        <p style="font-size: 1.2rem; margin-bottom: 10px;">Vinh danh tài năng trẻ xuất sắc:</p>
+        <h2 id="cert-student-name" style="font-size: 2rem; color: #1e1b4b; margin-bottom: 15px;">HỌC SINH LỚP 6</h2>
+        <p style="font-size: 1.1rem; line-height: 1.8;">
+          Đã xuất sắc hoàn thành khóa học tương tác chuyên sâu:<br>
+          <strong style="color: #4f46e5; font-size: 1.3rem;">BÀI 33: ĐIỂM NẰM GIỮA HAI ĐIỂM. TIA</strong><br>
+          Nắm vững quy tắc điểm nằm giữa, vị trí cùng phía/khác phía, bản chất các tia đối nhau, tia trùng nhau và hiện tượng thiên văn Nhật thực - Nguyệt thực.
+        </p>
+      </div>
+      <div style="display: flex; justify-content: space-around; margin-top: 30px;">
+        <div>
+          <p style="font-weight: 700; color: #64748b;">ĐIỂM SỐ ĐẠT ĐƯỢC</p>
+          <p id="cert-score" style="font-size: 1.8rem; font-weight: 800; color: #4f46e5;">1000 XP</p>
+        </div>
+        <div>
+          <p style="font-weight: 700; color: #64748b;">SỐ SAO TÍCH LŨY</p>
+          <p id="cert-stars" style="font-size: 1.8rem; font-weight: 800; color: #ca8a04;">10/10 ⭐</p>
+        </div>
+        <div>
+          <p style="font-weight: 700; color: #64748b;">DANH HIỆU</p>
+          <p id="cert-rank" style="font-size: 1.8rem; font-weight: 800; color: #10b981;">Đại Kiện Tướng</p>
+        </div>
+      </div>
+      <div style="margin-top: 40px; font-style: italic; color: #94a3b8; font-size: 0.9rem;">
+        Hệ thống Bài học Tương tác Toán 6 • Kết Nối Tri Thức Với Cuộc Sống
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

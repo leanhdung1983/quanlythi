@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 27: Thể Tích - Hình Học Không Gian 11 | Học Liệu Số Cao Cấp</title>
+  <!-- KaTeX Offline Cục Bộ -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <!-- File CSS Đồng Bộ Cyber Logic Chuẩn Bài 1 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kiến Trúc Sư Không Gian 11</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương VII: Quan Hệ Vuông Góc Trong Không Gian • Bài 27</span>
+      <h1>BÀI 27: THỂ TÍCH</h1>
+      <p>Chinh phục các công thức tính thể tích khối lăng trụ, khối hộp, khối chóp và khối chóp cụt đều. Ứng dụng giải quyết các bài toán tối ưu và dung tích thực tế.</p>
+    </section>
+
+    <!-- KHỐI 3: THANH NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Thẻ 1: Khối Chóp -->
+        <div class="concept-card">
+          <div class="card-icon">🔺</div>
+          <h3>1. Thể Tích Khối Chóp & Tứ Diện</h3>
+          <p>Thể tích của một khối chóp có diện tích đáy $S$ và chiều cao $h$ bằng một phần ba tích của diện tích đáy và chiều cao:</p>
+          <div class="formula-box">$$V = \frac{1}{3} \cdot S \cdot h$$</div>
+          <p><strong>Khối tứ diện vuông $OABC$:</strong> Có ba cạnh $OA, OB, OC$ đôi một vuông góc với độ dài lần lượt là $a, b, c$:</p>
+          <div class="formula-box">$$V_{OABC} = \frac{1}{6} \cdot a \cdot b \cdot c$$</div>
+          <div class="rule-box gold">
+            <strong>Tứ diện đều cạnh $a$:</strong> Chiều cao $h = \frac{a\sqrt{6}}{3}$, diện tích đáy $S = \frac{a^2\sqrt{3}}{4} \implies V = \frac{a^3\sqrt{2}}{12}$.
+          </div>
+        </div>
+
+        <!-- Thẻ 2: Khối Lăng Trụ & Khối Hộp -->
+        <div class="concept-card">
+          <div class="card-icon">🏛️</div>
+          <h3>2. Thể Tích Khối Lăng Trụ & Khối Hộp</h3>
+          <p>Thể tích của khối lăng trụ có diện tích đáy $S$ và chiều cao $h$ bằng tích của diện tích đáy và chiều cao:</p>
+          <div class="formula-box">$$V = S \cdot h$$</div>
+          <p><strong>Khối hộp chữ nhật:</strong> Có ba kích thước $a, b, c$, thể tích là tích ba kích thước:</p>
+          <div class="formula-box">$$V = a \cdot b \cdot c$$</div>
+          <div class="rule-box gold">
+            <strong>Khối lập phương:</strong> Cạnh bằng $a$ có thể tích là $V = a^3$.<br>
+            Thể tích khối lăng trụ luôn gấp 3 lần thể tích của khối chóp có cùng diện tích đáy và cùng chiều cao.
+          </div>
+        </div>
+
+        <!-- Thẻ 3: Khối Chóp Cụt Đều -->
+        <div class="concept-card">
+          <div class="card-icon">🏺</div>
+          <h3>3. Thể Tích Khối Chóp Cụt Đều</h3>
+          <p>Khối chóp cụt đều có diện tích đáy lớn là $S$, diện tích đáy bé là $S'$ và chiều cao (khoảng cách giữa hai đáy) là $h$:</p>
+          <div class="formula-box">$$V = \frac{1}{3} \cdot \left(S + S' + \sqrt{S \cdot S'}\right) \cdot h$$</div>
+          <div class="rule-box gold">
+            <strong>Ý nghĩa hình học:</strong> Thể tích khối chóp cụt đều bằng hiệu số thể tích của khối chóp lớn ban đầu và khối chóp nhỏ bị cắt đi ở phần đỉnh.
+          </div>
+        </div>
+
+        <!-- Thẻ 4: Ứng Dụng Thực Tế & Tỉ Số Thể Tích -->
+        <div class="concept-card">
+          <div class="card-icon">💡</div>
+          <h3>4. Tỉ Số Thể Tích & Quy Đổi Dung Tích</h3>
+          <p><strong>Định lý tỉ số thể tích Simson (cho khối chóp tam giác $S.ABC$):</strong></p>
+          <div class="formula-box">$$\frac{V_{S.A'B'C'}}{V_{S.ABC}} = \frac{SA'}{SA} \cdot \frac{SB'}{SB} \cdot \frac{SC'}{SC}$$</div>
+          <div class="rule-box gold">
+            <strong>Quy đổi đơn vị thể tích thông dụng:</strong><br>
+            • $1\text{ m}^3 = 1000\text{ dm}^3 = 1000\text{ lít} = 1\,000\,000\text{ cm}^3$<br>
+            • $1\text{ dm}^3 = 1\text{ lít} = 1000\text{ cm}^3 = 1000\text{ ml}$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Mini Lab 1 -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🧪</div>
+          <h3>Lab 1: So Sánh Trực Quan Thể Tích Khối Chóp & Khối Lăng Trụ</h3>
+          <p>Quan sát hai khối có cùng đáy và cùng chiều cao. Thay đổi kích thước để kiểm chứng thể tích khối chóp luôn bằng đúng $\frac{1}{3}$ thể tích khối lăng trụ.</p>
+          <div class="lab-controls">
+            <label>Cạnh đáy $a$: <span id="valA">6</span> m</label>
+            <input type="range" id="sliderA" min="2" max="12" value="6" step="1">
+            <label>Chiều cao $h$: <span id="valH">8</span> m</label>
+            <input type="range" id="sliderH" min="2" max="15" value="8" step="1">
+          </div>
+          <canvas id="canvasLab1" width="540" height="340" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab1" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Đáy $S = 36\text{ m}^2$ | $V_{\text{lăng trụ}} = 288\text{ m}^3$ | $V_{\text{chóp}} = 96\text{ m}^3 = \frac{1}{3} V_{\text{lăng trụ}}$
+          </div>
+        </div>
+
+        <!-- Mini Lab 2 -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🔬</div>
+          <h3>Lab 2: Mô Phỏng Khối Chóp Cụt Đều & Máy Tính Dung Tích Thùng Chứa</h3>
+          <p>Mô hình hóa chiếc xô hoặc bồn chứa dạng chóp cụt đều đáy vuông. Điều chỉnh đáy lớn $a$, đáy bé $b$ và chiều cao $h$ để tính dung tích nước.</p>
+          <div class="lab-controls">
+            <label>Cạnh đáy lớn $a$: <span id="valBigA">60</span> cm</label>
+            <input type="range" id="sliderBigA" min="40" max="100" value="60" step="5">
+            <label>Cạnh đáy bé $b$: <span id="valSmallB">30</span> cm</label>
+            <input type="range" id="sliderSmallB" min="10" max="50" value="30" step="5">
+            <label>Chiều cao $h$: <span id="valHeight">45</span> cm</label>
+            <input type="range" id="sliderHeight" min="20" max="80" value="45" step="1">
+          </div>
+          <canvas id="canvasLab2" width="540" height="340" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab2" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Thể tích: $V = 94.5\text{ dm}^3$ (Tương đương $94.5\text{ lít}$ nước)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Bài 27 Thể Tích</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm bám sát SGK Kết Nối Tri Thức. Tương tác tức thì, kiểm tra chuẩn xác kiến thức thể tích không gian!</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-score-item">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-item">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div id="quizContainer">
+        <!-- Render 10 câu trắc nghiệm bằng JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="arena-header" style="margin-bottom: 24px;">
+        <div>
+          <h2>🏆 Bảng Vàng Vinh Danh & Huy Hiệu Thể Tích</h2>
+          <p>Tích lũy XP từ bài tập để mở khóa trọn bộ 5 huy hiệu và nhận Giấy Chứng Nhận Danh Dự A4.</p>
+        </div>
+      </div>
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="concept-card" id="badge-1" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌱</div>
+          <h4>Khởi Nguyên Thể Tích</h4>
+          <p>Mở khóa khi trả lời đúng câu hỏi đầu tiên (+20 XP).</p>
+        </div>
+        <div class="concept-card" id="badge-2" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">📐</div>
+          <h4>Thợ Đo Lăng Trụ</h4>
+          <p>Mở khóa khi đạt 60 XP trong Đấu Trường.</p>
+        </div>
+        <div class="concept-card" id="badge-3" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">⚡</div>
+          <h4>Chuyên Gia Chóp Cụt</h4>
+          <p>Mở khóa khi đạt chuỗi liên tiếp 🔥 3 câu đúng.</p>
+        </div>
+        <div class="concept-card" id="badge-4" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌟</div>
+          <h4>Thống Lĩnh Không Gian</h4>
+          <p>Mở khóa khi đạt từ 160 XP trở lên.</p>
+        </div>
+        <div class="concept-card" id="badge-5" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">👑</div>
+          <h4>Đại Pháp Sư Dung Tích</h4>
+          <p>Mở khóa khi trả lời xuất sắc 10/10 câu hỏi.</p>
+        </div>
+      </div>
+
+      <!-- Khung Chứng Nhận A4 -->
+      <div class="cert-container" id="gradCert" style="margin-top: 36px;">
+        <div class="cert-header">
+          <div class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-badge-star">⭐⭐⭐⭐⭐</div>
+        </div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+        <p class="cert-desc">Vinh danh học sinh xuất sắc đã hoàn thành toàn diện nội dung:</p>
+        <div class="cert-lesson-title">BÀI 27: THỂ TÍCH (HÌNH HỌC KHÔNG GIAN 11)</div>
+        <div class="cert-student-name" id="certStudentName">Chiến Binh Logic</div>
+        <p class="cert-text">Đã nắm vững phương pháp tính thể tích khối chóp, khối lăng trụ, khối chóp cụt đều và đạt thành tích cao trong Đấu Trường SGK.</p>
+        <div class="cert-footer">
+          <div class="cert-date" id="certDate">Đà Nẵng, ngày 21 tháng 10 năm 2026</div>
+          <div class="cert-sign">
+            <strong>GIÁO VIÊN BỘ MÔN TOÁN</strong>
+            <div style="font-style: italic; margin-top: 40px; color: #a5b4fc;">(Ký và ghi rõ họ tên)</div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai26/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 26: Khoảng Cách</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_ontap_chuong7/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương VII</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (KHÔNG HIỆN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-card">
+        <h3>Chọn Avatar Đại Diện</h3>
+        <p>Chọn nhân vật học tập để đồng hành cùng bạn:</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+          <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Phù Thủy Hình Học">🧙‍♂️ Phù Thủy Hình Học</button>
+          <button class="avatar-opt" data-avatar="🚀" data-name="Phi Hành Gia Vector">🚀 Phi Hành Gia Vector</button>
+          <button class="avatar-opt" data-avatar="🧠" data-name="Bộ Não Lượng Tử">🧠 Bộ Não Lượng Tử</button>
+          <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Không Gian">⚡ Tia Chớp Không Gian</button>
+          <button class="avatar-opt" data-avatar="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+          <button class="avatar-opt" data-avatar="🦄" data-name="Kỳ Lân Sáng Tạo">🦄 Kỳ Lân Sáng Tạo</button>
+          <button class="avatar-opt" data-avatar="🎯" data-name="Xạ Thủ Tiêu Cự">🎯 Xạ Thủ Tiêu Cự</button>
+        </div>
+        <div style="text-align: right; margin-top: 16px;">
+          <button class="btn-icon" id="btnCloseModal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script src="app.js"></script>
+</body>
+</html>

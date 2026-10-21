@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 36: Góc - Toán 6 KNTT Tập 2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">📐</div>
+      <h1 class="start-title">KHÁM PHÁ THẾ GIỚI CỦA CÁC GÓC</h1>
+      <p class="start-subtitle">Toán 6 Tập 2 • Chương VIII: Những hình hình học cơ bản • Bài 36 (SGK Trang 58 - 60)</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật đồng hành:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="📐">📐</button>
+        <button class="avatar-btn" data-avatar="⏰">⏰</button>
+        <button class="avatar-btn" data-avatar="⚽">⚽</button>
+        <button class="avatar-btn" data-avatar="🧭">🧭</button>
+        <button class="avatar-btn" data-avatar="🌟">🌟</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên kỹ sư hình học:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Kỹ Sư Góc Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU KHÁM PHÁ ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">📐</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Kỹ Sư Góc Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Góc Phẳng</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương VIII • Hình Học & Đời Sống</div>
+      <h1 class="hero-title">BÀI 36: GÓC</h1>
+      <p class="hero-desc">
+        Khám phá hình ảnh góc quen thuộc trong đời sống từ chiếc compa mở rộng, góc sút bóng đá chuẩn xác tới góc tạo bởi kim giờ và kim phút trên mặt đồng hồ: Định nghĩa góc, đỉnh, hai cạnh, góc bẹt thẳng tắp và vùng điểm trong của góc!
+      </p>
+    </section>
+
+    <!-- SECTION 1: BẢN ĐỒ KIẾN THỨC & QUY TẮC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">📌</div>
+        <div>
+          <h2 class="section-title">1. Bản Đồ Trọng Tâm Khái Niệm Bài 36</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Định nghĩa góc, đỉnh, cạnh, kí hiệu góc bẹt và điểm trong</span>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <strong>📌 CÁC KHÁI NIỆM & KÍ HIỆU CỐT LÕI CỦA BÀI HỌC:</strong>
+        <ul style="margin-left: 20px; margin-top: 8px;">
+          <li><strong>1. Định nghĩa Góc:</strong> Góc là hình gồm <strong>hai tia chung gốc</strong>.
+            <br>• Gốc chung của hai tia gọi là <strong>đỉnh</strong> của góc.
+            <br>• Hai tia được gọi là <strong>hai cạnh</strong> của góc.
+          </li>
+          <li><strong>2. Kí hiệu & Cách gọi tên góc:</strong>
+            <br>• Góc $xOy$ có đỉnh $O$, hai cạnh $Ox$ và $Oy$. Kí hiệu là $\widehat{xOy}$ (hoặc $\angle xOy$).
+            <br>• Có thể gọi là góc $xOy$, góc $yOx$, góc $AOB$, góc $BOA$ hoặc góc $O$ (khi chỉ có duy nhất một góc tại đỉnh $O$). <em>Quy tắc: Chữ cái chỉ đỉnh luôn viết ở giữa!</em>
+          </li>
+          <li><strong>3. Góc bẹt:</strong> Khi hai tia $Ox$ và $Oy$ là <strong>hai tia đối nhau</strong>, ta có <strong>góc bẹt</strong> $xOy$ (hai cạnh của góc bẹt tạo thành một đường thẳng trọn vẹn).</li>
+          <li><strong>4. Điểm trong của góc:</strong>
+            <br>• Điểm nằm trong phần mặt phẳng được giới hạn bởi hai cạnh của góc (không bẹt) gọi là <strong>điểm trong của góc</strong> (điểm nằm trong góc).
+            <br>• Các điểm nằm trên hai cạnh của góc và các điểm nằm bên ngoài không phải là điểm trong của góc.
+          </li>
+        </ul>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-item">
+          <h3><span>📍</span> Đỉnh & 2 Cạnh</h3>
+          <p>Hai tia chung gốc $O$ là 2 cạnh ($Ox, Oy$), gốc $O$ là đỉnh của góc $\widehat{xOy}$.</p>
+        </div>
+        <div class="concept-item">
+          <h3><span>↔️</span> Góc Bẹt</h3>
+          <p>Hai cạnh là 2 tia đối nhau, mở rộng thẳng tắp $180^\circ$ trên cùng một đường thẳng.</p>
+        </div>
+        <div class="concept-item">
+          <h3><span>⏰</span> Góc Đồng Hồ & Bóng Đá</h3>
+          <p>Lúc 8h15, góc tạo bởi kim giờ và kim phút chứa các số: $4, 5, 6, 7, 8$.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC (2 LABS) -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🧪</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm Trực Quan Hóa (Interactive Labs)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Bộ mô phỏng xoay góc tự do và đồng hồ thời gian thực SGK 8.27</span>
+        </div>
+      </div>
+
+      <div class="lab-container">
+        <!-- LAB 1: CANVAS XOAY GÓC & KIỂM TRA ĐIỂM TRONG -->
+        <div class="lab-box">
+          <div class="lab-title"><span>🎨</span> Lab 1: Máy Xoay Góc Động & Máy Thử Điểm Trong Của Góc</div>
+          <p class="lab-instruction">
+            Kéo thả hai đầu mút tia $x$ và $y$ để mở rộng hoặc thu hẹp góc $\widehat{xOy}$. Kéo điểm thử nghiệm $M$ để xem máy tính kết luận $M$ có nằm trong góc hay không!
+          </p>
+
+          <div class="angle-stage">
+            <div class="canvas-wrapper">
+              <canvas id="angle-canvas" width="650" height="260"></canvas>
+            </div>
+
+            <div class="angle-controls">
+              <button id="btn-preset-acute" class="btn-hud-tool">📐 Góc Nhọn ($45^\circ$)</button>
+              <button id="btn-preset-right" class="btn-hud-tool">📐 Góc Vuông ($90^\circ$)</button>
+              <button id="btn-preset-straight" class="btn-hud-tool" style="background: #f3e8ff; border-color: #8b5cf6; color: #6d28d9; font-weight: 700;">
+                ↔️ Góc Bẹt ($180^\circ$ - Hai Tia Đối Nhau)
+              </button>
+              <button id="btn-reset-points" class="btn-hud-tool">🔄 Đặt Lại Tọa Độ</button>
+            </div>
+
+            <div class="angle-info-box" id="angle-info-box">
+              <strong>Thông tin góc:</strong> Kéo các mút tia hoặc kéo điểm M để kiểm tra tính chất điểm trong của góc!
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 2: MẶT ĐỒNG HỒ 8H15 & GÓC SÚT KHUNG THÀNH -->
+        <div class="lab-box">
+          <div class="lab-title"><span>⏰</span> Lab 2: Đồng Hồ Góc SGK (Bài 8.27: Lúc 8 Giờ 15 Phút)</div>
+          <p class="lab-instruction">
+            Quan sát góc tạo bởi kim giờ và kim phút trên mặt đồng hồ lúc 8h15:
+          </p>
+
+          <div class="clock-stage">
+            <div class="clock-card">
+              <h4><span>⏰</span> Bài 8.27: Góc Lúc 8 Giờ 15 Phút</h4>
+              <p style="font-size: 0.85rem; margin-bottom: 8px;">
+                Kim phút chỉ đúng vào: <strong>Số 3</strong>.<br>
+                Kim giờ chỉ qua số 8 một chút hướng về số 9: <strong>Vị trí 8h15</strong>.
+              </p>
+              <button id="btn-inspect-clock" class="btn-hud-tool" style="width: 100%; margin-bottom: 8px; background: #f3e8ff; border-color: #8b5cf6; color: #6d28d9;">
+                Xem Vùng Các Số Nằm Trong Góc
+              </button>
+              <div id="clock-result" style="font-size: 0.85rem; background: var(--surface-alt); padding: 8px; border-radius: 6px; display: none;">
+                • Các vạch số nằm trong góc nhỏ hơn góc bẹt tạo bởi kim giờ và kim phút là: <strong style="color:#6d28d9;">Số 4, 5, 6, 7, 8</strong>!<br>
+                • (Vạch số 3 nằm trên cạnh tia kim phút, vạch số 9, 10, 11, 12, 1, 2 nằm bên ngoài góc).
+              </div>
+            </div>
+
+            <div class="clock-card">
+              <h4><span>⚽</span> HĐ1: Góc Sút Khung Thành</h4>
+              <p style="font-size: 0.85rem; margin-bottom: 8px;">
+                Đỉnh của góc sút là vị trí quả bóng.<br>
+                Hai cạnh của góc sút là hai tia nối từ quả bóng đến hai cột dọc của khung thành.
+              </p>
+              <button id="btn-inspect-goal" class="btn-hud-tool" style="width: 100%; margin-bottom: 8px; background: #dcfce7; border-color: #10b981; color: #15803d;">
+                Xem Mô Phỏng Góc Sút Rộng / Hẹp
+              </button>
+              <div id="goal-result" style="font-size: 0.85rem; background: var(--surface-alt); padding: 8px; border-radius: 6px; display: none;">
+                • Khi cầu thủ càng tiến gần chính diện khung thành, góc sút càng lớn $\implies$ cơ hội ghi bàn càng cao!<br>
+                • Ở góc quá hẹp sát đường biên ngang, góc sút tiến về $0^\circ$ rất khó ghi bàn.
+              </div>
+            </div>
+          </div>
+
+          <div style="margin-top: 1rem; text-align: center;">
+            <canvas id="clock-canvas" width="650" height="210" style="margin: 0 auto; border: 2px solid var(--border); border-radius: 12px; background: #0f172a;"></canvas>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: ĐẤU TRƯỜNG SGK (10 BÀI TẬP SGK 8.25 - 8.30) -->
+    <section class="lesson-card">
+      <div class="arena-header">
+        <div class="section-header" style="margin-bottom: 0; border-bottom: none;">
+          <div class="section-icon-badge">⚔️</div>
+          <div>
+            <h2 class="section-title">3. Đấu Trường Toán Học SGK (Bài 8.25 - 8.30)</h2>
+            <span style="font-size: 0.85rem; color: #64748b;">10 câu trắc nghiệm bao phủ toàn bộ bài tập SGK trang 60</span>
+          </div>
+        </div>
+        <div style="font-weight: 700; color: var(--primary);" id="quiz-progress-text">0/10 Hoàn thành</div>
+      </div>
+
+      <div id="quiz-container">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- SECTION 4: DANH HIỆU & GIẤY KHEN A4 -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">4. Bảng Vinh Danh & Chứng Chỉ A4</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa 5 huy hiệu vinh danh và xuất chứng nhận A4</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-item" id="badge-1">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Thợ Đo Góc Nhỏ</div>
+          <div class="badge-req">Đạt 200 XP</div>
+        </div>
+        <div class="badge-item" id="badge-2">
+          <div class="badge-icon">⏰</div>
+          <div class="badge-name">Chuyên Gia Đồng Hồ 8h15</div>
+          <div class="badge-req">Đúng câu đồng hồ SGK 8.27</div>
+        </div>
+        <div class="badge-item" id="badge-3">
+          <div class="badge-icon">🎯</div>
+          <div class="badge-name">Định Vị Điểm Trong</div>
+          <div class="badge-req">Đúng liên tiếp 3 câu</div>
+        </div>
+        <div class="badge-item" id="badge-4">
+          <div class="badge-icon">↔️</div>
+          <div class="badge-name">Bậc Thầy Góc Bẹt</div>
+          <div class="badge-req">Đạt 500 XP</div>
+        </div>
+        <div class="badge-item" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Bài 36</div>
+          <div class="badge-req">Đạt trọn vẹn 10/10 sao</div>
+        </div>
+      </div>
+
+      <div class="cert-section">
+        <button id="btn-print-cert" class="btn-print-cert">🖨️ In Giấy Chứng Nhận Thành Tích A4</button>
+      </div>
+    </section>
+
+    <!-- NAVIGATION FOOTER -->
+    <footer class="nav-footer">
+      <a href="../bai_hoc_tuong_tac_toan_6_bai35/index.html" class="btn-nav">
+        <span>⬅️</span> Bài 35: Trung điểm của đoạn thẳng
+      </a>
+      <a href="../bai_hoc_tuong_tac_toan_6_bai37/index.html" class="btn-nav">
+        Bài 37: Số đo góc <span>➡️</span>
+      </a>
+    </footer>
+  </main>
+
+  <!-- PRINTABLE CERTIFICATE CONTAINER -->
+  <div id="printable-certificate" style="display: none;">
+    <div class="cert-frame">
+      <div style="font-size: 3rem; margin-bottom: 10px;">🌟📐🏆</div>
+      <h1 style="color: #6d28d9; font-size: 2.2rem; margin-bottom: 8px;">GIẤY CHỨNG NHẬN THÀNH TÍCH TOÁN HỌC</h1>
+      <p style="font-size: 1.1rem; color: #475569; margin-bottom: 20px;">
+        Chương trình Toán 6 Tập 2 — Kết Nối Tri Thức Với Cuộc Sống
+      </p>
+      <div style="border-top: 2px dashed #8b5cf6; border-bottom: 2px dashed #8b5cf6; padding: 20px; margin: 20px 0;">
+        <p style="font-size: 1.2rem; margin-bottom: 10px;">Vinh danh tài năng trẻ xuất sắc:</p>
+        <h2 id="cert-student-name" style="font-size: 2rem; color: #2e1065; margin-bottom: 15px;">HỌC SINH LỚP 6</h2>
+        <p style="font-size: 1.1rem; line-height: 1.8;">
+          Đã xuất sắc hoàn thành khóa học tương tác chuyên sâu:<br>
+          <strong style="color: #6d28d9; font-size: 1.3rem;">BÀI 36: GÓC</strong><br>
+          Nắm vững định nghĩa góc, nhận diện đỉnh và cạnh, thành thạo khái niệm góc bẹt tạo bởi hai tia đối nhau, xác định chính xác điểm trong của một góc và giải mã các bài toán góc trong thực tế đời sống.
+        </p>
+      </div>
+      <div style="display: flex; justify-content: space-around; margin-top: 30px;">
+        <div>
+          <p style="font-weight: 700; color: #64748b;">ĐIỂM SỐ ĐẠT ĐƯỢC</p>
+          <p id="cert-score" style="font-size: 1.8rem; font-weight: 800; color: #6d28d9;">1000 XP</p>
+        </div>
+        <div>
+          <p style="font-weight: 700; color: #64748b;">SỐ SAO TÍCH LŨY</p>
+          <p id="cert-stars" style="font-size: 1.8rem; font-weight: 800; color: #ca8a04;">10/10 ⭐</p>
+        </div>
+        <div>
+          <p style="font-weight: 700; color: #64748b;">DANH HIỆU</p>
+          <p id="cert-rank" style="font-size: 1.8rem; font-weight: 800; color: #10b981;">Đại Kiện Tướng</p>
+        </div>
+      </div>
+      <div style="margin-top: 40px; font-style: italic; color: #94a3b8; font-size: 0.9rem;">
+        Hệ thống Bài học Tương tác Toán 6 • Kết Nối Tri Thức Với Cuộc Sống
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

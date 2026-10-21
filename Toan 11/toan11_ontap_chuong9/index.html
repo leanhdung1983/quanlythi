@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài tập cuối chương IX: Đạo hàm - Toán 11 KNTT</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Giải Tích Đạo Hàm</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương IX: Đạo Hàm • Ôn Tập Chương</span>
+      <h1>BÀI TẬP CUỐI CHƯƠNG IX</h1>
+      <p>Tổng kết hệ thống lý thuyết định nghĩa, quy tắc tính đạo hàm cấp một, cấp hai và các bài toán tiếp tuyến thực tế</p>
+    </section>
+
+    <!-- Section Navigation -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Trọng Tâm 1</span>
+            <h3>1. Định nghĩa & Ý nghĩa của đạo hàm</h3>
+          </div>
+          <div class="formula-box">
+            <p><strong>Định nghĩa bằng giới hạn:</strong></p>
+            <p>$$f'(x_0) = \lim\limits_{x \to x_0} \dfrac{f(x) - f(x_0)}{x - x_0} = \lim\limits_{\Delta x \to 0} \dfrac{\Delta y}{\Delta x}$$</p>
+          </div>
+          <div class="formula-box" style="margin-top: 10px;">
+            <p><strong>Ý nghĩa hình học (Tiếp tuyến):</strong> Hệ số góc tiếp tuyến tại $M_0(x_0; y_0)$ là $k = f'(x_0)$:</p>
+            <p>$$y - y_0 = f'(x_0)(x - x_0)$$</p>
+          </div>
+          <div class="formula-box" style="margin-top: 10px;">
+            <p><strong>Ý nghĩa vật lí:</strong> Vận tốc tức thời $v(t) = s'(t)$, gia tốc tức thời $a(t) = v'(t) = s''(t)$.</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Trọng Tâm 2</span>
+            <h3>2. Bảng đạo hàm sơ cấp & hàm hợp</h3>
+          </div>
+          <div class="formula-box">
+            <p>$(x^n)' = n x^{n-1} \implies (u^n)' = n u^{n-1} \cdot u'$</p>
+            <p>$(\sqrt{x})' = \dfrac{1}{2\sqrt{x}} \implies (\sqrt{u})' = \dfrac{u'}{2\sqrt{u}}$</p>
+            <p>$(\sin x)' = \cos x \implies (\sin u)' = u' \cos u$</p>
+            <p>$(\cos x)' = -\sin x \implies (\cos u)' = -u' \sin u$</p>
+            <p>$(e^x)' = e^x \implies (e^u)' = u' e^u$</p>
+            <p>$(\ln x)' = \dfrac{1}{x} \implies (\ln u)' = \dfrac{u'}{u}$</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Trọng Tâm 3</span>
+            <h3>3. Các dạng toán tiếp tuyến trọng tâm</h3>
+          </div>
+          <div class="rule-box gold">
+            <strong>Dạng 1: Viết tiếp tuyến tại điểm $M_0(x_0; y_0)$ thuộc đồ thị:</strong>
+            <p>1. Tính đạo hàm $y' = f'(x)$.</p>
+            <p>2. Tính hệ số góc $k = f'(x_0)$.</p>
+            <p>3. Phương trình tiếp tuyến: $y = k(x - x_0) + y_0$.</p>
+          </div>
+          <div class="rule-box gold" style="margin-top: 10px;">
+            <strong>Dạng 2: Tiếp tuyến có hệ số góc $k$ cho trước (song song / vuông góc):</strong>
+            <p>• Song song với $d: y = ax + b \implies f'(x_0) = a$.</p>
+            <p>• Vuông góc với $d: y = ax + b \implies f'(x_0) = -\dfrac{1}{a}$.</p>
+            <p>Giải phương trình $f'(x_0) = k$ tìm hoành độ tiếp điểm $x_0$, rồi viết phương trình.</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Trọng Tâm 4</span>
+            <h3>4. Đạo hàm cấp hai & Ứng dụng</h3>
+          </div>
+          <p>Đạo hàm cấp hai: $y'' = (y')'$.</p>
+          <div class="formula-box">
+            <p><strong>Ứng dụng cơ học:</strong></p>
+            <p>Chuyển động thẳng $s(t) \implies v(t) = s'(t) \implies a(t) = s''(t)$.</p>
+            <p>Dao động điều hòa $x(t) = A\cos(\omega t + \varphi) \implies a(t) = -\omega^2 x(t)$.</p>
+          </div>
+          <div class="formula-box" style="margin-top: 10px;">
+            <p><strong>Giải phương trình $f'(x) = 0$ và bất phương trình $f'(x) > 0$:</strong></p>
+            <p>Xác định các khoảng đơn điệu và các điểm tới hạn của đồ thị hàm số.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Thí Nghiệm 1</span>
+            <h3>🧪 Khảo Sát Tiếp Tuyến Theo Hệ Số Góc</h3>
+          </div>
+          <p>Cho đồ thị $(C): y = \dfrac{1}{3}x^3 - x^2 - x + 1$. Kéo điểm $x_0$ để quan sát hệ số góc tiếp tuyến $k = f'(x_0) = x_0^2 - 2x_0 - 1$. Tìm điểm có tiếp tuyến nằm ngang ($k = 0$) hoặc có hệ số góc nhỏ nhất:</p>
+          <div class="lab-controls" style="margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <label><strong>Hoành độ $x_0$:</strong> <span id="x0Val" style="color: #38bdf8; font-weight: bold;">1.0</span></label>
+            <input type="range" id="x0Slider" min="-1.5" max="3.5" step="0.1" value="1.0" style="flex: 1; min-width: 150px;">
+          </div>
+          <canvas id="labCanvas1" width="540" height="340" style="width: 100%; border-radius: 12px; background: #0c1024; border: 1px solid rgba(99, 102, 241, 0.3); display: block;"></canvas>
+          <div class="formula-box" id="lab1Output" style="margin-top: 12px;">
+            <p>Tọa độ tiếp điểm: <span id="m0Coord">$M_0(1.0; -0.67)$</span></p>
+            <p>Hệ số góc: <span id="kSlopeOut">$k = f'(1.0) = -2.00$ (Hệ số góc nhỏ nhất tại $x_0 = 1$)</span></p>
+            <p>Phương trình tiếp tuyến: <span id="tangentEqOut">$y = -2.00x + 1.33$</span></p>
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Thí Nghiệm 2</span>
+            <h3>🔍 Máy Quét Điểm Tới Hạn $f'(x) = 0$</h3>
+          </div>
+          <p>Trực quan hóa mối liên hệ giữa các điểm cực trị của $f(x) = x^3 - 3x$ với các điểm cắt trục hoành của $f'(x) = 3x^2 - 3$:</p>
+          <div class="lab-controls" style="margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <button class="btn-primary" id="btnToggleDeriv">👁️ Ẩn/Hiện đồ thị $f'(x)$</button>
+            <span style="color: #94a3b8; font-size: 0.9rem;">Hai nghiệm $x = -1$ và $x = 1$ chính là vị trí tiếp tuyến ngang.</span>
+          </div>
+          <canvas id="labCanvas2" width="540" height="340" style="width: 100%; border-radius: 12px; background: #0c1024; border: 1px solid rgba(99, 102, 241, 0.3); display: block;"></canvas>
+          <div class="formula-box" id="lab2Output" style="margin-top: 12px;">
+            <p>Phương trình đạo hàm: $f'(x) = 3x^2 - 3 = 0 \iff x = -1$ hoặc $x = 1$</p>
+            <p>Tại $x = -1$: $f(-1) = 2$ (Điểm cực đại địa phương, tiếp tuyến ngang)</p>
+            <p>Tại $x = 1$: $f(1) = -2$ (Điểm cực tiểu địa phương, tiếp tuyến ngang)</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Ôn Tập Chương IX</h2>
+          <p>Thử thách 10 câu trắc nghiệm tổng hợp toàn bộ chương IX (SGK 9.18 - 9.25)</p>
+        </div>
+        <div class="arena-score-box">
+          <div>Tiến Độ: <span id="arenaProgress" style="font-weight: bold; color: #38bdf8;">0/10</span></div>
+          <div>Điểm Arena: <span id="arenaScore" style="font-weight: bold; color: #34d399;">0 XP</span></div>
+        </div>
+      </div>
+      <div id="quizContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-grid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <h3>Nhà Hệ Thống Hóa</h3>
+          <p>Nghiên cứu bản đồ tri thức tổng ôn chương IX</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <h3>Chuyên Gia Tiếp Tuyến</h3>
+          <p>Khám phá phòng thí nghiệm tiếp tuyến & nghiệm $f'(x)=0$</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <h3>Chiến Binh Bất Bại</h3>
+          <p>Đạt chuỗi đúng 3 câu liên tiếp trong đấu trường</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">⚡</div>
+          <h3>Cao Thủ Giải Tích</h3>
+          <p>Đạt từ 160 XP trở lên trong Đấu Trường Ôn Tập</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <h3>Bậc Thầy Chương Đạo Hàm</h3>
+          <p>Hoàn thành tuyệt đối 10/10 câu hỏi của đấu trường</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <div class="cert-school">SỞ GIÁO DỤC VÀ ĐÀO TẠO THÀNH PHỐ ĐÀ NẴNG</div>
+          <div class="cert-title">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ TOÁN HỌC TRỰC QUAN</div>
+        </div>
+        <div class="cert-body">
+          <div class="cert-award">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</div>
+          <p class="cert-intro">Chứng nhận học sinh:</p>
+          <h2 class="cert-name" id="certStudentName">Chiến Binh Logic</h2>
+          <p class="cert-desc">Đã hoàn thành xuất sắc các nội dung ôn tập lý thuyết, phòng thí nghiệm tương tác và bộ câu hỏi trắc nghiệm của</p>
+          <p class="cert-lesson-title"><strong>BÀI TẬP CUỐI CHƯƠNG IX: ĐẠO HÀM</strong></p>
+          <p class="cert-curriculum">Thuộc chương trình Toán 11 - Kết Nối Tri Thức Với Cuộc Sống</p>
+        </div>
+        <div class="cert-footer">
+          <div class="cert-date">Đà Nẵng, ngày cấp chứng nhận hệ thống</div>
+          <div class="cert-signatures">
+            <div class="sig-block">
+              <span class="sig-role">GIÁO VIÊN BỘ MÔN</span>
+              <div class="sig-seal">BAN TOÁN THPT</div>
+              <span class="sig-name">Tổ Toán - Tin học</span>
+            </div>
+            <div class="sig-block">
+              <span class="sig-role">HIỆU TRƯỞNG</span>
+              <div class="sig-seal">ĐÃ CHỨNG THỰC</div>
+              <span class="sig-name">Hội đồng Sư phạm Nhà trường</span>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai33/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 33: Đạo Hàm Cấp Hai</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_thuchanh3/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">HĐTN 3: Mũ & Lôgarit</span>
+      </a>
+    </footer>
+
+    <!-- Avatar Modal -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-box">
+        <h3>Chọn Avatar Đại Diện</h3>
+        <p>Chọn biểu tượng phong cách cho chiến binh học tập của bạn:</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <button class="avatar-opt" data-avatar="👑">👑 Vương Giả</button>
+          <button class="avatar-opt" data-avatar="🧙‍♂️">🧙‍♂️ Pháp Sư</button>
+          <button class="avatar-opt" data-avatar="🚀">🚀 Phi Hành Gia</button>
+          <button class="avatar-opt" data-avatar="⚡">⚡ Siêu Nhân</button>
+          <button class="avatar-opt" data-avatar="🦁">🦁 Sư Tử</button>
+          <button class="avatar-opt" data-avatar="🦊">🦊 Hồ Ly</button>
+          <button class="avatar-opt" data-avatar="🦉">🦉 Cú Thông Thái</button>
+          <button class="avatar-opt" data-avatar="🤖">🤖 Robot AI</button>
+        </div>
+        <button class="btn-primary" id="closeAvatarModal" style="margin-top: 15px;">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

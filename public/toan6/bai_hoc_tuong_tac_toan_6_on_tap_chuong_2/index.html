@@ -1,0 +1,245 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Cuối Chương II: Tính Chia Hết - Toán 6 KNTT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">✨</div>
+      <h1 class="start-title">CHINH PHỤC TÍNH CHIA HẾT & SỐ NGUYÊN TỐ</h1>
+      <p class="start-subtitle">Toán 6 • Bài Tập Cuối Chương II: Tính chia hết trong tập hợp số tự nhiên</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật của bạn:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="✨">✨</button>
+        <button class="avatar-btn" data-avatar="🦆">🦆</button>
+        <button class="avatar-btn" data-avatar="💎">💎</button>
+        <button class="avatar-btn" data-avatar="🤖">🤖</button>
+        <button class="avatar-btn" data-avatar="👑">👑</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên nhà thám hiểm số nguyên tố:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Thợ Săn Số Nguyên Tố Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU ÔN TẬP ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">✨</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Thợ Săn Số Nguyên Tố Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Chương II</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chuyên Đề Tổng Ôn • Cuối Chương II</div>
+      <h1 class="hero-title">ÔN TẬP CUỐI CHƯƠNG II: TÍNH CHIA HẾT & SỐ NGUYÊN TỐ</h1>
+      <p class="hero-desc">
+        Làm chủ trọn vẹn các bài toán chia hết cho 2, 3, 5, 9; phương pháp phân tích ra thừa số nguyên tố; tìm ƯCLN & BCNN; rút gọn phân số, quy đồng mẫu số và giải mã bài toán cổ đàn vịt!
+      </p>
+    </section>
+
+    <!-- PHẦN 1: BẢN ĐỒ KIẾN THỨC CHƯƠNG II -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🗺️</div>
+        <div>
+          <h2 class="section-title">1. Bản Đồ Kiến Thức Trọng Tâm Chương II</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Hệ thống hóa toàn bộ công thức và dấu hiệu chia hết</span>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <strong>📌 CÁC TRỤ CỘT KIẾN THỨC BẮT BUỘC NẮM VỮNG:</strong>
+        <ul style="margin-left: 20px; margin-top: 8px;">
+          <li><strong>Dấu hiệu chia hết:</strong> Chia hết cho 2, 5 (xét chữ số tận cùng: chẵn, 0 hoặc 5); Chia hết cho 3, 9 (xét tổng các chữ số).</li>
+          <li><strong>Số nguyên tố:</strong> Số tự nhiên lớn hơn 1 chỉ có đúng 2 ước là 1 và chính nó (2, 3, 5, 7, 11, 13, 17, 19, 23...). Hợp số có nhiều hơn 2 ước.</li>
+          <li><strong>ƯCLN:</strong> Lập tích các thừa số nguyên tố <strong>chung</strong> với số mũ <strong>nhỏ nhất</strong> $\rightarrow$ dùng để rút gọn phân số về tối giản.</li>
+          <li><strong>BCNN:</strong> Lập tích các thừa số nguyên tố <strong>chung và riêng</strong> với số mũ <strong>lớn nhất</strong> $\rightarrow$ dùng làm mẫu số chung khi quy đồng phân số.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🔬</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm: Máy Tính ƯCLN - BCNN & Giải Mã Bài Toán Cổ</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Trực quan hóa thuật toán thừa số nguyên tố và câu đố chăn vịt</span>
+        </div>
+      </div>
+
+      <!-- LAB 1: MÁY TÍNH ƯCLN & BCNN -->
+      <div class="interactive-lab">
+        <div class="lab-title">⚙️ Thí Nghiệm 1: Máy Phân Tích Thừa Số Nguyên Tố & Tìm ƯCLN, BCNN</div>
+        <div class="lab-desc">Chọn hoặc nhập 2 số tự nhiên để xem cỗ máy phân tích ra thừa số nguyên tố và suy ra ƯCLN, BCNN tự động:</div>
+
+        <div class="lab-controls">
+          <label style="font-weight:700;">Số thứ nhất (a):</label>
+          <input type="number" id="num-a" value="36" min="2" max="500" style="width: 80px; padding: 6px 10px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+          <label style="font-weight:700; margin-left: 10px;">Số thứ hai (b):</label>
+          <input type="number" id="num-b" value="54" min="2" max="500" style="width: 80px; padding: 6px 10px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+          <button class="lab-btn" id="btn-calc-gcd-lcm">⚡ Phân Tích & Tính Ngay</button>
+        </div>
+
+        <div class="stage-card" id="gcd-lcm-output">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+
+      <!-- LAB 2: GIẢI MÃ BÀI TOÁN CỔ ĐÀN VỊT -->
+      <div class="interactive-lab">
+        <div class="lab-title">🦆 Thí Nghiệm 2: Giải Mã Bài Toán Cổ "Đàn Vịt Huyền Bí" (BT 2.62)</div>
+        <div class="lab-desc">
+          <em>"Hàng 2 xếp thấy chưa vừa • Hàng 3 xếp vẫn còn thừa một con • Hàng 4 xếp vẫn chưa tròn • Hàng 5 xếp thiếu một con mới đầy • Xếp thành hàng 7, đẹp thay • Vịt bao nhiêu? Tính được ngay mới tài. (Biết số vịt chưa đến 200 con)"</em>
+        </div>
+
+        <div class="lab-controls">
+          <label style="font-weight: 700;">Thử chọn số lượng vịt:</label>
+          <button class="lab-btn" data-duck="49">Thử 49 con</button>
+          <button class="lab-btn" data-duck="79">Thử 79 con</button>
+          <button class="lab-btn" data-duck="119">Thử 119 con</button>
+          <button class="lab-btn" data-duck="140">Thử 140 con</button>
+        </div>
+
+        <div class="stage-card" id="duck-puzzle-output" style="font-weight: 600; color: #0f172a;">
+          Bấm các nút số lượng vịt phía trên để đối chiếu với từng câu trong bài thơ cổ!
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: ĐẤU TRƯỜNG LUYỆN TẬP SGK -->
+    <section class="lesson-card" id="luyen-tap">
+      <div class="section-header">
+        <div class="section-icon-badge">⚔️</div>
+        <div>
+          <h2 class="section-title">3. Đấu Trường Luyện Tập SGK (Bài 2.53 – 2.62)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Chinh phục 10 bài toán tổng hợp để nhận 10 sao và nhận Giấy Chứng Nhận Chương II</span>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quiz-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- PHẦN 4: HUY HIỆU & CHỨNG NHẬN -->
+    <section class="lesson-card" id="thanh-tich">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">Bảng Thành Tích & Huy Hiệu Vinh Dự</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa trọn bộ 5 huy hiệu Chương II</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">⚙️</div>
+          <div class="badge-card-name">Bậc Thầy Phân Tích Thừa Số</div>
+          <div class="badge-card-desc">Sử dụng cỗ máy tính toán ƯCLN và BCNN tự động</div>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">🦆</div>
+          <div class="badge-card-name">Nhà Giải Mã Bài Toán Cổ</div>
+          <div class="badge-card-desc">Giải mã chuẩn xác 49 con vịt thỏa mãn 5 câu thơ</div>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🎁</div>
+          <div class="badge-card-name">Chuyên Gia Chia Quà</div>
+          <div class="badge-card-desc">Áp dụng ƯCLN chia đều các túi quà cam, xoài, bơ</div>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Binh Bất Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu đúng liên tiếp</div>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Đại Kiện Tướng Tính Chia Hết</div>
+          <div class="badge-card-desc">Chinh phục xuất sắc toàn bộ 10 câu SGK</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN IN ĐƯỢC -->
+      <div class="certificate-wrapper" id="printable-cert">
+        <div class="cert-seal">✨</div>
+        <div class="cert-super-title">BỘ GIÁO DỤC VÀ ĐÀO TẠO • HỌC LIỆU SỐ TOÁN 6</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.1rem; color: #64748b;">Chứng nhận trao tặng cho thợ săn số nguyên tố:</p>
+        <div class="cert-student-name" id="cert-name">Thợ Săn Số Nguyên Tố Lớp 6</div>
+        <p style="font-size: 1.15rem; color: #065f46; max-width: 650px; margin: 0 auto;">
+          Đã xuất sắc hoàn thành trọn vẹn chương trình bài học ôn tập tương tác:
+          <br><strong style="color: #059669; font-size: 1.25rem;">ÔN TẬP CUỐI CHƯƠNG II: TÍNH CHIA HẾT TRONG SỐ TỰ NHIÊN</strong>
+          <br>Bộ sách Toán 6 - Kết Nối Tri Thức Với Cuộc Sống.
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">Điểm số: <span id="cert-score">0</span> XP</div>
+          <div class="cert-stat-badge">Số sao: <span id="cert-stars">0</span> ⭐</div>
+          <div class="cert-stat-badge">Hạng: <span id="cert-rank">Tập Sự</span></div>
+          <div class="cert-stat-badge">Ngày cấp: <span id="cert-date">--/--/----</span></div>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-around; font-weight: 700; color: #475569;">
+          <div>
+            <p>Hệ Thống Đào Tạo Tương Tác</p>
+            <p style="margin-top: 30px; color: #059669;">(Đã ký điện tử)</p>
+          </div>
+          <div>
+            <p>Giáo Viên Bộ Môn Toán 6</p>
+            <p style="margin-top: 30px; color: #059669;">(Chứng nhận hoàn thành)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button onclick="window.print()" class="btn-cert btn-print">🖨️ In Giấy Chứng Nhận A4</button>
+        <button id="btn-replay-lesson" class="btn-cert btn-replay">🔄 Học Lại Bài Này</button>
+        <a href="../bai_hoc_tuong_tac_toan_6_on_tap_chuong_1/index.html" class="btn-cert btn-prev-lesson">⬅️ Ôn Tập Cuối Chương I</a>
+        <a href="../bai_hoc_tuong_tac_toan_6_on_tap_chuong_3/index.html" class="btn-cert btn-next-lesson">Ôn Tập Cuối Chương III ➔</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

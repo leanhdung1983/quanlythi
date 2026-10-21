@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 17: Phép Chia Hết. Ước và Bội của một Số Nguyên - Học Liệu Số Toán 6</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU MINI-GAME -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">➗</div>
+      <h1 class="start-title">CHINH PHỤC BỘI & ƯỚC SỐ NGUYÊN</h1>
+      <p class="start-subtitle">Toán 6 • Bài 17: Phép chia hết. Ước và bội của một số nguyên (SGK Kết Nối Tri Thức)</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật của bạn:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="🤿">🤿</button>
+        <button class="avatar-btn" data-avatar="🐬">🐬</button>
+        <button class="avatar-btn" data-avatar="🤖">🤖</button>
+        <button class="avatar-btn" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button class="avatar-btn" data-avatar="👑">👑</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên nhà thám hiểm:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Thám Hiểm Gia Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU HÀNH TRÌNH ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">🤿</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Thám Hiểm Gia Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Bội Ước</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương III: Số Nguyên • Bài 17</div>
+      <h1 class="hero-title">PHÉP CHIA HẾT. ƯỚC VÀ BỘI CỦA MỘT SỐ NGUYÊN</h1>
+      <p class="hero-desc">
+        Khám phá quy tắc dấu phép chia số nguyên, mở rộng khái niệm ước và bội sang miền số âm đối xứng, giải mã câu đố hai số nguyên chia hết cho nhau!
+      </p>
+    </section>
+
+    <!-- PHẦN 1: KHỞI ĐỘNG -->
+    <section class="lesson-card" id="khoi-dong">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">💡</div>
+          <div>
+            <h2 class="card-title">1. Khởi động: Ước và bội số nguyên có gì đặc biệt?</h2>
+            <p class="card-subtitle">So sánh với ước và bội của số tự nhiên đã học ở Chương II</p>
+          </div>
+        </div>
+        <span class="card-badge">Mở đầu bài học</span>
+      </div>
+
+      <div style="background: #f8fafc; border: 2px solid #e2e8f0; border-radius: 16px; padding: 20px;">
+        <p style="font-size: 1.05rem; margin-bottom: 12px; line-height: 1.7;">
+          Ở số tự nhiên, ước của 4 chỉ có: $1, 2, 4$. Nhưng trong tập hợp số nguyên $\mathbb{Z}$, số âm $-1, -2, -4$ có phải là ước của 4 hay không?
+        </p>
+
+        <button class="btn-find-divisors" onclick="revealStarterDivisor()">BẤM ĐỂ KHÁM PHÁ BÍ MẬT 🔓</button>
+
+        <div id="starter-answer-box" style="display: none; margin-top: 15px; padding: 16px; background: #f0fdfa; border: 2px solid #99f6e4; border-radius: 12px;">
+          <h4 style="color: #0f766e; font-weight: 900; font-size: 1.15rem; margin-bottom: 6px;">Có chứ! Vì $4 : (-1) = -4; \ 4 : (-2) = -2; \ 4 : (-4) = -1$!</h4>
+          <p style="color: #134e4a; font-size: 0.95rem;">
+            Trong tập số nguyên $\mathbb{Z}$, mỗi số nguyên $a \ne 0$ luôn có cả <strong>ước dương</strong> và <strong>ước âm</strong> tương ứng là hai số đối nhau!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: LÝ THUYẾT TRỌNG TÂM -->
+    <section class="lesson-card" id="ly-thuyet">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">📖</div>
+          <div>
+            <h2 class="card-title">2. Bản đồ tri thức phép chia & bội ước</h2>
+            <p class="card-subtitle">Trọng tâm SGK trang 73 - 74</p>
+          </div>
+        </div>
+        <span class="card-badge">Trọng tâm SGK</span>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-card">
+          <h4><span>➗</span> 1. Quy tắc dấu phép chia</h4>
+          <p>Dấu của thương giống hệt dấu của tích:</p>
+          <div class="formula-highlight">
+            $(+) : (+) \to (+) \quad\quad (-) : (-) \to (+)$<br>
+            $(+) : (-) \to (-) \quad\quad (-) : (+) \to (-)$
+          </div>
+          <p style="font-size: 0.85rem; color: #64748b;">Ví dụ: $12 : (-3) = -4; \ (-24) : (-8) = 3$.</p>
+        </div>
+
+        <div class="concept-card">
+          <h4><span>🔍</span> 2. Ước của số nguyên</h4>
+          <p>Nếu $a \ \vdots \ b$ thì $b$ là ước của $a$.</p>
+          <p>• Nếu $b$ là ước của $a$ thì <strong>$-b$ cũng là ước của $a$</strong>.</p>
+          <div class="formula-highlight">$$\text{Ư}(4) = \{1; -1; 2; -2; 4; -4\}$$</div>
+        </div>
+
+        <div class="concept-card">
+          <h4><span>🌱</span> 3. Bội của số nguyên</h4>
+          <p>Nhân số đó lần lượt với $0, \pm 1, \pm 2, \pm 3, \dots$</p>
+          <div class="formula-highlight">$$\text{B}(7) = \{0; \pm 7; \pm 14; \pm 21; \dots\}$$</div>
+        </div>
+
+        <div class="concept-card">
+          <h4><span>✨</span> 4. Tính chất chia hết</h4>
+          <p>• Nếu $a \ \vdots \ c$ và $b \ \vdots \ c$ thì $(a + b) \ \vdots \ c$ và $(a - b) \ \vdots \ c$.</p>
+          <p>• Nếu $a \ \vdots \ b$ thì mọi bội của $a$ cũng chia hết cho $b$.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: PHÒNG THÍ NGHIỆM: CỖ MÁY TÌM ƯỚC & BỘI TỰ ĐỘNG -->
+    <section class="lesson-card" id="may-tim-uoc-boi">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">⚙️</div>
+          <div>
+            <h2 class="card-title">3. Thí nghiệm: Cỗ máy tìm ước & bội tự động</h2>
+            <p class="card-subtitle">Nhập một số nguyên bất kỳ để máy quét toàn bộ các ước và bội số nguyên</p>
+          </div>
+        </div>
+        <span class="card-badge">Công cụ tương tác</span>
+      </div>
+
+      <div class="divisor-machine-box">
+        <div class="divisor-input-row">
+          <label for="input-number" style="font-weight: 800; font-size: 1.1rem; color: #134e4a;">Nhập số nguyên $a$:</label>
+          <input type="number" id="input-number" class="divisor-input" value="12">
+          <button class="btn-find-divisors" onclick="calculateDivisors()">QUÉT TẤT CẢ ƯỚC & BỘI 🚀</button>
+        </div>
+
+        <div class="divisor-results-grid">
+          <div class="result-card-div">
+            <h4 id="div-title">Tất cả các ước của 12:</h4>
+            <div class="div-tags-wrap" id="div-tags-container">
+              <!-- Render tags -->
+            </div>
+          </div>
+          <div class="result-card-div">
+            <h4 id="mult-title">Các bội tiêu biểu:</h4>
+            <div class="div-tags-wrap" id="mult-tags-container">
+              <!-- Render tags -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 4: TRANH LUẬN ANH PI & BẠN TRÒN -->
+    <section class="lesson-card" id="tranh-luan">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">🥊</div>
+          <div>
+            <h2 class="card-title">4. Tranh luận SGK trang 74: Hai số nguyên chia hết cho nhau?</h2>
+            <p class="card-subtitle">Anh Pi đố: "Có hai số nguyên $a, b$ khác nhau nào mà $a \ \vdots \ b$ và $b \ \vdots \ a$ không?"</p>
+          </div>
+        </div>
+        <span class="card-badge">Tư duy logic</span>
+      </div>
+
+      <div class="debate-box">
+        <p style="font-size: 1.05rem; margin-bottom: 14px; line-height: 1.7;">
+          Bạn Vuông quả quyết: <em>"Sao mà thế được!"</em>. Nhưng bạn Tròn reo lên: <em>"A ha, tớ vừa tìm thấy hai số như vậy đấy!"</em>. Theo em, bạn Tròn đã tìm ra hai số nào?
+        </p>
+
+        <button class="btn-find-divisors" onclick="revealDebateAnswer()">BẤM ĐỂ XEM ĐÁP ÁN BẠN TRÒN 🌟</button>
+
+        <div id="debate-answer-box" style="display: none; margin-top: 15px; padding: 16px; background: #ffffff; border: 2px solid #f59e0b; border-radius: 12px;">
+          <h4 style="color: #b45309; font-weight: 900; font-size: 1.15rem; margin-bottom: 6px;">🎉 Đó chính là HAI SỐ ĐỐI NHAU khác 0!</h4>
+          <p style="color: #1e293b; font-size: 0.95rem;">
+            Ví dụ: $a = 5$ và $b = -5$ ($a \ne b$).
+            <br>• $5 : (-5) = -1 \implies 5 \ \vdots \ (-5)$
+            <br>• $(-5) : 5 = -1 \implies (-5) \ \vdots \ 5$
+            <br>Tổng quát: Với mọi số nguyên $a \ne 0$, hai số đối nhau $a$ và $-a$ luôn luôn chia hết cho nhau! Bạn Tròn vô cùng thông minh!
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 5: ĐẤU TRƯỜNG QUIZ ARENA 10 CÂU SGK -->
+    <section class="lesson-card" id="dau-truong-sgk">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">⚔️</div>
+          <div>
+            <h2 class="card-title">5. Đấu trường 10 Câu SGK Tuyệt Đỉnh</h2>
+            <p class="card-subtitle">Chinh phục trọn vẹn toàn bộ các dạng bài tập 3.39 đến 3.44 trang 74 - 75</p>
+          </div>
+        </div>
+        <span class="card-badge">Thử thách 10 câu</span>
+      </div>
+
+      <div class="quiz-arena-header">
+        <div class="quiz-progress-text" id="quiz-question-counter">CÂU HỎI 1/10</div>
+        <div style="font-weight: 800; color: #f59e0b;">⭐ +100 XP mỗi câu trả lời đúng!</div>
+      </div>
+
+      <div class="quiz-progress-bar-wrap">
+        <div class="quiz-progress-bar-fill" id="quiz-progress-bar"></div>
+      </div>
+
+      <div class="question-box">
+        <span class="question-tag" id="quiz-question-tag">BÀI TẬP 3.39 SGK</span>
+        <h3 class="question-title" id="quiz-question-title">Đang tải câu hỏi...</h3>
+      </div>
+
+      <div class="options-grid" id="quiz-options-container">
+        <!-- Render 4 buttons A, B, C, D -->
+      </div>
+
+      <div class="quiz-feedback-box" id="quiz-feedback-box">
+        <div class="feedback-badge" id="feedback-badge">Chính xác!</div>
+        <p class="feedback-explanation" id="feedback-explanation">Lời giải chi tiết...</p>
+      </div>
+
+      <div class="quiz-actions">
+        <button id="btn-next-question" class="btn-next-question">CÂU TIẾP THEO ➔</button>
+      </div>
+    </section>
+
+    <!-- PHẦN 6: BẢNG VÀNG VINH DANH & GIẤY CHỨNG NHẬN A4 -->
+    <section class="lesson-card" id="vinh-danh">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">🎖️</div>
+          <div>
+            <h2 class="card-title">6. Bảng vàng vinh danh & Huy hiệu</h2>
+            <p class="card-subtitle">Mở khóa huy hiệu vua bội ước số nguyên Z</p>
+          </div>
+        </div>
+        <span class="card-badge">Chứng nhận A4</span>
+      </div>
+
+      <h3 style="font-weight: 800; color: #134e4a; margin-bottom: 14px;">Kho Huy Hiệu Đạt Được:</h3>
+      <div class="badges-showcase">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">➗</div>
+          <div class="badge-card-name">Nhà Khám Phá Phép Chia</div>
+          <div class="badge-card-desc">Làm chủ quy tắc dấu phép chia số nguyên</div>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">🔍</div>
+          <div class="badge-card-name">Thợ Săn Ước Số Đối</div>
+          <div class="badge-card-desc">Sử dụng cỗ máy quét toàn bộ ước âm và dương</div>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">💡</div>
+          <div class="badge-card-name">Nhà Giải Mã Hai Số Đối</div>
+          <div class="badge-card-desc">Phân xử thành công câu đố hai số chia hết cho nhau</div>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Binh Bất Khả Chiến Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu đúng liên tiếp</div>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Vua Bội Ước Số Nguyên Z</div>
+          <div class="badge-card-desc">Chinh phục xuất sắc toàn bộ 10 câu SGK</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN A4 IN ĐƯỢC -->
+      <div class="certificate-wrapper" id="printable-cert">
+        <div class="cert-seal">➗</div>
+        <div class="cert-super-title">BỘ GIÁO DỤC VÀ ĐÀO TẠO • HỌC LIỆU SỐ TOÁN 6</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.1rem; color: #64748b;">Chứng nhận trao tặng cho thám hiểm gia số học:</p>
+        <div class="cert-student-name" id="cert-name">Thám Hiểm Gia Lớp 6</div>
+        <p style="font-size: 1.15rem; color: #134e4a; max-width: 650px; margin: 0 auto;">
+          Đã xuất sắc hoàn thành trọn vẹn chương trình bài học tương tác:
+          <br><strong style="color: #0d9488; font-size: 1.25rem;">BÀI 17: PHÉP CHIA HẾT. ƯỚC VÀ BỘI CỦA MỘT SỐ NGUYÊN</strong>
+          <br>Bộ sách Toán 6 - Kết Nối Tri Thức Với Cuộc Sống.
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">Điểm số: <span id="cert-score">0</span> XP</div>
+          <div class="cert-stat-badge">Số sao: <span id="cert-stars">0</span> ⭐</div>
+          <div class="cert-stat-badge">Hạng: <span id="cert-rank">Tập Sự</span></div>
+          <div class="cert-stat-badge">Ngày cấp: <span id="cert-date">--/--/----</span></div>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-around; font-weight: 700; color: #475569;">
+          <div>
+            <p>Hệ Thống Đào Tạo Tương Tác</p>
+            <p style="margin-top: 30px; color: #0d9488;">(Đã ký điện tử)</p>
+          </div>
+          <div>
+            <p>Giáo Viên Bộ Môn Toán 6</p>
+            <p style="margin-top: 30px; color: #0d9488;">(Chứng nhận hoàn thành)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button onclick="window.print()" class="btn-cert btn-print">🖨️ In Giấy Chứng Nhận A4</button>
+        <button id="btn-replay-lesson" class="btn-cert btn-replay">🔄 Học Lại Bài Này</button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai16/index.html" class="btn-cert btn-prev-lesson">⬅️ Bài 16: Phép nhân số nguyên</a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai18/index.html" class="btn-cert btn-next-lesson">Bài 18: Hình Tam Giác Đều, Hình Vuông... ➔</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

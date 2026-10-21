@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 21: Phương Trình &amp; Bất Phương Trình Mũ - Lôgarit - Toán 11 Kết Nối Tri Thức</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Master HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Giải Phương Trình Mũ</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG VI • HÀM SỐ MŨ &amp; HÀM SỐ LÔGARIT • BÀI 21 (SGK TRANG 20 – 24)</span>
+      <h1>BÀI 21: PHƯƠNG TRÌNH, BẤT PHƯƠNG TRÌNH MŨ VÀ LÔGARIT</h1>
+      <p>
+        Làm chủ các kĩ thuật cốt lõi giải phương trình và bất phương trình mũ, lôgarit: đưa về cùng cơ số, lôgarit hoá, mũ hoá. Khám phá quy tắc đảo chiều bất đẳng thức sống còn khi cơ số $0 < a < 1$ cùng các ứng dụng thực tiễn trong tài chính, sinh học vi khuẩn, định luật làm nguội Newton và đo độ pH hoá học.
+      </p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Thẻ 1: Phương trình mũ -->
+        <div class="concept-card">
+          <div class="card-glow"></div>
+          <h3>1. Phương Trình Mũ Cơ Bản &amp; Cùng Cơ Số</h3>
+          <p>
+            Phương trình mũ cơ bản có dạng $a^x = b$ với cơ số $0 < a \ne 1$:
+          </p>
+          <div class="formula-box">
+            $$a^x = b \iff \begin{cases} x = \log_a b & \text{khi } b > 0 \\ \text{Vô nghiệm} & \text{khi } b \le 0 \end{cases}$$
+          </div>
+          <p>
+            <strong>Phương pháp đưa về cùng cơ số:</strong>
+          </p>
+          <div class="formula-box">
+            $$a^{u(x)} = a^{v(x)} \iff u(x) = v(x) \quad (0 < a \ne 1)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>💡 Ghi nhớ:</strong> Do $a^x > 0$ với mọi $x \in \mathbb{R}$, phương trình $a^x = b$ chỉ có nghiệm khi vế phải $b > 0$.
+          </div>
+        </div>
+
+        <!-- Thẻ 2: Phương trình lôgarit -->
+        <div class="concept-card">
+          <div class="card-glow"></div>
+          <h3>2. Phương Trình Lôgarit Cơ Bản &amp; Đặt Điều Kiện</h3>
+          <p>
+            Phương trình lôgarit cơ bản có dạng $\log_a x = b$ với cơ số $0 < a \ne 1$:
+          </p>
+          <div class="formula-box">
+            $$\log_a x = b \iff x = a^b \quad (\text{luôn có nghiệm duy nhất với mọi } b \in \mathbb{R})$$
+          </div>
+          <p>
+            <strong>Phương pháp đưa về cùng cơ số:</strong>
+          </p>
+          <div class="formula-box">
+            $$\log_a u(x) = \log_a v(x) \iff \begin{cases} u(x) > 0 \text{ (hoặc } v(x) > 0) \\ u(x) = v(x) \end{cases}$$
+          </div>
+          <div class="rule-box gold">
+            <strong>⚠️ Cảnh giác bẫy điều kiện:</strong> Bắt buộc phải tìm điều kiện xác định của biểu thức dưới dấu lôgarit trước khi biến đổi để loại bỏ nghiệm ngoại lai!
+          </div>
+        </div>
+
+        <!-- Thẻ 3: Bất phương trình mũ & lôgarit -->
+        <div class="concept-card">
+          <div class="card-glow"></div>
+          <h3>3. Bất Phương Trình Mũ &amp; Lôgarit: Quy Tắc Đảo Chiều</h3>
+          <p>
+            Chiều của bất phương trình phụ thuộc tuyệt đối vào việc cơ số $a$ lớn hơn 1 hay nhỏ hơn 1:
+          </p>
+          <div class="formula-box">
+            $$\text{Khi } a > 1: \quad a^{u} > a^{v} \iff u > v; \qquad \log_a u > \log_a v \iff u > v > 0$$
+          </div>
+          <div class="formula-box">
+            $$\text{Khi } 0 < a < 1: \quad a^{u} > a^{v} \iff u < v; \qquad \log_a u > \log_a v \iff 0 < u < v$$
+          </div>
+          <div class="rule-box gold">
+            <strong>🎯 Quy Tắc Vàng Đảo Chiều:</strong> Khi cơ số $0 < a < 1$, hàm số nghịch biến, <strong>BẮT BUỘC ĐẢO CHIỀU DẤU BẤT ĐẲNG THỨC</strong>!
+          </div>
+        </div>
+
+        <!-- Thẻ 4: Ứng dụng mô hình hóa thực tế -->
+        <div class="concept-card">
+          <div class="card-glow"></div>
+          <h3>4. Mô Hình Toán Học Thực Tế Đa Ngành</h3>
+          <p>
+            <strong>1. Định luật làm nguội của Newton (SGK 6.25):</strong> $T(t) = T_0 + (T_{init} - T_0)e^{-kt}$.
+          </p>
+          <div class="formula-box">
+            $$T(t) = 25 + 70e^{-0{,}5t} \quad (^\circ\text{C})$$
+          </div>
+          <p>
+            <strong>2. Nồng độ ion Hydrogen và độ pH (SGK 6.26):</strong>
+          </p>
+          <div class="formula-box">
+            $$\text{pH} = -\log[H^+] \iff [H^+] = 10^{-\text{pH}} \quad (\text{mol/L})$$
+          </div>
+          <p>
+            <strong>3. Tăng trưởng quần thể vi khuẩn (SGK 6.24):</strong> $N(t) = 500e^{0{,}4t}$.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-container">
+        <!-- Lab 1: Máy quét nghiệm giao điểm -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-badge">THÍ NGHIỆM 1</span>
+            <h3>🎯 Máy Quét Nghiệm Giao Điểm: $y = a^x$ Cắt $y = b$ &amp; $y = \log_a x$ Cắt $y = b$</h3>
+            <p>Trực quan hóa bản chất hình học của nghiệm phương trình mũ và lôgarit qua số giao điểm của đồ thị hàm số với đường thẳng nằm ngang $y = b$.</p>
+          </div>
+
+          <div class="lab-controls">
+            <div class="control-group">
+              <label>Cơ số $a$: <span id="eqBaseVal" class="val-highlight">2.0</span></label>
+              <input type="range" id="eqBaseSlider" min="0.5" max="3.0" step="0.1" value="2.0">
+            </div>
+            <div class="control-group">
+              <label>Giá trị vế phải $b$: <span id="eqBVal" class="val-highlight">4.0</span></label>
+              <input type="range" id="eqBSlider" min="-3.0" max="8.0" step="0.5" value="4.0">
+            </div>
+            <div class="control-group">
+              <label>Loại phương trình:</label>
+              <select id="eqTypeSelect" class="form-select">
+                <option value="exp" selected>Phương trình mũ: a^x = b</option>
+                <option value="log">Phương trình lôgarit: log_a(x) = b</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="eqCanvas" width="900" height="380"></canvas>
+          </div>
+
+          <div class="lab-output" id="eqOutput">
+            Đang tải bộ quét nghiệm...
+          </div>
+        </div>
+
+        <!-- Lab 2: Sa bàn bất phương trình đổi chiều -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-badge">THÍ NGHIỆM 2</span>
+            <h3>⚖️ Sa Bàn Bất Phương Trình Đổi Chiều &amp; Định Luật Làm Nguội Newton</h3>
+            <p>Quan sát vùng nghiệm (miền gạch bóng) tự động lật ngược chiều khi chuyển đổi cơ số từ $a > 1$ sang $0 < a < 1$ và giải bài toán nhiệt độ $T(t) = 25 + 70e^{-0{,}5t} = 30^\circ\text{C}$.</p>
+          </div>
+
+          <div class="lab-controls">
+            <div class="control-group">
+              <label>Cơ số $a$: <span id="ineqBaseVal" class="val-highlight">0.5</span></label>
+              <input type="range" id="ineqBaseSlider" min="0.2" max="2.5" step="0.1" value="0.5">
+            </div>
+            <div class="control-group">
+              <label>Ngưỡng so sánh $b$: <span id="ineqBVal" class="val-highlight">2.0</span></label>
+              <input type="range" id="ineqBSlider" min="0.5" max="5.0" step="0.5" value="2.0">
+            </div>
+            <div class="control-group">
+              <button class="btn-primary" id="btnNewtonDemo" style="align-self: flex-end; padding: 6px 14px;">❄️ Mô phỏng Nguội 30°C</button>
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="ineqCanvas" width="900" height="380"></canvas>
+          </div>
+
+          <div class="lab-output" id="ineqOutput">
+            Đang tải sa bàn bất đẳng thức...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Tri Thức: Phương Trình, Bất Phương Trình Mũ &amp; Lôgarit</h2>
+          <p>Chinh phục 10 thử thách trắc nghiệm tinh tuyển từ hệ thống bài tập SGK Toán 11 Kết Nối Tri Thức (Bài 6.20 – 6.26).</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-text" id="arenaProgress">Tiến Độ: 0/10</span>
+          <span class="arena-score-text" id="arenaScore">Điểm Arena: 0 XP</span>
+        </div>
+      </div>
+
+      <div class="quiz-grid" id="quizContainer">
+        <!-- Render tự động bởi JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-showcase">
+        <h2>🏆 Hệ Thống Huy Hiệu &amp; Vinh Danh</h2>
+        <p>Hoàn thành các nhiệm vụ học tập để thắp sáng huy hiệu và nhận Giấy Chứng Nhận Tốt Nghiệp Bài Học!</p>
+
+        <div class="badge-grid">
+          <div class="badge-card locked" id="badge-1">
+            <div class="badge-icon">📖</div>
+            <h4>Người Khởi Đầu</h4>
+            <p>Khám phá toàn bộ Bản Đồ Tri Thức</p>
+          </div>
+          <div class="badge-card locked" id="badge-2">
+            <div class="badge-icon">🎯</div>
+            <h4>Thiện Xạ Giao Điểm</h4>
+            <p>Quét nghiệm phương trình qua đồ thị</p>
+          </div>
+          <div class="badge-card locked" id="badge-3">
+            <div class="badge-icon">⚖️</div>
+            <h4>Chủ Nhân Đổi Chiều</h4>
+            <p>Khảo sát Sa bàn Bất phương trình đổi chiều</p>
+          </div>
+          <div class="badge-card locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <h4>Dũng Sĩ Arena</h4>
+            <p>Đạt từ 160 XP trở lên trong Đấu Trường</p>
+          </div>
+          <div class="badge-card locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <h4>Thủ Khoa Giải Phương Trình</h4>
+            <p>Xuất sắc vượt qua 10/10 câu hỏi Đấu Trường</p>
+          </div>
+        </div>
+
+        <!-- Giấy chứng nhận A4 -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-inner">
+              <div class="cert-header">
+                <h3>TRƯỜNG THPT LƯƠNG THẾ VINH</h3>
+                <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+                <div class="cert-line"></div>
+              </div>
+
+              <div class="cert-body">
+                <p>Chứng nhận học sinh:</p>
+                <h1 id="certStudentName">Chiến Binh Logic</h1>
+                <p>Đã hoàn thành xuất sắc chuyên đề tương tác:</p>
+                <h3>BÀI 21: PHƯƠNG TRÌNH, BẤT PHƯƠNG TRÌNH MŨ VÀ LÔGARIT</h3>
+                <p>Thuộc Chương VI: Hàm số mũ và hàm số lôgarit — Toán 11 Kết Nối Tri Thức</p>
+                <div class="cert-metrics">
+                  <span>Tổng Điểm: <strong id="certXP">0 XP</strong></span> •
+                  <span>Cấp Bậc: <strong id="certTitle">Bậc Thầy Giải Toán Mũ</strong></span> •
+                  <span>Đánh Giá: <strong id="certStatus">Hoàn Thành</strong></span>
+                </div>
+              </div>
+
+              <div class="cert-footer">
+                <div class="cert-sign">
+                  <span>Giáo Viên Bộ Môn</span>
+                  <strong>Tổ Toán THPT Lương Thế Vinh</strong>
+                </div>
+                <div class="cert-seal">
+                  <div class="seal-circle">THPT LTV<br>ĐÀ NẴNG</div>
+                  <span id="certDate">Đà Nẵng, ngày 21 tháng 10 năm 2026</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 20px;">
+            <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Sequential Navigation -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai20/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 20: Hàm Số Mũ & Lôgarit</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_ontap_chuong6/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương VI</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0;">
+        <button class="av-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh</button>
+        <button class="av-opt" data-avatar="🧙‍♂️" data-name="Pháp Sư Mũ">🧙‍♂️ Pháp Sư</button>
+        <button class="av-opt" data-avatar="🚀" data-name="Nhà Du Hành Newton">🚀 Du Hành</button>
+        <button class="av-opt" data-avatar="🧠" data-name="Bác Học pH">🧠 Bác Học</button>
+        <button class="av-opt" data-avatar="⚡" data-name="Tia Chớp Lôgarit">⚡ Siêu Nhân</button>
+        <button class="av-opt" data-avatar="🎯" data-name="Thiện Xạ Bất Đẳng Thức">🎯 Thiện Xạ</button>
+        <button class="av-opt" data-avatar="💎" data-name="Bậc Thầy Đổi Chiều">💎 Bậc Thầy</button>
+        <button class="av-opt" data-avatar="🌟" data-name="Thủ Khoa KNTT">🌟 Thủ Khoa</button>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%; justify-content: center;">Hoàn Tất</button>
+    </div>
+  </div>
+</body>
+</html>

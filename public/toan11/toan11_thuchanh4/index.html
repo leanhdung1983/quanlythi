@@ -1,0 +1,317 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hoạt động trải nghiệm: Hình học không gian & đo đạc thực tế - Toán 11 KNTT</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kiến Trúc Sư Không Gian 3D</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Hoạt Động Thực Hành Trải Nghiệm 4</span>
+      <h1>HÌNH HỌC KHÔNG GIAN & ĐO ĐẠC THỰC TẾ</h1>
+      <p>Mô phỏng phối cảnh 3D các khối đa diện, trải phẳng hình học và ứng dụng giác kế lượng giác đo chiều cao thực địa</p>
+    </section>
+
+    <!-- Section Navigation -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Nội Dung 1</span>
+            <h3>1. Dựng hình phối cảnh & Khối đa diện 3D</h3>
+          </div>
+          <p>Quy tắc biểu diễn hình không gian lên mặt phẳng hai chiều (phép chiếu song song):</p>
+          <div class="formula-box">
+            <p>• Đoạn thẳng song song biến thành đoạn thẳng song song (hoặc trùng nhau) và giữ nguyên tỉ số độ dài.</p>
+            <p>• Đường nhìn thấy vẽ nét liền (—), đường bị che khuất vẽ nét đứt (- - -).</p>
+            <p>• Hình vuông, hình chữ nhật thường được biểu diễn thành hình bình hành trong hình vẽ phối cảnh.</p>
+          </div>
+          <div class="rule-box gold" style="margin-top: 10px;">
+            <strong>Các khối cơ bản:</strong>
+            <p>Hình lập phương (6 mặt vuông bằng nhau), hình chóp tứ giác đều (đáy là hình vuông, các mặt bên là tam giác cân bằng nhau), tứ diện đều (4 mặt là tam giác đều bằng nhau).</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Nội Dung 2</span>
+            <h3>2. Trải phẳng (Net) & Diện tích toàn phần</h3>
+          </div>
+          <p>Hình trải phẳng là việc "cắt mở" các mặt của một khối đa diện và xếp phẳng lên một mặt phẳng:</p>
+          <div class="formula-box">
+            <p><strong>Khối lập phương cạnh $a$:</strong></p>
+            <p>Gồm $6$ hình vuông cạnh $a$ ghép lại (có đúng $11$ dạng trải phẳng khác nhau!).</p>
+            <p>Diện tích toàn phần: $S_{tp} = 6a^2$. Thể tích: $V = a^3$.</p>
+          </div>
+          <div class="formula-box" style="margin-top: 10px;">
+            <p><strong>Khối chóp tứ giác đều:</strong></p>
+            <p>Gồm $1$ hình vuông đáy cạnh $a$ và $4$ tam giác cân có cạnh đáy $a$, chiều cao mặt bên $h_{mb}$ (trung đoạn $d$):</p>
+            <p>$$S_{tp} = S_đ + S_{xq} = a^2 + 4 \cdot \left(\dfrac{1}{2} a \cdot d\right) = a^2 + 2ad$$</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Nội Dung 3</span>
+            <h3>3. Đo chiều cao vật thể bằng giác kế</h3>
+          </div>
+          <p>Xác định chiều cao $H$ của cột cờ, tòa nhà hoặc ngọn cây mà không cần leo lên đỉnh:</p>
+          <div class="formula-box">
+            <p>$$H = h_0 + d \cdot \tan\alpha$$</p>
+            <p>• $d$: Khoảng cách từ vị trí đặt giác kế đến chân vật thể (đo bằng thước dây).</p>
+            <p>• $\alpha$: Góc nâng từ mắt người quan sát đến đỉnh vật thể (đo bằng giác kế đứng).</p>
+            <p>• $h_0$: Chiều cao từ giác kế (mắt người) đến mặt đất.</p>
+          </div>
+          <div class="rule-box gold" style="margin-top: 10px;">
+            <strong>Trường hợp chân vật thể không tiếp cận được:</strong>
+            <p>Đo tại hai vị trí cách nhau một khoảng $c$ trên cùng đường thẳng hướng tới vật thể: $H = h_0 + c \cdot \dfrac{\sin\alpha_1 \sin\alpha_2}{\sin(\alpha_2 - \alpha_1)}$.</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Nội Dung 4</span>
+            <h3>4. Đo góc dốc mái nhà & Khoảng cách qua sông</h3>
+          </div>
+          <div class="formula-box">
+            <p><strong>Góc dốc mái nhà ($\alpha$):</strong></p>
+            <p>Cho vì kèo mái nhà có chiều rộng nhịp $w$ và chiều cao đỉnh chóp $h$:</p>
+            <p>$$\tan\alpha = \dfrac{h}{w/2} = \dfrac{2h}{w} \implies \alpha = \arctan\left(\dfrac{2h}{w}\right)$$</p>
+          </div>
+          <div class="rule-box gold" style="margin-top: 10px;">
+            <strong>Khoảng cách gián tiếp giữa 2 điểm bên kia sông:</strong>
+            <p>Thiết lập một tam giác $ABC$ với $A, B$ ở bờ bên này và $C$ ở bờ bên kia. Đo cạnh $AB$ và hai góc $\widehat{CAB}, \widehat{CBA}$, sau đó áp dụng định lí Sin:</p>
+            <p>$$\dfrac{AC}{\sin B} = \dfrac{BC}{\sin A} = \dfrac{AB}{\sin C}$$</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Thí Nghiệm 1</span>
+            <h3>🎲 Bộ Khảo Sát Mô Hình Khối 3D Động</h3>
+          </div>
+          <p>Xoay không gian 3D của các khối đa diện bằng thanh trượt góc xoay Yaw & Pitch để khảo sát các mặt, đỉnh, cạnh và đường khuất:</p>
+          <div class="lab-controls" style="margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <label><strong>Chọn khối:</strong></label>
+            <select id="polySelect" style="padding: 6px 12px; border-radius: 8px; background: rgba(30,27,75,0.8); color: #fff; border: 1px solid #818cf8;">
+              <option value="cube">Khối Lập Phương</option>
+              <option value="pyramid">Hình Chóp Tứ Giác Đều</option>
+              <option value="tetra">Khối Tứ Diện Đều</option>
+            </select>
+            <label style="margin-left: 10px;"><strong>Góc Yaw:</strong> <span id="yawVal" style="color: #38bdf8;">35°</span></label>
+            <input type="range" id="yawSlider" min="0" max="360" step="5" value="35" style="width: 100px;">
+            <label><strong>Pitch:</strong> <span id="pitchVal" style="color: #f59e0b;">25°</span></label>
+            <input type="range" id="pitchSlider" min="-60" max="60" step="5" value="25" style="width: 100px;">
+          </div>
+          <canvas id="labCanvas1" width="540" height="340" style="width: 100%; border-radius: 12px; background: #0c1024; border: 1px solid rgba(99, 102, 241, 0.3); display: block;"></canvas>
+          <div class="formula-box" id="lab1Output" style="margin-top: 12px;">
+            <p>Tên khối: <span id="polyName" style="color: #38bdf8; font-weight: bold;">Khối Lập Phương</span></p>
+            <p>Số đỉnh: $V = 8$, Số cạnh: $E = 12$, Số mặt: $F = 6$</p>
+            <p>Hệ thức Euler: $V - E + F = 8 - 12 + 6 = 2$ (Đúng với mọi khối đa diện lồi)</p>
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Thí Nghiệm 2</span>
+            <h3>🚩 Giác Kế Ảo Đo Chiều Cao Cột Cờ Thực Địa</h3>
+          </div>
+          <p>Điều chỉnh khoảng cách $d$ từ người đến cột cờ và góc ngắm $\alpha$ để tính chiều cao thực tế $H = h_0 + d \tan\alpha$ (chiều cao mắt $h_0 = 1.6\text{ m}$):</p>
+          <div class="lab-controls" style="margin: 12px 0; display: flex; flex-wrap: wrap; gap: 12px; align-items: center;">
+            <label><strong>Khoảng cách $d$:</strong> <span id="dVal" style="color: #38bdf8; font-weight: bold;">15.0 m</span></label>
+            <input type="range" id="dSlider" min="5" max="30" step="1" value="15" style="width: 120px;">
+            <label style="margin-left: 10px;"><strong>Góc ngắm $\alpha$:</strong> <span id="alphaVal" style="color: #f59e0b; font-weight: bold;">35°</span></label>
+            <input type="range" id="alphaSlider" min="15" max="60" step="1" value="35" style="width: 120px;">
+          </div>
+          <canvas id="labCanvas2" width="540" height="340" style="width: 100%; border-radius: 12px; background: #0c1024; border: 1px solid rgba(99, 102, 241, 0.3); display: block;"></canvas>
+          <div class="formula-box" id="lab2Output" style="margin-top: 12px;">
+            <p>Chiều cao cột cờ: <span id="hFlagOut" style="color: #4ade80; font-weight: bold;">$H = 12.10\text{ m}$</span></p>
+            <p>Công thức tính: $H = 1.6 + 15.0 \cdot \tan(35^\circ) = 1.6 + 10.50 = 12.10\text{ m}$</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Đo Đạc & Hình Học Thực Tế</h2>
+          <p>Thử thách 10 bài toán ứng dụng trải phẳng, tính chiều cao cột cờ, góc mái nhà và đo đạc thực địa</p>
+        </div>
+        <div class="arena-score-box">
+          <div>Tiến Độ: <span id="arenaProgress" style="font-weight: bold; color: #38bdf8;">0/10</span></div>
+          <div>Điểm Arena: <span id="arenaScore" style="font-weight: bold; color: #34d399;">0 XP</span></div>
+        </div>
+      </div>
+      <div id="quizContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-grid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <h3>Nhà Thiết Kế Không Gian</h3>
+          <p>Nắm vững quy tắc phối cảnh và hình trải phẳng đa diện</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <h3>Kỹ Sư Trắc Địa</h3>
+          <p>Sử dụng thành thạo giác kế ảo đo chiều cao thực tế</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <h3>Chuỗi Khảo Sát</h3>
+          <p>Đạt chuỗi đúng 3 câu liên tiếp trong đấu trường</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">⚡</div>
+          <h3>Chuyên Gia Đo Đạc</h3>
+          <p>Đạt từ 160 XP trở lên trong Đấu Trường Thực Tế</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <h3>Bậc Thầy Không Gian & Thực Địa</h3>
+          <p>Hoàn thành tuyệt đối 10/10 câu hỏi của đấu trường</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <div class="cert-school">SỞ GIÁO DỤC VÀ ĐÀO TẠO THÀNH PHỐ ĐÀ NẴNG</div>
+          <div class="cert-title">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ TOÁN HỌC TRỰC QUAN</div>
+        </div>
+        <div class="cert-body">
+          <div class="cert-award">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</div>
+          <p class="cert-intro">Chứng nhận học sinh:</p>
+          <h2 class="cert-name" id="certStudentName">Chiến Binh Logic</h2>
+          <p class="cert-desc">Đã hoàn thành xuất sắc các nội dung hoạt động thực hành trải nghiệm, mô hình 3D tương tác và bộ câu hỏi trắc nghiệm của</p>
+          <p class="cert-lesson-title"><strong>HÌNH HỌC KHÔNG GIAN VÀ ĐO ĐẠC THỰC TẾ</strong></p>
+          <p class="cert-curriculum">Thuộc chương trình Toán 11 - Kết Nối Tri Thức Với Cuộc Sống</p>
+        </div>
+        <div class="cert-footer">
+          <div class="cert-date">Đà Nẵng, ngày cấp chứng nhận hệ thống</div>
+          <div class="cert-signatures">
+            <div class="sig-block">
+              <span class="sig-role">GIÁO VIÊN BỘ MÔN</span>
+              <div class="sig-seal">BAN TOÁN THPT</div>
+              <span class="sig-name">Tổ Toán - Tin học</span>
+            </div>
+            <div class="sig-block">
+              <span class="sig-role">HIỆU TRƯỞNG</span>
+              <div class="sig-seal">ĐÃ CHỨNG THỰC</div>
+              <span class="sig-name">Hội đồng Sư phạm Nhà trường</span>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_thuchanh3/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">HĐTN 3: Mũ & Lôgarit</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../index.html" class="nav-btn next">
+        <span class="nav-sub">Hoàn Thành 🎓</span>
+        <span class="nav-title">Cổng Tổng Kết ➡️</span>
+      </a>
+    </footer>
+
+    <!-- Avatar Modal -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-box">
+        <h3>Chọn Avatar Đại Diện</h3>
+        <p>Chọn biểu tượng phong cách cho chiến binh học tập của bạn:</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <button class="avatar-opt" data-avatar="👑">👑 Vương Giả</button>
+          <button class="avatar-opt" data-avatar="🧙‍♂️">🧙‍♂️ Pháp Sư</button>
+          <button class="avatar-opt" data-avatar="🚀">🚀 Phi Hành Gia</button>
+          <button class="avatar-opt" data-avatar="⚡">⚡ Siêu Nhân</button>
+          <button class="avatar-opt" data-avatar="🦁">🦁 Sư Tử</button>
+          <button class="avatar-opt" data-avatar="🦊">🦊 Hồ Ly</button>
+          <button class="avatar-opt" data-avatar="🦉">🦉 Cú Thông Thái</button>
+          <button class="avatar-opt" data-avatar="🤖">🤖 Robot AI</button>
+        </div>
+        <button class="btn-primary" id="closeAvatarModal" style="margin-top: 15px;">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

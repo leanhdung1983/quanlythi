@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 25: Phép Cộng Và Phép Trừ Phân Số - Toán 6 KNTT Tập 2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">➕</div>
+      <h1 class="start-title">CHINH PHỤC CỘNG TRỪ PHÂN SỐ TOÁN 6</h1>
+      <p class="start-subtitle">Toán 6 Tập 2 • Bài 25: Phép cộng và phép trừ phân số</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật đồng hành cùng em:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button class="avatar-btn" data-avatar="🚀">🚀</button>
+        <button class="avatar-btn" data-avatar="🧮">🧮</button>
+        <button class="avatar-btn" data-avatar="💎">💎</button>
+        <button class="avatar-btn" data-avatar="👑">👑</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên nhà toán học nhí:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Nhà Toán Học Nhí Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU BÀI HỌC ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">🧙‍♂️</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Nhà Toán Học Nhí Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Cộng Trừ</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương VI: Phân Số • Toán 6 Tập Hai</div>
+      <h1 class="hero-title">BÀI 25: PHÉP CỘNG VÀ PHÉP TRỪ PHÂN SỐ</h1>
+      <p class="hero-desc">
+        Nắm vững quy tắc cộng, trừ hai phân số cùng mẫu và không cùng mẫu; tìm số đối của phân số; áp dụng tính chất giao hoán, kết hợp để tính nhanh; giải quyết các bài toán phân phối thời gian và tài chính thực tế!
+      </p>
+    </section>
+
+    <!-- PHẦN 1: BẢN ĐỒ KIẾN THỨC BÀI 25 -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🗺️</div>
+        <div>
+          <h2 class="section-title">1. Bản Đồ Kiến Thức Trọng Tâm</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Quy tắc cộng trừ phân số & số đối</span>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <strong>📌 CÁC QUY TẮC CẦN NHỚ:</strong>
+        <ul style="margin-left: 20px; margin-top: 8px;">
+          <li><strong>Cộng hai phân số cùng mẫu:</strong> Muốn cộng hai phân số cùng mẫu, ta cộng các tử và giữ nguyên mẫu: $\frac{a}{m} + \frac{b}{m} = \frac{a + b}{m}$.</li>
+          <li><strong>Cộng hai phân số khác mẫu:</strong> Ta quy đồng mẫu số hai phân số (đưa về mẫu dương chung), rồi cộng các tử và giữ nguyên mẫu chung.</li>
+          <li><strong>Tính chất phép cộng:</strong> Giao hoán ($a + b = b + a$); Kết hợp ($(a + b) + c = a + (b + c)$); Cộng với số 0 ($a + 0 = a$).</li>
+          <li><strong>Số đối:</strong> Hai số là đối nhau nếu tổng của chúng bằng 0: $\frac{a}{b} + \left(-\frac{a}{b}\right) = 0$. Số đối của $\frac{a}{b}$ là $-\frac{a}{b} = \frac{-a}{b} = \frac{a}{-b}$.</li>
+          <li><strong>Phép trừ phân số:</strong> Muốn trừ một phân số cho một phân số, ta lấy số bị trừ cộng với số đối của số trừ: $\frac{a}{b} - \frac{c}{d} = \frac{a}{b} + \left(-\frac{c}{d}\right)$.</li>
+          <li><strong>Quy tắc dấu ngoặc:</strong> Khi bỏ dấu ngoặc có dấu "-" đằng trước, ta đổi dấu tất cả các số hạng trong ngoặc; có dấu "+" đằng trước thì giữ nguyên.</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🔬</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm: Tháp Kim Tự Tháp & Cỗ Máy Tính Tổng - Hiệu</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Trải nghiệm tháp cộng phân số thần kỳ và máy tính từng bước chi tiết</span>
+        </div>
+      </div>
+
+      <!-- LAB 1: THÁP PHÂN SỐ TAM GIÁC (SGK TR. 18) -->
+      <div class="interactive-lab">
+        <div class="lab-title">🔺 Thí Nghiệm 1: Thử Thách Kim Tự Tháp Phân Số (Thử Thách Nhỏ SGK Tr. 18)</div>
+        <div class="lab-desc">
+          Mỗi ô ở hàng trên bằng tổng của hai ô liền kề ở hàng dưới. Bấm để xem quá trình xếp tầng kỳ diệu:
+        </div>
+
+        <div class="lab-controls">
+          <button class="lab-btn active" id="btn-pyramid-sgk">Tháp Chuẩn SGK Tr. 18</button>
+          <button class="lab-btn" id="btn-pyramid-custom">Tháp Ngẫu Nhiên Mới</button>
+          <button class="lab-btn" id="btn-pyramid-solve">✨ Giải Từng Tầng</button>
+        </div>
+
+        <div class="stage-card" id="pyramid-lab-output">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+
+      <!-- LAB 2: MÁY TÍNH CỘNG TRỪ PHÂN SỐ TỪNG BƯỚC -->
+      <div class="interactive-lab">
+        <div class="lab-title">🧮 Thí Nghiệm 2: Máy Tính Cộng & Trừ Phân Số Từng Bước</div>
+        <div class="lab-desc">
+          Nhập hai phân số và chọn phép tính để xem từng bước quy đồng, tính tử và rút gọn tối giản:
+        </div>
+
+        <div class="lab-controls">
+          <label style="font-weight: 700;">Phân số 1:</label>
+          <input type="number" id="calc-a1" value="-3" style="width: 55px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+          <span>/</span>
+          <input type="number" id="calc-b1" value="8" style="width: 55px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+
+          <select id="calc-op" style="padding: 6px 10px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold; margin: 0 8px;">
+            <option value="+">➕ Cộng (+)</option>
+            <option value="-">➖ Trừ (-)</option>
+          </select>
+
+          <label style="font-weight: 700;">Phân số 2:</label>
+          <input type="number" id="calc-a2" value="5" style="width: 55px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+          <span>/</span>
+          <input type="number" id="calc-b2" value="12" style="width: 55px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+
+          <button class="lab-btn" id="btn-calc-step" style="margin-left: 10px;">⚡ Tính Từng Bước</button>
+        </div>
+
+        <div class="stage-card" id="calc-lab-output">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: ĐẤU TRƯỜNG LUYỆN TẬP SGK -->
+    <section class="lesson-card" id="luyen-tap">
+      <div class="section-header">
+        <div class="section-icon-badge">⚔️</div>
+        <div>
+          <h2 class="section-title">3. Đấu Trường Luyện Tập SGK (Bài 6.21 – 6.26)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Chinh phục 10 bài toán cộng trừ phân số, số đối và bài toán thực tế</span>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quiz-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- PHẦN 4: HUY HIỆU & CHỨNG NHẬN -->
+    <section class="lesson-card" id="thanh-tich">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">Bảng Thành Tích & Huy Hiệu Vinh Dự</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa trọn bộ 5 huy hiệu Bài 25</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">🔺</div>
+          <div class="badge-card-name">Kiến Trúc Sư Kim Tự Tháp</div>
+          <div class="badge-card-desc">Giải mã thành công tầng tháp cộng phân số SGK Tr. 18</div>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">☯️</div>
+          <div class="badge-card-name">Bậc Thầy Số Đối</div>
+          <div class="badge-card-desc">Xác định chuẩn xác số đối và chuyển phép trừ thành phép cộng</div>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🕒</div>
+          <div class="badge-card-name">Nhà Quản Lý Thời Gian</div>
+          <div class="badge-card-desc">Giải quyết chính xác bài toán phân bổ thời gian sinh hoạt của bạn Mai</div>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Binh Bất Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu đúng liên tiếp</div>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Đại Kiện Tướng Phân Số</div>
+          <div class="badge-card-desc">Chinh phục xuất sắc toàn bộ 10 câu hỏi SGK Bài 25</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN IN ĐƯỢC -->
+      <div class="certificate-wrapper" id="printable-cert">
+        <div class="cert-seal">➕</div>
+        <div class="cert-super-title">BỘ GIÁO DỤC VÀ ĐÀO TẠO • HỌC LIỆU SỐ TOÁN 6</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.1rem; color: #64748b;">Chứng nhận trao tặng cho nhà toán học:</p>
+        <div class="cert-student-name" id="cert-name">Nhà Toán Học Nhí Lớp 6</div>
+        <p style="font-size: 1.15rem; color: #1e3a8a; max-width: 650px; margin: 0 auto;">
+          Đã xuất sắc hoàn thành trọn vẹn chương trình bài học tương tác:
+          <br><strong style="color: #7c3aed; font-size: 1.25rem;">BÀI 25: PHÉP CỘNG VÀ PHÉP TRỪ PHÂN SỐ</strong>
+          <br>Bộ sách Toán 6 Tập Hai - Kết Nối Tri Thức Với Cuộc Sống.
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">Điểm số: <span id="cert-score">0</span> XP</div>
+          <div class="cert-stat-badge">Số sao: <span id="cert-stars">0</span> ⭐</div>
+          <div class="cert-stat-badge">Hạng: <span id="cert-rank">Tập Sự</span></div>
+          <div class="cert-stat-badge">Ngày cấp: <span id="cert-date">--/--/----</span></div>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-around; font-weight: 700; color: #475569;">
+          <div>
+            <p>Hệ Thống Đào Tạo Tương Tác</p>
+            <p style="margin-top: 30px; color: #7c3aed;">(Đã ký điện tử)</p>
+          </div>
+          <div>
+            <p>Giáo Viên Bộ Môn Toán 6</p>
+            <p style="margin-top: 30px; color: #7c3aed;">(Chứng nhận hoàn thành)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button onclick="window.print()" class="btn-cert btn-print">🖨️ In Giấy Chứng Nhận A4</button>
+        <button id="btn-replay-lesson" class="btn-cert btn-replay">🔄 Học Lại Bài Này</button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai24/index.html" class="btn-cert btn-prev-lesson">⬅️ Bài 24: So Sánh Phân Số</a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai26/index.html" class="btn-cert btn-next-lesson">Bài 26: Phép Nhân & Phép Chia ➔</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

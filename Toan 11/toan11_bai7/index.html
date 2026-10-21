@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 7: Cấp Số Nhân - Toán 11 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Chinh Phục Cấp Số Nhân</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương II: Dãy Số. Cấp Số Cộng &amp; Cấp Số Nhân • Bài 7 (SGK Kết Nối Tri Thức)</span>
+      <h1>Bài 7: Cấp Số Nhân</h1>
+      <p>
+        Chinh phục quy luật tăng trưởng lũy thừa: công bội $q$, công thức số hạng tổng quát $u_n = u_1 \cdot q^{n-1}$, tính chất trung bình nhân hình học $u_k^2 = u_{k-1} \cdot u_{k+1}$ và công thức tổng $S_n = \frac{u_1(1-q^n)}{1-q}$ giải mã bài toán hạt thóc bàn cờ vua cổ Ấn Độ và lãi kép tài chính!
+      </p>
+    </section>
+
+    <!-- KHỐI 3: SECTION NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Thẻ 1: Định nghĩa cấp số nhân -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-icon">✖️</span>
+            <h3>1. Định Nghĩa Cấp Số Nhân</h3>
+          </div>
+          <p>
+            <strong>Cấp số nhân</strong> là một dãy số (hữu hạn hoặc vô hạn), trong đó kể từ số hạng thứ hai, mỗi số hạng đều bằng số hạng đứng ngay trước nó nhân với một số không đổi $q$.
+          </p>
+          <div class="formula-box">
+            $$u_n = u_{n-1} \cdot q \quad (n \ge 2) \quad \Leftrightarrow \quad u_{n+1} = u_n \cdot q \quad (n \ge 1)$$
+            $$\text{Công bội: } q = \frac{u_{n+1}}{u_n} \quad (u_n \ne 0)$$
+          </div>
+          <ul class="key-points">
+            <li>Số không đổi $q$ được gọi là <strong>công bội</strong> của cấp số nhân.</li>
+            <li>Khi $q = 1$, cấp số nhân là dãy số không đổi: $u_1, u_1, u_1, \dots$</li>
+            <li>Khi $q = 0$, dãy có dạng: $u_1, 0, 0, \dots$</li>
+            <li>Khi $q < 0$, dãy là dãy đan dấu: các số hạng luân phiên mang dấu dương và âm.</li>
+          </ul>
+        </div>
+
+        <!-- Thẻ 2: Số hạng tổng quát -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-icon">⚡</span>
+            <h3>2. Số Hạng Tổng Quát</h3>
+          </div>
+          <p>
+            Nếu cấp số nhân $(u_n)$ có số hạng đầu là $u_1$ và công bội là $q$ thì số hạng thứ $n$ (số hạng tổng quát) được tính theo công thức:
+          </p>
+          <div class="formula-box">
+            $$u_n = u_1 \cdot q^{n-1} \quad (n \ge 2)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Bản chất hàm số mũ:</strong><br>
+            Cấp số nhân phát triển theo quy luật hàm số mũ. Khi $q > 1$ và $u_1 > 0$, các số hạng tăng trưởng cực kỳ nhanh chóng (hiện tượng bùng nổ dân số, phân chia tế bào vi khuẩn, lãi kép).
+          </div>
+          <div class="rule-box cyan" style="margin-top: 10px;">
+            <strong>Tìm vị trí số hạng:</strong> Để tìm số hạng $u_n = x$, giải phương trình: $u_1 \cdot q^{n-1} = x \Leftrightarrow q^{n-1} = \frac{x}{u_1}$.
+          </div>
+        </div>
+
+        <!-- Thẻ 3: Tính chất các số hạng -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-icon">📐</span>
+            <h3>3. Tính Chất Trung Bình Nhân</h3>
+          </div>
+          <p>
+            Trong một cấp số nhân, bình phương của mỗi số hạng (trừ số hạng đầu và số hạng cuối đối với cấp số hữu hạn) bằng tích của hai số hạng kề nó:
+          </p>
+          <div class="formula-box">
+            $$u_k^2 = u_{k-1} \cdot u_{k+1} \quad (k \ge 2) \quad \Leftrightarrow \quad |u_k| = \sqrt{u_{k-1} \cdot u_{k+1}}$$
+          </div>
+          <div class="rule-box green">
+            <strong>Quy tắc 3 số liên tiếp:</strong><br>
+            Ba số $a, b, c$ khác $0$ theo thứ tự đó lập thành một cấp số nhân khi và chỉ khi:
+            $$b^2 = a \cdot c \quad \Leftrightarrow \quad \frac{b}{a} = \frac{c}{b}$$
+          </div>
+          <p style="font-size: 0.9rem; color: var(--text-muted); margin-top: 6px;">
+            <em>Ý nghĩa hình học:</em> Độ dài của $|u_k|$ chính là trung bình nhân (Geometric Mean) của độ dài hai số hạng kề bên.
+          </p>
+        </div>
+
+        <!-- Thẻ 4: Tổng n số hạng đầu tiên -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-icon">👑</span>
+            <h3>4. Tổng $n$ Số Hạng Đầu Tiên ($S_n$)</h3>
+          </div>
+          <p>
+            Cho cấp số nhân $(u_n)$ có số hạng đầu $u_1$ và công bội $q$. Đặt $S_n = u_1 + u_2 + \dots + u_n$. Khi đó:
+          </p>
+          <div class="formula-box">
+            $$S_n = \frac{u_1(1 - q^n)}{1 - q} = \frac{u_1(q^n - 1)}{q - 1} \quad (q \ne 1)$$
+            $$\text{Khi } q = 1: \quad S_n = n \cdot u_1$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Chứng minh tuyệt đẹp:</strong><br>
+            Nhân hai vế của $S_n$ với $q$:<br>
+            $$q \cdot S_n = u_1 \cdot q + u_2 \cdot q + \dots + u_n \cdot q = u_2 + u_3 + \dots + u_{n+1}$$
+            Lấy $S_n - q \cdot S_n = u_1 - u_{n+1} = u_1 - u_1 \cdot q^n = u_1(1 - q^n)$. Suy ra $S_n(1 - q) = u_1(1 - q^n)$.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1: Máy Khảo Sát Tăng Trưởng Lũy Thừa Cấp Số Nhân -->
+        <div class="concept-card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <span class="card-icon">🚀</span>
+            <div>
+              <h3 style="margin: 0;">Lab 1: Mô Phỏng Tăng Trưởng Lũy Thừa &amp; Dao Động Đan Dấu</h3>
+              <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 0.9rem;">
+                Khám phá đường cong hàm mũ $u_n = u_1 \cdot q^{n-1}$. Thử nghiệm các chế độ: tăng trưởng bùng nổ ($q > 1$), suy giảm tiệm cận ($0 < q < 1$) và đan dấu đối xứng ($q < 0$).
+              </p>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 16px; align-items: center;">
+            <div>
+              <label for="gpU1" style="font-weight: 600; color: var(--cyan); display: block; margin-bottom: 6px;">
+                Số hạng đầu $u_1$: <span id="gpU1Val" style="color: #fff; font-weight: bold;">2</span>
+              </label>
+              <input type="range" id="gpU1" min="1" max="5" value="2" step="1" style="width: 100%;">
+            </div>
+
+            <div>
+              <label for="gpQ" style="font-weight: 600; color: var(--gold); display: block; margin-bottom: 6px;">
+                Công bội $q$: <span id="gpQVal" style="color: #fff; font-weight: bold;">2</span>
+              </label>
+              <input type="range" id="gpQ" min="-2" max="3" value="2" step="0.5" style="width: 100%;">
+            </div>
+
+            <div>
+              <label for="gpN" style="font-weight: 600; color: var(--emerald); display: block; margin-bottom: 6px;">
+                Số số hạng $n$: <span id="gpNVal" style="color: #fff; font-weight: bold;">6</span>
+              </label>
+              <input type="range" id="gpN" min="3" max="8" value="6" step="1" style="width: 100%;">
+            </div>
+          </div>
+
+          <div style="background: rgba(10, 15, 30, 0.9); border: 1px solid rgba(99,102,241,0.4); border-radius: 12px; padding: 12px;">
+            <canvas id="gpCanvas" width="1100" height="360" style="width: 100%; height: auto; display: block; border-radius: 8px; background: #050814;"></canvas>
+          </div>
+
+          <div style="margin-top: 14px; display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 12px;">
+            <div class="rule-box cyan" style="margin: 0;">
+              <strong>Số hạng tổng quát:</strong><br>
+              <span id="lab1GpFormula" style="font-size: 1.05rem;">$u_n = 2 \cdot 2^{n-1}$</span>
+            </div>
+            <div class="rule-box gold" style="margin: 0;">
+              <strong>Số hạng thứ $n$ hiện tại:</strong><br>
+              <span id="lab1GpUn" style="font-size: 1.05rem;">$u_6 = 64$</span>
+            </div>
+            <div class="rule-box green" style="margin: 0;">
+              <strong>Tổng $S_n$ tương ứng:</strong><br>
+              <span id="lab1GpSn" style="font-size: 1.05rem;">$S_6 = 126$</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Lab 2: Bàn Cờ Vua Hạt Thóc & Máy Tính Lãi Kép -->
+        <div class="concept-card" style="grid-column: 1 / -1;">
+          <div class="card-header">
+            <span class="card-icon">🌾</span>
+            <div>
+              <h3 style="margin: 0;">Lab 2: Bàn Cờ Vua Hạt Thóc Sissa &amp; Tích Lũy Lãi Kép Tài Chính</h3>
+              <p style="margin: 4px 0 0; color: var(--text-muted); font-size: 0.9rem;">
+                Khám phá bài toán kinh điển: 1 hạt thóc ở ô 1, mỗi ô sau gấp đôi ô trước ($2^{k-1}$). Kéo thanh trượt để chứng kiến sức mạnh vô hạn của cấp số nhân!
+              </p>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; align-items: center;">
+            <div style="flex: 1; min-width: 260px;">
+              <label for="chessSquareSlider" style="font-weight: 600; color: var(--gold); display: block; margin-bottom: 6px;">
+                Số ô cờ vua $k$ (tối đa 64 ô): <span id="chessSquareVal" style="color: #fff; font-weight: bold;">16</span>
+              </label>
+              <input type="range" id="chessSquareSlider" min="1" max="64" value="16" step="1" style="width: 100%;">
+            </div>
+
+            <div style="flex: 1; min-width: 240px; display: flex; gap: 8px;">
+              <button class="btn-icon" id="btnPreset8" style="flex: 1; padding: 10px;">Hàng 1 (8 ô)</button>
+              <button class="btn-icon" id="btnPreset16" style="flex: 1; padding: 10px;">Hàng 2 (16 ô)</button>
+              <button class="btn-icon" id="btnPreset32" style="flex: 1; padding: 10px;">Nửa bàn (32 ô)</button>
+              <button class="btn-icon" id="btnPreset64" style="flex: 1; padding: 10px; border-color: var(--gold); color: var(--gold);">Trọn bàn (64 ô)</button>
+            </div>
+          </div>
+
+          <div style="background: rgba(10, 15, 30, 0.9); border: 1px solid rgba(99,102,241,0.4); border-radius: 12px; padding: 12px;">
+            <canvas id="chessCanvas" width="1100" height="320" style="width: 100%; height: auto; display: block; border-radius: 8px; background: #050814;"></canvas>
+          </div>
+
+          <div id="chessStatsBox" style="margin-top: 14px; background: rgba(30,27,75,0.6); border-left: 4px solid var(--gold); padding: 14px 20px; border-radius: 8px; font-size: 0.95rem; line-height: 1.7; color: #e2e8f0;">
+            <!-- Rendered by JS -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Bài 7 - Cấp Số Nhân</h2>
+          <p style="color: var(--text-muted); margin: 4px 0 0;">
+            10 câu hỏi trắc nghiệm chuẩn SGK Toán 11 Kết Nối Tri Thức. Click chọn đáp án để nhận phản hồi tức thì, tích lũy điểm kinh nghiệm và mở khóa danh hiệu!
+          </p>
+        </div>
+        <div class="arena-score-box">
+          <div class="stat-item" style="margin: 0;">
+            <span class="stat-label">Tiến Độ</span>
+            <span class="stat-value" id="arenaProgress" style="color: var(--cyan);">0/10</span>
+          </div>
+          <div class="stat-item" style="margin: 0;">
+            <span class="stat-label">Điểm Arena</span>
+            <span class="stat-value" id="arenaScore" style="color: var(--emerald);">0 XP</span>
+          </div>
+        </div>
+      </div>
+
+      <div id="quizContainer" class="card-grid" style="margin-top: 20px;">
+        <!-- 10 Quiz Cards rendered dynamically by app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="concept-card">
+        <div class="card-header">
+          <span class="card-icon">🏆</span>
+          <h3>Hệ Thống Huy Hiệu Chinh Phục Cấp Số Nhân</h3>
+        </div>
+        <p>Hoàn thành các mốc học tập và vượt qua thử thách để mở khóa toàn bộ 5 huy hiệu danh dự:</p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin: 20px 0;">
+          <div class="rule-box cyan" id="badge-1" style="text-align: center; padding: 20px; transition: all 0.3s ease;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">✖️</div>
+            <h4 style="margin: 0; color: #fff;">Khởi Động Lũy Thừa</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 6px 0 0;">Truy cập bài học và tìm hiểu công bội $q$</p>
+          </div>
+
+          <div class="rule-box gold" id="badge-2" style="text-align: center; padding: 20px; transition: all 0.3s ease;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">🌾</div>
+            <h4 style="margin: 0; color: #fff;">Nhà Thông Thái Sissa</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 6px 0 0;">Khám phá mô phỏng 64 ô cờ hạt thóc &amp; tăng trưởng mũ</p>
+          </div>
+
+          <div class="rule-box green" id="badge-3" style="text-align: center; padding: 20px; transition: all 0.3s ease;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">🔥</div>
+            <h4 style="margin: 0; color: #fff;">Chuỗi Thắng Bùng Nổ</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 6px 0 0;">Đạt chuỗi combo 3 câu trả lời đúng liên tiếp</p>
+          </div>
+
+          <div class="rule-box" id="badge-4" style="text-align: center; padding: 20px; border-left: 4px solid #a855f7; transition: all 0.3s ease;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">⚡</div>
+            <h4 style="margin: 0; color: #fff;">Bậc Thầy Công Bội</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 6px 0 0;">Đạt từ 160 XP trở lên trong Đấu trường SGK</p>
+          </div>
+
+          <div class="rule-box" id="badge-5" style="text-align: center; padding: 20px; border-left: 4px solid #f43f5e; transition: all 0.3s ease;">
+            <div style="font-size: 2.5rem; margin-bottom: 8px;">👑</div>
+            <h4 style="margin: 0; color: #fff;">Đại Kiện Tướng Cấp Số Nhân</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin: 6px 0 0;">Hoàn thành xuất sắc tuyệt đối 10/10 câu hỏi Đấu trường</p>
+          </div>
+        </div>
+
+        <!-- Khung Giấy Chứng Nhận Chuẩn A4 -->
+        <div style="margin-top: 30px; text-align: center;">
+          <button class="btn-primary" id="btnPrintCert" style="padding: 12px 28px; font-size: 1rem; cursor: pointer; border-radius: 10px; background: linear-gradient(135deg, #6366f1, #06b6d4); color: #fff; font-weight: bold; border: none; box-shadow: 0 0 15px rgba(99,102,241,0.4);">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+
+        <div class="cert-container" id="gradCert" style="margin-top: 24px; padding: 36px 40px; border: 4px double #818cf8; border-radius: 16px; background: rgba(15, 23, 42, 0.95); box-shadow: 0 0 30px rgba(99,102,241,0.25); text-align: center; position: relative;">
+          <div style="font-size: 1.1rem; letter-spacing: 2px; text-transform: uppercase; color: #94a3b8; font-family: 'Times New Roman', Cambria, serif;">
+            SỞ GIÁO DỤC VÀ ĐÀO TẠO THÀNH PHỐ ĐÀ NẴNG
+          </div>
+          <div style="font-size: 1.25rem; font-weight: bold; color: #38bdf8; margin-top: 4px; font-family: 'Times New Roman', Cambria, serif;">
+            TRƯỜNG THPT LƯƠNG THẾ VINH
+          </div>
+          <div style="width: 80px; height: 2px; background: #818cf8; margin: 12px auto;"></div>
+          <div style="font-size: 1.9rem; font-weight: bold; text-transform: uppercase; color: #f59e0b; letter-spacing: 1.5px; margin-top: 10px; font-family: 'Times New Roman', Cambria, serif;">
+            GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC
+          </div>
+          <p style="color: #cbd5e1; font-size: 1.1rem; margin: 16px 0 8px; font-style: italic; font-family: 'Times New Roman', Cambria, serif;">
+            Chứng nhận học sinh:
+          </p>
+          <div id="certStudentName" style="font-size: 2.2rem; font-weight: bold; color: #ffffff; letter-spacing: 1px; font-family: 'Times New Roman', Cambria, serif; margin-bottom: 12px;">
+            Chiến Binh Logic
+          </div>
+          <p style="color: #e2e8f0; font-size: 1.15rem; max-width: 750px; margin: 0 auto; line-height: 1.6; font-family: 'Times New Roman', Cambria, serif;">
+            Đã hoàn thành xuất sắc chuyên đề học tập <strong>Bài 7: Cấp Số Nhân</strong> thuộc chương trình Toán học Lớp 11 (Bộ sách Kết Nối Tri Thức Với Cuộc Sống), làm chủ công thức số hạng tổng quát và phương pháp tính tổng $S_n$.
+          </p>
+
+          <div style="display: flex; justify-content: space-around; margin-top: 36px; padding-top: 20px; border-top: 1px dashed rgba(148, 163, 184, 0.3); font-family: 'Times New Roman', Cambria, serif;">
+            <div style="text-align: center;">
+              <div style="color: #94a3b8; font-size: 0.95rem;">HỆ THỐNG ĐÁNH GIÁ</div>
+              <div style="font-size: 1.1rem; font-weight: bold; color: #34d399; margin-top: 4px;">XÁC THỰC HOÀN THÀNH 100%</div>
+            </div>
+            <div style="text-align: center;">
+              <div style="color: #94a3b8; font-size: 0.95rem;">Đà Nẵng, ngày cấp chứng nhận</div>
+              <div style="font-size: 1.1rem; font-weight: bold; color: #f8fafc; margin-top: 4px;" id="certDateText">Ngày 20 tháng 10 năm 2026</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai6/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 6: Cấp Số Cộng</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_ontap_chuong2/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương II</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (ẨN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-box" style="background: #0f172a; border: 2px solid #818cf8; border-radius: 16px; padding: 24px; max-width: 480px; width: 90%; text-align: center; box-shadow: 0 0 30px rgba(99,102,241,0.4);">
+        <h3 style="margin-top: 0; color: #fff;">Chọn Nhân Vật Đại Diện</h3>
+        <p style="color: var(--text-muted); font-size: 0.9rem;">Chọn avatar và đặt tên cho chiến binh đồng hành của bạn:</p>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 20px 0;" id="avatarGrid">
+          <button class="btn-icon avatar-opt" data-avatar="👑" style="font-size: 2rem; padding: 10px;">👑</button>
+          <button class="btn-icon avatar-opt" data-avatar="🧙‍♂️" style="font-size: 2rem; padding: 10px;">🧙‍♂️</button>
+          <button class="btn-icon avatar-opt" data-avatar="🧝‍♀️" style="font-size: 2rem; padding: 10px;">🧝‍♀️</button>
+          <button class="btn-icon avatar-opt" data-avatar="🚀" style="font-size: 2rem; padding: 10px;">🚀</button>
+          <button class="btn-icon avatar-opt" data-avatar="🦉" style="font-size: 2rem; padding: 10px;">🦉</button>
+          <button class="btn-icon avatar-opt" data-avatar="🦊" style="font-size: 2rem; padding: 10px;">🦊</button>
+          <button class="btn-icon avatar-opt" data-avatar="⚡" style="font-size: 2rem; padding: 10px;">⚡</button>
+          <button class="btn-icon avatar-opt" data-avatar="🎯" style="font-size: 2rem; padding: 10px;">🎯</button>
+        </div>
+
+        <input type="text" id="inputStudentName" placeholder="Nhập tên học sinh..." value="Chiến Binh Logic" style="width: 100%; padding: 10px 14px; border-radius: 8px; border: 1px solid #818cf8; background: #1e1b4b; color: #fff; margin-bottom: 16px; box-sizing: border-box;">
+
+        <div style="display: flex; gap: 12px; justify-content: flex-end;">
+          <button class="btn-icon" id="btnCloseAvatarModal">Hủy</button>
+          <button class="btn-primary" id="btnSaveAvatar" style="padding: 10px 20px; border-radius: 8px; background: #6366f1; color: #fff; border: none; font-weight: bold; cursor: pointer;">Lưu Thay Đổi</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === 'function') {
+        renderMathInElement(document.body, {
+          delimiters: [
+            {left: "$$", right: "$$", display: true},
+            {left: "$", right: "$", display: false}
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

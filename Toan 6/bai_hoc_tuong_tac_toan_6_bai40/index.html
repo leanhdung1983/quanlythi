@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 40: Biểu đồ cột - Toán 6 Kết Nối Tri Thức</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div id="start-modal" class="modal-overlay">
+    <div class="start-card">
+      <div class="start-badge-icon">📊</div>
+      <h2 class="start-title">Học Viện Biểu Đồ Cột</h2>
+      <p class="start-subtitle">Bài 40: Biểu đồ cột & Phân tích số liệu (Toán 6 - Tập 2 Trang 77-81)</p>
+      
+      <label class="avatar-selector-label">Chọn hình đại diện của bạn:</label>
+      <div class="avatar-grid">
+        <button type="button" class="avatar-btn selected" data-avatar="👨‍💼">👨‍💼</button>
+        <button type="button" class="avatar-btn" data-avatar="👩‍💼">👩‍💼</button>
+        <button type="button" class="avatar-btn" data-avatar="🧑‍🔬">🧑‍🔬</button>
+        <button type="button" class="avatar-btn" data-avatar="🧙‍♂️">🧙‍♂️</button>
+        <button type="button" class="avatar-btn" data-avatar="⚡">⚡</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="player-name-input">Tên nhà phân tích số liệu:</label>
+        <input type="text" id="player-name-input" placeholder="Nhập tên bạn..." value="Nhà Phân Tích Cột 6" maxlength="25">
+      </div>
+
+      <button id="btn-start" class="btn-start-game">Bắt Đầu Trải Nghiệm 🚀</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div id="hud-avatar" class="hud-avatar">👨‍💼</div>
+        <div class="hud-info">
+          <span id="hud-name" class="hud-name">Nhà Phân Tích Cột 6</span>
+          <span id="hud-rank" class="hud-rank">Thực Tập Biểu Đồ Cột</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span> <span id="hud-score">0 XP</span>
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span> <span id="hud-stars">0 / 5</span>
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span> <span id="hud-streak">0 Chuỗi</span>
+        </div>
+      </div>
+      <div class="hud-controls">
+        <button id="btn-sound-toggle" class="btn-hud-tool">🔊 Âm thanh: Bật</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- MAIN WRAPPER -->
+  <main class="main-wrapper">
+
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Toán 6 • Chương IX • Trực quan hóa dữ liệu</div>
+      <h1 class="hero-title">Bài 40: Biểu Đồ Cột</h1>
+      <p class="hero-desc">
+        Nắm vững quy tắc vẽ và đọc biểu đồ cột chuẩn mực, so sánh số liệu trực quan qua chiều cao các cột, 
+        giải mã thời gian tự học của An (Hình 9.12) và cuộc đua tốc độ của các loài động vật trong tự nhiên (Hình 9.9)!
+      </p>
+    </section>
+
+    <!-- SECTION 1: BẢN ĐỒ KIẾN THỨC VÀNG -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">📐</div>
+        <h2 class="section-title">1. Bản Đồ Khái Niệm & Quy Tắc Vàng</h2>
+      </div>
+
+      <div class="rule-box">
+        <strong>💡 Biểu đồ cột là gì?</strong> Biểu đồ cột sử dụng các hình chữ nhật (các cột) có <em>chiều rộng bằng nhau</em> 
+        và <em>cách đều nhau</em> để biểu diễn dữ liệu. Chiều cao của mỗi cột biểu diễn số liệu tương ứng của đối tượng đó.
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-item">
+          <h3>🏗️ 1. Các bước vẽ biểu đồ cột</h3>
+          <p>• <strong>Bước 1:</strong> Vẽ trục ngang biểu diễn các đối tượng danh mục; vẽ trục đứng chia vạch số liệu đều nhau bắt đầu từ 0.</p>
+          <p>• <strong>Bước 2:</strong> Dựng các cột hình chữ nhật có đáy nằm trên trục ngang, chiều cao tương ứng với số liệu của đối tượng.</p>
+          <p>• <strong>Bước 3:</strong> Đặt tên biểu đồ, ghi chú thích số liệu trên đỉnh mỗi cột hoặc dóng sang trục đứng.</p>
+        </div>
+
+        <div class="concept-item">
+          <h3>🔍 2. Phân tích số liệu từ biểu đồ</h3>
+          <p>• <strong>Cột cao nhất:</strong> Đối tượng có số liệu lớn nhất (nhiều nhất, cao nhất).</p>
+          <p>• <strong>Cột thấp nhất:</strong> Đối tượng có số liệu bé nhất (ít nhất, thấp nhất).</p>
+          <p>• <strong>So sánh chênh lệch:</strong> Tính toán độ chênh lệch chiều cao giữa các cột để đánh giá xu hướng tăng hay giảm.</p>
+        </div>
+
+        <div class="concept-item">
+          <h3>⚡ 3. Các dạng biểu đồ cột đặc biệt</h3>
+          <p>• <strong>Biểu đồ thanh ngang:</strong> Các cột nằm ngang thay vì thẳng đứng (Hình 9.6).</p>
+          <p>• <strong>Biểu đồ có số âm:</strong> Với số liệu âm (như lợi nhuận âm/lỗ), cột được dựng ngược xuống phía dưới trục ngang 0 (Hình 9.11).</p>
+          <p>• <strong>Cắt bớt gốc trục:</strong> Khi các số liệu đều rất lớn, có thể vẽ đường lượn sóng cắt bớt đoạn từ 0 đến vạch khởi đầu (Hình 9.5).</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🔬</div>
+        <h2 class="section-title">2. Phòng Thí Nghiệm Biểu Đồ Cột Tương Tác</h2>
+      </div>
+
+      <div class="lab-container">
+
+        <!-- LAB 1: MÁY DỰNG BIỂU ĐỒ THỜI GIAN TỰ HỌC CỦA AN (HÌNH 9.12 BÀI 9.11-9.15) -->
+        <div class="lab-box">
+          <h3 class="lab-title">📚 Thí nghiệm 1: Trình Dựng Biểu Đồ Cột Thời Gian Tự Học (Hình 9.12)</h3>
+          <p class="lab-instruction">
+            Quan sát biểu đồ cột thời gian tự học ở nhà của bạn An trong tuần. 
+            Bạn có thể kéo thanh trượt để bổ sung thời gian tự học ngày Chủ nhật (Bài 9.14) và xem biểu đồ tự động cập nhật!
+          </p>
+
+          <div class="canvas-wrapper">
+            <canvas id="study-chart-canvas" width="650" height="320"></canvas>
+          </div>
+
+          <div class="chart-controls">
+            <label style="font-weight:700; display:flex; align-items:center; gap:8px;">
+              Tự học Chủ Nhật (Bài 9.14): 
+              <input type="range" id="input-sunday-study" min="0" max="120" step="10" value="0" style="width:160px; accent-color:var(--primary);">
+              <span id="display-sunday-study" style="font-weight:800; color:var(--primary-dark); min-width:60px;">0 phút</span>
+            </label>
+            <button id="btn-sunday-preset-50" class="btn-hud-tool" style="background:#dbeafe; color:var(--primary-dark); font-weight:700;">
+              ✨ Đặt 50 phút (Theo Bài 9.14 SGK)
+            </button>
+            <button id="btn-sunday-reset" class="btn-hud-tool">🔄 Đặt về 0 phút</button>
+          </div>
+
+          <div class="analysis-infobar" id="study-analysis-box">
+            Đang phân tích số liệu thời gian tự học...
+          </div>
+        </div>
+
+        <!-- LAB 2: CUỘC ĐUA TỐC ĐỘ ĐỘNG VẬT (HÌNH 9.9) & BIỂU ĐỒ SỐ ÂM (HÌNH 9.11) -->
+        <div class="lab-box">
+          <h3 class="lab-title">🐆 Thí nghiệm 2: So Sánh Tốc Độ Động Vật (Hình 9.9) & Biểu Đồ Số Âm (Hình 9.11)</h3>
+          <p class="lab-instruction">
+            Chuyển đổi giữa biểu đồ tốc độ tối đa của 8 loài động vật và biểu đồ lợi nhuận có số âm để phân tích chi tiết!
+          </p>
+
+          <div style="display:flex; gap:10px; margin-bottom:1rem; flex-wrap:wrap;">
+            <button class="btn-hud-tool mode-lab2-btn active" id="btn-mode-animals" style="background:#dbeafe; color:var(--primary-dark); font-weight:700;">
+              🐆 Biểu đồ tốc độ động vật (Hình 9.9)
+            </button>
+            <button class="btn-hud-tool mode-lab2-btn" id="btn-mode-profit">
+              📉 Biểu đồ lợi nhuận có số âm (Hình 9.11)
+            </button>
+          </div>
+
+          <div class="canvas-wrapper">
+            <canvas id="lab2-chart-canvas" width="650" height="320"></canvas>
+          </div>
+
+          <div class="analysis-infobar" id="lab2-analysis-box">
+            Đang tải dữ liệu mô hình...
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- SECTION 3: ĐẤU TRƯỜNG SGK ARENA -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">⚔️</div>
+        <div style="flex:1;">
+          <h2 class="section-title">3. Đấu Trường SGK Arena</h2>
+          <span style="font-size:0.85rem; color:var(--text-muted);">Trọn vẹn 10 câu hỏi bao phủ 100% bài tập SGK trang 77-81 (Bài 9.11 đến 9.17)</span>
+        </div>
+        <div style="font-weight:700; color:var(--primary-dark); font-size:1.05rem;" id="arena-progress-text">
+          Đã hoàn thành: 0 / 10
+        </div>
+      </div>
+
+      <div id="questions-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- SECTION 4: BẢNG HUY HIỆU & GIẤY KHEN IN A4 -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <h2 class="section-title">4. Bộ Sưu Tập Huy Hiệu & Giấy Chứng Nhận</h2>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-item" id="badge-1">
+          <div class="badge-icon">📊</div>
+          <div class="badge-name">Thực Tập Cột Thống Kê</div>
+          <div class="badge-req">Đạt 50 XP đầu tiên</div>
+        </div>
+
+        <div class="badge-item" id="badge-2">
+          <div class="badge-icon">📚</div>
+          <div class="badge-name">Kế Hoạch Tự Học 6</div>
+          <div class="badge-req">Khám phá biểu đồ thời gian tự học Bài 9.14</div>
+        </div>
+
+        <div class="badge-item" id="badge-3">
+          <div class="badge-icon">🐆</div>
+          <div class="badge-name">Chiến Thần Tốc Độ</div>
+          <div class="badge-req">Phân tích chính xác tốc độ các loài động vật 9.9</div>
+        </div>
+
+        <div class="badge-item" id="badge-4">
+          <div class="badge-icon">📉</div>
+          <div class="badge-name">Chuyên Gia Cột Âm</div>
+          <div class="badge-req">Thấu hiểu biểu đồ lợi nhuận âm Hình 9.11</div>
+        </div>
+
+        <div class="badge-item" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Bậc Thầy Biểu Đồ Cột</div>
+          <div class="badge-req">Đạt điểm tuyệt đối trong Đấu Trường</div>
+        </div>
+      </div>
+
+      <div class="cert-section">
+        <button id="btn-print-certificate" class="btn-print-cert">🖨️ Xuất Giấy Khen Biểu Đồ Cột (A4)</button>
+      </div>
+    </section>
+
+    <!-- FOOTER NAVIGATION -->
+    <footer class="nav-footer">
+      <a href="../bai_hoc_tuong_tac_toan_6_bai39/index.html" class="btn-nav">
+        ⬅️ Bài 39: Biểu đồ tranh
+      </a>
+      <a href="../bai_hoc_tuong_tac_toan_6_bai41/index.html" class="btn-nav">
+        Bài 41: Biểu đồ cột kép ➡️
+      </a>
+    </footer>
+
+  </main>
+
+  <!-- PRINTABLE CERTIFICATE CONTAINER (A4 PRINT READY) -->
+  <div id="printable-certificate" style="display:none;">
+    <div class="cert-frame">
+      <div style="font-size:3rem; margin-bottom:10px;">🌟📊🌟</div>
+      <h1 style="color:#2563eb; font-size:2.2rem; font-weight:800; text-transform:uppercase; margin-bottom:8px;">Giấy Chứng Nhận Thành Tích</h1>
+      <p style="color:#475569; font-size:1.1rem; margin-bottom:20px;">Học Viện Toán Học Trực Quan 6 - Kết Nối Tri Thức</p>
+      
+      <p style="font-size:1.15rem; margin-bottom:10px;">Vinh danh nhà phân tích xuất sắc:</p>
+      <h2 id="cert-player-name" style="font-size:2rem; color:#1d4ed8; font-weight:800; margin-bottom:15px; border-bottom:2px solid #bfdbfe; display:inline-block; padding:0 30px 8px;">
+        Nhà Phân Tích Cột 6
+      </h2>
+
+      <p style="font-size:1.05rem; line-height:1.8; color:#334155; margin-bottom:25px;">
+        Đã hoàn thành xuất sắc chuyên đề<br>
+        <strong>"Bài 40: Biểu đồ cột"</strong><br>
+        Thành thạo phương pháp xây dựng, phân tích và đọc hiểu số liệu từ biểu đồ cột, 
+        giải quyết trọn vẹn các bài toán thực tiễn từ thời gian biểu tự học đến phân tích kinh tế và tốc độ động vật!
+      </p>
+
+      <div style="display:flex; justify-content:space-around; margin-top:25px; padding-top:20px; border-top:1px dashed #cbd5e1;">
+        <div>
+          <p style="font-weight:700; color:#2563eb;" id="cert-score-display">Tổng điểm: 0 XP</p>
+          <p style="font-size:0.85rem; color:#64748b;">Đạt chuẩn năng lực trực quan hóa dữ liệu 6</p>
+        </div>
+        <div>
+          <p style="font-weight:700; color:#1d4ed8;">Ban Cố Vấn Chuyên Môn</p>
+          <p style="font-size:0.85rem; color:#64748b;">Hệ Thống Số Hóa SGK Toán 6</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

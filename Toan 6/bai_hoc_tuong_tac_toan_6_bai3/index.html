@@ -1,0 +1,588 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Toán 6 - Bài 3: Thứ tự trong tập hợp các số tự nhiên | Mini-Game Học Tập Tương Tác</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- ======================================================================
+       START SCREEN OVERLAY (MÀN HÌNH CHÀO MỪNG & CHỌN AVATAR)
+       ====================================================================== -->
+  <div id="start-screen">
+    <div class="start-modal">
+      <div class="start-badge">🏆 TOÁN 6 - KẾT NỐI TRI THỨC</div>
+      <h1>ĐƯỜNG ĐUA TIA SỐ</h1>
+      <p class="subtitle">Bài 3: Thứ tự trong tập hợp các số tự nhiên (Trang 13 – 14)</p>
+
+      <div class="input-group">
+        <label for="player-name-input">👤 Nhập tên của dũng sĩ nhí:</label>
+        <input type="text" id="player-name-input" placeholder="Ví dụ: Minh Khôi, Bảo Châu..." maxlength="25" value="Nhà Toán Học Nhí">
+      </div>
+
+      <div class="avatar-selection-label">✨ Chọn nhân vật đồng hành cùng em:</div>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="🏃" data-name="Tia Chớp">
+          <span class="emoji">🏃</span>
+          <span class="avatar-title">Tia Chớp</span>
+        </button>
+        <button class="avatar-btn" data-avatar="🦉" data-name="Pi Trí Tuệ">
+          <span class="emoji">🦉</span>
+          <span class="avatar-title">Pi Trí Tuệ</span>
+        </button>
+        <button class="avatar-btn" data-avatar="🚀" data-name="Thám Hiểm">
+          <span class="emoji">🚀</span>
+          <span class="avatar-title">Thám Hiểm</span>
+        </button>
+        <button class="avatar-btn" data-avatar="🐱" data-name="Tròn Siêu Phàm">
+          <span class="emoji">🐱</span>
+          <span class="avatar-title">Tròn Siêu Phàm</span>
+        </button>
+      </div>
+
+      <button id="btn-start-adventure" class="btn-start-game">
+        🚀 BẮT ĐẦU CHINH PHỤC BÀI 3
+      </button>
+    </div>
+  </div>
+
+  <!-- ======================================================================
+       GAME HUD (THANH TRẠNG THÁI CỐ ĐỊNH)
+       ====================================================================== -->
+  <header class="game-hud">
+    <div class="hud-container">
+      <div class="player-info-badge">
+        <span class="hud-avatar" id="hud-avatar-display">🏃</span>
+        <span class="hud-player-name" id="hud-name-display">Nhà Toán Học Nhí</span>
+      </div>
+
+      <div class="hud-stats-group">
+        <div class="stat-item">
+          <span class="stat-icon">🪙</span>
+          <span>Điểm:</span>
+          <span class="stat-value" id="hud-score">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-icon">⭐</span>
+          <span>Sao:</span>
+          <span class="stat-value" id="hud-stars">0</span>
+        </div>
+        <div class="combo-badge" id="hud-combo">🔥 Combo x2!</div>
+        <button class="btn-sound-toggle" id="btn-sound-toggle" title="Bật/Tắt âm thanh">🔊</button>
+      </div>
+    </div>
+  </header>
+
+  <!-- ======================================================================
+       MAIN CONTENT WRAPPER
+       ====================================================================== -->
+  <main class="main-wrapper">
+
+    <!-- HERO HEADER -->
+    <section class="hero-header">
+      <div class="hero-tag">🌟 Sách Giáo Khoa Toán 6 - Chương 1 - Tập 1</div>
+      <h1 class="hero-title">BÀI 3: THỨ TỰ TRONG TẬP HỢP CÁC SỐ TỰ NHIÊN</h1>
+      <p class="hero-desc">
+        Khám phá tia số kì diệu, số liền trước - số liền sau, các kí hiệu ≤ và ≥ cùng nguyên lý so sánh bắc cầu qua các thử thách tương tác sinh động!
+      </p>
+
+      <nav class="quick-nav">
+        <a href="#khoi-dong" class="nav-pill">🎟️ 1. Xếp hàng mua vé</a>
+        <a href="#kham-pha-tia-so" class="nav-pill">📏 2. Tia số trực quan</a>
+        <a href="#lien-truoc-sau" class="nav-pill">⚡ 3. Liền trước & Liền sau</a>
+        <a href="#can-can-so-sanh" class="nav-pill">⚖️ 4. Cán cân so sánh</a>
+        <a href="#cay-sao-chieu-cao" class="nav-pill">📐 5. Cây sào đo chiều cao</a>
+        <a href="#tap-hop-dau" class="nav-pill">🎯 6. Kí hiệu ≤ và ≥</a>
+        <a href="#dau-truong" class="nav-pill">⚔️ 7. Đấu trường 8 câu</a>
+        <a href="#certificate-section" class="nav-pill">🎓 8. Giấy Chứng Nhận</a>
+      </nav>
+    </section>
+
+    <!-- SECTION 1: KHỞI ĐỘNG (XẾP HÀNG MUA VÉ BÓNG ĐÁ - TRANG 13) -->
+    <section id="khoi-dong" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🎟️</div>
+        <div class="card-header-text">
+          <h2>1. Tình huống Khởi động: Xếp hàng mua vé bóng đá</h2>
+          <p>Mỗi khi có trận cầu hấp dẫn, cổ động viên xếp hàng một rất dài. Dòng người này và dãy số tự nhiên có gì giống nhau?</p>
+        </div>
+      </div>
+
+      <div class="stadium-container">
+        <div class="stadium-counter">
+          <div class="ticket-booth">
+            <span>🏟️ QUẦY BÁN VÉ SÂN VẬN ĐỘNG QUỐC GIA</span>
+          </div>
+          <div id="queue-status-text">👉 Hãy bấm chọn lần lượt từng người để đánh số thứ tự từ 1 đến 5!</div>
+        </div>
+
+        <div class="queue-track" id="queue-interactive-track">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div class="queue-info-box">
+          💡 <strong>Nhận xét từ SGK:</strong> Trong cuộc sống, ta dùng các số tự nhiên $1, 2, 3, 4, 5,\dots$ để đánh số thứ tự: <em>Người thứ nhất, người thứ hai, người thứ ba,...</em> Người xếp trước mua trước, người xếp sau mua sau, tương ứng chính xác với thứ tự tăng dần của các số tự nhiên!
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: KHÁM PHÁ TIA SỐ TRỰC QUAN (HÌNH 1.5 & HĐ1, HĐ2, HĐ3) -->
+    <section id="kham-pha-tia-so" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">📏</div>
+        <div class="card-header-text">
+          <h2>2. Tia số và Thứ tự của các số tự nhiên</h2>
+          <p>Tia số nằm ngang gốc O biểu diễn tập hợp $\mathbb{N} = \{0; 1; 2; 3; \dots\}$. Chiều mũi tên từ trái sang phải!</p>
+        </div>
+      </div>
+
+      <div class="number-line-wrapper">
+        <div class="number-line-controls">
+          <div class="nl-indicator" id="nl-current-info">
+            👉 <em>Click vào các chấm tròn trên tia số để khám phá vị trí và tính chất!</em>
+          </div>
+          <button class="btn-candidate" id="btn-reset-nl" style="padding: 6px 16px; font-size: 0.95rem;">
+            🔄 Xem lại từ đầu
+          </button>
+        </div>
+
+        <!-- SVG Interactive Number Line -->
+        <div class="number-line-svg-container">
+          <svg class="number-line-svg" id="svg-number-line" viewBox="0 0 920 120">
+            <!-- Drawn dynamically in JS -->
+          </svg>
+        </div>
+
+        <!-- Các thẻ giải mã 3 hoạt động của SGK -->
+        <div class="nl-interactive-panel">
+          <div class="nl-card" id="card-hd1">
+            <h4>🔴 Hoạt động 1 (SGK tr.13): Điểm 5 và Điểm 8</h4>
+            <p id="hd1-text">Trên tia số, <strong>điểm 5 nằm bên trái điểm 8</strong> (ngược lại, điểm 8 nằm bên phải điểm 5). Vì $5 < 8$, điểm 5 nằm <strong>trước</strong> điểm 8!</p>
+            <button class="btn-candidate" onclick="highlightTwoPoints(5, 8)" style="margin-top: 10px; font-size: 0.85rem; padding: 6px 12px;">So sánh 5 và 8 trên tia số</button>
+          </div>
+
+          <div class="nl-card" id="card-hd2">
+            <h4>🟡 Hoạt động 2 (SGK tr.13): Lân cận của Điểm 8</h4>
+            <p id="hd2-text">Nằm ngay bên trái điểm 8 là <strong>điểm 7</strong> (số liền trước). Nằm ngay bên phải điểm 8 là <strong>điểm 9</strong> (số liền sau)!</p>
+            <button class="btn-candidate" onclick="highlightNeighbors(8)" style="margin-top: 10px; font-size: 0.85rem; padding: 6px 12px;">Xem lân cận của số 8</button>
+          </div>
+
+          <div class="nl-card" id="card-hd3">
+            <h4>🟢 Hoạt động 3 (SGK tr.13): Số tự nhiên n < 7</h4>
+            <p id="hd3-text">Nếu $n < 7$, thì trên tia số nằm ngang, <strong>điểm $n$ luôn nằm bên trái điểm 7</strong>. Ví dụ: $0, 1, 2, 3, 4, 5, 6$ đều ở bên trái!</p>
+            <button class="btn-candidate" onclick="highlightSmallerThan(7)" style="margin-top: 10px; font-size: 0.85rem; padding: 6px 12px;">Xem các số n < 7</button>
+          </div>
+        </div>
+
+        <div class="queue-info-box" style="margin-top: 20px; border-left-color: #10b981;">
+          📌 <strong>Quy tắc vàng SGK:</strong>
+          <ul style="margin-left: 20px; margin-top: 6px;">
+            <li>Nếu $a < b$ thì trên tia số nằm ngang, <strong>điểm $a$ nằm bên trái điểm $b$</strong> (điểm $a$ nằm trước điểm $b$).</li>
+            <li><strong>Số 0</strong> không có số liền trước và là <strong>số tự nhiên nhỏ nhất</strong>!</li>
+            <li><strong>Tính chất bắc cầu:</strong> Nếu $a < b$ và $b < c$ thì $a < c$. (Ví dụ: $a < 5$ và $5 < 7 \implies a < 7$).</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: MINI-GAME 1: TRUY TÌM SỐ LIỀN TRƯỚC VÀ LIỀN SAU (BÀI 1.13) -->
+    <section id="lien-truoc-sau" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">⚡</div>
+        <div class="card-header-text">
+          <h2>3. Thử thách: Bắn trúng Số Liền Trước & Số Liền Sau</h2>
+          <p>Mỗi số tự nhiên có đúng một số liền sau. Hai số tự nhiên liên tiếp chênh nhau đúng 1 đơn vị!</p>
+        </div>
+      </div>
+
+      <div class="neighbor-game-board">
+        <p style="font-weight: 700; color: #047857; font-size: 1.1rem; margin-bottom: 10px;">
+          Nhiệm vụ: Hãy ghép đúng <strong>Số Liền Trước</strong> và <strong>Số Liền Sau</strong> cho số ở giữa!
+        </p>
+
+        <div class="neighbor-target-display">
+          <!-- Slot số liền trước -->
+          <div class="slot-box" id="slot-prev">
+            <span class="slot-title">⬅️ Số Liền Trước (n - 1)</span>
+            <span class="slot-value" id="slot-prev-val">?</span>
+          </div>
+
+          <!-- Số mục tiêu -->
+          <div class="target-number-box">
+            <span class="target-tag">Số đang xét (n)</span>
+            <span class="target-val" id="target-number-display">3 532</span>
+          </div>
+
+          <!-- Slot số liền sau -->
+          <div class="slot-box" id="slot-next">
+            <span class="slot-title">➡️ Số Liền Sau (n + 1)</span>
+            <span class="slot-value" id="slot-next-val">?</span>
+          </div>
+        </div>
+
+        <div id="neighbor-feedback" style="min-height: 28px; font-weight: 800; font-size: 1.1rem; margin: 10px 0;">
+          👇 Bấm vào một trong các số dưới đây để đưa vào ô thích hợp:
+        </div>
+
+        <div class="candidate-options" id="neighbor-candidates-box">
+          <!-- Populated by JS -->
+        </div>
+
+        <div style="margin-top: 25px; display: flex; justify-content: center; gap: 15px; flex-wrap: wrap;">
+          <button class="btn-candidate" id="btn-next-neighbor-level" style="background: #10b981; color: white; border-color: #059669; display: none;">
+            ➡️ Chuyển sang số tiếp theo (Bài 1.13 SGK)
+          </button>
+        </div>
+
+        <div class="queue-info-box" style="margin-top: 25px; text-align: left;">
+          💡 <strong>Bài 1.13 SGK:</strong>
+          Viết thêm các số liền trước và liền sau của hai số $3\,532$ và $3\,529$ để được 6 số tự nhiên, rồi sắp xếp theo thứ tự từ bé đến lớn:
+          <br>
+          $\implies$ $3\,528 < 3\,529 < 3\,530 < 3\,531 < 3\,532 < 3\,533$.
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 4: MINI-GAME 2: CÁN CÂN SO SÁNH & TÍNH CHẤT BẮC CẦU -->
+    <section id="can-can-so-sanh" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">⚖️</div>
+        <div class="card-header-text">
+          <h2>4. Cán Cân So Sánh & Vận Dụng Tính Chất Bắc Cầu</h2>
+          <p>Luyện tập so sánh các số nhiều chữ số và giải quyết bài toán thực tế kết quả bán hàng trong ngày!</p>
+        </div>
+      </div>
+
+      <div class="scale-arena">
+        <h3 style="color: #0f766e; text-align: center; margin-bottom: 8px;">
+          ⚖️ CÂU HỎI LUYỆN TẬP SGK TRANG 14: SO SÁNH HAI SỐ
+        </h3>
+        <p style="text-align: center; color: var(--text-muted); margin-bottom: 20px;">
+          Bí kíp: Hãy so sánh từng cặp chữ số ở cùng một hàng kể từ <strong>trái sang phải</strong>!
+        </p>
+
+        <div class="balance-scale-wrapper">
+          <div class="scale-pan" id="pan-left">
+            <div class="pan-label">Số thứ nhất (m)</div>
+            <div class="pan-number" id="num-left">12 036 001</div>
+            <small style="color: #64748b;">Hàng nghìn: chữ số 6</small>
+          </div>
+
+          <div class="scale-center-operator" id="scale-op-display">?</div>
+
+          <div class="scale-pan" id="pan-right">
+            <div class="pan-label">Số thứ hai (n)</div>
+            <div class="pan-number" id="num-right">12 035 987</div>
+            <small style="color: #64748b;">Hàng nghìn: chữ số 5</small>
+          </div>
+        </div>
+
+        <div class="operator-choice-group">
+          <button class="btn-operator" onclick="checkScaleAnswer('<')">&lt;</button>
+          <button class="btn-operator" onclick="checkScaleAnswer('=')">=</button>
+          <button class="btn-operator" onclick="checkScaleAnswer('>')">&gt;</button>
+        </div>
+
+        <div id="scale-feedback" style="text-align: center; margin-top: 15px; font-weight: 800; font-size: 1.1rem; min-height: 30px;">
+          Bấm dấu thích hợp để cân nghiêng về bên lớn hơn!
+        </div>
+
+        <!-- VẬN DỤNG BÁN HÀNG SGK TRANG 14 -->
+        <div class="transitive-box">
+          <h4 style="color: #1e40af; font-size: 1.15rem; margin-bottom: 10px;">
+            🛒 BÀI TOÁN VẬN DỤNG SGK: THEO DÕI BÁN HÀNG TRONG NGÀY
+          </h4>
+          <p>
+            Người bán hàng ghi nhận:
+            <br>• Tiền thu buổi sáng <strong>nhiều hơn</strong> buổi chiều.
+            <br>• Tiền thu buổi tối <strong>ít hơn</strong> buổi chiều.
+            <br>👉 <em>Em hãy so sánh số tiền thu được vào buổi sáng và buổi tối!</em>
+          </p>
+
+          <div class="store-session-grid">
+            <div class="store-card morning">
+              <div class="time-icon">🌅</div>
+              <div class="time-name">Buổi Sáng</div>
+              <div class="time-val">Nhiều hơn Buổi Chiều</div>
+            </div>
+            <div class="store-card afternoon">
+              <div class="time-icon">☀️</div>
+              <div class="time-name">Buổi Chiều</div>
+              <div class="time-val">Mốc so sánh ở giữa</div>
+            </div>
+            <div class="store-card evening">
+              <div class="time-icon">🌙</div>
+              <div class="time-name">Buổi Tối</div>
+              <div class="time-val">Ít hơn Buổi Chiều</div>
+            </div>
+          </div>
+
+          <div style="background: white; padding: 15px 20px; border-radius: 12px; border-left: 4px solid #3b82f6;">
+            <strong>Suy luận theo tính chất bắc cầu:</strong>
+            <br>Ta có: $\text{Sáng} > \text{Chiều}$ và $\text{Chiều} > \text{Tối}$
+            <br>$\implies$ <strong>$\text{Buổi Sáng} > \text{Buổi Tối}$</strong> (Số tiền thu được vào buổi sáng nhiều hơn buổi tối).
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 5: MINI-GAME 3: CÂY SÀO ĐO CHIỀU CAO (BÀI 1.16 SGK) -->
+    <section id="cay-sao-chieu-cao" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">📐</div>
+        <div class="card-header-text">
+          <h2>5. Thử thách Cây Sào Đo Chiều Cao (Bài 1.16 SGK)</h2>
+          <p>Ba bạn An (150 cm), Bắc (153 cm), Cường (148 cm) đo chiều cao bằng cây sào thẳng đứng. Cùng kiểm tra xem bạn Cường đã đánh dấu đúng chưa nhé!</p>
+        </div>
+      </div>
+
+      <div class="pole-challenge-container">
+        <!-- Visual cây sào -->
+        <div class="pole-visual">
+          <!-- Vạch C cao nhất -->
+          <div class="pole-mark dropzone" data-pos="top" id="dropzone-top">
+            <span class="point-tag">C</span>
+            <span class="dropped-friend" id="dropped-top">❓ Vạch cao nhất (Trên cùng)</span>
+          </div>
+
+          <!-- Vạch B ở giữa -->
+          <div class="pole-mark dropzone" data-pos="mid" id="dropzone-mid">
+            <span class="point-tag">B</span>
+            <span class="dropped-friend" id="dropped-mid">❓ Vạch ở giữa</span>
+          </div>
+
+          <!-- Vạch A thấp nhất -->
+          <div class="pole-mark dropzone" data-pos="bot" id="dropzone-bot">
+            <span class="point-tag">A</span>
+            <span class="dropped-friend" id="dropped-bot">❓ Vạch thấp nhất (Dưới cùng)</span>
+          </div>
+        </div>
+
+        <!-- Danh sách các bạn -->
+        <div class="friends-list">
+          <p style="font-weight: 700; color: #047857; margin-bottom: 5px;">
+            👇 Chọn một bạn rồi bấm vào vạch tương ứng trên cây sào để đặt vị trí:
+          </p>
+
+          <div class="friend-item" data-id="an" onclick="selectFriend('an')">
+            <div class="friend-info">
+              <span class="friend-avatar">👦</span>
+              <div>
+                <div class="friend-name">Bạn An</div>
+                <small style="color: var(--text-muted);">Học sinh lớp 6</small>
+              </div>
+            </div>
+            <div class="friend-height">150 cm</div>
+          </div>
+
+          <div class="friend-item" data-id="bac" onclick="selectFriend('bac')">
+            <div class="friend-info">
+              <span class="friend-avatar">🧑</span>
+              <div>
+                <div class="friend-name">Bạn Bắc</div>
+                <small style="color: var(--text-muted);">Học sinh lớp 6</small>
+              </div>
+            </div>
+            <div class="friend-height">153 cm</div>
+          </div>
+
+          <div class="friend-item" data-id="cuong" onclick="selectFriend('cuong')">
+            <div class="friend-info">
+              <span class="friend-avatar">🧒</span>
+              <div>
+                <div class="friend-name">Bạn Cường</div>
+                <small style="color: var(--text-muted);">Học sinh lớp 6</small>
+              </div>
+            </div>
+            <div class="friend-height">148 cm</div>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 15px;">
+            <button class="btn-candidate" onclick="checkPoleSolution()" style="flex: 1; background: #059669; color: white;">
+              ✅ Kiểm tra kết quả
+            </button>
+            <button class="btn-candidate" onclick="resetPoleGame()" style="background: #e2e8f0; color: #475569;">
+              🔄 Xếp lại
+            </button>
+          </div>
+
+          <div id="pole-feedback" style="min-height: 30px; font-weight: 800; font-size: 1rem; margin-top: 10px;">
+            Cường nói từ dưới lên là A (An), B (Bắc), C (Cường) có đúng không?
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 6: MINI-GAME 4: BẮT PHẦN TỬ TẬP HỢP VỚI KÍ HIỆU ≤ VÀ ≥ (BÀI 1.15 SGK) -->
+    <section id="tap-hop-dau" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🎯</div>
+        <div class="card-header-text">
+          <h2>6. Giải Mã Tập Hợp với Kí Hiệu "≤" và "≥" (Bài 1.15 SGK)</h2>
+          <p>Kí hiệu $a \le b$ có nghĩa là "$a < b$ hoặc $a = b$". Kí hiệu $a \ge b$ có nghĩa là "$a > b$ hoặc $a = b$".</p>
+        </div>
+      </div>
+
+      <div class="set-game-container">
+        <div style="text-align: center;">
+          <div class="set-mission-badge" id="set-mission-title">
+            Tập hợp $M = \{x \in \mathbb{N} \mid 10 \le x < 15\}$
+          </div>
+          <p id="set-mission-desc" style="font-weight: 700; color: #065f46; margin-bottom: 20px;">
+            Nhiệm vụ: Hãy click chọn tất cả các số thỏa mãn điều kiện $10 \le x < 15$!
+          </p>
+        </div>
+
+        <div class="number-bubbles-grid" id="bubbles-box">
+          <!-- Rendered by JS -->
+        </div>
+
+        <div style="text-align: center; margin-bottom: 15px;">
+          <button class="btn-candidate" id="btn-check-set" onclick="checkSetBubbles()" style="background: #10b981; color: white; border-color: #059669;">
+            🎯 Xác nhận các số đã chọn
+          </button>
+        </div>
+
+        <div id="set-feedback" style="text-align: center; min-height: 30px; font-weight: 800; font-size: 1.1rem;"></div>
+
+        <div style="display: flex; justify-content: center; gap: 12px; margin-top: 20px; flex-wrap: wrap;">
+          <button class="nav-pill" onclick="loadSetMission(1)" style="background: #0284c7;">Nhiệm vụ a: $10 \le x < 15$</button>
+          <button class="nav-pill" onclick="loadSetMission(2)" style="background: #0284c7;">Nhiệm vụ b: $x \in \mathbb{N}^*, x \le 3$</button>
+          <button class="nav-pill" onclick="loadSetMission(3)" style="background: #0284c7;">Nhiệm vụ c: $x \in \mathbb{N}, x \le 3$</button>
+        </div>
+
+        <div class="queue-info-box" style="margin-top: 25px;">
+          ⚠️ <strong>Chú ý sự khác biệt cực quan trọng:</strong>
+          <br>• $K = \{x \in \mathbb{N}^* \mid x \le 3\} = \{1; 2; 3\}$ (vì $\mathbb{N}^*$ là tập các số tự nhiên <strong>khác 0</strong>).
+          <br>• $L = \{x \in \mathbb{N} \mid x \le 3\} = \{0; 1; 2; 3\}$ (tập $\mathbb{N}$ <strong>chứa cả số 0</strong>!).
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 7: ĐẤU TRƯỜNG THỬ THÁCH 8 CÂU HỎI (ARENA QUIZ) -->
+    <section id="dau-truong" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">⚔️</div>
+        <div class="card-header-text">
+          <h2>7. Đấu Trường Thử Thách: 8 Câu Hỏi Chinh Phục Bài 3</h2>
+          <p>Tổng hợp toàn bộ kiến thức trọng tâm và các bài tập 1.13, 1.14, 1.15, 1.16 của SGK Toán 6!</p>
+        </div>
+      </div>
+
+      <div class="quiz-container">
+        <div class="quiz-header-bar">
+          <div class="quiz-progress-text" id="quiz-question-number">Câu hỏi 1 / 8</div>
+          <div class="quiz-timer">⏱️ Thử thách phản xạ</div>
+        </div>
+
+        <div class="question-box">
+          <h3 class="question-title" id="quiz-question-title">
+            Nội dung câu hỏi đang tải...
+          </h3>
+        </div>
+
+        <div class="options-grid" id="quiz-options-box">
+          <!-- 4 đáp án do JS sinh ra -->
+        </div>
+
+        <div class="quiz-feedback" id="quiz-feedback-box">
+          <!-- Lời giải thích và khen ngợi -->
+        </div>
+
+        <button class="btn-next-question" id="btn-next-quiz" onclick="handleNextQuiz()">
+          Câu Tiếp Theo ➡️
+        </button>
+      </div>
+    </section>
+
+    <!-- SECTION 8: BỘ HUY HIỆU & GIẤY CHỨNG NHẬN (CERTIFICATE) -->
+    <section id="certificate-section" class="lesson-card">
+      <div class="card-header">
+        <div class="card-icon">🏆</div>
+        <div class="card-header-text">
+          <h2>8. Bộ Sưu Tập Huy Hiệu & Giấy Chứng Nhận Vinh Danh</h2>
+          <p>Phần thưởng vinh danh thành tích học tập xuất sắc của em!</p>
+        </div>
+      </div>
+
+      <!-- 5 HUY HIỆU -->
+      <h3 style="color: #065f46; margin-bottom: 15px;">🎖️ Huy hiệu thành tích mở khóa:</h3>
+      <div class="badges-container">
+        <div class="badge-card" id="badge-1">
+          <span class="badge-icon">🏃</span>
+          <div class="badge-title">Kiện Tướng Tia Số</div>
+          <div class="badge-desc">Khám phá vị trí các điểm trên tia số gốc O</div>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <span class="badge-icon">⚡</span>
+          <div class="badge-title">Chiến Binh Liền Kề</div>
+          <div class="badge-desc">Tìm chính xác số liền trước và số liền sau</div>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <span class="badge-icon">⚖️</span>
+          <div class="badge-title">Chuyên Gia Cán Cân</div>
+          <div class="badge-desc">So sánh số nhiều chữ số và tính bắc cầu</div>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <span class="badge-icon">📏</span>
+          <div class="badge-title">Kỷ Lục Đo Sào</div>
+          <div class="badge-desc">Giải quyết xuất sắc bài toán cây sào 1.16</div>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <span class="badge-icon">👑</span>
+          <div class="badge-title">Đại Hiệp Thứ Tự</div>
+          <div class="badge-desc">Chinh phục 8 câu hỏi đấu trường điểm cao</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN A4 -->
+      <div class="certificate-frame" id="printable-cert">
+        <div class="certificate-seal">⭐</div>
+        <div class="cert-school-title">HỌC LIỆU SỐ TOÁN 6 - BỘ SÁCH KẾT NỐI TRI THỨC</div>
+        <h2 class="cert-main-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.15rem; color: #475569;">Chứng nhận học sinh:</p>
+        <div class="cert-student-name" id="cert-student-name-display">Nhà Toán Học Nhí</div>
+        <p style="font-size: 1.15rem; color: #065f46; max-width: 650px; margin: 0 auto; line-height: 1.7;">
+          Đã hoàn thành xuất sắc toàn bộ nội dung lý thuyết, hoạt động tương tác và bài tập SGK của <br>
+          <strong>BÀI 3: THỨ TỰ TRONG TẬP HỢP CÁC SỐ TỰ NHIÊN</strong>
+        </p>
+
+        <div class="cert-stats-row">
+          <div class="cert-stat">🪙 Tổng điểm: <span id="cert-score-display">0</span></div>
+          <div class="cert-stat">⭐ Sao vàng: <span id="cert-stars-display">0</span></div>
+          <div class="cert-stat">🏅 Danh hiệu: <span id="cert-rank-display">Đại Kiện Tướng</span></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 35px; padding: 0 40px; color: #64748b; font-style: italic;">
+          <div>Ngày hoàn thành: <span id="cert-date-display">...</span></div>
+          <div>Giáo viên hướng dẫn: AI Antigravity</div>
+        </div>
+      </div>
+
+      <!-- HÀNH ĐỘNG -->
+      <div class="cert-actions">
+        <button class="btn-cert btn-print" onclick="window.print()">
+          🖨️ In / Lưu PDF Giấy Chứng Nhận
+        </button>
+        <button class="btn-cert btn-replay" onclick="restartLesson()">
+          🔄 Chinh Phục Lại Bài 3
+        </button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai2/index.html" class="btn-cert btn-prev-lesson">
+          ⬅️ Về Bài 2: Cách ghi số tự nhiên
+        </a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai4/index.html" class="btn-cert" style="background: linear-gradient(135deg, #f97316, #ea580c); color: white;">
+          Sang Bài 4: Phép Cộng & Trừ ➡
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CANVAS PHÁO HOA ĂN MỪNG -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>

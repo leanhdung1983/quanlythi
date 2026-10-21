@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 31: Định Nghĩa Và Ý Nghĩa Của Đạo Hàm - Toán 11 KNTT | Học Liệu Số Cao Cấp</title>
+  <!-- KaTeX Offline Cục Bộ -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <!-- File CSS Đồng Bộ Cyber Logic Chuẩn Bài 1 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Tiên Tri Vi Phân 11</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương IX: Đạo Hàm • Bài 31</span>
+      <h1>BÀI 31: ĐỊNH NGHĨA VÀ Ý NGHĨA CỦA ĐẠO HÀM</h1>
+      <p>Khám phá giới hạn của tốc độ biến thiên, xây dựng khái niệm đạo hàm bằng định nghĩa số gia, phương trình tiếp tuyến và mô hình vận tốc chuyển động tức thời.</p>
+    </section>
+
+    <!-- KHỐI 3: THANH NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Thẻ 1: Định nghĩa đạo hàm tại một điểm -->
+        <div class="concept-card">
+          <div class="card-icon">⚡</div>
+          <h3>1. Định Nghĩa Đạo Hàm Tại Một Điểm</h3>
+          <p>Cho hàm số $y = f(x)$ xác định trên khoảng $(a; b)$ và $x_0 \in (a; b)$. Giới hạn hữu hạn (nếu có):</p>
+          <div class="formula-box">$$f'(x_0) = \lim\limits_{x \to x_0} \frac{f(x) - f(x_0)}{x - x_0} = \lim\limits_{\Delta x \to 0} \frac{\Delta y}{\Delta x}$$</div>
+          <div class="rule-box gold">
+            <strong>Quy ước số gia:</strong><br>
+            • Số gia của đối số: $\Delta x = x - x_0 \implies x = x_0 + \Delta x$.<br>
+            • Số gia của hàm số: $\Delta y = f(x_0 + \Delta x) - f(x_0)$.
+          </div>
+        </div>
+
+        <!-- Thẻ 2: Ý nghĩa hình học & Phương trình tiếp tuyến -->
+        <div class="concept-card">
+          <div class="card-icon">📐</div>
+          <h3>2. Ý Nghĩa Hình Học: Tiếp Tuyến Của Đồ Thị</h3>
+          <p>Đạo hàm $f'(x_0)$ chính là <strong>hệ số góc $k$</strong> của tiếp tuyến với đồ thị $(C): y = f(x)$ tại tiếp điểm $M_0(x_0; f(x_0))$:</p>
+          <div class="formula-box">$$k = f'(x_0) = \tan\alpha$$</div>
+          <p><strong>Phương trình tiếp tuyến</strong> của đồ thị $(C)$ tại $M_0(x_0; y_0)$ là:</p>
+          <div class="formula-box">$$y - y_0 = f'(x_0)(x - x_0) \iff y = f'(x_0)(x - x_0) + y_0$$</div>
+        </div>
+
+        <!-- Thẻ 3: Ý nghĩa vật lí -->
+        <div class="concept-card">
+          <div class="card-icon">🚀</div>
+          <h3>3. Ý Nghĩa Vật Lí: Vận Tốc & Cường Độ Tức Thời</h3>
+          <p>Đạo hàm biểu diễn tốc độ thay đổi tức thời của các đại lượng vật lí:</p>
+          <div class="formula-box">$$\begin{cases} \text{Vận tốc tức thời của chuyển động: } v(t_0) = s'(t_0) = \lim\limits_{t \to t_0} \frac{s(t) - s(t_0)}{t - t_0} \\ \text{Cường độ dòng điện tức thời: } I(t_0) = Q'(t_0) = \lim\limits_{t \to t_0} \frac{Q(t) - Q(t_0)}{t - t_0} \end{cases}$$</div>
+          <div class="rule-box gold">
+            <strong>Ví dụ Landmark 81:</strong> Vật rơi tự do với phương trình $s(t) = \frac{1}{2}gt^2$. Vận tốc tức thời tại thời điểm $t_0$ là $v(t_0) = s'(t_0) = gt_0$.
+          </div>
+        </div>
+
+        <!-- Thẻ 4: Đạo hàm trên một khoảng -->
+        <div class="concept-card">
+          <div class="card-icon">📈</div>
+          <h3>4. Đạo Hàm Trên Một Khoảng</h3>
+          <p>Hàm số $y = f(x)$ được gọi là có đạo hàm trên $(a; b)$ nếu nó có đạo hàm tại mọi điểm $x \in (a; b)$. Khi đó:</p>
+          <div class="formula-box">$$f'(x) = \lim\limits_{\Delta x \to 0} \frac{f(x + \Delta x) - f(x)}{\Delta x}$$</div>
+          <div class="rule-box gold">
+            <strong>Đạo hàm cơ bản đầu tiên:</strong><br>
+            • $(c)' = 0$ ($c$ là hằng số)<br>
+            • $(x)' = 1$<br>
+            • $(x^2)' = 2x$<br>
+            • $(\sqrt{x})' = \frac{1}{2\sqrt{x}}$ (với mọi $x > 0$)
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1: Quá trình giới hạn Cát tuyến biến thành Tiếp tuyến -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🧪</div>
+          <h3>Lab 1: Mô Phỏng Cát Tuyến Tiến Dần Thành Tiếp Tuyến</h3>
+          <p>Cho đồ thị parabol $y = x^2$ với tiếp điểm $M_0(1; 1)$. Kéo trượt điểm $M(x; x^2)$ tiến dần về $M_0$ để quan sát cát tuyến xoay và hệ số góc tiến dần về đạo hàm $f'(1) = 2$.</p>
+          <div class="lab-controls">
+            <label>Tọa độ hoành độ $x$ của điểm $M$: <span id="valX">2.50</span></label>
+            <input type="range" id="sliderX" min="1.01" max="3.00" value="2.50" step="0.01">
+          </div>
+          <canvas id="canvasLab1" width="540" height="340" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab1" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Số gia $\Delta x = 1.50$ | Hệ số góc cát tuyến $k_{\text{cát}} = 3.50 \implies \lim\limits_{\Delta x \to 0} k_{\text{cát}} = 2.00$
+          </div>
+        </div>
+
+        <!-- Lab 2: Mô phỏng quả bóng rơi Landmark 81 -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🏢</div>
+          <h3>Lab 2: Quả Bóng Rơi Landmark 81 & Vận Tốc Tức Thời</h3>
+          <p>Thả quả bóng từ đỉnh Landmark 81 ($h = 461,3\text{ m}$, lấy $g = 9,8\text{ m/s}^2$). Phương trình $s(t) = 4,9t^2$. Kéo thanh trượt thời gian $t$!</p>
+          <div class="lab-controls">
+            <label>Thời gian rơi $t$: <span id="valT">4.0</span> giây</label>
+            <input type="range" id="sliderT" min="0.0" max="9.7" value="4.0" step="0.1">
+          </div>
+          <canvas id="canvasLab2" width="540" height="340" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab2" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Quãng đường rơi: $s(4) = 78,4\text{ m}$ | Vận tốc tức thời: $v(4) = s'(4) = 39,2\text{ m/s} = 141,1\text{ km/h}$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Bài 31 Định Nghĩa Đạo Hàm</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm bám sát SGK Kết Nối Tri Thức. Tương tác tức thì, kiểm tra chuẩn xác kiến thức đạo hàm và tiếp tuyến!</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-score-item">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-item">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div id="quizContainer">
+        <!-- Render 10 câu trắc nghiệm bằng JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="arena-header" style="margin-bottom: 24px;">
+        <div>
+          <h2>🏆 Bảng Vàng Vinh Danh & Huy Hiệu Đạo Hàm</h2>
+          <p>Tích lũy XP từ bài tập để mở khóa trọn bộ 5 huy hiệu và nhận Giấy Chứng Nhận Danh Dự A4.</p>
+        </div>
+      </div>
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="concept-card" id="badge-1" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌱</div>
+          <h4>Khởi Nguyên Vi Phân</h4>
+          <p>Mở khóa khi trả lời đúng câu hỏi đầu tiên (+20 XP).</p>
+        </div>
+        <div class="concept-card" id="badge-2" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">⚡</div>
+          <h4>Bậc Thầy Giới Hạn Tỉ Số</h4>
+          <p>Mở khóa khi đạt 60 XP trong Đấu Trường.</p>
+        </div>
+        <div class="concept-card" id="badge-3" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">📐</div>
+          <h4>Chuyên Gia Tiếp Tuyến</h4>
+          <p>Mở khóa khi đạt chuỗi liên tiếp 🔥 3 câu đúng.</p>
+        </div>
+        <div class="concept-card" id="badge-4" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🚀</div>
+          <h4>Nhà Tiên Tri Tức Thời</h4>
+          <p>Mở khóa khi đạt từ 160 XP trở lên.</p>
+        </div>
+        <div class="concept-card" id="badge-5" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">👑</div>
+          <h4>Đại Pháp Sư Giải Tích</h4>
+          <p>Mở khóa khi trả lời xuất sắc 10/10 câu hỏi.</p>
+        </div>
+      </div>
+
+      <!-- Khung Chứng Nhận A4 -->
+      <div class="cert-container" id="gradCert" style="margin-top: 36px;">
+        <div class="cert-header">
+          <div class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-badge-star">⭐⭐⭐⭐⭐</div>
+        </div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+        <p class="cert-desc">Vinh danh học sinh xuất sắc đã hoàn thành toàn diện nội dung:</p>
+        <div class="cert-lesson-title">BÀI 31: ĐỊNH NGHĨA VÀ Ý NGHĨA CỦA ĐẠO HÀM (TOÁN 11)</div>
+        <div class="cert-student-name" id="certStudentName">Chiến Binh Logic</div>
+        <p class="cert-text">Đã nắm vững định nghĩa đạo hàm qua giới hạn số gia, viết thành thạo phương trình tiếp tuyến của đồ thị hàm số và ứng dụng ý nghĩa vật lí trong Đấu Trường SGK.</p>
+        <div class="cert-footer">
+          <div class="cert-date" id="certDate">Đà Nẵng, ngày 21 tháng 10 năm 2026</div>
+          <div class="cert-sign">
+            <strong>GIÁO VIÊN BỘ MÔN TOÁN</strong>
+            <div style="font-style: italic; margin-top: 40px; color: #a5b4fc;">(Ký và ghi rõ họ tên)</div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_ontap_chuong8/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Ôn Tập Chương VIII</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_bai32/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 32: Quy Tắc Đạo Hàm</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (KHÔNG HIỆN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-card">
+        <h3>Chọn Avatar Đại Diện</h3>
+        <p>Chọn nhân vật học tập để đồng hành cùng bạn:</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+          <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Giải Tích">⚡ Tia Chớp Giải Tích</button>
+          <button class="avatar-opt" data-avatar="🚀" data-name="Nhà Du Hành Không Gian">🚀 Nhà Du Hành</button>
+          <button class="avatar-opt" data-avatar="🧠" data-name="Bộ Não Lượng Tử">🧠 Bộ Não Lượng Tử</button>
+          <button class="avatar-opt" data-avatar="📐" data-name="Kiến Trúc Sư Tiếp Tuyến">📐 Kiến Trúc Sư</button>
+          <button class="avatar-opt" data-avatar="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+          <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Radar">🎯 Thiện Xạ Radar</button>
+          <button class="avatar-opt" data-avatar="🌟" data-name="Ngôi Sao KNTT">🌟 Ngôi Sao KNTT</button>
+        </div>
+        <div style="text-align: right; margin-top: 16px;">
+          <button class="btn-icon" id="btnCloseModal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script src="app.js"></script>
+</body>
+</html>

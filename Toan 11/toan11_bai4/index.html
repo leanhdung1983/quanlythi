@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 4: Phương Trình Lượng Giác Cơ Bản - Toán 11 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Thợ Săn Nghiệm Lượng Giác</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương I: Hàm Số &amp; Phương Trình Lượng Giác • Bài 4 (SGK Kết Nối Tri Thức)</span>
+      <h1>Phương Trình Lượng Giác Cơ Bản</h1>
+      <p>
+        Chinh phục phương pháp giải 4 dạng phương trình cốt lõi: $\sin x = m$, $\cos x = m$, $\tan x = m$, $\cot x = m$. Khám phá bản chất hình học của các họ nghiệm trên đường tròn lượng giác, điều kiện có nghiệm $|m| \le 1$ và kỹ thuật đếm nghiệm trên đoạn!
+      </p>
+    </section>
+
+    <!-- KHỐI 3: SECTION NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: sin x = m -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">01</span>
+            <h3>Phương Trình $\sin x = m$</h3>
+          </div>
+          <p>
+            Tung độ của điểm biểu diễn trên đường tròn lượng giác:
+          </p>
+          <div class="formula-box">
+            $$\text{Điều kiện có nghiệm: } |m| \le 1 \quad (-1 \le m \le 1)$$
+            $$\text{Nếu } |m| > 1 \implies \text{Phương trình vô nghiệm!}$$
+          </div>
+          <p>Khi $|m| \le 1$, giả sử $\sin \alpha = m$, công thức nghiệm là:</p>
+          <div class="formula-box">
+            $$\left[\begin{array}{l} x = \alpha + k2\pi \\ x = \pi - \alpha + k2\pi \end{array}\right. \quad (k \in \mathbb{Z})$$
+          </div>
+          <p><strong>Các trường hợp đặc biệt:</strong></p>
+          <div class="formula-box">
+            $$\sin x = 0 \iff x = k\pi \quad (k \in \mathbb{Z})$$
+            $$\sin x = 1 \iff x = \frac{\pi}{2} + k2\pi \quad (k \in \mathbb{Z})$$
+            $$\sin x = -1 \iff x = -\frac{\pi}{2} + k2\pi \quad (k \in \mathbb{Z})$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Ký hiệu $\arcsin$:</strong> Nếu $m$ không thuộc bảng góc đặc biệt, ta viết $x = \arcsin m + k2\pi$ hoặc $x = \pi - \arcsin m + k2\pi$.
+          </div>
+        </div>
+
+        <!-- Card 2: cos x = m -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">02</span>
+            <h3>Phương Trình $\cos x = m$</h3>
+          </div>
+          <p>
+            Hoành độ của điểm biểu diễn trên đường tròn lượng giác:
+          </p>
+          <div class="formula-box">
+            $$\text{Điều kiện có nghiệm: } |m| \le 1 \quad (-1 \le m \le 1)$$
+            $$\text{Nếu } |m| > 1 \implies \text{Phương trình vô nghiệm!}$$
+          </div>
+          <p>Khi $|m| \le 1$, giả sử $\cos \alpha = m$, công thức nghiệm đối xứng qua trục hoành:</p>
+          <div class="formula-box">
+            $$x = \pm \alpha + k2\pi \quad (k \in \mathbb{Z})$$
+          </div>
+          <p><strong>Các trường hợp đặc biệt:</strong></p>
+          <div class="formula-box">
+            $$\cos x = 0 \iff x = \frac{\pi}{2} + k\pi \quad (k \in \mathbb{Z})$$
+            $$\cos x = 1 \iff x = k2\pi \quad (k \in \mathbb{Z})$$
+            $$\cos x = -1 \iff x = \pi + k2\pi \quad (k \in \mathbb{Z})$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Ký hiệu $\arccos$:</strong> Nếu $m$ không thuộc bảng góc đặc biệt, ta viết $x = \pm \arccos m + k2\pi$.
+          </div>
+        </div>
+
+        <!-- Card 3: tan x = m và cot x = m -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">03</span>
+            <h3>Phương Trình $\tan x = m$ &amp; $\cot x = m$</h3>
+          </div>
+          <p>
+            Vì tập giá trị của $\tan$ và $\cot$ là toàn bộ $\mathbb{R}$, nên hai phương trình này <strong>luôn có nghiệm với mọi số thực $m$</strong>:
+          </p>
+          <div class="formula-box">
+            $$\tan x = m \iff x = \alpha + k\pi \quad (\text{với } \tan \alpha = m, k \in \mathbb{Z})$$
+            $$\cot x = m \iff x = \alpha + k\pi \quad (\text{với } \cot \alpha = m, k \in \mathbb{Z})$$
+          </div>
+          <p><strong>Các trường hợp đặc biệt:</strong></p>
+          <div class="formula-box">
+            $$\tan x = 0 \iff x = k\pi, \quad \tan x = 1 \iff x = \frac{\pi}{4} + k\pi$$
+            $$\cot x = 0 \iff x = \frac{\pi}{2} + k\pi, \quad \cot x = 1 \iff x = \frac{\pi}{4} + k\pi$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Chú ý chu kì:</strong> Họ nghiệm của $\tan x = m$ và $\cot x = m$ cộng đuôi $+k\pi$, trong khi $\sin x = m$ và $\cos x = m$ cộng đuôi $+k2\pi$!
+          </div>
+        </div>
+
+        <!-- Card 4: Phương trình quy về cơ bản -->
+        <div class="concept-card">
+          <div class="card-header">
+            <span class="card-num">04</span>
+            <h3>Phương Pháp Giải Quy Về Cơ Bản</h3>
+          </div>
+          <p>
+            Chiến thuật chuyển hoá các bài toán phức tạp về phương trình cơ bản:
+          </p>
+          <div class="formula-box">
+            $$\sin f(x) = \sin g(x) \iff \left[\begin{array}{l} f(x) = g(x) + k2\pi \\ f(x) = \pi - g(x) + k2\pi \end{array}\right.$$
+            $$\cos f(x) = \cos g(x) \iff f(x) = \pm g(x) + k2\pi$$
+            $$\tan f(x) = \tan g(x) \iff f(x) = g(x) + k\pi \quad (\text{với điều kiện xác định})$$
+          </div>
+          <p><strong>Kỹ thuật đặt ẩn phụ:</strong></p>
+          <p>Phương trình bậc hai đối với một hàm số lượng giác: $a \sin^2 x + b \sin x + c = 0$. Đặt $t = \sin x$ với điều kiện $|t| \le 1$.</p>
+          <div class="rule-box gold">
+            <strong>Ứng dụng thực tế:</strong> Giải phương trình xác định thời điểm ca bin vòng đu quay đạt độ cao cho trước hoặc tính góc bắn của pháo binh để trúng mục tiêu!
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🎯</i> Lab 1: Radar Quét Nghiệm Trên Đường Tròn Đơn Vị</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.95rem;">
+          Trực quan hoá vị trí các điểm nghiệm khi đường thẳng $y = m$ (đối với $\sin$) hoặc $x = m$ (đối với $\cos$) cắt đường tròn lượng giác. Khám phá tại sao khi $|m| > 1$ thì phương trình lập tức vô nghiệm!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;">
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 12px; text-align: center;">
+            <canvas id="lab1Canvas" width="560" height="380" style="width: 100%; max-width: 560px; height: auto; border-radius: var(--radius-sm); background: #030712; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span style="color: #38bdf8;">📏 Đường cắt giá trị $m$</span>
+              <span style="color: #10b981;">🟢 Điểm nghiệm 1</span>
+              <span style="color: #f43f5e;">🔴 Điểm nghiệm 2</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="concept-box cyan" style="margin: 0;">
+              <h4>Chọn Phương Trình Lượng Giác</h4>
+              <div style="display: flex; gap: 6px; margin: 8px 0 12px;">
+                <button class="btn-icon active" id="btnEqSin" style="flex: 1;">$\sin x = m$</button>
+                <button class="btn-icon" id="btnEqCos" style="flex: 1;">$\cos x = m$</button>
+                <button class="btn-icon" id="btnEqTan" style="flex: 1;">$\tan x = m$</button>
+              </div>
+
+              <div style="margin: 8px 0;">
+                <label style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 2px;">
+                  <span>Giá trị tham số $m$:</span>
+                  <span id="lab1MVal" style="color: #38bdf8;">0.50</span>
+                </label>
+                <input type="range" id="sliderM" min="-1.5" max="1.5" value="0.5" step="0.05" style="width: 100%;">
+              </div>
+
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px;">
+                <button class="btn-icon" onclick="setPresetM(0.5)">$m = 0.5$ ($\frac{1}{2}$)</button>
+                <button class="btn-icon" onclick="setPresetM(0.707)">$m = \frac{\sqrt{2}}{2}$</button>
+                <button class="btn-icon" onclick="setPresetM(0.866)">$m = \frac{\sqrt{3}}{2}$</button>
+                <button class="btn-icon" onclick="setPresetM(1)">$m = 1$</button>
+                <button class="btn-icon" onclick="setPresetM(0)">$m = 0$</button>
+                <button class="btn-icon" onclick="setPresetM(1.3)">$m = 1.3$ (Vô nghiệm)</button>
+              </div>
+            </div>
+
+            <div class="concept-box gold" style="margin: 0;">
+              <h4>Trạng Thái &amp; Họ Nghiệm</h4>
+              <p>• <strong>Trạng thái:</strong> <span id="lab1StatusText" style="color: #10b981; font-weight: 700;">Có 2 điểm nghiệm trên đường tròn</span></p>
+              <div id="lab1RootsBox" style="font-size: 0.95rem; line-height: 1.6; margin-top: 6px;">
+                <p>• $x_1 = 30.0^\circ + k360^\circ$ ($\frac{\pi}{6} + k2\pi$)</p>
+                <p>• $x_2 = 150.0^\circ + k360^\circ$ ($\frac{5\pi}{6} + k2\pi$)</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2 -->
+      <div class="card">
+        <h3 class="card-title"><i>🔍</i> Lab 2: Máy Đếm Nghiệm Trên Đoạn $[a; b]$ &amp; Giao Điểm Đồ Thị</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.95rem;">
+          Mô hình hóa bài toán tìm số nghiệm của phương trình lượng giác trên một đoạn $[a; b]$ cụ thể. Kéo chỉnh khoảng xét để thấy chính xác các giao điểm giữa đồ thị sóng và đường thẳng $y = m$!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;">
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 12px; text-align: center;">
+            <canvas id="lab2Canvas" width="560" height="340" style="width: 100%; max-width: 560px; height: auto; border-radius: var(--radius-sm); background: #030712; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span style="color: #38bdf8;">🌊 Đồ thị lượng giác</span>
+              <span style="color: #f59e0b;">📏 Đường thẳng $y = m$</span>
+              <span style="color: #10b981;">✨ Nghiệm trong đoạn</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="concept-box emerald" style="margin: 0;">
+              <h4>Thiết Lập Đoạn Xét $[a; b]$</h4>
+              <div style="margin: 8px 0;">
+                <label style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 2px;">
+                  <span>Đầu mút trái $a$:</span>
+                  <span id="lab2StartVal" style="color: #38bdf8;">$0\pi$</span>
+                </label>
+                <input type="range" id="sliderIntervalA" min="-2" max="1" value="0" step="0.5" style="width: 100%;">
+              </div>
+
+              <div style="margin: 8px 0;">
+                <label style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 2px;">
+                  <span>Đầu mút phải $b$:</span>
+                  <span id="lab2EndVal" style="color: #f43f5e;">$2\pi$</span>
+                </label>
+                <input type="range" id="sliderIntervalB" min="1" max="4" value="2" step="0.5" style="width: 100%;">
+              </div>
+
+              <div style="display: flex; gap: 6px; flex-wrap: wrap; margin-top: 6px;">
+                <button class="btn-icon" onclick="setIntervalPreset(0, 2)">$[0; 2\pi]$</button>
+                <button class="btn-icon" onclick="setIntervalPreset(-1, 1)">$[-\pi; \pi]$</button>
+                <button class="btn-icon" onclick="setIntervalPreset(0, 3)">$[0; 3\pi]$</button>
+                <button class="btn-icon" onclick="setIntervalPreset(-2, 2)">$[-2\pi; 2\pi]$</button>
+              </div>
+            </div>
+
+            <div class="concept-box gold" style="margin: 0;">
+              <h4>Kết Quả Đếm Nghiệm Thực Tế</h4>
+              <p>• <strong>Tổng số nghiệm trên đoạn:</strong> <span id="lab2CountText" style="color: #10b981; font-weight: 700; font-size: 1.15rem;">2 nghiệm</span></p>
+              <div id="lab2RootsList" style="font-size: 0.88rem; max-height: 90px; overflow-y: auto; color: #fff; margin-top: 6px; line-height: 1.5;">
+                <!-- Danh sách nghiệm -->
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Tri Thức: Phương Trình Lượng Giác Cơ Bản</h2>
+          <p style="color: var(--text-secondary); margin-top: 4px;">
+            10 câu hỏi thử thách thực chiến bám sát SGK Kết Nối Tri Thức. Bấm trực tiếp vào đáp án để nhận phản hồi và cộng điểm XP tức thì!
+          </p>
+        </div>
+        <div class="arena-score-box">
+          <div style="font-size: 0.85rem; color: var(--text-muted); margin-bottom: 2px;">Tiến Độ Thử Thách</div>
+          <div id="arenaProgress" style="font-weight: 700; font-size: 1.1rem; color: #fff;">0 / 10</div>
+          <div id="arenaScore" style="color: #10b981; font-weight: 700; font-size: 0.95rem; margin-top: 2px;">Điểm Arena: 0 XP</div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Render tự động bởi app.js -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🏆</i> Bảng Vàng Thành Tích Chiến Binh</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 20px;">
+          Chinh phục các mốc thử thách trong bài học để kích hoạt trọn bộ 5 huy hiệu danh giá!
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); gap: 16px;">
+          <div class="concept-box cyan" id="badge-1" style="text-align: center; opacity: 0.45; transition: all 0.3s;">
+            <div style="font-size: 2.8rem; margin-bottom: 8px;">🎯</div>
+            <h4 style="margin: 0; color: #fff;">Thợ Săn Radar</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Quét nghiệm lượng giác tại Lab 1</p>
+          </div>
+
+          <div class="concept-box emerald" id="badge-2" style="text-align: center; opacity: 0.45; transition: all 0.3s;">
+            <div style="font-size: 2.8rem; margin-bottom: 8px;">🔢</div>
+            <h4 style="margin: 0; color: #fff;">Chuyên Gia Đếm Nghiệm</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Khảo sát số giao điểm tại Lab 2</p>
+          </div>
+
+          <div class="concept-box gold" id="badge-3" style="text-align: center; opacity: 0.45; transition: all 0.3s;">
+            <div style="font-size: 2.8rem; margin-bottom: 8px;">🔥</div>
+            <h4 style="margin: 0; color: #fff;">Chiến Binh Chuỗi</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Trả lời đúng liên tiếp 3 câu hỏi</p>
+          </div>
+
+          <div class="concept-box cyan" id="badge-4" style="text-align: center; opacity: 0.45; transition: all 0.3s;">
+            <div style="font-size: 2.8rem; margin-bottom: 8px;">⚡</div>
+            <h4 style="margin: 0; color: #fff;">Cao Thủ Đại Số</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Đạt từ 160 XP trở lên tại Đấu Trường</p>
+          </div>
+
+          <div class="concept-box gold" id="badge-5" style="text-align: center; opacity: 0.45; transition: all 0.3s;">
+            <div style="font-size: 2.8rem; margin-bottom: 8px;">👑</div>
+            <h4 style="margin: 0; color: #fff;">Huyền Thoại Giải Phương Trình</h4>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 4px;">Chiến thắng tuyệt đối 10/10 câu hỏi</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Khung Chứng Nhận A4 -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-border">
+          <div class="cert-header-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-sub">HỆ THỐNG HỌC LIỆU SỐ TOÁN HỌC TRỰC QUAN THPT</div>
+          
+          <div class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</div>
+          
+          <div class="cert-body">
+            Chứng nhận em:
+            <div class="cert-name" id="certStudentName">Chiến Binh Logic</div>
+            Đã hoàn thành xuất sắc toàn diện chuyên đề kiến thức &amp; thực nghiệm tương tác:<br>
+            <strong style="color: #6366f1; font-size: 1.2rem;">BÀI 4: PHƯƠNG TRÌNH LƯỢNG GIÁC CƠ BẢN (TOÁN 11 KNTT)</strong><br>
+            Thành thạo công thức nghiệm, phân tích giao điểm đường tròn và ứng dụng trong thực tế.
+          </div>
+
+          <div class="cert-footer">
+            <div class="cert-stamp">
+              <div class="stamp-circle">ĐÃ CHỨNG NHẬN<br>TOÁN 11 KNTT</div>
+            </div>
+            <div class="cert-sign">
+              <em>Đà Nẵng, ngày 20 tháng 10 năm 2026</em><br>
+              <strong>HIỆU TRƯỞNG / TỔ TRƯỞNG CHUYÊN MÔN</strong><br>
+              <span style="font-family: 'Brush Script MT', cursive; font-size: 1.5rem; color: #4338ca;">Nguyễn Văn An</span>
+            </div>
+          </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 20px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai3/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 3: Hàm Số Lượng Giác</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_ontap_chuong1/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương I</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (TUYỆT ĐỐI KHÔNG BẬT KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-card">
+        <h3 style="margin-top: 0; color: #fff; font-size: 1.3rem;">Chọn Nhân Vật &amp; Danh Hiệu Của Bạn</h3>
+        <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 20px;">
+          Chọn biểu tượng đại diện phù hợp phong cách chinh phục lượng giác của bạn:
+        </p>
+
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 20px;">
+          <button class="avatar-choice" data-avatar="👑" data-title="Thợ Săn Nghiệm">👑</button>
+          <button class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Lượng Giác">🧙‍♂️</button>
+          <button class="avatar-choice" data-avatar="🎯" data-title="Thiện Xạ Radar">🎯</button>
+          <button class="avatar-choice" data-avatar="⚡" data-title="Tia Chớp Toạ Độ">⚡</button>
+          <button class="avatar-choice" data-avatar="🚀" data-title="Nhà Du Hành Vũ Trụ">🚀</button>
+          <button class="avatar-choice" data-avatar="💎" data-title="Kim Cương Bất Biến">💎</button>
+          <button class="avatar-choice" data-avatar="🦁" data-title="Chúa Sơn Lâm Đấu Trường">🦁</button>
+          <button class="avatar-choice" data-avatar="🌟" data-title="Ngôi Sao Tri Thức">🌟</button>
+        </div>
+
+        <button class="btn-secondary" id="btnCloseModal" style="width: 100%;">Đóng Cửa Sổ</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 41: Biểu đồ cột kép - Toán 6 Tập 2 Kết Nối Tri Thức</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">🦊</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Toán Học 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Phân Tích Dữ Liệu Kép</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Xếp hạng Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương IX: Dữ liệu và xác suất thực nghiệm</span>
+      <h1>BÀI 41: BIỂU ĐỒ CỘT KÉP</h1>
+      <p>Khám phá nghệ thuật biểu diễn và so sánh trực quan hai đối tượng số liệu song hành qua các lăng kính đa chiều từ thể thao, thời tiết, học tập đến đời sống xã hội!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức & Quy Tắc Vàng</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Cột Kép (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Hỏi 9.18-9.24)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Giấy Chứng Nhận</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <div class="card">
+          <h3 class="card-title"><i>📊</i> Biểu Đồ Cột Kép Là Gì?</h3>
+          <div class="concept-box">
+            <h4>Định nghĩa cốt lõi (SGK Trang 82)</h4>
+            <p>Để dễ dàng so sánh hai tập dữ liệu cùng loại của các đối tượng (ví dụ: học lực lớp 6A và lớp 6B, bàn thắng của Messi và Ronaldo, nhiệt độ cao nhất và thấp nhất...), người ta ghép hai biểu đồ cột đơn lại vào một biểu đồ mới, gọi là <strong>biểu đồ cột kép</strong>.</p>
+          </div>
+          <div class="concept-box blue">
+            <h4>Cấu trúc tiêu chuẩn</h4>
+            <ul style="padding-left: 20px; font-size: 0.92rem; color: #cbd5e1;">
+              <li><strong>Trục ngang (hoành):</strong> Liệt kê các đối tượng cần nghiên cứu.</li>
+              <li><strong>Trục đứng (tung):</strong> Ghi các vạch chia số lượng, giá trị theo thang đo tỉ lệ xuất phát từ 0.</li>
+              <li><strong>Cặp cột chữ nhật kề nhau:</strong> Mỗi đối tượng có đúng 2 cột đặt sát nhau, cùng độ rộng.</li>
+              <li><strong>Màu sắc & Chú giải (Legend):</strong> Phân biệt rõ ràng 2 nhóm dữ liệu bằng 2 gam màu tương phản.</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>🛠️</i> 3 Bước Vẽ Biểu Đồ Cột Kép Hoàn Chỉnh</h3>
+          <ol class="step-list">
+            <li>
+              <strong>Vẽ hệ trục tọa độ:</strong> Trục nằm ngang biểu diễn các đối tượng thống kê, trục thẳng đứng biểu diễn số lượng với các vạch chia đều bắt đầu từ mốc 0.
+            </li>
+            <li>
+              <strong>Dựng các cặp hình chữ nhật:</strong> Tại mỗi đối tượng, dựng 2 hình chữ nhật đứng sát cạnh nhau có chiều rộng bằng nhau, chiều cao tương ứng với số liệu của từng nhóm.
+            </li>
+            <li>
+              <strong>Tô màu & Ghi chú thích (Chú giải):</strong> Chọn 2 màu khác nhau để phân biệt 2 nhóm dữ liệu. Đặt tên biểu đồ và điền số liệu cụ thể trên đỉnh mỗi cột (nếu cần).
+            </li>
+          </ol>
+          <div class="concept-box green" style="margin-top: 10px;">
+            <h4>Lưu ý thực tế: Dạng thanh ngang kép</h4>
+            <p>Người ta cũng có thể vẽ biểu đồ dạng thanh ngang kép: Trục đứng biểu diễn đối tượng, trục ngang biểu diễn số lượng (như Hình 9.17 SGK trang 83).</p>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1;">
+          <h3 class="card-title"><i>🧠</i> Chiến Thuật Đọc & Phân Tích Dữ Liệu Cột Kép Siêu Tốc</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+            <div class="concept-box">
+              <h4>1. So sánh nội bộ từng đối tượng</h4>
+              <p>Quan sát xem ở từng đối tượng, cột nào cao hơn (nhóm nào áp đảo hơn), chênh lệch giữa hai cột là bao nhiêu đơn vị.</p>
+            </div>
+            <div class="concept-box blue">
+              <h4>2. So sánh liên nhóm giữa các đối tượng</h4>
+              <p>Tìm đối tượng có cột đạt giá trị cao nhất (cực đại), thấp nhất (cực tiểu), hoặc đối tượng có hai cột bằng nhau.</p>
+            </div>
+            <div class="concept-box green">
+              <h4>3. Nhận diện xu thế & mùa vụ</h4>
+              <p>Quan sát xu hướng tăng/giảm theo thời gian (ví dụ: lượng mưa theo tháng, doanh số bán quạt theo mùa hè - đông).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🎨</i> Lab 1: Studio Thiết Kế Biểu Đồ Cột Kép & Đổi Dạng Linh Hoạt</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+          Chọn các bộ dữ liệu kinh điển trong SGK (hoặc tự chỉnh sửa bảng số liệu) để xem biểu đồ tự động sinh mã, so sánh tức thì và đổi giữa dạng <strong>Cột đứng (Vertical)</strong> và <strong>Thanh ngang kép (Horizontal)</strong>!
+        </p>
+
+        <div class="lab-toolbar">
+          <div class="preset-buttons">
+            <span style="font-size: 0.85rem; color: var(--text-muted); align-self: center;">Mẫu SGK:</span>
+            <button class="btn-preset active" data-preset="hocLuc">📚 Lớp 6A & 6B (H.9.14)</button>
+            <button class="btn-preset" data-preset="messiRonaldo">⚽ Messi vs Ronaldo (H.9.19)</button>
+            <button class="btn-preset" data-preset="chieuCao">📏 Chiều Cao Châu Á (H.9.21)</button>
+            <button class="btn-preset" data-preset="banQuat">🌀 Bán Quạt 2018 (H.9.23)</button>
+            <button class="btn-preset" data-preset="theThao">🏸 Thể Thao Nam-Nữ (H.9.24)</button>
+          </div>
+
+          <div class="chart-controls">
+            <button class="btn-icon" id="toggleOrientationBtn">🔄 Đổi dạng: Cột Đứng</button>
+            <button class="btn-icon" id="toggleValuesBtn">🔢 Hiện số đỉnh cột: BẬT</button>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="chartCanvas" width="900" height="420"></canvas>
+          <div class="chart-tooltip" id="chartTooltip"></div>
+        </div>
+
+        <div class="chart-legend">
+          <div class="legend-item">
+            <span class="legend-color c1"></span>
+            <span id="legendLabel1">Lớp 6A</span>
+          </div>
+          <div class="legend-item">
+            <span class="legend-color c2"></span>
+            <span id="legendLabel2">Lớp 6B</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 18px;">
+          <h4 style="font-size: 1rem; color: #fff; margin-bottom: 8px;">✏️ Chỉnh Sửa Trực Tiếp Bảng Thống Kê</h4>
+          <div style="overflow-x: auto;">
+            <table class="data-table-editor" id="editableTable">
+              <!-- Dynamically populated via app.js -->
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2 -->
+      <div class="card">
+        <h3 class="card-title"><i>🕵️‍♂️</i> Lab 2: Máy Thám Tử Phân Tích & Đối Soát Xu Hướng Đa Chiều</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 14px;">
+          Chế độ thám tử tự động rà quét toàn bộ dữ liệu của biểu đồ hiện tại, xuất báo cáo đối chiếu cực đại, cực tiểu, tổng số và tỷ lệ chênh lệch chính xác 100%!
+        </p>
+
+        <div class="detective-panel">
+          <div class="detective-metric">
+            <div class="metric-icon">🏆</div>
+            <div class="metric-body">
+              <h5>Đối tượng chênh lệch lớn nhất</h5>
+              <p id="detMaxDiff">-</p>
+            </div>
+          </div>
+          <div class="detective-metric">
+            <div class="metric-icon">⚖️</div>
+            <div class="metric-body">
+              <h5>Đối tượng cân bằng nhất (Chênh ít nhất)</h5>
+              <p id="detMinDiff">-</p>
+            </div>
+          </div>
+          <div class="detective-metric">
+            <div class="metric-icon">🥇</div>
+            <div class="metric-body">
+              <h5>Tổng nhóm 1 vs Tổng nhóm 2</h5>
+              <p id="detTotalRatio">-</p>
+            </div>
+          </div>
+          <div class="detective-metric">
+            <div class="metric-icon">📈</div>
+            <div class="metric-body">
+              <h5>Kết luận & Khuyến nghị đối chiếu</h5>
+              <p id="detSummary" style="font-size: 0.95rem; font-weight: 500; color: #e2e8f0;">-</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div class="quiz-progress">
+          <span style="font-weight: 700; color: #fff;">Tiến độ đấu trường:</span>
+          <span id="arenaProgressText" style="color: var(--accent-col2); font-weight: 800;">0/10</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="arenaProgressBar"></div>
+          </div>
+        </div>
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.9rem;">Điểm đấu trường: </span>
+          <strong id="arenaScore" style="color: var(--accent-gold); font-size: 1.15rem;">0</strong>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- 10 Questions injected by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 16px;">🏆 5 Huy Hiệu Danh Dự Cột Kép</h3>
+      <div class="badges-grid" id="badgesGrid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">🔍</div>
+          <div class="badge-name">Nhận Diện Kép</div>
+          <div class="badge-desc">Đọc chuẩn cấu trúc trục và chú giải của biểu đồ cột kép.</div>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">🎨</div>
+          <div class="badge-name">Họa Sĩ Thống Kê</div>
+          <div class="badge-desc">Thử nghiệm thành công đổi dạng cột đứng và thanh ngang trong Lab 1.</div>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">⚽</div>
+          <div class="badge-name">Trọng Tài Thể Thao</div>
+          <div class="badge-desc">Giải mã chính xác số bàn thắng Messi - Ronaldo và thể thao nam nữ.</div>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">🌀</div>
+          <div class="badge-name">Bậc Thầy Dự Báo</div>
+          <div class="badge-desc">Phân tích sâu sắc bài toán bán quạt mùa hè và lượng mưa Tuyên Quang - Nha Trang.</div>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Cột Kép</div>
+          <div class="badge-desc">Đạt trọn vẹn 5 sao và hoàn thành 10/10 câu hỏi Đấu trường SGK!</div>
+        </div>
+      </div>
+
+      <div class="cert-section">
+        <button class="btn-icon" id="unlockCertBtn" style="font-size: 1.05rem; padding: 12px 24px; background: linear-gradient(135deg, #f59e0b, #06b6d4); color: #0b0f19; font-weight: 800;">
+          📜 Mở Khóa & In Giấy Chứng Nhận
+        </button>
+
+        <div class="certificate-paper" id="certificatePaper">
+          <div class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</div>
+          <div class="cert-sub">CHUYÊN GIA BIỂU ĐỒ CỘT KÉP TOÁN 6 - KẾT NỐI TRI THỨC</div>
+          
+          <p style="color: #64748b; font-size: 0.9rem;">Trao tặng danh hiệu cao quý cho:</p>
+          <div class="cert-recipient" id="certName">Chiến Binh Toán Học</div>
+
+          <p class="cert-text">
+            Đã xuất sắc hoàn thành xuất sắc toàn bộ nội dung lý thuyết, vượt qua 2 phòng thí nghiệm tương tác trực quan và chiến thắng trọn vẹn 10/10 thử thách bài tập trong <strong>Bài 41: Biểu đồ cột kép</strong> (Trang 82 - 86, SGK Toán 6 Tập Hai).
+          </p>
+
+          <div class="cert-footer">
+            <div class="cert-seal">🏅</div>
+            <div class="cert-sign">
+              <strong>HỘI ĐỒNG TOÁN HỌC SGK KNTT</strong><br>
+              <em>Chứng thực xuất sắc</em><br>
+              <span id="certDate">Ngày cấp: 2026</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button class="btn-icon" onclick="window.print()" style="background: #0284c7; color: #fff;">🖨️ In Chứng Chỉ A4</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../bai_hoc_tuong_tac_toan_6_bai40/index.html" class="nav-btn prev">
+        ⬅️ Bài 40: Biểu Đồ Cột
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">
+        Toán 6 Tập 2 • Bài 41 (Trang 82–86)
+      </span>
+      <a href="../bai_hoc_tuong_tac_toan_6_bai42/index.html" class="nav-btn next">
+        Bài 42: Kết Quả Có Thể Và Sự Kiện ➡️
+      </a>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

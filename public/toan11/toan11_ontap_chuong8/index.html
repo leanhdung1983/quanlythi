@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài Tập Cuối Chương VIII: Các Quy Tắc Tính Xác Suất - Toán 11 KNTT | Học Liệu Số Cao Cấp</title>
+  <!-- KaTeX Offline Cục Bộ -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <!-- File CSS Đồng Bộ Cyber Logic Chuẩn Bài 1 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Xác Suất 11</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương VIII: Các Quy Tắc Tính Xác Suất • Ôn Tập Chương</span>
+      <h1>BÀI TẬP CUỐI CHƯƠNG VIII: CÁC QUY TẮC TÍNH XÁC SUẤT</h1>
+      <p>Tổng kết và hệ thống hóa toàn bộ tri thức biến cố hợp, biến cố giao, quy tắc cộng, quy tắc nhân cho biến cố độc lập và sơ đồ hình cây trong các bài toán thực tiễn.</p>
+    </section>
+
+    <!-- KHỐI 3: THANH NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Thẻ 1: Khái niệm & Kí hiệu biến cố -->
+        <div class="concept-card">
+          <div class="card-icon">📚</div>
+          <h3>1. Hệ Thống Khái Niệm Biến Cố</h3>
+          <p>Bảng tóm tắt các phép toán biến cố trên không gian mẫu $\Omega$:</p>
+          <div class="formula-box">$$\begin{cases} A \cup B: \text{"}A \text{ hoặc } B \text{ xảy ra"} \\ AB = A \cap B: \text{"Cả } A \text{ và } B \text{ cùng xảy ra"} \\ \overline{A} = \Omega \setminus A: \text{"}A \text{ không xảy ra"} \end{cases}$$</div>
+          <div class="rule-box gold">
+            <strong>Hai trạng thái đặc biệt:</strong><br>
+            • Xung khắc: $A \cap B = \emptyset$ (không thể cùng xảy ra).<br>
+            • Độc lập: Việc xảy ra của $A$ không ảnh hưởng tới xác suất của $B$.
+          </div>
+        </div>
+
+        <!-- Thẻ 2: Hai quy tắc vàng xác suất -->
+        <div class="concept-card">
+          <div class="card-icon">⚡</div>
+          <h3>2. Hai Quy Tắc Vàng: Cộng & Nhân</h3>
+          <p>Phân biệt chính xác điều kiện áp dụng của quy tắc cộng và quy tắc nhân:</p>
+          <div class="formula-box">$$\begin{cases} \text{Quy tắc cộng tổng quát: } P(A \cup B) = P(A) + P(B) - P(AB) \\ \text{Khi } A, B \text{ xung khắc: } P(A \cup B) = P(A) + P(B) \\ \text{Khi } A, B \text{ độc lập: } P(AB) = P(A) \cdot P(B) \end{cases}$$</div>
+          <div class="rule-box gold">
+            <strong>Ghi nhớ:</strong> "HOẶC" liên quan đến Phép Hợp $\cup$ (cộng), "VÀ" liên quan đến Phép Giao $\cap$ (nhân khi độc lập).
+          </div>
+        </div>
+
+        <!-- Thẻ 3: Biến cố đối & Có ít nhất một -->
+        <div class="concept-card">
+          <div class="card-icon">🎯</div>
+          <h3>3. Phương Pháp Biến Cố Đối</h3>
+          <p>Khi tính xác suất biến cố phức tạp, đặc biệt là dạng <em>"Có ít nhất một biến cố xảy ra"</em>:</p>
+          <div class="formula-box">$$P(A \cup B) = 1 - P(\overline{A}\,\overline{B}) = 1 - P(\overline{A})P(\overline{B}) \quad (\text{khi } A, B \text{ độc lập})$$</div>
+          <div class="rule-box gold">
+            <strong>Công thức De Morgan:</strong> $\overline{A \cup B} = \overline{A} \cap \overline{B}$ và $\overline{A \cap B} = \overline{A} \cup \overline{B}$.
+          </div>
+        </div>
+
+        <!-- Thẻ 4: Bài toán chuyến bay hàng không -->
+        <div class="concept-card">
+          <div class="card-icon">✈️</div>
+          <h3>4. Bài Toán Chuyến Bay Đúng Giờ (SGK 8.25)</h3>
+          <p>Chuyến bay hãng X đúng giờ ($P(X) = 0,92$), hãng Y đúng giờ ($P(Y) = 0,98$) độc lập nhau:</p>
+          <div class="formula-box">$$\begin{cases} P(\text{cả 2 đúng giờ}) = 0,92 \cdot 0,98 = 0,9016 \\ P(\text{đúng 1 chuyến}) = 0,92 \cdot 0,02 + 0,08 \cdot 0,98 = 0,0968 \\ P(\text{ít nhất 1 chuyến}) = 1 - 0,08 \cdot 0,02 = 0,9984 \end{cases}$$</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1: Máy tính xác suất vạn năng Chương VIII -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🧪</div>
+          <h3>Lab 1: Máy Tính Xác Suất Vạn Năng Chương VIII</h3>
+          <p>Nhập các thông số $P(A)$, $P(B)$, chọn chế độ Độc Lập hoặc Xung Khắc để hệ thống tự động suy diễn toàn bộ xác suất liên quan!</p>
+          <div class="lab-controls">
+            <label>Xác suất $P(A)$: <span id="valPA">0.60</span></label>
+            <input type="range" id="sliderPA" min="0.10" max="0.90" value="0.60" step="0.05">
+            <label>Xác suất $P(B)$: <span id="valPB">0.70</span></label>
+            <input type="range" id="sliderPB" min="0.10" max="0.90" value="0.70" step="0.05">
+            <div style="display: flex; gap: 12px; margin-top: 6px;">
+              <button class="btn-icon" id="btnModeIndep" style="flex: 1; border-color: #818cf8;">🎲 Giả thiết Độc Lập</button>
+              <button class="btn-icon" id="btnModeMutEx" style="flex: 1;">⚡ Giả thiết Xung Khắc</button>
+            </div>
+          </div>
+          <canvas id="canvasLab1" width="540" height="320" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab1" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            $P(AB) = 0.42$ | $P(A \cup B) = 0.88$ | $P(\overline{A}\,\overline{B}) = 0.12$
+          </div>
+        </div>
+
+        <!-- Lab 2: Mô phỏng chuyến bay hàng không SGK 8.25 -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">✈️</div>
+          <h3>Lab 2: Mô Phỏng Sơ Đồ Cây Hai Chuyến Bay (SGK 8.25)</h3>
+          <p>Mô phỏng 1000 ngày cất cánh của hai hãng X ($92\%$) và Y ($98\%$) để kiểm nghiệm độ chính xác của sơ đồ cây.</p>
+          <div class="lab-controls">
+            <label>Số ngày bay thử nghiệm: <span id="valFlightDays">1000</span> ngày</label>
+            <input type="range" id="sliderFlightDays" min="100" max="3000" value="1000" step="100">
+            <button class="btn-primary" id="btnRunFlights" style="margin-top: 8px; width: 100%; justify-content: center;">🛫 Khởi Hành Mô Phỏng 1000 Chuyến</button>
+          </div>
+          <canvas id="canvasLab2" width="540" height="320" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab2" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Cả 2 cùng đúng giờ: $\approx 90,2\%$ | Ít nhất 1 chuyến đúng giờ: $\approx 99,8\%$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Ôn Tập Chương VIII</h2>
+          <p>Bộ 10 câu hỏi tổng hợp bám sát trắc nghiệm và bài tập tự luận cuối chương VIII (8.16 đến 8.25 SGK).</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-score-item">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-item">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div id="quizContainer">
+        <!-- Render 10 câu trắc nghiệm bằng JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="arena-header" style="margin-bottom: 24px;">
+        <div>
+          <h2>🏆 Bảng Vàng Vinh Danh Toàn Diện Chương VIII</h2>
+          <p>Tích lũy XP từ bài tập để mở khóa trọn bộ 5 huy hiệu và nhận Giấy Chứng Nhận Danh Dự A4.</p>
+        </div>
+      </div>
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="concept-card" id="badge-1" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌱</div>
+          <h4>Khởi Sắc Xác Suất</h4>
+          <p>Mở khóa khi trả lời đúng câu hỏi đầu tiên (+20 XP).</p>
+        </div>
+        <div class="concept-card" id="badge-2" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">📐</div>
+          <h4>Chiến Binh Sơ Đồ Venn</h4>
+          <p>Mở khóa khi đạt 60 XP trong Đấu Trường.</p>
+        </div>
+        <div class="concept-card" id="badge-3" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">⚡</div>
+          <h4>Chuyên Gia Quy Tắc Vàng</h4>
+          <p>Mở khóa khi đạt chuỗi liên tiếp 🔥 3 câu đúng.</p>
+        </div>
+        <div class="concept-card" id="badge-4" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌟</div>
+          <h4>Kiến Trúc Sư Sơ Đồ Cây</h4>
+          <p>Mở khóa khi đạt từ 160 XP trở lên.</p>
+        </div>
+        <div class="concept-card" id="badge-5" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">👑</div>
+          <h4>Đại Kiện Tướng Xác Suất</h4>
+          <p>Mở khóa khi trả lời xuất sắc 10/10 câu hỏi.</p>
+        </div>
+      </div>
+
+      <!-- Khung Chứng Nhận A4 -->
+      <div class="cert-container" id="gradCert" style="margin-top: 36px;">
+        <div class="cert-header">
+          <div class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-badge-star">⭐⭐⭐⭐⭐</div>
+        </div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+        <p class="cert-desc">Vinh danh học sinh xuất sắc đã hoàn thành toàn diện nội dung:</p>
+        <div class="cert-lesson-title">BÀI TẬP CUỐI CHƯƠNG VIII: CÁC QUY TẮC TÍNH XÁC SUẤT (TOÁN 11)</div>
+        <div class="cert-student-name" id="certStudentName">Chiến Binh Logic</div>
+        <p class="cert-text">Đã xuất sắc hoàn thành trọn bộ bài tập chương VIII, làm chủ quy tắc cộng, quy tắc nhân, sơ đồ cây và đạt điểm số tối đa trong Đấu Trường SGK.</p>
+        <div class="cert-footer">
+          <div class="cert-date" id="certDate">Đà Nẵng, ngày 21 tháng 10 năm 2026</div>
+          <div class="cert-sign">
+            <strong>GIÁO VIÊN BỘ MÔN TOÁN</strong>
+            <div style="font-style: italic; margin-top: 40px; color: #a5b4fc;">(Ký và ghi rõ họ tên)</div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai30/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 30: Nhân Xác Suất</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_bai31/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 31: Ý Nghĩa Đạo Hàm</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (KHÔNG HIỆN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-card">
+        <h3>Chọn Avatar Đại Diện</h3>
+        <p>Chọn nhân vật học tập để đồng hành cùng bạn:</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+          <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Đại Pháp Sư Xác Suất">🧙‍♂️ Đại Pháp Sư Xác Suất</button>
+          <button class="avatar-opt" data-avatar="🧠" data-name="Bộ Não Lượng Tử">🧠 Bộ Não Lượng Tử</button>
+          <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Thống Kê">⚡ Tia Chớp Thống Kê</button>
+          <button class="avatar-opt" data-avatar="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+          <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Radar">🎯 Thiện Xạ Radar</button>
+          <button class="avatar-opt" data-avatar="✈️" data-name="Cơ Trưởng Xác Suất">✈️ Cơ Trưởng Xác Suất</button>
+          <button class="avatar-opt" data-avatar="🌟" data-name="Thủ Khoa KNTT">🌟 Thủ Khoa KNTT</button>
+        </div>
+        <div style="text-align: right; margin-top: 16px;">
+          <button class="btn-icon" id="btnCloseModal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script src="app.js"></script>
+</body>
+</html>

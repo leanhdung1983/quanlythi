@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 9: Dấu Hiệu Chia Hết - Toán 6 Kết Nối Tri Thức</title>
+  <meta name="description" content="Website học liệu số tương tác và mini game học tập Bài 9: Dấu hiệu chia hết cho 2, cho 5, cho 9, cho 3 - Toán 6 Tập 1 Kết Nối Tri Thức Với Cuộc Sống.">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU GAME (START SCREEN) -->
+  <div id="start-modal" class="modal-overlay">
+    <div class="start-card">
+      <div class="start-badge-icon">✨</div>
+      <h1 class="start-title">THẦN TỐC TÍNH NHẨM</h1>
+      <p class="start-subtitle">Toán 6 • Bài 9: Dấu Hiệu Chia Hết Cho 2, 5, 9, 3 (SGK Trang 34 – 37)</p>
+
+      <div class="avatar-selector-title">Chọn Người Đại Diện Của Bạn:</div>
+      <div class="avatar-grid" id="avatar-selector">
+        <div class="avatar-option selected" data-avatar="✨">✨</div>
+        <div class="avatar-option" data-avatar="🦅">🦅</div>
+        <div class="avatar-option" data-avatar="⚡">⚡</div>
+        <div class="avatar-option" data-avatar="🍀">🍀</div>
+        <div class="avatar-option" data-avatar="🕵️‍♂️">🕵️‍♂️</div>
+        <div class="avatar-option" data-avatar="💎">💎</div>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">👤 Tên của bạn:</label>
+        <input type="text" id="student-name-input" class="name-input" placeholder="Nhập họ và tên của em..." value="Kỵ Sĩ Tính Nhẩm" maxlength="25">
+      </div>
+
+      <button id="btn-start" class="btn-start-game" onclick="startGame()">
+        <span>🎮 BẮT ĐẦU KHÁM PHÁ</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- GAME HUD (THANH TRẠNG THÁI CỐ ĐỊNH TRÊN CÙNG) -->
+  <header class="game-hud">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">✨</div>
+        <div class="hud-user-info">
+          <span class="hud-username" id="hud-name-display">Kỵ Sĩ Tính Nhẩm</span>
+          <span class="hud-title-rank" id="hud-rank-display">Tập Sự Dấu Hiệu</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="hud-badge score" title="Điểm kinh nghiệm">
+          🪙 <span id="hud-score">0</span>
+        </div>
+        <div class="hud-badge stars" title="Số sao vàng đạt được">
+          ⭐ <span id="hud-stars">0</span>
+        </div>
+        <div class="hud-badge streak" id="hud-streak-badge" title="Chuỗi trả lời đúng liên tiếp">
+          🔥 <span id="hud-streak">0</span> Combo
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button class="btn-icon" id="btn-sound-toggle" onclick="toggleSound()" title="Bật/Tắt âm thanh">
+          🔊
+        </button>
+        <button class="btn-icon" onclick="scrollToCertificate()" title="Xem Giấy Chứng Nhận">
+          📜
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- NỘI DUNG CHÍNH -->
+  <main class="main-wrapper">
+
+    <!-- HERO BANNER -->
+    <div class="lesson-hero">
+      <div class="lesson-tag">Chương II: Tính chia hết trong tập hợp các số tự nhiên • SGK Trang 34 - 37</div>
+      <h1>BÀI 9: DẤU HIỆU CHIA HẾT</h1>
+      <p>
+        Bí kíp nhìn một cái biết ngay số đó có chia hết cho 2, cho 5, cho 9 hay cho 3 mà không cần đặt bút chia! Khám phá cơ chế chữ số tận cùng và tổng chữ số kỳ diệu!
+      </p>
+    </div>
+
+    <!-- THANH ĐIỀU HƯỚNG NHANH -->
+    <nav class="nav-pills">
+      <a href="#khoi-dong" class="nav-pill active">⚡ 1. Bí Ẩn 71 001 : 9</a>
+      <a href="#dau-hieu-2-5" class="nav-pill">✌️ 2. Dấu Hiệu Cho 2 & 5</a>
+      <a href="#dau-hieu-9-3" class="nav-pill">🧩 3. Dấu Hiệu Cho 9 & 3</a>
+      <a href="#may-quet-me-cung" class="nav-pill">🌀 4. Mê Cung & Máy Quét</a>
+      <a href="#dau-truong-quiz" class="nav-pill">🏆 5. Đấu Trường 10 Câu</a>
+      <a href="#chung-nhan-vinh-danh" class="nav-pill">📜 6. Giấy Chứng Nhận</a>
+    </nav>
+
+    <!-- ====================================================================
+         SECTION 1: KHỞI ĐỘNG (BÍ ẨN PHÉP CHIA 71 001 CHO 9)
+         ==================================================================== -->
+    <section id="khoi-dong" class="lesson-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">⚡</div>
+          <div>
+            <h2 class="card-title">1. Khởi Động: Bí Ẩn Phép Chia 71 001 Cho 9</h2>
+            <p class="card-subtitle">Tình huống thực tế trang 34 SGK Toán 6 Kết Nối Tri Thức</p>
+          </div>
+        </div>
+        <span class="card-badge">Khởi động</span>
+      </div>
+
+      <div class="scenario-box">
+        <div class="scenario-header">
+          <span>💬 Tình huống đố nhanh:</span>
+        </div>
+        <p>
+          Thầy giáo ra đề bài: <em>"Tìm số dư của phép chia <strong>71 001 cho 9</strong>."</em><br>
+          Bạn Tròn vừa nghe xong liền trả lời ngay tắp lự: <em>"Phép chia này không có dư (dư 0) vì 71 001 chia hết cho 9!"</em><br>
+          Bạn Vuông tròn mắt ngạc nhiên: <em>"Sao bạn Tròn trả lời nhanh vậy nhỉ?"</em>
+        </p>
+      </div>
+
+      <div class="interactive-question">
+        <div class="iq-prompt">
+          ❓ Bạn có đoán được bí quyết thần tốc của bạn Tròn là gì không?
+        </div>
+        <div class="iq-options" id="intro-options">
+          <button class="iq-btn" onclick="checkIntroAnswer('secret', this)">
+            A. Bạn Tròn cộng nhẩm các chữ số: 7 + 1 + 0 + 0 + 1 = 9 chia hết cho 9!
+          </button>
+          <button class="iq-btn" onclick="checkIntroAnswer('calc', this)">
+            B. Bạn Tròn dùng máy tính cầm tay bấm chia rất nhanh.
+          </button>
+          <button class="iq-btn" onclick="checkIntroAnswer('guess', this)">
+            C. Bạn Tròn chỉ đoán mò may mắn thôi.
+          </button>
+        </div>
+        <div class="iq-feedback" id="intro-feedback"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 2: DẤU HIỆU CHIA HẾT CHO 2 VÀ CHO 5
+         ==================================================================== -->
+    <section id="dau-hieu-2-5" class="lesson-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">✌️</div>
+          <div>
+            <h2 class="card-title">2. Dấu Hiệu Chia Hết Cho 2 Và Cho 5</h2>
+            <p class="card-subtitle">Chỉ cần quan sát CHỮ SỐ TẬN CÙNG của số đó!</p>
+          </div>
+        </div>
+        <span class="card-badge">Chữ số tận cùng</span>
+      </div>
+
+      <div class="rule-comparison-grid">
+        <div class="rule-box">
+          <div class="rule-box-header">
+            <span>2️⃣ Dấu Hiệu Chia Hết Cho 2</span>
+            <span class="rule-pill-tag">Số Chẵn</span>
+          </div>
+          <div class="rule-highlight">
+            Các số có chữ số tận cùng là <strong>0; 2; 4; 6; 8</strong> thì chia hết cho 2 và chỉ những số đó mới chia hết cho 2.
+          </div>
+          <p style="font-size: 0.95rem; color: #475569;">
+            • Số chia hết cho 2 là <strong>số chẵn</strong> (vd: 1 930; 1 954).<br>
+            • Số không chia hết cho 2 là <strong>số lẻ</strong> (tận cùng 1; 3; 5; 7; 9).
+          </p>
+        </div>
+
+        <div class="rule-box">
+          <div class="rule-box-header">
+            <span>5️⃣ Dấu Hiệu Chia Hết Cho 5</span>
+            <span class="rule-pill-tag">Tận Cùng 0 hoặc 5</span>
+          </div>
+          <div class="rule-highlight" style="border-left-color: #0284c7; background: #f0f9ff; color: #0369a1;">
+            Các số có chữ số tận cùng là <strong>0 hoặc 5</strong> thì chia hết cho 5 và chỉ những số đó mới chia hết cho 5.
+          </div>
+          <p style="font-size: 0.95rem; color: #475569;">
+            • Ví dụ: 1 930; 1 945 chia hết cho 5.<br>
+            • <strong>Đặc biệt:</strong> Số có tận cùng là <strong>0</strong> thì chia hết cho CẢ 2 VÀ 5!
+          </p>
+        </div>
+      </div>
+
+      <!-- LUYỆN TẬP 1 SGK TRANG 35 -->
+      <div class="interactive-question">
+        <div class="iq-prompt">
+          ✍️ Luyện tập 1 (SGK tr. 35): Không thực hiện phép tính, tổng (hiệu) nào sau đây chia hết cho 2?
+        </div>
+        <div class="iq-options">
+          <button class="iq-btn" onclick="checkLt1('a', this)">
+            A. 1 954 + 1 975 (tận cùng 4 chẵn + tận cùng 5 lẻ)
+          </button>
+          <button class="iq-btn" onclick="checkLt1('b', this)">
+            B. 2 020 - 938 (tận cùng 0 chẵn - tận cùng 8 chẵn)
+          </button>
+        </div>
+        <div class="iq-feedback" id="lt1-feedback"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 3: DẤU HIỆU CHIA HẾT CHO 9 VÀ CHO 3
+         ==================================================================== -->
+    <section id="dau-hieu-9-3" class="lesson-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">🧩</div>
+          <div>
+            <h2 class="card-title">3. Dấu Hiệu Chia Hết Cho 9 Và Cho 3</h2>
+            <p class="card-subtitle">Bí kíp tính TỔNG CÁC CHỮ SỐ (SGK Trang 35 – 36)</p>
+          </div>
+        </div>
+        <span class="card-badge">Tổng các chữ số</span>
+      </div>
+
+      <div class="rule-comparison-grid">
+        <div class="rule-box">
+          <div class="rule-box-header">
+            <span>9️⃣ Dấu Hiệu Chia Hết Cho 9</span>
+          </div>
+          <div class="rule-highlight">
+            Các số có <strong>tổng các chữ số chia hết cho 9</strong> thì chia hết cho 9 và chỉ những số đó mới chia hết cho 9.
+          </div>
+          <p style="font-size: 0.95rem; color: #475569;">
+            Ví dụ: 234 có 2 + 3 + 4 = 9 ⋮ 9 ⇒ 234 ⋮ 9.<br>
+            Số nào chia hết cho 9 thì chắc chắn chia hết cho 3!
+          </p>
+        </div>
+
+        <div class="rule-box">
+          <div class="rule-box-header">
+            <span>3️⃣ Dấu Hiệu Chia Hết Cho 3</span>
+          </div>
+          <div class="rule-highlight" style="border-left-color: #0284c7; background: #f0f9ff; color: #0369a1;">
+            Các số có <strong>tổng các chữ số chia hết cho 3</strong> thì chia hết cho 3 và chỉ những số đó mới chia hết cho 3.
+          </div>
+          <p style="font-size: 0.95rem; color: #475569;">
+            Ví dụ: 15 có 1 + 5 = 6 ⋮ 3 ⇒ 15 ⋮ 3.<br>
+            Lưu ý: Số chia hết cho 3 CHƯA CHẮC đã chia hết cho 9 (ví dụ 15 chia hết cho 3 nhưng không chia hết cho 9).
+          </p>
+        </div>
+      </div>
+
+      <!-- VẬN DỤNG TRỒNG DỪA TRANG 36 -->
+      <div class="scenario-box" style="margin-top: 15px;">
+        <div class="scenario-header">
+          <span>🌴 Vận dụng thực tế: Bác nông dân trồng dừa (SGK tr. 36)</span>
+        </div>
+        <p>
+          Trên một bờ đất dài <strong>108 m</strong>, bác nông dân trồng một số cây dừa cách đều nhau <strong>9 m</strong> và luôn có cây ở vị trí đầu và cuối bờ đất. Bác có trồng được như vậy không và cần bao nhiêu cây dừa?
+        </p>
+        <div style="margin-top: 12px; display: flex; gap: 10px; align-items: center; flex-wrap: wrap;">
+          <span>Số cây dừa bác nông dân cần là:</span>
+          <input type="number" id="coconut-trees-input" class="name-input" style="width: 100px; padding: 8px 12px;" placeholder="Số cây?">
+          <button class="btn-start-game" style="width: auto; padding: 8px 20px; font-size: 1rem;" onclick="checkCoconutTree()">Kiểm Tra</button>
+        </div>
+        <div class="iq-feedback" id="coconut-feedback"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 4: MÁY QUÉT DẤU HIỆU & TRÒ CHƠI MÊ CUNG ĐẾN SIÊU THỊ
+         ==================================================================== -->
+    <section id="may-quet-me-cung" class="lesson-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">🌀</div>
+          <div>
+            <h2 class="card-title">4. Cỗ Máy Quét Chia Hết & Trò Chơi Mê Cung</h2>
+            <p class="card-subtitle">Thử thách nhỏ SGK trang 36: Giúp bạn Hà tìm đường đến siêu thị!</p>
+          </div>
+        </div>
+        <span class="card-badge">Mini Game</span>
+      </div>
+
+      <!-- CỖ MÁY QUÉT TỨ ĐẠI DẤU HIỆU -->
+      <div class="scanner-machine">
+        <div class="scanner-header">
+          <div class="scanner-title">
+            <span>🔬 CỖ MÁY QUÉT TỨ ĐẠI DẤU HIỆU (2, 5, 9, 3)</span>
+          </div>
+          <span style="color: #6ee7b7; font-size: 0.85rem;">Nhập số bất kỳ để quét ngay lập tức</span>
+        </div>
+
+        <div class="scanner-input-group">
+          <label for="scanner-num" style="font-weight: 700; color: #a7f3d0;">Nhập số tự nhiên N:</label>
+          <input type="number" id="scanner-num" class="scanner-input" value="234" min="0" oninput="runScanner()">
+          <span style="font-size: 0.95rem; color: #cbd5e1;" id="scanner-sum-display">Tổng các chữ số: 2 + 3 + 4 = 9</span>
+        </div>
+
+        <div class="scanner-indicators">
+          <div class="indicator-card" id="ind-2">
+            <div class="indicator-divisor">⋮ 2</div>
+            <div class="indicator-status" id="status-2">Đang quét...</div>
+          </div>
+          <div class="indicator-card" id="ind-5">
+            <div class="indicator-divisor">⋮ 5</div>
+            <div class="indicator-status" id="status-5">Đang quét...</div>
+          </div>
+          <div class="indicator-card" id="ind-3">
+            <div class="indicator-divisor">⋮ 3</div>
+            <div class="indicator-status" id="status-3">Đang quét...</div>
+          </div>
+          <div class="indicator-card" id="ind-9">
+            <div class="indicator-divisor">⋮ 9</div>
+            <div class="indicator-status" id="status-9">Đang quét...</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- MÊ CUNG ĐẾN SIÊU THỊ (THỬ THÁCH NHỎ TRANG 36) -->
+      <div class="maze-wrapper">
+        <div style="font-weight: 800; font-size: 1.15rem; color: #065f46; margin-bottom: 8px;">
+          🏃 Thử Thách Mê Cung: Giúp bạn Hà đến Siêu Thị! (SGK tr. 36)
+        </div>
+        <p style="font-size: 0.95rem; color: #475569; margin-bottom: 12px;">
+          Quy tắc: Bạn Hà chỉ có thể đi qua các ô chứa <strong>số chia hết cho 2 hoặc chia hết cho 3</strong>, mỗi ô chỉ đi qua một lần, đi theo các ô kề nhau (lên, xuống, trái, phải). Hãy bấm vào các ô để tạo đường đi!
+        </p>
+
+        <div class="maze-grid" id="maze-grid">
+          <!-- Render grid 3 hàng x 6 cột bằng JS -->
+        </div>
+
+        <div style="display: flex; gap: 10px; justify-content: center; margin-top: 15px;">
+          <button class="btn-start-game" style="width: auto; padding: 10px 24px; font-size: 1rem; background: #64748b;" onclick="resetMaze()">
+            🔄 Đặt Lại Đường Đi
+          </button>
+        </div>
+        <div class="iq-feedback" id="maze-feedback"></div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 5: ĐẤU TRƯỜNG QUIZ (10 CÂU BÁM SÁT BÀI TẬP SGK TRANG 37)
+         ==================================================================== -->
+    <section id="dau-truong-quiz" class="lesson-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">🏆</div>
+          <div>
+            <h2 class="card-title">5. Đấu Trường Thử Thách: 10 Câu Bài Tập SGK</h2>
+            <p class="card-subtitle">Bao quát bài tập 2.10 đến 2.16 & Em có biết (SGK Trang 37)</p>
+          </div>
+        </div>
+        <span class="card-badge" id="quiz-badge-counter">Câu 1 / 10</span>
+      </div>
+
+      <div class="quiz-arena">
+        <div class="quiz-progress-bar-container">
+          <div class="quiz-progress-bar" id="quiz-progress"></div>
+        </div>
+
+        <div class="quiz-meta-info">
+          <span id="quiz-question-type">🏷️ Bài tập 2.10 SGK: Dấu hiệu chia hết</span>
+          <span>🪙 Điểm mỗi câu: +10 XP</span>
+        </div>
+
+        <div class="quiz-question-box">
+          <div class="quiz-question-text" id="quiz-question-title">
+            Đang tải câu hỏi...
+          </div>
+        </div>
+
+        <div class="quiz-answers-grid" id="quiz-answers-container">
+          <!-- Render các phương án lựa chọn bằng JS -->
+        </div>
+
+        <div class="quiz-explanation-box" id="quiz-explanation">
+          <!-- Lời giải chi tiết -->
+        </div>
+
+        <div class="quiz-actions">
+          <button id="btn-next-quiz" class="btn-next-question" style="display: none;" onclick="nextQuestion()">
+            Câu Tiếp Theo ➡️
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ====================================================================
+         SECTION 6: HUY HIỆU & GIẤY CHỨNG NHẬN A4
+         ==================================================================== -->
+    <section id="chung-nhan-vinh-danh" class="lesson-card">
+      <div class="card-header">
+        <div class="card-title-group">
+          <div class="card-icon">🎖️</div>
+          <div>
+            <h2 class="card-title">6. Bộ Huy Hiệu & Giấy Chứng Nhận Vinh Danh</h2>
+            <p class="card-subtitle">Tích lũy điểm và mở khóa trọn bộ 5 huy hiệu danh giá</p>
+          </div>
+        </div>
+        <span class="card-badge">Vinh quang</span>
+      </div>
+
+      <!-- BỘ 5 HUY HIỆU -->
+      <div class="badges-showcase">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">⚡</div>
+          <div class="badge-card-name">Tia Chớp Khởi Động</div>
+          <div class="badge-card-desc">Bẻ khóa phép chia nhẩm 71 001 cho 9</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">✌️</div>
+          <div class="badge-card-name">Bậc Thầy Chữ Số Cuối</div>
+          <div class="badge-card-desc">Làm chủ dấu hiệu chia hết cho 2 và cho 5</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🌴</div>
+          <div class="badge-card-name">Kỹ Sư Trồng Dừa</div>
+          <div class="badge-card-desc">Tính chuẩn 13 cây dừa trên bờ đất 108 m</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🌀</div>
+          <div class="badge-card-name">Thám Hiểm Mê Cung</div>
+          <div class="badge-card-desc">Dẫn bạn Hà tới siêu thị an toàn qua các ô chia hết</div>
+        </div>
+
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Kỵ Sĩ Tính Nhẩm</div>
+          <div class="badge-card-desc">Chinh phục từ 80 điểm trở lên tại Đấu Trường 10 Câu</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN CHUẨN IN A4 -->
+      <div class="certificate-wrapper" id="certificate-print-area">
+        <div class="cert-seal">🎖️</div>
+        <div class="cert-super-title">HỌC LIỆU SỐ TOÁN 6 • BỘ SÁCH KẾT NỐI TRI THỨC VỚI CUỘC SỐNG</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.15rem; color: #475569;">Trân trọng trao tặng cho:</p>
+        <div class="cert-student-name" id="cert-student-name-display">Kỵ Sĩ Tính Nhẩm</div>
+        <p style="font-size: 1.15rem; color: #065f46; max-width: 650px; margin: 0 auto; line-height: 1.6;">
+          Đã xuất sắc làm chủ toàn bộ kiến thức lý thuyết, kỹ năng tính nhẩm dấu hiệu chia hết và toàn bộ bài tập SGK của <br>
+          <strong>BÀI 9: DẤU HIỆU CHIA HẾT CHO 2, CHO 5, CHO 9, CHO 3</strong>
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">🪙 Điểm số: <span id="cert-score-display">0</span></div>
+          <div class="cert-stat-badge">⭐ Sao vàng: <span id="cert-stars-display">0</span></div>
+          <div class="cert-stat-badge">🏅 Danh hiệu: <span id="cert-rank-display">Tập Sự Dấu Hiệu</span></div>
+        </div>
+
+        <div style="display: flex; justify-content: space-between; margin-top: 35px; padding: 0 40px; color: #64748b; font-style: italic;">
+          <div>Ngày hoàn thành: <span id="cert-date-display">...</span></div>
+          <div>Giáo viên hướng dẫn: AI Antigravity</div>
+        </div>
+      </div>
+
+      <!-- HÀNH ĐỘNG & ĐIỀU HƯỚNG LIÊN BÀI -->
+      <div class="cert-actions">
+        <button class="btn-cert btn-print" onclick="window.print()">
+          🖨️ In / Lưu PDF Giấy Chứng Nhận
+        </button>
+        <button class="btn-cert btn-replay" onclick="restartLesson()">
+          🔄 Chinh Phục Lại Bài 9
+        </button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai8/index.html" class="btn-cert btn-prev-lesson">
+          ⬅️ Về Bài 8: Quan Hệ Chia Hết
+        </a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai10/index.html" class="btn-cert btn-next-lesson">
+          ➡️ Tiến Đến Bài 10: Số Nguyên Tố
+        </a>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- CANVAS PHÁO HOA ĂN MỪNG -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <script src="app.js"></script>
+</body>
+</html>

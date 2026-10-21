@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 1: Giá Trị Lượng Giác Của Góc Lượng Giác - Toán 11 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Thủ Khoa Lượng Giác 11</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 11">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương I: Hàm Số Lượng Giác &amp; Phương Trình Lượng Giác • Toán 11</span>
+      <h1>BÀI 1: GIÁ TRỊ LƯỢNG GIÁC CỦA GÓC LƯỢNG GIÁC</h1>
+      <p>Làm chủ khái niệm góc lượng giác, đường tròn lượng giác đơn vị, hệ thức Chasles và các giá trị lượng giác cơ bản cùng các góc liên quan đặc biệt!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Bằng Khen</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card">
+          <h3 class="card-title"><i>🧭</i> 1. Góc Lượng Giác &amp; Số Đo Của Góc Lượng Giác</h3>
+          <div class="concept-box cyan">
+            <h4>Khái niệm góc lượng giác</h4>
+            <p>Trong mặt phẳng, cho hai tia $Ou, Ov$. Nếu tia $Om$ quay quanh gốc $O$, theo một chiều nhất định từ tia đầu $Ou$ đến tia cuối $Ov$, thì ta nói nó quét nên một <strong>góc lượng giác</strong> với tia đầu $Ou$, tia cuối $Ov$ và kí hiệu là $(Ou, Ov)$.</p>
+            <p>• <strong>Quy ước chiều quay:</strong> Chiều quay ngược chiều kim đồng hồ là <strong>chiều dương</strong> ($+$); chiều quay cùng chiều kim đồng hồ là <strong>chiều âm</strong> ($-$).</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{sđ}(Ou, Ov) = \alpha + k 360^\circ \quad \text{hoặc} \quad \text{sđ}(Ou, Ov) = \alpha + k 2\pi \quad (k \in \mathbb{Z})$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>Hệ thức Chasles quan trọng</h4>
+            <p>Với ba tia $Ou, Ov, Ow$ bất kì, ta luôn có:</p>
+            <p class="math-highlight">$$\text{sđ}(Ou, Ov) + \text{sđ}(Ov, Ow) = \text{sđ}(Ou, Ow) + k 360^\circ \quad (k \in \mathbb{Z})$$</p>
+            <p>Suy ra với ba tia tuỳ ý $Ox, Ou, Ov$:</p>
+            <p class="math-highlight">$$\text{sđ}(Ou, Ov) = \text{sđ}(Ox, Ov) - \text{sđ}(Ox, Ou) + k 360^\circ \quad (k \in \mathbb{Z})$$</p>
+          </div>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card">
+          <h3 class="card-title"><i>📏</i> 2. Đơn Vị Đo Góc &amp; Độ Dài Cung Tròn</h3>
+          <div class="concept-box emerald">
+            <h4>Đơn vị radian và mối liên hệ với độ</h4>
+            <p>• Cung tròn trên đường tròn bán kính $R$ có số đo bằng <strong>$1$ radian</strong> nếu độ dài của cung đó đúng bằng $R$.</p>
+            <p>• Đường tròn có chu vi $2\pi R$ ứng với góc ở tâm bằng $360^\circ$, do đó $360^\circ = 2\pi \text{ rad}$ hay $180^\circ = \pi \text{ rad}$.</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$1^\circ = \frac{\pi}{180} \text{ rad} \quad \text{và} \quad 1 \text{ rad} = \left(\frac{180}{\pi}\right)^\circ \approx 57^\circ 17' 45''$$</p>
+          </div>
+          <div class="concept-box gold">
+            <h4>Độ dài cung tròn</h4>
+            <p>Một cung của đường tròn bán kính $R$ và có số đo $\alpha \text{ rad}$ thì có độ dài $l$ tính bởi:</p>
+            <p class="math-highlight">$$l = R \cdot \alpha$$</p>
+          </div>
+          <div class="rule-box cyan">
+            <h4>Bảng chuyển đổi các góc đặc biệt</h4>
+            <p>• $0^\circ \leftrightarrow 0 \text{ rad}$ | $30^\circ \leftrightarrow \frac{\pi}{6} \text{ rad}$ | $45^\circ \leftrightarrow \frac{\pi}{4} \text{ rad}$ | $60^\circ \leftrightarrow \frac{\pi}{3} \text{ rad}$</p>
+            <p>• $90^\circ \leftrightarrow \frac{\pi}{2} \text{ rad}$ | $120^\circ \leftrightarrow \frac{2\pi}{3} \text{ rad}$ | $135^\circ \leftrightarrow \frac{3\pi}{4} \text{ rad}$ | $150^\circ \leftrightarrow \frac{5\pi}{6} \text{ rad}$ | $180^\circ \leftrightarrow \pi \text{ rad}$</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <h3 class="card-title"><i>⭕</i> 3. Đường Tròn Lượng Giác &amp; Giá Trị Lượng Giác</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 16px;">
+            <div class="concept-box cyan">
+              <h4>Đường tròn lượng giác</h4>
+              <p>• Đường tròn tâm $O$ bán kính $R = 1$ trên mặt phẳng toạ độ $Oxy$.</p>
+              <p>• Điểm gốc là $A(1; 0)$. Chiều dương là ngược chiều kim đồng hồ.</p>
+              <p>• Điểm $M(x; y)$ biểu diễn góc lượng giác $\alpha$ khi $\text{sđ}(OA, OM) = \alpha$.</p>
+              <div class="formula-box">
+                <p class="math-highlight">$$\cos \alpha = x_M \quad ; \quad \sin \alpha = y_M$$</p>
+                <p class="math-highlight">$$\tan \alpha = \frac{y_M}{x_M} = \frac{\sin \alpha}{\cos \alpha} \quad ; \quad \cot \alpha = \frac{x_M}{y_M} = \frac{\cos \alpha}{\sin \alpha}$$</p>
+              </div>
+            </div>
+
+            <div class="concept-box emerald">
+              <h4>Bảng xét dấu theo 4 góc phần tư</h4>
+              <p>• <strong>Phần tư I</strong> ($0 < \alpha < \frac{\pi}{2}$): $\sin > 0, \cos > 0, \tan > 0, \cot > 0$</p>
+              <p>• <strong>Phần tư II</strong> ($\frac{\pi}{2} < \alpha < \pi$): $\sin > 0, \cos < 0, \tan < 0, \cot < 0$</p>
+              <p>• <strong>Phần tư III</strong> ($\pi < \alpha < \frac{3\pi}{2}$): $\sin < 0, \cos < 0, \tan > 0, \cot > 0$</p>
+              <p>• <strong>Phần tư IV</strong> ($\frac{3\pi}{2} < \alpha < 2\pi$): $\sin < 0, \cos > 0, \tan < 0, \cot < 0$</p>
+              <p>• Ghi nhớ: <em>"Nhất cả, nhì sin, tam tan - cot, tứ cos"</em>.</p>
+            </div>
+
+            <div class="concept-box gold">
+              <h4>Hệ thức lượng giác cơ bản</h4>
+              <p class="math-highlight">$$\sin^2 \alpha + \cos^2 \alpha = 1$$</p>
+              <p class="math-highlight">$$1 + \tan^2 \alpha = \frac{1}{\cos^2 \alpha} \quad \left(\alpha \ne \frac{\pi}{2} + k\pi\right)$$</p>
+              <p class="math-highlight">$$1 + \cot^2 \alpha = \frac{1}{\sin^2 \alpha} \quad (\alpha \ne k\pi)$$</p>
+              <p class="math-highlight">$$\tan \alpha \cdot \cot \alpha = 1 \quad \left(\alpha \ne k\frac{\pi}{2}\right)$$</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card" style="grid-column: 1 / -1;">
+          <h3 class="card-title"><i>🔗</i> 4. Giá Trị Lượng Giác Của Các Góc Liên Quan Đặc Biệt</h3>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 14px;">
+            <div class="concept-box cyan">
+              <h4>Cos đối ($\alpha$ và $-\alpha$)</h4>
+              <p>$\cos(-\alpha) = \cos \alpha$</p>
+              <p>$\sin(-\alpha) = -\sin \alpha$</p>
+              <p>$\tan(-\alpha) = -\tan \alpha$</p>
+              <p>$\cot(-\alpha) = -\cot \alpha$</p>
+            </div>
+
+            <div class="concept-box emerald">
+              <h4>Sin bù ($\alpha$ và $\pi - \alpha$)</h4>
+              <p>$\sin(\pi - \alpha) = \sin \alpha$</p>
+              <p>$\cos(\pi - \alpha) = -\cos \alpha$</p>
+              <p>$\tan(\pi - \alpha) = -\tan \alpha$</p>
+              <p>$\cot(\pi - \alpha) = -\cot \alpha$</p>
+            </div>
+
+            <div class="concept-box gold">
+              <h4>Phụ chéo ($\alpha$ và $\frac{\pi}{2} - \alpha$)</h4>
+              <p>$\sin\left(\frac{\pi}{2} - \alpha\right) = \cos \alpha$</p>
+              <p>$\cos\left(\frac{\pi}{2} - \alpha\right) = \sin \alpha$</p>
+              <p>$\tan\left(\frac{\pi}{2} - \alpha\right) = \cot \alpha$</p>
+              <p>$\cot\left(\frac{\pi}{2} - \alpha\right) = \tan \alpha$</p>
+            </div>
+
+            <div class="concept-box rose">
+              <h4>Khác $\pi$ tan &amp; cot ($\alpha$ và $\pi + \alpha$)</h4>
+              <p>$\tan(\pi + \alpha) = \tan \alpha$</p>
+              <p>$\cot(\pi + \alpha) = \cot \alpha$</p>
+              <p>$\sin(\pi + \alpha) = -\sin \alpha$</p>
+              <p>$\cos(\pi + \alpha) = -\cos \alpha$</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🧪</i> Lab 1: Khám Phá Đường Tròn Lượng Giác &amp; Điểm Biểu Diễn Động $M(x; y)$</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.95rem;">
+          Tia $OM$ quét trên đường tròn lượng giác tạo ra góc lượng giác $\alpha$. Kéo thanh trượt hoặc chọn góc mẫu để quan sát trực tiếp giá trị hình chiếu $\cos \alpha$ (trục hoành) và $\sin \alpha$ (trục tung)!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;">
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 12px; text-align: center;">
+            <canvas id="lab1Canvas" width="560" height="420" style="width: 100%; max-width: 560px; height: auto; border-radius: var(--radius-sm); background: #030712; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span>🔵 Trục Côsin ($Ox$)</span>
+              <span>🔴 Trục Sin ($Oy$)</span>
+              <span>🟡 Điểm $M(\cos \alpha; \sin \alpha)$</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="concept-box cyan" style="margin: 0;">
+              <h4>Điều Khiển Góc Lượng Giác $\alpha$</h4>
+              <div style="margin: 12px 0;">
+                <label style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 6px;">
+                  <span>Góc $\alpha$ (độ):</span>
+                  <span id="lab1DegVal" style="color: var(--cyan-neon);">60°</span>
+                </label>
+                <input type="range" id="lab1AngleSlider" min="-360" max="720" value="60" step="5" style="width: 100%;">
+              </div>
+              <div style="display: flex; gap: 8px; flex-wrap: wrap;">
+                <button class="btn-icon" onclick="setLab1Angle(30)">30° ($\frac{\pi}{6}$)</button>
+                <button class="btn-icon" onclick="setLab1Angle(45)">45° ($\frac{\pi}{4}$)</button>
+                <button class="btn-icon" onclick="setLab1Angle(120)">120° ($\frac{2\pi}{3}$)</button>
+                <button class="btn-icon" onclick="setLab1Angle(225)">225° ($\frac{5\pi}{4}$)</button>
+                <button class="btn-icon" onclick="setLab1Angle(-60)">-60° ($-\frac{\pi}{3}$)</button>
+              </div>
+            </div>
+
+            <div class="concept-box gold" style="margin: 0;">
+              <h4>Toạ Độ &amp; Giá Trị Lượng Giác</h4>
+              <p>• <strong>Số đo Radian:</strong> <span id="lab1RadVal" style="color: #fff; font-weight: 700;">$\frac{\pi}{3}$</span> rad</p>
+              <p>• <strong>$\cos \alpha$ (Hoành độ):</strong> <span id="lab1CosVal" style="color: #38bdf8; font-weight: 700;">0.5000</span></p>
+              <p>• <strong>$\sin \alpha$ (Tung độ):</strong> <span id="lab1SinVal" style="color: #f43f5e; font-weight: 700;">0.8660</span></p>
+              <p>• <strong>$\tan \alpha$:</strong> <span id="lab1TanVal" style="color: #f59e0b; font-weight: 700;">1.7321</span></p>
+              <p>• <strong>$\cot \alpha$:</strong> <span id="lab1CotVal" style="color: #10b981; font-weight: 700;">0.5774</span></p>
+              <p>• <strong>Góc phần tư:</strong> <span id="lab1Quadrant" style="font-weight: 700; color: #a855f7;">Phần tư I</span></p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Lab 2 -->
+      <div class="card">
+        <h3 class="card-title"><i>🎡</i> Lab 2: Mô Phỏng Bánh Xe Chuyển Động &amp; Độ Dài Cung Tròn $l = R\alpha$</h3>
+        <p style="color: var(--text-secondary); margin-bottom: 16px; font-size: 0.95rem;">
+          Thực nghiệm trực quan bài toán chuyển động bánh xe và trạm ISS trong SGK. Khảo sát liên hệ giữa góc quét $\alpha$, bán kính $R$ và độ dài quãng đường lăn $l = R\alpha$!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 340px; gap: 20px; align-items: start;">
+          <div style="background: rgba(0,0,0,0.4); border-radius: var(--radius-md); border: 1px solid var(--border-color); padding: 12px; text-align: center;">
+            <canvas id="lab2Canvas" width="560" height="340" style="width: 100%; max-width: 560px; height: auto; border-radius: var(--radius-sm); background: #030712; display: block; margin: 0 auto;"></canvas>
+            <div style="display: flex; justify-content: space-around; margin-top: 10px; font-size: 0.85rem; color: var(--text-muted);">
+              <span>🟠 Bánh xe lăn</span>
+              <span>🟢 Vệt cung tròn đã quét</span>
+              <span>📏 Quãng đường $l$</span>
+            </div>
+          </div>
+
+          <div style="display: flex; flex-direction: column; gap: 14px;">
+            <div class="concept-box emerald" style="margin: 0;">
+              <h4>Thông Số Mô Phỏng</h4>
+              <div style="margin: 10px 0;">
+                <label style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 4px;">
+                  <span>Bán kính $R$:</span>
+                  <span id="lab2RadiusVal" style="color: var(--emerald-true);">50 cm</span>
+                </label>
+                <input type="range" id="lab2RadiusSlider" min="20" max="100" value="50" step="5" style="width: 100%;">
+              </div>
+
+              <div style="margin: 10px 0;">
+                <label style="display: flex; justify-content: space-between; font-weight: 600; margin-bottom: 4px;">
+                  <span>Góc quay $\alpha$ (độ):</span>
+                  <span id="lab2AngleVal" style="color: var(--cyan-neon);">180°</span>
+                </label>
+                <input type="range" id="lab2AngleSlider" min="0" max="720" value="180" step="10" style="width: 100%;">
+              </div>
+
+              <div style="display: flex; gap: 8px;">
+                <button class="btn-primary" id="lab2AnimateBtn" style="flex: 1;">▶️ Quay Bánh Xe</button>
+                <button class="btn-icon" id="lab2ResetBtn">🔄</button>
+              </div>
+            </div>
+
+            <div class="concept-box gold" style="margin: 0;">
+              <h4>Kết Quả Đo Đạc</h4>
+              <p>• <strong>Số đo góc:</strong> <span id="lab2RadText" style="font-weight: 700;">$\pi\text{ rad}$</span> ($3.1416\text{ rad}$)</p>
+              <p>• <strong>Số vòng quay:</strong> <span id="lab2RoundsText" style="font-weight: 700;">0.50 vòng</span></p>
+              <p>• <strong>Độ dài cung $l = R\alpha$:</strong> <span id="lab2LengthText" style="color: #10b981; font-weight: 700; font-size: 1.1rem;">157.08 cm</span></p>
+              <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 6px;">Độ dài cung $l$ chính là quãng đường bánh xe di chuyển được trên mặt đất.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ ĐẤU TRƯỜNG LƯỢNG GIÁC BÀI 1</h2>
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">Thử thách 10 câu hỏi trắc nghiệm chuẩn SGK Kết Nối Tri Thức. Bấm chọn đáp án để nhận phản hồi và tích lũy XP ngay!</p>
+        </div>
+        <div class="arena-score-box">
+          <div style="font-size: 0.85rem; color: var(--text-muted);">Tiến Độ Đấu Trường</div>
+          <div style="font-size: 1.3rem; font-weight: 700; color: var(--cyan-neon);" id="arenaProgress">0/10</div>
+          <div style="font-size: 0.9rem; font-weight: 700; color: var(--emerald-true); margin-top: 4px;" id="arenaScore">Điểm: 0 XP</div>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h2 style="margin-bottom: 8px;">🏆 Hệ Thống Huy Hiệu &amp; Vinh Danh</h2>
+      <p style="color: var(--text-secondary); margin-bottom: 24px;">Hoàn thành các hoạt động và đạt điểm cao trong Đấu Trường để mở khóa trọn bộ 5 huy hiệu danh giá!</p>
+
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">🌟</div>
+          <div class="badge-name">Nhà Khai Phá</div>
+          <div class="badge-desc">Bắt đầu khám phá Bản Đồ Tri Thức và thực hiện thí nghiệm đầu tiên.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Chuyên Gia Radian</div>
+          <div class="badge-desc">Thành thạo công thức tính độ dài cung tròn $l = R\alpha$ trong Lab 2.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Ngọn Lửa Chuỗi Đúng</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng liên tiếp từ 5 câu trở lên trong Đấu Trường.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⚔️</div>
+          <div class="badge-name">Dũng Sĩ Lượng Giác</div>
+          <div class="badge-desc">Đạt từ 8/10 câu đúng (>= 160 XP) trong Đấu Trường SGK Bài 1.</div>
+        </div>
+
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">🏅</div>
+          <div class="badge-name">Thủ Khoa Lượng Giác 11</div>
+          <div class="badge-desc">Đạt tuyệt đối 10/10 câu hỏi và hoàn thành xuất sắc toàn bộ bài học!</div>
+        </div>
+      </div>
+
+      <!-- Printable Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2>TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <h1>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 1: GIÁ TRỊ LƯỢNG GIÁC CỦA GÓC LƯỢNG GIÁC (TOÁN 11 TẬP 1)</strong><br>
+            Nắm vững bản chất góc lượng giác, đường tròn đơn vị, hệ thức Chasles và các giá trị lượng giác cơ bản theo chương trình SGK Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">THỦ KHOA LƯỢNG GIÁC XUẤT SẮC 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../index.html" class="nav-btn prev">
+        <span class="nav-sub">Bắt Đầu</span>
+        <span class="nav-title">🏠 Cổng Bài Học</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_bai2/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 2: Công Thức Lượng Giác</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Học Giả Lượng Giác</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Lượng Giác Hoàng Gia">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Lượng Giác Vũ Trụ">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Lượng Giác Bất Bại">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Đường Tròn Đơn Vị">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Toán Học 11">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Chasles Tối Cao">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Cung Tròn Chuẩn Xác">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic Lượng Giác">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

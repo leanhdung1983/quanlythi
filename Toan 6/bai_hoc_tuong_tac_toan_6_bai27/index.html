@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 27: Hai Bài Toán Về Phân Số - Toán 6 KNTT Tập 2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">🌊</div>
+      <h1 class="start-title">CHINH PHỤC HAI BÀI TOÁN PHÂN SỐ</h1>
+      <p class="start-subtitle">Toán 6 Tập 2 • Bài 27: Hai bài toán về phân số</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật chỉ huy hải trình:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="🚢">🚢</button>
+        <button class="avatar-btn" data-avatar="⚓">⚓</button>
+        <button class="avatar-btn" data-avatar="🐋">🐋</button>
+        <button class="avatar-btn" data-avatar="💎">💎</button>
+        <button class="avatar-btn" data-avatar="👑">👑</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên hoa tiêu / thuyền trưởng:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Thuyền Trưởng Số Học Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU HẢI TRÌNH ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">🚢</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Thuyền Trưởng Số Học Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Hải Dương</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương VI: Phân Số • Toán 6 Tập Hai</div>
+      <h1 class="hero-title">BÀI 27: HAI BÀI TOÁN VỀ PHÂN SỐ</h1>
+      <p class="hero-desc">
+        Phân biệt rạch ròi giữa: "Tìm giá trị phân số của một số" (phép nhân) và "Tìm một số biết giá trị phân số của nó" (phép chia); cùng tàu ngầm Kilo 636 khám phá độ sâu đại dương và giải các bài toán thực tiễn!
+      </p>
+    </section>
+
+    <!-- PHẦN 1: BẢN ĐỒ KIẾN THỨC BÀI 27 -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🗺️</div>
+        <div>
+          <h2 class="section-title">1. Bản Đồ Kiến Thức Trọng Tâm</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Hai bài toán kinh điển về phân số</span>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <strong>📌 HAI BÀI TOÁN BẮT BUỘC KHẮC SÂU:</strong>
+        <ul style="margin-left: 20px; margin-top: 8px;">
+          <li><strong>Bài toán 1: Tìm giá trị phân số của một số cho trước</strong>
+            <br>Muốn tìm $\frac{m}{n}$ của một số $a$ cho trước ($m \in \mathbb{N}, n \in \mathbb{N}^*$), ta tính:
+            <br><strong style="color: #0284c7; font-size: 1.1rem;">$a \cdot \frac{m}{n}$</strong>
+          </li>
+          <li><strong>Bài toán 2: Tìm một số biết giá trị một phân số của nó</strong>
+            <br>Muốn tìm một số biết $\frac{m}{n}$ của nó bằng $b$ ($m, n \in \mathbb{N}^*$), ta tính:
+            <br><strong style="color: #0369a1; font-size: 1.1rem;">$b : \frac{m}{n} = b \cdot \frac{n}{m}$</strong>
+          </li>
+          <li><strong>Mẹo ghi nhớ siêu tốc:</strong>
+            <br>• Biết "TOÀN THỂ", tìm "MỘT PHẦN" $\implies$ DÙNG PHÉP NHÂN ($a \cdot \frac{m}{n}$).
+            <br>• Biết "MỘT PHẦN", tìm "TOÀN THỂ" $\implies$ DÙNG PHÉP CHIA ($b : \frac{m}{n}$).
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🔬</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm: Tàu Ngầm Kilo 636 & Cỗ Máy Phân Giải Hai Dạng Toán</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Khám phá độ sâu đại dương và cỗ máy tính toán tự động</span>
+        </div>
+      </div>
+
+      <!-- LAB 1: MÔ PHỎNG TÀU NGẦM KILO 636 (BT 6.37) -->
+      <div class="interactive-lab">
+        <div class="lab-title">🚢 Thí Nghiệm 1: Thám Hiểm Tàu Ngầm Kilo 636 Lặn Biển Sâu (BT 6.37)</div>
+        <div class="lab-desc">
+          Tàu ngầm Kilo 636 có thể lặn sâu tối đa 300 m. Kéo thanh trượt để điều khiển tỉ lệ lặn và xem độ sâu thực tế:
+        </div>
+
+        <div class="lab-controls">
+          <label style="font-weight: 700;">Tỉ lệ độ sâu lặn:</label>
+          <input type="range" id="sub-slider" min="1" max="10" value="4" style="width: 200px; accent-color: #0284c7;">
+          <span id="sub-ratio-label" style="font-weight: 800; color: #0284c7; min-width: 60px;">4/10 (2/5)</span>
+          <button class="lab-btn" id="btn-sub-sgk">📌 Chuẩn SGK: 2/5</button>
+        </div>
+
+        <div class="stage-card">
+          <div class="tank-visual" id="sub-tank">
+            <div class="depth-marker" style="top: 10px;">0 m (Mặt biển)</div>
+            <div class="depth-marker" style="top: 75px;">120 m (2/5 SGK)</div>
+            <div class="depth-marker" style="top: 140px;">200 m (2/3)</div>
+            <div class="depth-marker" style="bottom: 10px;">300 m (Tối đa)</div>
+            <div class="submarine-icon" id="submarine-sprite" style="top: 80px;">🚢</div>
+          </div>
+          <div id="sub-info-output" style="font-size: 1.05rem; font-weight: 700; color: #0369a1; margin-top: 12px;">
+            Độ sâu hiện tại của tàu: 120 mét (bằng 2/5 độ sâu tối đa 300 m).
+          </div>
+        </div>
+      </div>
+
+      <!-- LAB 2: CỖ MÁY PHÂN GIẢI HAI BÀI TOÁN PHÂN SỐ -->
+      <div class="interactive-lab">
+        <div class="lab-title">🧭 Thí Nghiệm 2: Cỗ Máy Phân Giải Hai Dạng Toán Phân Số</div>
+        <div class="lab-desc">
+          Chọn dạng bài toán, nhập các tham số để cỗ máy giải trình chi tiết từng bước:
+        </div>
+
+        <div class="lab-controls">
+          <select id="prob-type-select" style="padding: 8px 12px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold; color: #0369a1;">
+            <option value="1">Dạng 1: Tìm m/n của số a (Phép nhân: a · m/n)</option>
+            <option value="2">Dạng 2: Tìm số biết m/n của nó là b (Phép chia: b : m/n)</option>
+          </select>
+
+          <span id="input-param-label" style="font-weight: 700;">Số a:</span>
+          <input type="number" id="param-val" value="100" style="width: 70px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+
+          <span style="font-weight: 700; margin-left: 8px;">Phân số m/n:</span>
+          <input type="number" id="param-m" value="4" style="width: 50px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+          <span>/</span>
+          <input type="number" id="param-n" value="5" style="width: 50px; padding: 6px 8px; border-radius: 8px; border: 2px solid #cbd5e1; font-weight: bold;">
+
+          <button class="lab-btn" id="btn-solve-two-probs" style="margin-left: 10px;">⚡ Phân Giải Ngay</button>
+        </div>
+
+        <div class="stage-card" id="solver-lab-output">
+          <!-- Rendered by app.js -->
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: ĐẤU TRƯỜNG LUYỆN TẬP SGK -->
+    <section class="lesson-card" id="luyen-tap">
+      <div class="section-header">
+        <div class="section-icon-badge">⚔️</div>
+        <div>
+          <h2 class="section-title">3. Đấu Trường Luyện Tập SGK (Bài 6.34 – 6.37)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Chinh phục 10 bài toán hai dạng phân số và ứng dụng thực tiễn</span>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quiz-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- PHẦN 4: HUY HIỆU & CHỨNG NHẬN -->
+    <section class="lesson-card" id="thanh-tich">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">Bảng Thành Tích & Huy Hiệu Vinh Dự</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa trọn bộ 5 huy hiệu Bài 27</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">🌊</div>
+          <div class="badge-card-name">Nhà Hải Dương Học</div>
+          <div class="badge-card-desc">Thực hiện mô phỏng lặn tàu ngầm Kilo 636 xuống độ sâu 120 m</div>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">⚓</div>
+          <div class="badge-card-name">Bậc Thầy Dạng 1</div>
+          <div class="badge-card-desc">Tính chuẩn xác giá trị phân số của một số cho trước</div>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🧭</div>
+          <div class="badge-card-name">Bậc Thầy Dạng 2</div>
+          <div class="badge-card-desc">Tìm chính xác số gốc khi biết giá trị một phân số của nó</div>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Binh Bất Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu đúng liên tiếp</div>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Đại Kiện Tướng Phân Số</div>
+          <div class="badge-card-desc">Chinh phục xuất sắc toàn bộ 10 câu hỏi SGK Bài 27</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN IN ĐƯỢC -->
+      <div class="certificate-wrapper" id="printable-cert">
+        <div class="cert-seal">🌊</div>
+        <div class="cert-super-title">BỘ GIÁO DỤC VÀ ĐÀO TẠO • HỌC LIỆU SỐ TOÁN 6</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.1rem; color: #64748b;">Chứng nhận trao tặng cho thuyền trưởng số học:</p>
+        <div class="cert-student-name" id="cert-name">Thuyền Trưởng Số Học Lớp 6</div>
+        <p style="font-size: 1.15rem; color: #1e3a8a; max-width: 650px; margin: 0 auto;">
+          Đã xuất sắc hoàn thành trọn vẹn chương trình bài học tương tác:
+          <br><strong style="color: #0284c7; font-size: 1.25rem;">BÀI 27: HAI BÀI TOÁN VỀ PHÂN SỐ</strong>
+          <br>Bộ sách Toán 6 Tập Hai - Kết Nối Tri Thức Với Cuộc Sống.
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">Điểm số: <span id="cert-score">0</span> XP</div>
+          <div class="cert-stat-badge">Số sao: <span id="cert-stars">0</span> ⭐</div>
+          <div class="cert-stat-badge">Hạng: <span id="cert-rank">Tập Sự</span></div>
+          <div class="cert-stat-badge">Ngày cấp: <span id="cert-date">--/--/----</span></div>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-around; font-weight: 700; color: #475569;">
+          <div>
+            <p>Hệ Thống Đào Tạo Tương Tác</p>
+            <p style="margin-top: 30px; color: #0284c7;">(Đã ký điện tử)</p>
+          </div>
+          <div>
+            <p>Giáo Viên Bộ Môn Toán 6</p>
+            <p style="margin-top: 30px; color: #0284c7;">(Chứng nhận hoàn thành)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button onclick="window.print()" class="btn-cert btn-print">🖨️ In Giấy Chứng Nhận A4</button>
+        <button id="btn-replay-lesson" class="btn-cert btn-replay">🔄 Học Lại Bài Này</button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai26/index.html" class="btn-cert btn-prev-lesson">⬅️ Bài 26: Phép Nhân & Phép Chia</a>
+        <a href="../bai_hoc_tuong_tac_toan_6_on_tap_chuong_6/index.html" class="btn-cert btn-next-lesson">Ôn Tập Cuối Chương VI ➔</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 26: Khoảng Cách - Hình Học Không Gian 11 | Học Liệu Số Cao Cấp</title>
+  <!-- KaTeX Offline Cục Bộ -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <!-- File CSS Đồng Bộ Cyber Logic Chuẩn Bài 1 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Thám Hiểm Không Gian 11</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương VII: Quan Hệ Vuông Góc Trong Không Gian • Bài 26</span>
+      <h1>BÀI 26: KHOẢNG CÁCH</h1>
+      <p>Khám phá khoảng cách từ điểm đến đường thẳng, mặt phẳng; khoảng cách giữa các đối tượng song song và phương pháp xác định đoạn vuông góc chung giữa hai đường thẳng chéo nhau trong không gian.</p>
+    </section>
+
+    <!-- KHỐI 3: THANH NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Thẻ 1 -->
+        <div class="concept-card">
+          <div class="card-icon">📏</div>
+          <h3>1. Khoảng Cách Từ Điểm Đến Đường Thẳng & Mặt Phẳng</h3>
+          <p>Cho điểm $M$ và đường thẳng $a$ (hoặc mặt phẳng $(P)$). Gọi $H$ là hình chiếu vuông góc của $M$ trên $a$ (hoặc trên $(P)$).</p>
+          <div class="formula-box">$$d(M, a) = MH; \quad d(M, (P)) = MH$$</div>
+          <p><strong>Tính chất cực trị hình học:</strong> Với mọi điểm $K$ bất kì thuộc đường thẳng $a$ (hoặc thuộc $(P)$), ta luôn có:</p>
+          <div class="formula-box">$$MK \ge MH$$</div>
+          <div class="rule-box gold">
+            <strong>Nhận xét:</strong> Khoảng cách từ điểm $M$ đến đường thẳng $a$ (hoặc mặt phẳng $(P)$) chính là khoảng cách nhỏ nhất giữa $M$ và một điểm thuộc $a$ (thuộc $(P)$). Chiều cao của hình chóp là khoảng cách từ đỉnh đến mặt phẳng đáy.
+          </div>
+        </div>
+
+        <!-- Thẻ 2 -->
+        <div class="concept-card">
+          <div class="card-icon">📐</div>
+          <h3>2. Khoảng Cách Giữa Các Đối Tượng Song Song</h3>
+          <p><strong>Đường thẳng và mặt phẳng song song:</strong> Cho $a \parallel (P)$, khoảng cách giữa $a$ và $(P)$ là khoảng cách từ một điểm bất kì trên $a$ đến $(P)$:</p>
+          <div class="formula-box">$$d(a, (P)) = d(M, (P)) \quad (M \in a)$$</div>
+          <p><strong>Hai mặt phẳng song song:</strong> Cho $(P) \parallel (Q)$, khoảng cách giữa $(P)$ và $(Q)$ là khoảng cách từ một điểm bất kì thuộc mặt phẳng này đến mặt phẳng kia:</p>
+          <div class="formula-box">$$d((P), (Q)) = d(M, (Q)) = d(N, (P)) \quad (M \in (P), N \in (Q))$$</div>
+          <div class="rule-box gold">
+            <strong>Chiều cao hình lăng trụ:</strong> Khoảng cách giữa hai mặt phẳng chứa hai đáy của hình lăng trụ được gọi là chiều cao của hình lăng trụ đó.
+          </div>
+        </div>
+
+        <!-- Thẻ 3 -->
+        <div class="concept-card">
+          <div class="card-icon">⚡</div>
+          <h3>3. Khoảng Cách Giữa Hai Đường Thẳng Chéo Nhau</h3>
+          <p><strong>Đoạn vuông góc chung:</strong> Đường thẳng $\Delta$ cắt cả hai đường thẳng chéo nhau $a, b$ và vuông góc với cả hai đường thẳng đó được gọi là <em>đường vuông góc chung</em> của $a$ và $b$.</p>
+          <p>Nếu $\Delta$ cắt $a, b$ lần lượt tại $M, N$ thì đoạn thẳng $MN$ được gọi là <em>đoạn vuông góc chung</em> của $a$ và $b$.</p>
+          <div class="formula-box">$$d(a, b) = MN \quad (\Delta \perp a, \Delta \perp b, M \in a, N \in b)$$</div>
+          <div class="rule-box gold">
+            <strong>Ba phương pháp tính khoảng cách giữa hai đường chéo nhau:</strong><br>
+            • Phương pháp 1: Tìm trực tiếp độ dài đoạn vuông góc chung $MN$.<br>
+            • Phương pháp 2: Tìm mặt phẳng $(P)$ chứa $b$ và $a \parallel (P) \implies d(a, b) = d(a, (P)) = d(A, (P))$ với $A \in a$.<br>
+            • Phương pháp 3: Dựng hai mặt phẳng song song $(P) \parallel (Q)$ lần lượt chứa $a$ và $b \implies d(a, b) = d((P), (Q))$.
+          </div>
+        </div>
+
+        <!-- Thẻ 4 -->
+        <div class="concept-card">
+          <div class="card-icon">💡</div>
+          <h3>4. Trường Hợp Hai Đường Thẳng Vuông Góc & Chéo Nhau</h3>
+          <p>Nếu hai đường thẳng $a$ và $b$ vừa chéo nhau vừa vuông góc với nhau ($a \perp b$):</p>
+          <p>Dựng mặt phẳng $(P)$ chứa $b$ và vuông góc với $a$ tại $O = a \cap (P)$. Trong $(P)$, kẻ hình chiếu vuông góc $OH \perp b$ tại $H$.</p>
+          <div class="formula-box">$$OH \perp a \text{ và } OH \perp b \implies d(a, b) = OH$$</div>
+          <div class="rule-box gold">
+            <strong>Đặc biệt trong hình chóp $S.ABC$ có $SA \perp (ABC)$:</strong><br>
+            Khoảng cách giữa trục đường cao $SA$ và cạnh đáy $BC$ chính là độ dài đường cao $AH$ hạ từ đỉnh $A$ vuông góc xuống cạnh $BC$.
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Mini Lab 1 -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🧪</div>
+          <h3>Lab 1: Thước Đo Cực Tiểu $d(M, (P))$ & Tam Giác Vuông $MHK$</h3>
+          <p>Quan sát hình chiếu vuông góc $H$ của $M$ trên mặt phẳng $(P)$ và điểm di động $K$ chạy trên $(P)$. Kéo các thanh trượt để kiểm chứng $MK = \sqrt{MH^2 + HK^2} \ge MH$ thời gian thực.</p>
+          <div class="lab-controls">
+            <label>Chiều cao hình chiếu $h = MH$: <span id="valH">140</span> px</label>
+            <input type="range" id="sliderH" min="60" max="220" value="140">
+            <label>Khoảng cách trượt đáy $r = HK$: <span id="valR">90</span> px</label>
+            <input type="range" id="sliderR" min="0" max="200" value="90">
+          </div>
+          <canvas id="canvasLab1" width="540" height="340" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab1" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Khoảng cách cực tiểu: $d(M, (P)) = MH = 140$ px | Cạnh xiên $MK = 166.4$ px $\ge MH$
+          </div>
+        </div>
+
+        <!-- Mini Lab 2 -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🔬</div>
+          <h3>Lab 2: Đoạn Vuông Góc Chung Của Hai Đường Thẳng Chéo Nhau</h3>
+          <p>Mô phỏng 3D hình chóp $S.ABC$ có $SA \perp (ABC)$. Khám phá đoạn vuông góc chung giữa trục $SA$ và cạnh đáy $BC$, hoặc chuyển sang mô hình hai mặt phẳng song song.</p>
+          <div class="lab-controls">
+            <div style="display: flex; gap: 10px; justify-content: center; margin-bottom: 8px;">
+              <button class="btn-icon" id="btnModeSABC" style="background: rgba(99, 102, 241, 0.4); border: 1px solid #818cf8;">Hình Chóp $SA \perp (ABC)$</button>
+              <button class="btn-icon" id="btnModePlanes" style="background: rgba(6, 182, 212, 0.2); border: 1px solid #06b6d4;">Mặt Phẳng Song Song</button>
+            </div>
+            <label>Xoay góc nhìn 3D: <span id="valAngle">35</span>°</label>
+            <input type="range" id="sliderAngle" min="0" max="360" value="35">
+          </div>
+          <canvas id="canvasLab2" width="540" height="340" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab2" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Đoạn vuông góc chung: $AH \perp SA$ và $AH \perp BC \implies d(SA, BC) = AH$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Bài 26 Khoảng Cách</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm bám sát SGK Kết Nối Tri Thức. Phản hồi tức thì, rèn luyện kỹ năng giải toán không gian đỉnh cao!</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-score-item">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-item">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div id="quizContainer">
+        <!-- Render 10 câu trắc nghiệm bằng JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="arena-header" style="margin-bottom: 24px;">
+        <div>
+          <h2>🏆 Bảng Vàng Vinh Danh & Huy Hiệu Không Gian</h2>
+          <p>Tích lũy XP từ bài tập để mở khóa trọn bộ 5 huy hiệu và nhận Giấy Chứng Nhận Danh Dự A4.</p>
+        </div>
+      </div>
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="concept-card" id="badge-1" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌱</div>
+          <h4>Khởi Động Không Gian</h4>
+          <p>Mở khóa khi trả lời đúng câu hỏi đầu tiên (+20 XP).</p>
+        </div>
+        <div class="concept-card" id="badge-2" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">📐</div>
+          <h4>Bậc Thầy Hình Chiếu</h4>
+          <p>Mở khóa khi đạt 60 XP trong Đấu Trường.</p>
+        </div>
+        <div class="concept-card" id="badge-3" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">⚡</div>
+          <h4>Chuyên Gia Trực Giao</h4>
+          <p>Mở khóa khi đạt chuỗi liên tiếp 🔥 3 câu đúng.</p>
+        </div>
+        <div class="concept-card" id="badge-4" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌟</div>
+          <h4>Thống Lĩnh Khoảng Cách</h4>
+          <p>Mở khóa khi đạt từ 160 XP trở lên.</p>
+        </div>
+        <div class="concept-card" id="badge-5" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">👑</div>
+          <h4>Đại Kiện Tướng Hình Học 11</h4>
+          <p>Mở khóa khi trả lời xuất sắc 10/10 câu hỏi.</p>
+        </div>
+      </div>
+
+      <!-- Khung Chứng Nhận A4 -->
+      <div class="cert-container" id="gradCert" style="margin-top: 36px;">
+        <div class="cert-header">
+          <div class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-badge-star">⭐⭐⭐⭐⭐</div>
+        </div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+        <p class="cert-desc">Vinh danh học sinh xuất sắc đã hoàn thành toàn diện nội dung:</p>
+        <div class="cert-lesson-title">BÀI 26: KHOẢNG CÁCH (HÌNH HỌC KHÔNG GIAN 11)</div>
+        <div class="cert-student-name" id="certStudentName">Chiến Binh Logic</div>
+        <p class="cert-text">Đã nắm vững phương pháp tính khoảng cách từ điểm đến mặt phẳng, khoảng cách giữa hai đường chéo nhau và đạt thành tích cao trong Đấu Trường SGK.</p>
+        <div class="cert-footer">
+          <div class="cert-date" id="certDate">Đà Nẵng, ngày 21 tháng 10 năm 2026</div>
+          <div class="cert-sign">
+            <strong>GIÁO VIÊN BỘ MÔN TOÁN</strong>
+            <div style="font-style: italic; margin-top: 40px; color: #a5b4fc;">(Ký và ghi rõ họ tên)</div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai25/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 25: Hai MP Vuông Góc</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_bai27/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 27: Thể Tích Khối Đa Diện</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (KHÔNG HIỆN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-card">
+        <h3>Chọn Avatar Đại Diện</h3>
+        <p>Chọn nhân vật học tập để đồng hành cùng bạn:</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+          <button class="avatar-opt" data-avatar="🧙‍♂️" data-name="Phù Thủy Hình Học">🧙‍♂️ Phù Thủy Hình Học</button>
+          <button class="avatar-opt" data-avatar="🚀" data-name="Phi Hành Gia Vector">🚀 Phi Hành Gia Vector</button>
+          <button class="avatar-opt" data-avatar="🧠" data-name="Bộ Não Lượng Tử">🧠 Bộ Não Lượng Tử</button>
+          <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Không Gian">⚡ Tia Chớp Không Gian</button>
+          <button class="avatar-opt" data-avatar="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+          <button class="avatar-opt" data-avatar="🦄" data-name="Kỳ Lân Sáng Tạo">🦄 Kỳ Lân Sáng Tạo</button>
+          <button class="avatar-opt" data-avatar="🎯" data-name="Xạ Thủ Tiêu Cự">🎯 Xạ Thủ Tiêu Cự</button>
+        </div>
+        <div style="text-align: right; margin-top: 16px;">
+          <button class="btn-icon" id="btnCloseModal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script src="app.js"></script>
+</body>
+</html>

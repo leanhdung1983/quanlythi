@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 33: Đạo hàm cấp hai - Toán 11 KNTT</title>
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Đạo Hàm Cấp Hai & Gia Tốc</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương IX: Đạo Hàm • Bài 33</span>
+      <h1>ĐẠO HÀM CẤP HAI</h1>
+      <p>Khám phá khái niệm đạo hàm của đạo hàm, ý nghĩa cơ học gia tốc tức thời và các mô hình dao động điều hòa vật lí</p>
+    </section>
+
+    <!-- Section Navigation -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Bản Đồ Tri Thức -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Phần 1</span>
+            <h3>1. Định nghĩa đạo hàm cấp hai</h3>
+          </div>
+          <p>Cho hàm số $y = f(x)$ có đạo hàm tại mọi điểm thuộc một khoảng $(a; b)$. Khi đó $y' = f'(x)$ là một hàm số xác định trên $(a; b)$.</p>
+          <div class="formula-box">
+            <p>Nếu hàm số $y' = f'(x)$ lại có đạo hàm tại $x \in (a; b)$ thì đạo hàm đó được gọi là <strong>đạo hàm cấp hai</strong> của hàm số $y = f(x)$ tại $x$, kí hiệu là $y''$ hoặc $f''(x)$:</p>
+            <p>$$y'' = (y')' \quad \text{hoặc} \quad f''(x) = (f'(x))'$$</p>
+          </div>
+          <p>Tương tự, đạo hàm của đạo hàm cấp hai được gọi là đạo hàm cấp ba $y''' = (y'')'$, tổng quát là đạo hàm cấp $n$ ($n \in \mathbb{N}, n \ge 2$): $y^{(n)} = (y^{(n-1)})'$.</p>
+        </div>
+
+        <!-- Card 2 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Phần 2</span>
+            <h3>2. Đạo hàm cấp hai của một số hàm thông dụng</h3>
+          </div>
+          <div class="formula-box">
+            <p><strong>Hàm đa thức & phân thức:</strong></p>
+            <p>$y = x^n \implies y' = n x^{n-1} \implies y'' = n(n-1)x^{n-2}$</p>
+            <p>$y = \dfrac{1}{x} \implies y' = -\dfrac{1}{x^2} \implies y'' = \dfrac{2}{x^3} \quad (x \ne 0)$</p>
+          </div>
+          <div class="formula-box" style="margin-top: 10px;">
+            <p><strong>Hàm lượng giác:</strong></p>
+            <p>$y = \sin(\omega x) \implies y' = \omega \cos(\omega x) \implies y'' = -\omega^2 \sin(\omega x) = -\omega^2 y$</p>
+            <p>$y = \cos(\omega x) \implies y' = -\omega \sin(\omega x) \implies y'' = -\omega^2 \cos(\omega x) = -\omega^2 y$</p>
+          </div>
+          <div class="formula-box" style="margin-top: 10px;">
+            <p><strong>Hàm số mũ & lôgarit:</strong></p>
+            <p>$y = e^{ax} \implies y' = a e^{ax} \implies y'' = a^2 e^{ax}$</p>
+            <p>$y = \ln x \implies y' = \dfrac{1}{x} \implies y'' = -\dfrac{1}{x^2} \quad (x > 0)$</p>
+          </div>
+        </div>
+
+        <!-- Card 3 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Phần 3</span>
+            <h3>3. Ý nghĩa vật lí: Gia tốc tức thời</h3>
+          </div>
+          <p>Một chất điểm chuyển động thẳng có phương trình tọa độ $s = s(t)$ ($s$ tính bằng mét, $t$ tính bằng giây):</p>
+          <div class="formula-box">
+            <p><strong>Vận tốc tức thời</strong> của chất điểm tại thời điểm $t$ là:</p>
+            <p>$$v(t) = s'(t)$$</p>
+            <p><strong>Gia tốc tức thời</strong> của chất điểm tại thời điểm $t$ là:</p>
+            <p>$$a(t) = v'(t) = s''(t)$$</p>
+          </div>
+          <div class="rule-box gold" style="margin-top: 10px;">
+            <strong>Mối liên hệ chuyển động thẳng biến đổi đều:</strong>
+            <p>Phương trình $s(t) = s_0 + v_0 t + \dfrac{1}{2}at^2$ có:</p>
+            <p>$v(t) = s'(t) = v_0 + at$</p>
+            <p>$a(t) = s''(t) = a = \text{const}$ (gia tốc không đổi).</p>
+          </div>
+        </div>
+
+        <!-- Card 4 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Phần 4</span>
+            <h3>4. Ứng dụng trong dao động điều hòa</h3>
+          </div>
+          <p>Phương trình dao động điều hòa của con lắc lò xo hoặc sóng cơ học:</p>
+          <div class="formula-box">
+            <p>$$x(t) = A\cos(\omega t + \varphi)$$</p>
+            <p>Vận tốc tức thời: $v(t) = x'(t) = -\omega A \sin(\omega t + \varphi)$</p>
+            <p>Gia tốc tức thời: $a(t) = x''(t) = -\omega^2 A \cos(\omega t + \varphi) = -\omega^2 x(t)$</p>
+          </div>
+          <div class="rule-box gold" style="margin-top: 10px;">
+            <strong>Đặc điểm then chốt:</strong>
+            <p>Gia tốc luôn tỉ lệ thuận với độ dời li độ $x$ và hướng ngược lại về vị trí cân bằng: $a(t) = -\omega^2 x(t)$. Theo định luật II Newton, lực kéo về $F = ma = -m\omega^2 x$.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Phòng Thí Nghiệm -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Thí Nghiệm 1</span>
+            <h3>🧪 Trực Quan Hàm Số $f(x)$, $f'(x)$ và $f''(x)$</h3>
+          </div>
+          <p>Khảo sát đồng thời đồ thị hàm số bậc ba $f(x) = x^3 - 3x$, đạo hàm cấp một $f'(x) = 3x^2 - 3$ và đạo hàm cấp hai $f''(x) = 6x$. Kéo điểm $x_0$ để xem sự đổi dấu:</p>
+          <div class="lab-controls" style="margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <label><strong>Điểm $x_0$:</strong> <span id="x0Val" style="color: #38bdf8; font-weight: bold;">0.0</span></label>
+            <input type="range" id="x0Slider" min="-2.5" max="2.5" step="0.1" value="0.0" style="flex: 1; min-width: 150px;">
+          </div>
+          <canvas id="labCanvas1" width="540" height="340" style="width: 100%; border-radius: 12px; background: #0c1024; border: 1px solid rgba(99, 102, 241, 0.3); display: block;"></canvas>
+          <div class="formula-box" id="lab1Output" style="margin-top: 12px;">
+            <p>Giá trị hàm số: <span id="fValOut">$f(0) = 0$</span></p>
+            <p>Đạo hàm cấp một (hệ số góc tiếp tuyến): <span id="fPValOut">$f'(0) = -3$</span></p>
+            <p>Đạo hàm cấp hai (độ cong bề lõm): <span id="fPPValOut">$f''(0) = 0$ (Điểm uốn)</span></p>
+          </div>
+        </div>
+
+        <!-- Lab 2 -->
+        <div class="card concept-card">
+          <div class="card-header">
+            <span class="badge">Thí Nghiệm 2</span>
+            <h3>🌀 Dao Động Điều Hòa: Con Lắc, Vận Tốc & Gia Tốc</h3>
+          </div>
+          <p>Mô phỏng chuyển động điều hòa $x(t) = 4\cos(\pi t)$. Quan sát trực quan li độ $x$, vận tốc $v = x'$ và gia tốc $a = x'' = -\pi^2 x$:</p>
+          <div class="lab-controls" style="margin: 12px 0; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;">
+            <button class="btn-primary" id="btnPlayOsc">▶️ Bắt đầu dao động</button>
+            <button class="btn-primary" id="btnResetOsc" style="background: rgba(239,68,68,0.3); border-color: #ef4444;">🔄 Đặt lại</button>
+            <label style="margin-left: 10px;"><strong>Thời gian $t$:</strong> <span id="tVal" style="color: #38bdf8; font-weight: bold;">0.00 s</span></label>
+          </div>
+          <canvas id="labCanvas2" width="540" height="340" style="width: 100%; border-radius: 12px; background: #0c1024; border: 1px solid rgba(99, 102, 241, 0.3); display: block;"></canvas>
+          <div class="formula-box" id="lab2Output" style="margin-top: 12px;">
+            <p>Li độ: <span id="xOscOut">$x(0) = 4.0\text{ cm}$</span></p>
+            <p>Vận tốc: <span id="vOscOut">$v(0) = x'(0) = 0.0\text{ cm/s}$</span></p>
+            <p>Gia tốc: <span id="aOscOut">$a(0) = x''(0) = -39.5\text{ cm/s}^2$</span></p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Đấu Trường SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Đạo Hàm Cấp Hai</h2>
+          <p>Thử thách 10 câu trắc nghiệm bao phủ toàn diện lý thuyết và bài tập 9.13 - 9.17 SGK</p>
+        </div>
+        <div class="arena-score-box">
+          <div>Tiến Độ: <span id="arenaProgress" style="font-weight: bold; color: #38bdf8;">0/10</span></div>
+          <div>Điểm Arena: <span id="arenaScore" style="font-weight: bold; color: #34d399;">0 XP</span></div>
+        </div>
+      </div>
+      <div id="quizContainer">
+        <!-- Rendered by JS -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Huy Hiệu & Vinh Danh -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-grid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <h3>Khởi Nguồn Gia Tốc</h3>
+          <p>Tìm hiểu định nghĩa đạo hàm cấp hai và bảng công thức</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <h3>Nhà Vật Lí Lượng Tử</h3>
+          <p>Tương tác với phòng thí nghiệm dao động điều hòa</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <h3>Chuỗi Thần Tốc</h3>
+          <p>Đạt chuỗi đúng 3 câu liên tiếp trong đấu trường</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">⚡</div>
+          <h3>Bậc Thầy Gia Tốc</h3>
+          <p>Đạt từ 160 XP trở lên trong Đấu Trường SGK</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <h3>Đại Kiện Tướng Đạo Hàm</h3>
+          <p>Đạt điểm tuyệt đối 10/10 câu hỏi của đấu trường</p>
+          <span class="badge-status locked">Chưa đạt</span>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <div class="cert-school">SỞ GIÁO DỤC VÀ ĐÀO TẠO THÀNH PHỐ ĐÀ NẴNG</div>
+          <div class="cert-title">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ TOÁN HỌC TRỰC QUAN</div>
+        </div>
+        <div class="cert-body">
+          <div class="cert-award">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</div>
+          <p class="cert-intro">Chứng nhận học sinh:</p>
+          <h2 class="cert-name" id="certStudentName">Chiến Binh Logic</h2>
+          <p class="cert-desc">Đã hoàn thành xuất sắc các nội dung lý thuyết, thí nghiệm tương tác và bộ câu hỏi trắc nghiệm của</p>
+          <p class="cert-lesson-title"><strong>BÀI 33: ĐẠO HÀM CẤP HAI</strong></p>
+          <p class="cert-curriculum">Thuộc chương trình Toán 11 - Kết Nối Tri Thức Với Cuộc Sống</p>
+        </div>
+        <div class="cert-footer">
+          <div class="cert-date">Đà Nẵng, ngày cấp chứng nhận hệ thống</div>
+          <div class="cert-signatures">
+            <div class="sig-block">
+              <span class="sig-role">GIÁO VIÊN BỘ MÔN</span>
+              <div class="sig-seal">BAN TOÁN THPT</div>
+              <span class="sig-name">Tổ Toán - Tin học</span>
+            </div>
+            <div class="sig-block">
+              <span class="sig-role">HIỆU TRƯỞNG</span>
+              <div class="sig-seal">ĐÃ CHỨNG THỰC</div>
+              <span class="sig-name">Hội đồng Sư phạm Nhà trường</span>
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 25px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai32/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 32: Quy Tắc Đạo Hàm</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_ontap_chuong9/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương IX</span>
+      </a>
+    </footer>
+
+    <!-- Avatar Modal -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-box">
+        <h3>Chọn Avatar Đại Diện</h3>
+        <p>Chọn biểu tượng phong cách cho chiến binh học tập của bạn:</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <button class="avatar-opt" data-avatar="👑">👑 Vương Giả</button>
+          <button class="avatar-opt" data-avatar="🧙‍♂️">🧙‍♂️ Pháp Sư</button>
+          <button class="avatar-opt" data-avatar="🚀">🚀 Phi Hành Gia</button>
+          <button class="avatar-opt" data-avatar="⚡">⚡ Siêu Nhân</button>
+          <button class="avatar-opt" data-avatar="🦁">🦁 Sư Tử</button>
+          <button class="avatar-opt" data-avatar="🦊">🦊 Hồ Ly</button>
+          <button class="avatar-opt" data-avatar="🦉">🦉 Cú Thông Thái</button>
+          <button class="avatar-opt" data-avatar="🤖">🤖 Robot AI</button>
+        </div>
+        <button class="btn-primary" id="closeAvatarModal" style="margin-top: 15px;">Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

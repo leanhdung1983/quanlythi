@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 30: Công Thức Nhân Xác Suất Cho Hai Biến Cố Độc Lập - Toán 11 KNTT | Học Liệu Số Cao Cấp</title>
+  <!-- KaTeX Offline Cục Bộ -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <!-- File CSS Đồng Bộ Cyber Logic Chuẩn Bài 1 -->
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Bậc Thầy Quy Tắc Nhân 11</span>
+        </div>
+      </div>
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương VIII: Các Quy Tắc Tính Xác Suất • Bài 30</span>
+      <h1>BÀI 30: CÔNG THỨC NHÂN XÁC SUẤT CHO HAI BIẾN CỐ ĐỘC LẬP</h1>
+      <p>Làm chủ quy tắc nhân xác suất cho các biến cố độc lập, ứng dụng sơ đồ hình cây để phân tích các bài toán chuỗi sự kiện và tính xác suất biến cố đối hiệu quả.</p>
+    </section>
+
+    <!-- KHỐI 3: THANH NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Thẻ 1: Công thức nhân cơ bản -->
+        <div class="concept-card">
+          <div class="card-icon">✖️</div>
+          <h3>1. Công Thức Nhân Xác Suất</h3>
+          <p>Nếu hai biến cố $A$ và $B$ độc lập với nhau thì xác suất của biến cố giao $AB$ bằng tích xác suất của hai biến cố đó:</p>
+          <div class="formula-box">$$P(AB) = P(A) \cdot P(B)$$</div>
+          <div class="rule-box gold">
+            <strong>Dấu hiệu độc lập:</strong> Với hai biến cố $A$ và $B$ có xác suất khác 0 và khác 1, $A$ và $B$ độc lập khi và chỉ khi $P(AB) = P(A) \cdot P(B)$. Nếu $P(AB) \neq P(A) \cdot P(B)$ thì $A$ và $B$ không độc lập.
+          </div>
+        </div>
+
+        <!-- Thẻ 2: Hệ quả các biến cố đối -->
+        <div class="concept-card">
+          <div class="card-icon">🌲</div>
+          <h3>2. Sơ Đồ Hình Cây & Các Biến Cố Phụ Thuộc</h3>
+          <p>Khi $A$ và $B$ độc lập, các cặp biến cố đối đi kèm cũng hoàn toàn độc lập, cho ta hệ thức xác suất phân nhánh hình cây:</p>
+          <div class="formula-box">$$\begin{cases} P(A\overline{B}) = P(A) \cdot P(\overline{B}) = P(A)(1 - P(B)) \\ P(\overline{A}B) = P(\overline{A}) \cdot P(B) = (1 - P(A))P(B) \\ P(\overline{A}\,\overline{B}) = P(\overline{A}) \cdot P(\overline{B}) = (1 - P(A))(1 - P(B)) \end{cases}$$</div>
+          <div class="rule-box gold">
+            <strong>Tổng các nhánh cây:</strong> $P(AB) + P(A\overline{B}) + P(\overline{A}B) + P(\overline{A}\,\overline{B}) = 1$.
+          </div>
+        </div>
+
+        <!-- Thẻ 3: Xác suất có ít nhất một biến cố xảy ra -->
+        <div class="concept-card">
+          <div class="card-icon">🎯</div>
+          <h3>3. Công Thức "Có Ít Nhất Một Biến Cố Xảy Ra"</h3>
+          <p>Cho $A$ và $B$ là hai biến cố độc lập. Xác suất để có ít nhất một trong hai biến cố xảy ra được tính cực nhanh bằng biến cố đối:</p>
+          <div class="formula-box">$$P(A \cup B) = 1 - P(\overline{A}\,\overline{B}) = 1 - (1 - P(A))(1 - P(B))$$</div>
+          <div class="rule-box gold">
+            <strong>Mở rộng cho $n$ biến cố độc lập:</strong> Xác suất để có ít nhất một biến cố xảy ra trong số $A_1, A_2, \dots, A_n$ độc lập là:<br>
+            $$P\left(\bigcup_{i=1}^n A_i\right) = 1 - P(\overline{A}_1) \cdot P(\overline{A}_2) \dots P(\overline{A}_n)$$
+          </div>
+        </div>
+
+        <!-- Thẻ 4: Bài toán xạ thủ & Vận động viên -->
+        <div class="concept-card">
+          <div class="card-icon">🏆</div>
+          <h3>4. Bài Toán Đại Hội Thể Thao (SGK trang 76)</h3>
+          <p>An thi môn Bắn súng ($P(A) = 0,8$), Bình thi môn Bơi lội ($P(B) = 0,9$). Vì hai môn thi hoàn toàn độc lập:</p>
+          <div class="formula-box">$$P(AB) = 0,8 \cdot 0,9 = 0,72 = 72\%$$</div>
+          <div class="rule-box gold">
+            <strong>Xác suất có đúng 1 bạn đoạt giải:</strong><br>
+            $$P = P(A\overline{B}) + P(\overline{A}B) = 0,8 \cdot 0,1 + 0,2 \cdot 0,9 = 0,08 + 0,18 = 0,26 = 26\%$$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="card-grid">
+        <!-- Lab 1: Trực quan hóa Sơ đồ hình cây -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🧪</div>
+          <h3>Lab 1: Sơ Đồ Hình Cây Tương Tác 2 Tầng</h3>
+          <p>Kéo các thanh trượt $P(A)$ và $P(B)$ để quan sát sơ đồ phân nhánh hình cây và tính toán xác suất 4 kịch bản độc lập.</p>
+          <div class="lab-controls">
+            <label>Xác suất $P(A)$ (An thắng): <span id="valPA">0.80</span></label>
+            <input type="range" id="sliderPA" min="0.10" max="0.95" value="0.80" step="0.05">
+            <label>Xác suất $P(B)$ (Bình thắng): <span id="valPB">0.90</span></label>
+            <input type="range" id="sliderPB" min="0.10" max="0.95" value="0.90" step="0.05">
+          </div>
+          <canvas id="canvasLab1" width="540" height="340" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab1" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Cả 2 cùng thắng: $P(AB) = 0.72$ | Ít nhất 1 người thắng: $P(A \cup B) = 0.98$
+          </div>
+        </div>
+
+        <!-- Lab 2: Đấu trường bắn súng bia Olympic -->
+        <div class="concept-card lab-card">
+          <div class="card-icon">🎯</div>
+          <h3>Lab 2: Mô Phỏng Đấu Trường Bắn Súng Độc Lập</h3>
+          <p>Hai xạ thủ cùng bắn độc lập vào bia với xác suất trúng $P(A)$ và $P(B)$. Thực hiện 500 phát súng ngẫu nhiên để thống kê!</p>
+          <div class="lab-controls">
+            <label>Số lượt bắn mô phỏng: <span id="valShots">500</span></label>
+            <input type="range" id="sliderShots" min="100" max="2000" value="500" step="100">
+            <button class="btn-primary" id="btnShoot" style="margin-top: 8px; width: 100%; justify-content: center;">🔥 Bắn Mô Phỏng Thực Tế</button>
+          </div>
+          <canvas id="canvasLab2" width="540" height="340" style="background: #0d121f; border-radius: 12px; width: 100%; max-width: 540px; display: block; margin: 12px auto;"></canvas>
+          <div class="lab-output" id="outLab2" style="text-align: center; font-weight: bold; margin-top: 10px;">
+            Thực nghiệm: Cả hai cùng trúng $\approx 72\%$ | Đúng 1 người trúng $\approx 26\%$
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Bài 30 Công Thức Nhân</h2>
+          <p>Thử thách 10 câu hỏi trắc nghiệm bám sát SGK Kết Nối Tri Thức. Tương tác tức thì, rèn luyện quy tắc nhân và sơ đồ cây!</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-score-item">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-item">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div id="quizContainer">
+        <!-- Render 10 câu trắc nghiệm bằng JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="arena-header" style="margin-bottom: 24px;">
+        <div>
+          <h2>🏆 Bảng Vàng Vinh Danh & Huy Hiệu Quy Tắc Nhân</h2>
+          <p>Tích lũy XP từ bài tập để mở khóa trọn bộ 5 huy hiệu và nhận Giấy Chứng Nhận Danh Dự A4.</p>
+        </div>
+      </div>
+      <div class="card-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+        <div class="concept-card" id="badge-1" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌱</div>
+          <h4>Hạt Mầm Nhân Độc Lập</h4>
+          <p>Mở khóa khi trả lời đúng câu hỏi đầu tiên (+20 XP).</p>
+        </div>
+        <div class="concept-card" id="badge-2" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">✖️</div>
+          <h4>Thợ Phép Nhân Xác Suất</h4>
+          <p>Mở khóa khi đạt 60 XP trong Đấu Trường.</p>
+        </div>
+        <div class="concept-card" id="badge-3" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🌲</div>
+          <h4>Kiến Trúc Sư Sơ Đồ Cây</h4>
+          <p>Mở khóa khi đạt chuỗi liên tiếp 🔥 3 câu đúng.</p>
+        </div>
+        <div class="concept-card" id="badge-4" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">🎯</div>
+          <h4>Thiện Xạ Độc Lập</h4>
+          <p>Mở khóa khi đạt từ 160 XP trở lên.</p>
+        </div>
+        <div class="concept-card" id="badge-5" style="text-align: center; opacity: 0.4;">
+          <div style="font-size: 3rem; margin-bottom: 10px;">👑</div>
+          <h4>Đại Pháp Sư Xác Suất</h4>
+          <p>Mở khóa khi trả lời xuất sắc 10/10 câu hỏi.</p>
+        </div>
+      </div>
+
+      <!-- Khung Chứng Nhận A4 -->
+      <div class="cert-container" id="gradCert" style="margin-top: 36px;">
+        <div class="cert-header">
+          <div class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</div>
+          <div class="cert-badge-star">⭐⭐⭐⭐⭐</div>
+        </div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+        <p class="cert-desc">Vinh danh học sinh xuất sắc đã hoàn thành toàn diện nội dung:</p>
+        <div class="cert-lesson-title">BÀI 30: CÔNG THỨC NHÂN XÁC SUẤT (TOÁN 11)</div>
+        <div class="cert-student-name" id="certStudentName">Chiến Binh Logic</div>
+        <p class="cert-text">Đã nắm vững phương pháp áp dụng công thức nhân xác suất cho biến cố độc lập, phân tích sơ đồ cây và đạt thành tích xuất sắc trong Đấu Trường SGK.</p>
+        <div class="cert-footer">
+          <div class="cert-date" id="certDate">Đà Nẵng, ngày 21 tháng 10 năm 2026</div>
+          <div class="cert-sign">
+            <strong>GIÁO VIÊN BỘ MÔN TOÁN</strong>
+            <div style="font-style: italic; margin-top: 40px; color: #a5b4fc;">(Ký và ghi rõ họ tên)</div>
+          </div>
+        </div>
+        <div style="text-align: center; margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai29/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 29: Cộng Xác Suất</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_ontap_chuong8/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương VIII</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (KHÔNG HIỆN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-card">
+        <h3>Chọn Avatar Đại Diện</h3>
+        <p>Chọn nhân vật học tập để đồng hành cùng bạn:</p>
+        <div class="avatar-grid" id="avatarGrid">
+          <button class="avatar-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+          <button class="avatar-opt" data-avatar="🎯" data-name="Thiện Xạ Độc Lập">🎯 Thiện Xạ Độc Lập</button>
+          <button class="avatar-opt" data-avatar="🌲" data-name="Phù Thủy Sơ Đồ Cây">🌲 Phù Thủy Sơ Đồ Cây</button>
+          <button class="avatar-opt" data-avatar="🧠" data-name="Bộ Não Lượng Tử">🧠 Bộ Não Lượng Tử</button>
+          <button class="avatar-opt" data-avatar="⚡" data-name="Tia Chớp Thống Kê">⚡ Tia Chớp Thống Kê</button>
+          <button class="avatar-opt" data-avatar="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+          <button class="avatar-opt" data-avatar="🌟" data-name="Ngôi Sao KNTT">🌟 Ngôi Sao KNTT</button>
+          <button class="avatar-opt" data-avatar="🏊" data-name="Kình Ngư Olympic">🏊 Kình Ngư Olympic</button>
+        </div>
+        <div style="text-align: right; margin-top: 16px;">
+          <button class="btn-icon" id="btnCloseModal">Đóng</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCRIPT LOGIC -->
+  <script src="app.js"></script>
+</body>
+</html>

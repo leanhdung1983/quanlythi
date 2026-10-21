@@ -1,0 +1,358 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 20: Hàm Số Mũ &amp; Hàm Số Lôgarit - Toán 11 Kết Nối Tri Thức</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- Master HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Khảo Sát Hàm Số Mũ</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG VI • HÀM SỐ MŨ &amp; HÀM SỐ LÔGARIT • BÀI 20 (SGK TRANG 16 – 19)</span>
+      <h1>BÀI 20: HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT</h1>
+      <p>
+        Khảo sát toàn diện hai lớp hàm số giải tích trụ cột: Hàm số mũ $y = a^x$ và Hàm số lôgarit $y = \log_a x$. Nắm vững tập xác định, tập giá trị, chiều biến thiên, đường tiệm cận, tính đối xứng qua đường thẳng $y = x$ và các mô hình tăng trưởng dân số, phân rã hạt nhân, đường cong quên lãng Ebbinghaus.
+      </p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Thẻ 1: Hàm số mũ -->
+        <div class="concept-card">
+          <div class="card-glow"></div>
+          <h3>1. Hàm Số Mũ $y = a^x$ ($0 < a \ne 1$)</h3>
+          <p>
+            Hàm số mũ cơ số $a$ biểu diễn sự tăng trưởng hoặc suy giảm lũy thừa theo biến số $x \in \mathbb{R}$:
+          </p>
+          <div class="formula-box">
+            $$y = a^x \quad (a > 0, a \ne 1)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Bảng đặc trưng hàm số mũ:</strong>
+            <ul>
+              <li><strong>Tập xác định:</strong> $D = \mathbb{R}$.</li>
+              <li><strong>Tập giá trị:</strong> $T = (0; +\infty)$ (đồ thị luôn nằm hoàn toàn phía trên trục hoành).</li>
+              <li><strong>Điểm đặc biệt:</strong> Luôn đi qua $(0; 1)$ và $(1; a)$.</li>
+              <li><strong>Chiều biến thiên &amp; Tiệm cận:</strong>
+                <ul>
+                  <li>Khi $a > 1$: Đồng biến trên $\mathbb{R}$; tiệm cận ngang $y = 0$ khi $x \to -\infty$.</li>
+                  <li>Khi $0 < a < 1$: Nghịch biến trên $\mathbb{R}$; tiệm cận ngang $y = 0$ khi $x \to +\infty$.</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Thẻ 2: Hàm số lôgarit -->
+        <div class="concept-card">
+          <div class="card-glow"></div>
+          <h3>2. Hàm Số Lôgarit $y = \log_a x$ ($0 < a \ne 1$)</h3>
+          <p>
+            Hàm số lôgarit là hàm ngược của hàm số mũ, chuyển thang đo nhân thành thang đo cộng:
+          </p>
+          <div class="formula-box">
+            $$y = \log_a x \quad (x > 0, a > 0, a \ne 1)$$
+          </div>
+          <div class="rule-box gold">
+            <strong>Bảng đặc trưng hàm số lôgarit:</strong>
+            <ul>
+              <li><strong>Tập xác định:</strong> $D = (0; +\infty)$ (bắt buộc biểu thức trong logarit phải dương).</li>
+              <li><strong>Tập giá trị:</strong> $T = \mathbb{R}$.</li>
+              <li><strong>Điểm đặc biệt:</strong> Luôn đi qua $(1; 0)$ và $(a; 1)$.</li>
+              <li><strong>Chiều biến thiên &amp; Tiệm cận:</strong>
+                <ul>
+                  <li>Khi $a > 1$: Đồng biến trên $(0; +\infty)$; tiệm cận đứng $x = 0$ (trục $Oy$) khi $x \to 0^+$.</li>
+                  <li>Khi $0 < a < 1$: Nghịch biến trên $(0; +\infty)$; tiệm cận đứng $x = 0$ (trục $Oy$) khi $x \to 0^+$.</li>
+                </ul>
+              </li>
+            </ul>
+          </div>
+        </div>
+
+        <!-- Thẻ 3: Tính đối xứng gương qua y = x -->
+        <div class="concept-card">
+          <div class="card-glow"></div>
+          <h3>3. Tính Đối Xứng Soi Gương Qua Đường Thẳng $y = x$</h3>
+          <p>
+            Do $y = a^x \iff x = \log_a y$, hai hàm số mũ và lôgarit cùng cơ số là hai hàm ngược nhau.
+          </p>
+          <div class="formula-box">
+            $$M(u; v) \in \text{Đồ thị } y = a^x \iff M'(v; u) \in \text{Đồ thị } y = \log_a x$$
+          </div>
+          <p>
+            Do đó, đồ thị của hàm số $y = a^x$ và đồ thị của hàm số $y = \log_a x$ <strong>đối xứng nhau qua đường phân giác $y = x$</strong> của góc phần tư thứ nhất.
+          </p>
+          <div class="rule-box gold">
+            <strong>Mẹo nhận diện nhanh:</strong> Điểm $(0; 1)$ trên đồ thị hàm mũ đối xứng với điểm $(1; 0)$ trên đồ thị hàm lôgarit qua trục $y = x$.
+          </div>
+        </div>
+
+        <!-- Thẻ 4: Các mô hình toán học thực tế -->
+        <div class="concept-card">
+          <div class="card-glow"></div>
+          <h3>4. Mô Hình Tăng Trưởng &amp; Suy Giảm Sinh Học - Vật Lí</h3>
+          <p>
+            <strong>Mô hình tăng trưởng dân số liên tục (SGK trang 16):</strong>
+          </p>
+          <div class="formula-box">
+            $$A = P e^{rt} \quad (P: \text{dân số gốc}, r: \text{tỉ lệ tăng hàng năm}, t: \text{số năm})$$
+          </div>
+          <p>
+            <strong>Mô hình phân rã phóng xạ (SGK trang 19):</strong>
+          </p>
+          <div class="formula-box">
+            $$m(t) = m_0 e^{-kt} \quad (m_0: \text{khối lượng ban đầu}, k: \text{hằng số phân rã})$$
+          </div>
+          <p>
+            <strong>Đường cong quên lãng Ebbinghaus:</strong> Khả năng nhớ danh sách kiến thức suy giảm theo hàm logarit $M(t) = 75 - 20\ln(t+1)$ (%).
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-container">
+        <!-- Lab 1: Soi gương đối xứng qua y = x -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-badge">THÍ NGHIỆM 1</span>
+            <h3>🪞 Đồ Thị Soi Gương Đối Xứng Qua $y = x$: $y = a^x$ vs $y = \log_a x$</h3>
+            <p>Khảo sát đồng thời đồ thị hàm số mũ và lôgarit trên cùng hệ trục toạ độ. Kéo cơ số $a$ để thấy rõ sự biến đổi hình học và tính đối xứng qua đường thẳng $y = x$.</p>
+          </div>
+
+          <div class="lab-controls">
+            <div class="control-group">
+              <label>Cơ số $a$: <span id="mirrorBaseVal" class="val-highlight">2.0</span></label>
+              <input type="range" id="mirrorBaseSlider" min="0.2" max="3.5" step="0.1" value="2.0">
+            </div>
+            <div class="control-group">
+              <label>Toạ độ điểm $x_0$ trên hàm mũ: <span id="pointXVal" class="val-highlight">1.0</span></label>
+              <input type="range" id="pointXSlider" min="-1.5" max="2.0" step="0.1" value="1.0">
+            </div>
+            <div class="control-group">
+              <button class="btn-primary" id="btnToggleInvert" style="align-self: flex-end; padding: 6px 14px;">🔄 Chuyển $a \leftrightarrow 1/a$</button>
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="mirrorCanvas" width="900" height="420"></canvas>
+          </div>
+
+          <div class="lab-output" id="mirrorOutput">
+            Đang tải dữ liệu đồ thị đối xứng...
+          </div>
+        </div>
+
+        <!-- Lab 2: Đường cong Ebbinghaus & Phóng xạ -->
+        <div class="lab-card">
+          <div class="lab-header">
+            <span class="lab-badge">THÍ NGHIỆM 2</span>
+            <h3>🧠 Mô Phỏng Đường Cong Quên Lãng Ebbinghaus &amp; Phân Rã Hạt Nhân</h3>
+            <p>Trực quan hóa sự suy giảm trí nhớ theo hàm lôgarit $M(t) = 75 - 20\ln(t+1)$ và sự phân rã phóng xạ theo hàm mũ suy giảm $m(t) = 13e^{-0{,}015t}$.</p>
+          </div>
+
+          <div class="lab-controls">
+            <div class="control-group">
+              <label>Thời gian $t$ (Tháng / Ngày): <span id="timeVal" class="val-highlight">6</span></label>
+              <input type="range" id="timeSlider" min="0" max="60" step="1" value="6">
+            </div>
+            <div class="control-group">
+              <label>Chế độ khảo sát:</label>
+              <select id="modeSelect" class="form-select">
+                <option value="ebbinghaus" selected>Đường cong quên lãng M(t) = 75 - 20ln(t+1) [%]</option>
+                <option value="decay">Phân rã phóng xạ m(t) = 13e^(-0.015t) [kg]</option>
+                <option value="population">Dân số Việt Nam A(t) = 97.34e^(0.0091t) [Triệu người]</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="canvas-wrap">
+            <canvas id="appCanvas" width="900" height="380"></canvas>
+          </div>
+
+          <div class="lab-output" id="appOutput">
+            Đang tải mô phỏng thực tế...
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường Tri Thức: Hàm Số Mũ &amp; Lôgarit</h2>
+          <p>Chinh phục 10 thử thách trắc nghiệm tinh tuyển từ hệ thống bài tập SGK Toán 11 Kết Nối Tri Thức (Bài 6.15 – 6.19).</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-text" id="arenaProgress">Tiến Độ: 0/10</span>
+          <span class="arena-score-text" id="arenaScore">Điểm Arena: 0 XP</span>
+        </div>
+      </div>
+
+      <div class="quiz-grid" id="quizContainer">
+        <!-- Render tự động bởi JS -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badges-showcase">
+        <h2>🏆 Hệ Thống Huy Hiệu &amp; Vinh Danh</h2>
+        <p>Hoàn thành các nhiệm vụ học tập để thắp sáng huy hiệu và nhận Giấy Chứng Nhận Tốt Nghiệp Bài Học!</p>
+
+        <div class="badge-grid">
+          <div class="badge-card locked" id="badge-1">
+            <div class="badge-icon">📖</div>
+            <h4>Người Khởi Đầu</h4>
+            <p>Khám phá toàn bộ Bản Đồ Tri Thức</p>
+          </div>
+          <div class="badge-card locked" id="badge-2">
+            <div class="badge-icon">🪞</div>
+            <h4>Gương Soi Toạ Độ</h4>
+            <p>Trải nghiệm Đồ Thị Đối Xứng Soi Gương</p>
+          </div>
+          <div class="badge-card locked" id="badge-3">
+            <div class="badge-icon">🧠</div>
+            <h4>Nhà Khoa Học Tự Nhiên</h4>
+            <p>Khảo sát Mô Hình Ebbinghaus &amp; Phóng Xạ</p>
+          </div>
+          <div class="badge-card locked" id="badge-4">
+            <div class="badge-icon">⚔️</div>
+            <h4>Dũng Sĩ Arena</h4>
+            <p>Đạt từ 160 XP trở lên trong Đấu Trường</p>
+          </div>
+          <div class="badge-card locked" id="badge-5">
+            <div class="badge-icon">👑</div>
+            <h4>Thủ Khoa Hàm Mũ &amp; Logarit</h4>
+            <p>Xuất sắc vượt qua 10/10 câu hỏi Đấu Trường</p>
+          </div>
+        </div>
+
+        <!-- Giấy chứng nhận A4 -->
+        <div class="cert-container" id="gradCert">
+          <div class="cert-border">
+            <div class="cert-inner">
+              <div class="cert-header">
+                <h3>TRƯỜNG THPT LƯƠNG THẾ VINH</h3>
+                <h2>GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h2>
+                <div class="cert-line"></div>
+              </div>
+
+              <div class="cert-body">
+                <p>Chứng nhận học sinh:</p>
+                <h1 id="certStudentName">Chiến Binh Logic</h1>
+                <p>Đã hoàn thành xuất sắc chuyên đề tương tác:</p>
+                <h3>BÀI 20: HÀM SỐ MŨ VÀ HÀM SỐ LÔGARIT</h3>
+                <p>Thuộc Chương VI: Hàm số mũ và hàm số lôgarit — Toán 11 Kết Nối Tri Thức</p>
+                <div class="cert-metrics">
+                  <span>Tổng Điểm: <strong id="certXP">0 XP</strong></span> •
+                  <span>Cấp Bậc: <strong id="certTitle">Chuyên Gia Khảo Sát</strong></span> •
+                  <span>Đánh Giá: <strong id="certStatus">Hoàn Thành</strong></span>
+                </div>
+              </div>
+
+              <div class="cert-footer">
+                <div class="cert-sign">
+                  <span>Giáo Viên Bộ Môn</span>
+                  <strong>Tổ Toán THPT Lương Thế Vinh</strong>
+                </div>
+                <div class="cert-seal">
+                  <div class="seal-circle">THPT LTV<br>ĐÀ NẴNG</div>
+                  <span id="certDate">Đà Nẵng, ngày 21 tháng 10 năm 2026</span>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; margin-top: 20px;">
+            <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Footer Sequential Navigation -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai19/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 19: Lôgarit</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_bai21/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 21: PT & BPT Mũ - Lôgarit</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành</h3>
+      <div class="avatar-picker" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin: 16px 0;">
+        <button class="av-opt" data-avatar="👑" data-name="Chiến Binh Logic">👑 Chiến Binh</button>
+        <button class="av-opt" data-avatar="🧙‍♂️" data-name="Pháp Sư Đồ Thị">🧙‍♂️ Pháp Sư</button>
+        <button class="av-opt" data-avatar="🚀" data-name="Nhà Du Hành Hàm Mũ">🚀 Du Hành</button>
+        <button class="av-opt" data-avatar="🧠" data-name="Bác Học Ebbinghaus">🧠 Bác Học</button>
+        <button class="av-opt" data-avatar="⚡" data-name="Tia Chớp Lôgarit">⚡ Siêu Nhân</button>
+        <button class="av-opt" data-avatar="🎯" data-name="Thiện Xạ Tiệm Cận">🎯 Thiện Xạ</button>
+        <button class="av-opt" data-avatar="💎" data-name="Bậc Thầy Soi Gương">💎 Bậc Thầy</button>
+        <button class="av-opt" data-avatar="🌟" data-name="Thủ Khoa KNTT">🌟 Thủ Khoa</button>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%; justify-content: center;">Hoàn Tất</button>
+    </div>
+  </div>
+</body>
+</html>

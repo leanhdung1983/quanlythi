@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 20: Chu Vi và Diện Tích Tứ Giác - Toán 6 KNTT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">📐</div>
+      <h1 class="start-title">CHINH PHỤC CHU VI & DIỆN TÍCH</h1>
+      <p class="start-subtitle">Toán 6 • Bài 20: Chu vi và diện tích của một số tứ giác đã học</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật của bạn:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="🏡">🏡</button>
+        <button class="avatar-btn" data-avatar="📐">📐</button>
+        <button class="avatar-btn" data-avatar="🚜">🚜</button>
+        <button class="avatar-btn" data-avatar="🤖">🤖</button>
+        <button class="avatar-btn" data-avatar="👑">👑</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên nhà quy hoạch trẻ:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Kỹ Sư Trắc Địa Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU TÍNH TOÁN ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">🏡</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Kỹ Sư Trắc Địa Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Đo Đạc</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương IV: Một Số Hình Phẳng Trong Thực Tiễn • Bài 20</div>
+      <h1 class="hero-title">CHU VI VÀ DIỆN TÍCH CỦA MỘT SỐ TỨ GIÁC ĐÃ HỌC</h1>
+      <p class="hero-desc">
+        Nắm vững công thức và ý nghĩa hình học của chu vi và diện tích: hình chữ nhật, hình vuông, hình bình hành, hình thoi và hình thang cân để giải quyết mọi bài toán thực tế lát gạch, trồng hoa và đo đạc đất đai!
+      </p>
+    </section>
+
+    <!-- PHẦN 1: BẢNG CÔNG THỨC TOÀN DIỆN -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">📋</div>
+        <div>
+          <h2 class="section-title">1. Bảng Tra Cứu Công Thức Chu Vi & Diện Tích</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Tổng hợp trọn vẹn kiến thức SGK Kết Nối Tri Thức</span>
+        </div>
+      </div>
+
+      <div class="formulas-grid">
+        <!-- 1. Hình chữ nhật -->
+        <div class="formula-card">
+          <div class="formula-title">🔲 Hình Chữ Nhật (a, b)</div>
+          <div class="formula-content">
+            <div>Chu vi: <span class="formula-math">C = 2(a + b)</span></div>
+            <div>Diện tích: <span class="formula-math">S = a \cdot b</span></div>
+          </div>
+        </div>
+
+        <!-- 2. Hình vuông -->
+        <div class="formula-card">
+          <div class="formula-title">🟦 Hình Vuông (cạnh a)</div>
+          <div class="formula-content">
+            <div>Chu vi: <span class="formula-math">C = 4a</span></div>
+            <div>Diện tích: <span class="formula-math">S = a^2</span></div>
+          </div>
+        </div>
+
+        <!-- 3. Hình bình hành -->
+        <div class="formula-card">
+          <div class="formula-title">🔷 Hình Bình Hành (đáy a, cao h)</div>
+          <div class="formula-content">
+            <div>Chu vi: <span class="formula-math">C = 2(a + b)</span></div>
+            <div>Diện tích: <span class="formula-math">S = a \cdot h</span></div>
+          </div>
+        </div>
+
+        <!-- 4. Hình thoi -->
+        <div class="formula-card">
+          <div class="formula-title">💎 Hình Thoi (đường chéo m, n)</div>
+          <div class="formula-content">
+            <div>Chu vi: <span class="formula-math">C = 4a</span></div>
+            <div>Diện tích: <span class="formula-math">S = \frac{1}{2} m \cdot n</span></div>
+          </div>
+        </div>
+
+        <!-- 5. Hình thang cân -->
+        <div class="formula-card">
+          <div class="formula-title">🔶 Hình Thang Cân (đáy a, b; cao h)</div>
+          <div class="formula-content">
+            <div>Chu vi: <span class="formula-math">C = a + b + 2c</span></div>
+            <div>Diện tích: <span class="formula-math">S = \frac{(a + b) \cdot h}{2}</span></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 2: PHÒNG THÍ NGHIỆM ĐO ĐẠC TỨC THÌ -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🔬</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm: Máy Đo & Cắt Ghép Diện Tích</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Thay đổi kích thước để trực quan hóa cách tính diện tích</span>
+        </div>
+      </div>
+
+      <!-- LAB 1: MÁY TÍNH DIỆN TÍCH ĐA HÌNH -->
+      <div class="interactive-lab">
+        <div class="lab-title">🎛️ Thí Nghiệm 1: Máy Tính Diện Tích Trực Quan</div>
+        <div class="lab-desc">Chọn hình học muốn đo và kéo thanh trượt kích thước để quan sát hình vẽ và kết quả tính toán tự động:</div>
+
+        <div class="lab-controls">
+          <button class="lab-btn active" id="btn-select-bình-hành">Hình bình hành (S = a · h)</button>
+          <button class="lab-btn" id="btn-select-thoi">Hình thoi (S = ½ m · n)</button>
+          <button class="lab-btn" id="btn-select-thang">Hình thang cân (S = ½(a+b)h)</button>
+        </div>
+
+        <div class="lab-controls" id="dynamic-controls">
+          <!-- Rendered dynamically by app.js -->
+        </div>
+
+        <div class="shape-stage">
+          <svg id="calc-svg" width="360" height="220" viewBox="0 0 360 220"></svg>
+          <div class="shape-readout" id="calc-readout">Đang tính toán diện tích...</div>
+        </div>
+      </div>
+
+      <!-- LAB 2: MÔ PHỎNG CẮT GHÉP HÌNH BÌNH HÀNH -->
+      <div class="interactive-lab">
+        <div class="lab-title">✂️ Thí Nghiệm 2: Mô Phỏng Cắt Ghép Chứng Minh $S = a \cdot h$</div>
+        <div class="lab-desc">Kéo miếng tam giác vuông bị cắt ở bên trái sang ghép vào bên phải của hình bình hành để biến nó thành một hình chữ nhật có cùng chiều dài đáy $a$ và chiều rộng $h$!</div>
+
+        <div class="lab-controls">
+          <button class="lab-btn" id="btn-toggle-cut">✂️ Cắt Miếng Tam Giác Bên Trái</button>
+          <button class="lab-btn" id="btn-slide-triangle">➔ Di Chuyển & Ghép Sang Phải</button>
+          <button class="lab-btn" id="btn-reset-cut">🔄 Khôi phục ban đầu</button>
+        </div>
+
+        <div class="shape-stage">
+          <svg id="cut-svg" width="360" height="200" viewBox="0 0 360 200"></svg>
+          <div class="shape-readout" id="cut-readout">Hình bình hành có diện tích bằng đúng diện tích hình chữ nhật kích thước đáy $a$ và chiều cao $h$!</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PHẦN 3: ĐẤU TRƯỜNG LUYỆN TẬP SGK -->
+    <section class="lesson-card" id="luyen-tap">
+      <div class="section-header">
+        <div class="section-icon-badge">⚔️</div>
+        <div>
+          <h2 class="section-title">3. Đấu Trường Luyện Tập SGK (Bài 4.16 – 4.22)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Chinh phục 10 bài toán thực tế để tích lũy 10 sao và nhận Huy hiệu Danh dự</span>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quiz-list">
+        <!-- Rendered by app.js -->
+      </div>
+    </section>
+
+    <!-- PHẦN 4: HUY HIỆU & CHỨNG NHẬN -->
+    <section class="lesson-card" id="thanh-tich">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">Bảng Thành Tích & Huy Hiệu Vinh Dự</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa trọn bộ 5 huy hiệu đo đạc</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-card locked" id="badge-1">
+          <div class="badge-card-icon">🎛️</div>
+          <div class="badge-card-name">Thợ Đo Đa Năng</div>
+          <div class="badge-card-desc">Sử dụng máy tính đo đạc cả 3 loại tứ giác</div>
+        </div>
+        <div class="badge-card locked" id="badge-2">
+          <div class="badge-card-icon">✂️</div>
+          <div class="badge-card-name">Nhà Ghép Hình Tài Ba</div>
+          <div class="badge-card-desc">Cắt ghép thành công hình bình hành thành chữ nhật</div>
+        </div>
+        <div class="badge-card locked" id="badge-3">
+          <div class="badge-card-icon">🏡</div>
+          <div class="badge-card-name">Kiến Trúc Sư Lát Gạch</div>
+          <div class="badge-card-desc">Tính chuẩn xác diện tích sân vườn và chi phí gạch</div>
+        </div>
+        <div class="badge-card locked" id="badge-4">
+          <div class="badge-card-icon">🔥</div>
+          <div class="badge-card-name">Chiến Binh Bất Bại</div>
+          <div class="badge-card-desc">Đạt chuỗi combo 3 câu đúng liên tiếp</div>
+        </div>
+        <div class="badge-card locked" id="badge-5">
+          <div class="badge-card-icon">👑</div>
+          <div class="badge-card-name">Vua Đo Đạc Hình Học</div>
+          <div class="badge-card-desc">Chinh phục xuất sắc toàn bộ 10 câu SGK</div>
+        </div>
+      </div>
+
+      <!-- GIẤY CHỨNG NHẬN IN ĐƯỢC -->
+      <div class="certificate-wrapper" id="printable-cert">
+        <div class="cert-seal">📐</div>
+        <div class="cert-super-title">BỘ GIÁO DỤC VÀ ĐÀO TẠO • HỌC LIỆU SỐ TOÁN 6</div>
+        <h2 class="cert-title">GIẤY CHỨNG NHẬN VINH DANH</h2>
+        <p style="font-size: 1.1rem; color: #64748b;">Chứng nhận trao tặng cho kỹ sư trắc địa:</p>
+        <div class="cert-student-name" id="cert-name">Kỹ Sư Trắc Địa Lớp 6</div>
+        <p style="font-size: 1.15rem; color: #0369a1; max-width: 650px; margin: 0 auto;">
+          Đã xuất sắc hoàn thành trọn vẹn chương trình bài học tương tác:
+          <br><strong style="color: #0284c7; font-size: 1.25rem;">BÀI 20: CHU VI VÀ DIỆN TÍCH CỦA MỘT SỐ TỨ GIÁC ĐÃ HỌC</strong>
+          <br>Bộ sách Toán 6 - Kết Nối Tri Thức Với Cuộc Sống.
+        </p>
+
+        <div class="cert-stats-grid">
+          <div class="cert-stat-badge">Điểm số: <span id="cert-score">0</span> XP</div>
+          <div class="cert-stat-badge">Số sao: <span id="cert-stars">0</span> ⭐</div>
+          <div class="cert-stat-badge">Hạng: <span id="cert-rank">Tập Sự</span></div>
+          <div class="cert-stat-badge">Ngày cấp: <span id="cert-date">--/--/----</span></div>
+        </div>
+
+        <div style="margin-top: 35px; display: flex; justify-content: space-around; font-weight: 700; color: #475569;">
+          <div>
+            <p>Hệ Thống Đào Tạo Tương Tác</p>
+            <p style="margin-top: 30px; color: #0284c7;">(Đã ký điện tử)</p>
+          </div>
+          <div>
+            <p>Giáo Viên Bộ Môn Toán 6</p>
+            <p style="margin-top: 30px; color: #0284c7;">(Chứng nhận hoàn thành)</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="cert-actions">
+        <button onclick="window.print()" class="btn-cert btn-print">🖨️ In Giấy Chứng Nhận A4</button>
+        <button id="btn-replay-lesson" class="btn-cert btn-replay">🔄 Học Lại Bài Này</button>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai19/index.html" class="btn-cert btn-prev-lesson">⬅️ Bài 19: Hình chữ nhật, hình thoi...</a>
+        <a href="../bai_hoc_tuong_tac_toan_6_bai21/index.html" class="btn-cert btn-next-lesson">Bài 21: Hình có trục đối xứng ➔</a>
+      </div>
+    </section>
+  </main>
+
+  <script src="app.js"></script>
+</body>
+</html>

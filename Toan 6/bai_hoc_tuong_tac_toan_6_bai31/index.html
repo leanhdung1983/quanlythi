@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 31: Một Số Bài Toán Về Tỉ Số Và Tỉ Số Phần Trăm - Toán 6 KNTT Tập 2</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- MODAL BẮT ĐẦU -->
+  <div class="modal-overlay" id="start-modal">
+    <div class="start-card">
+      <div class="start-badge-icon">📊</div>
+      <h1 class="start-title">CHINH PHỤC TỈ SỐ & PHẦN TRĂM</h1>
+      <p class="start-subtitle">Toán 6 Tập 2 • Chương VII: Số thập phân • Bài 31 (SGK Trang 38)</p>
+
+      <span class="avatar-selector-label">Chọn nhân vật đồng hành:</span>
+      <div class="avatar-grid">
+        <button class="avatar-btn selected" data-avatar="📊">📊</button>
+        <button class="avatar-btn" data-avatar="🏦">🏦</button>
+        <button class="avatar-btn" data-avatar="🏷️">🏷️</button>
+        <button class="avatar-btn" data-avatar="🧂">🧂</button>
+        <button class="avatar-btn" data-avatar="🚀">🚀</button>
+      </div>
+
+      <div class="name-input-group">
+        <label for="student-name-input">Tên chuyên gia kinh tế số:</label>
+        <input type="text" id="student-name-input" placeholder="Nhập tên của em..." value="Chuyên Gia Tài Chính Lớp 6">
+      </div>
+
+      <button id="btn-enter-game" class="btn-start-game">BẮT ĐẦU KHÁM PHÁ ➔</button>
+    </div>
+  </div>
+
+  <!-- GAMIFIED STICKY HUD -->
+  <header class="hud-header">
+    <div class="hud-container">
+      <div class="hud-profile">
+        <div class="hud-avatar" id="hud-avatar-display">📊</div>
+        <div class="hud-info">
+          <div class="hud-name" id="hud-name-display">Chuyên Gia Tài Chính Lớp 6</div>
+          <div class="hud-rank" id="hud-rank-display">Tập Sự Tỉ Số</div>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-box score">
+          <span>⚡</span>
+          <span id="hud-score">0</span> XP
+        </div>
+        <div class="stat-box stars">
+          <span>⭐</span>
+          <span id="hud-stars">0</span>/10
+        </div>
+        <div class="stat-box streak">
+          <span>🔥</span>
+          <span id="hud-streak">0</span>
+        </div>
+      </div>
+
+      <div class="hud-controls">
+        <button id="btn-toggle-sound" class="btn-hud-tool">🔊 Âm thanh: BẬT</button>
+        <button id="btn-reset-game" class="btn-hud-tool">🔄 Đặt lại</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="main-wrapper">
+    <!-- HERO BANNER -->
+    <section class="hero-card">
+      <div class="hero-badge-tag">Chương VII • Số Thập Phân</div>
+      <h1 class="hero-title">BÀI 31: MỘT SỐ BÀI TOÁN VỀ TỈ SỐ VÀ TỈ SỐ PHẦN TRĂM</h1>
+      <p class="hero-desc">
+        Nắm trọn công thức tính tỉ số, tỉ số phần trăm, giải hai bài toán kinh điển: tìm giá trị phần trăm của một số và tìm một số khi biết giá trị phần trăm; áp dụng thực tế vào lãi suất ngân hàng, giảm giá siêu thị và thuế VAT!
+      </p>
+    </section>
+
+    <!-- SECTION 1: BẢN ĐỒ KIẾN THỨC & CÔNG THỨC -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">📈</div>
+        <div>
+          <h2 class="section-title">1. Bản Đồ Công Thức Trọng Tâm Bài 31</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Hệ thống định nghĩa và 2 bài toán phần trăm nền tảng</span>
+        </div>
+      </div>
+
+      <div class="rule-box">
+        <strong>📌 4 CÔNG THỨC VÀNG BẮT BUỘC THUỘC LÒNG:</strong>
+        <ul style="margin-left: 20px; margin-top: 8px;">
+          <li><strong>1. Tỉ số của hai số:</strong> Tỉ số của $a$ và $b$ ($b \ne 0$) là thương trong phép chia $a$ cho $b$, ký hiệu là $a : b$ hoặc $\frac{a}{b}$.</li>
+          <li><strong>2. Tỉ số phần trăm của hai số:</strong> Muốn tìm tỉ số phần trăm của $a$ và $b$, ta nhân $a$ với $100$ rồi chia cho $b$ và viết thêm kí hiệu $\%$ vào kết quả:
+            <br>$$\frac{a \cdot 100}{b}\%$$
+            Ví dụ: $40\text{ kg}$ nước biển chứa $2\text{ kg}$ muối $\implies$ tỉ số muối là $\frac{2 \cdot 100}{40}\% = 5\%$.
+          </li>
+          <li><strong>3. Bài toán 1 - Tìm giá trị phần trăm của một số:</strong> Muốn tìm $m\%$ của số $a$, ta tính:
+            <br>$$a \cdot \frac{m}{100}$$
+            Ví dụ: Gửi $150$ triệu với lãi suất $7,4\%$/năm $\implies$ Tiền lãi 1 năm = $150 \cdot \frac{7,4}{100} = 11,1$ triệu đồng.
+          </li>
+          <li><strong>4. Bài toán 2 - Tìm một số khi biết giá trị phần trăm của nó:</strong> Muốn tìm một số khi biết $m\%$ của nó bằng $b$, ta tính:
+            <br>$$b : \frac{m}{100}$$
+            Ví dụ: $1,5\%$ dân số là $1\,450\,000$ người Mường $\implies$ Dân số cả nước = $1\,450\,000 : \frac{1,5}{100} \approx 96,67$ triệu người.
+          </li>
+        </ul>
+      </div>
+
+      <div class="concept-grid">
+        <div class="concept-item">
+          <h3><span>🏷️</span> Giảm Giá & Thuế VAT</h3>
+          <p>Giá sau giảm = Giá gốc $\times (100\% - \text{Tỉ lệ giảm})$. Thuế VAT $10\%$ = Giá gốc $\times 10\%$.</p>
+        </div>
+        <div class="concept-item">
+          <h3><span>🏦</span> Lãi Suất Tiết Kiệm</h3>
+          <p>Tiền lãi = Tiền gửi $\times$ Lãi suất $\%$. Tổng tiền nhận = Tiền gửi + Tiền lãi.</p>
+        </div>
+        <div class="concept-item">
+          <h3><span>🗺️</span> Tỉ Lệ Bản Đồ</h3>
+          <p>Tỉ số giữa khoảng cách trên bản đồ và khoảng cách ngoài đời thực: $T = \frac{a}{b}$.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC (2 LABS) -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🧪</div>
+        <div>
+          <h2 class="section-title">2. Phòng Thí Nghiệm Trực Quan Hóa (Interactive Labs)</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mô phỏng máy tính lãi suất ngân hàng và phân tích giảm giá thực tế</span>
+        </div>
+      </div>
+
+      <div class="lab-container">
+        <!-- LAB 1: MÁY TÍNH LÃI SUẤT NGÂN HÀNG & PHẦN TRĂM -->
+        <div class="lab-box">
+          <div class="lab-title"><span>🏦</span> Lab 1: Máy Tính Lãi Suất Tiết Kiệm & Tỉ Số Phần Trăm (SGK 7.17, 7.18)</div>
+          <p class="lab-instruction">
+            Nhập số tiền gửi tiết kiệm và mức lãi suất năm để xem chi tiết tiền lãi nhận được và tổng tiền sau kỳ hạn!
+          </p>
+
+          <div class="ratio-stage">
+            <div class="ratio-inputs">
+              <label for="input-deposit" style="font-weight: 600; font-size: 0.9rem;">Số tiền gửi (triệu VNĐ):</label>
+              <input type="number" step="any" id="input-deposit" value="150">
+
+              <label for="input-rate" style="font-weight: 600; font-size: 0.9rem;">Lãi suất (% / năm):</label>
+              <input type="number" step="0.1" id="input-rate" value="7.4">
+
+              <div style="display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px;">
+                <button id="btn-quick-an" class="btn-hud-tool">Bác An gửi 150 tr (7,4%)</button>
+                <button id="btn-quick-25of8" class="btn-hud-tool">25% của 8</button>
+                <button id="btn-quick-75of180" class="btn-hud-tool">7,5% của 180</button>
+              </div>
+            </div>
+
+            <div class="ratio-results" id="ratio-results-box">
+              <div style="font-weight: 700; color: var(--primary);">Báo Cáo Tài Chính Dự Kiến:</div>
+              <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--border);">
+                <span>Tiền gửi ban đầu:</span>
+                <strong id="res-deposit-val">150 triệu VNĐ</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 4px 0; border-bottom: 1px dashed var(--border);">
+                <span>Tiền lãi sau 1 năm:</span>
+                <strong id="res-interest-val" style="color: #ea580c; font-size: 1.15rem;">11,1 triệu VNĐ</strong>
+              </div>
+              <div style="display: flex; justify-content: space-between; padding: 4px 0;">
+                <span>Tổng tiền nhận về:</span>
+                <strong id="res-total-val" style="color: #10b981; font-size: 1.25rem;">161,1 triệu VNĐ</strong>
+              </div>
+              <div id="res-calc-desc" style="font-size: 0.85rem; color: #64748b; margin-top: 5px;">
+                Công thức: $150 \times \frac{7,4}{100} = 11,1$ triệu VNĐ.
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- LAB 2: MÔ PHỎNG GIẢM GIÁ SIÊU THỊ & NƯỚC BIỂN MUỐI -->
+        <div class="lab-box">
+          <div class="lab-title"><span>🛒</span> Lab 2: Cửa Hàng Giảm Giá & Tỉ Lệ Nước Biển Nấu Muối (SGK 7.19, 7.22)</div>
+          <p class="lab-instruction">
+            Nhấn vào các ứng dụng thực tế để xem cỗ máy giải mã tỉ lệ phần trăm và giảm giá mua sắm!
+          </p>
+
+          <div class="lab2-grid">
+            <div class="lab2-card">
+              <h4><span>📱</span> Mua Điện Thoại Giảm Giá (7.19)</h4>
+              <p style="font-size: 0.9rem; margin-bottom: 8px;">
+                Giá niêm yết: <strong>625 000 đ</strong>. Cửa hàng giảm giá <strong>10%</strong>.
+              </p>
+              <button id="btn-sim-phone" class="btn-hud-tool" style="width: 100%; margin-bottom: 8px;">Tính Tiền Sau Giảm</button>
+              <div id="res-phone" style="font-size: 0.85rem; background: var(--surface-alt); padding: 8px; border-radius: 6px; display: none;">
+                <strong>Tiền giảm:</strong> $625\,000 \times 10\% = \mathbf{62\,500\text{ đ}}$.
+                <br><strong>Giá phải trả:</strong> $625\,000 - 62\,500 = \mathbf{562\,500\text{ đ}}$.
+              </div>
+            </div>
+
+            <div class="lab2-card">
+              <h4><span>🧂</span> Tỉ Lệ Muối Nước Biển (7.22)</h4>
+              <p style="font-size: 0.9rem; margin-bottom: 8px;">
+                Trong <strong>40 kg</strong> nước biển có <strong>2 kg</strong> muối nguyên chất.
+              </p>
+              <button id="btn-sim-salt" class="btn-hud-tool" style="width: 100%; margin-bottom: 8px;">Tính Tỉ Số Phần Trăm</button>
+              <div id="res-salt" style="font-size: 0.85rem; background: var(--surface-alt); padding: 8px; border-radius: 6px; display: none;">
+                <strong>Tỉ số phần trăm:</strong> $\frac{2 \times 100}{40}\% = \mathbf{5\%}$.
+                <br>Cứ 100 kg nước biển sẽ thu hoạch được 5 kg muối!
+              </div>
+            </div>
+
+            <div class="lab2-card">
+              <h4><span>👥</span> Dân Số Người Mường (7.20)</h4>
+              <p style="font-size: 0.9rem; margin-bottom: 8px;">
+                Người Mường có <strong>1,45 triệu người</strong>, chiếm <strong>1,5%</strong> dân số cả nước.
+              </p>
+              <button id="btn-sim-pop" class="btn-hud-tool" style="width: 100%; margin-bottom: 8px;">Ước Tính Dân Số Cả Nước</button>
+              <div id="res-pop" style="font-size: 0.85rem; background: var(--surface-alt); padding: 8px; border-radius: 6px; display: none;">
+                <strong>Bài toán tìm số khi biết %:</strong>
+                <br>$1\,450\,000 : 1,5\% = 1\,450\,000 : 0,015 \approx \mathbf{96,67}$ triệu người.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SECTION 3: ĐẤU TRƯỜNG SGK (10 BÀI TẬP SGK 7.17 - 7.25) -->
+    <section class="lesson-card">
+      <div class="arena-header">
+        <div class="section-header" style="margin-bottom: 0; border-bottom: none;">
+          <div class="section-icon-badge">⚔️</div>
+          <div>
+            <h2 class="section-title">3. Đấu Trường Toán Học SGK (Bài 7.17 - 7.25)</h2>
+            <span style="font-size: 0.85rem; color: #64748b;">10 câu trắc nghiệm bao phủ toàn bộ bài tập SGK trang 40 - 41</span>
+          </div>
+        </div>
+        <div style="font-weight: 700; color: var(--primary);" id="quiz-progress-text">0/10 Hoàn thành</div>
+      </div>
+
+      <div id="quiz-container">
+        <!-- Rendered by JavaScript -->
+      </div>
+    </section>
+
+    <!-- SECTION 4: DANH HIỆU & GIẤY KHEN A4 -->
+    <section class="lesson-card">
+      <div class="section-header">
+        <div class="section-icon-badge">🏆</div>
+        <div>
+          <h2 class="section-title">4. Bảng Vinh Danh & Chứng Chỉ A4</h2>
+          <span style="font-size: 0.85rem; color: #64748b;">Mở khóa 5 huy hiệu và in chứng nhận thành tích</span>
+        </div>
+      </div>
+
+      <div class="badges-grid">
+        <div class="badge-item" id="badge-1">
+          <div class="badge-icon">📊</div>
+          <div class="badge-name">Tân Binh Tỉ Số</div>
+          <div class="badge-req">Tham gia bài học</div>
+        </div>
+        <div class="badge-item" id="badge-2">
+          <div class="badge-icon">🏦</div>
+          <div class="badge-name">Thủ Quỹ Ngân Hàng</div>
+          <div class="badge-req">Khám phá cả 2 Lab</div>
+        </div>
+        <div class="badge-item" id="badge-3">
+          <div class="badge-icon">🎯</div>
+          <div class="badge-name">Bậc Thầy Phần Trăm</div>
+          <div class="badge-req">Đạt 5 câu đúng</div>
+        </div>
+        <div class="badge-item" id="badge-4">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Kinh Doanh Thần Tốc</div>
+          <div class="badge-req">Chuỗi Combo 5 liên tiếp</div>
+        </div>
+        <div class="badge-item" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Tài Chính</div>
+          <div class="badge-req">Đạt điểm tuyệt đối 10/10</div>
+        </div>
+      </div>
+
+      <div class="cert-section">
+        <button id="btn-show-cert" class="btn-print-cert">🖨️ XEM & IN CHỨNG CHỈ A4 (PRINT)</button>
+      </div>
+    </section>
+
+    <!-- NAVIGATION FOOTER -->
+    <footer class="nav-footer">
+      <a href="../bai_hoc_tuong_tac_toan_6_bai30/index.html" class="btn-nav">
+        <span>⬅️</span> Bài Trước: Bài 30 - Làm tròn và ước lượng
+      </a>
+      <a href="../bai_hoc_tuong_tac_toan_6_on_tap_chuong_7/index.html" class="btn-nav">
+        Bài Tiếp Theo: Ôn tập cuối Chương VII <span>➡️</span>
+      </a>
+    </footer>
+  </main>
+
+  <!-- PRINTABLE CERTIFICATE MODAL / VIEW -->
+  <div id="printable-certificate" style="display: none;">
+    <div class="cert-frame">
+      <div style="font-size: 3rem; margin-bottom: 10px;">🌟📊🏆📊🌟</div>
+      <h1 style="color: #ea580c; font-size: 2.2rem; font-weight: 800; margin-bottom: 8px;">GIẤY CHỨNG NHẬN VINH DANH</h1>
+      <p style="font-size: 1.1rem; color: #475569; margin-bottom: 25px;">HỆ THỐNG GIÁO DỤC TOÁN 6 - KẾT NỐI TRI THỨC VỚI CUỘC SỐNG</p>
+      
+      <p style="font-size: 1.1rem; margin-bottom: 10px;">Chứng nhận em:</p>
+      <h2 id="cert-student-name" style="font-size: 2rem; color: #0f172a; border-bottom: 2px dashed #ea580c; display: inline-block; padding: 0 20px 5px; margin-bottom: 20px;">Học Sinh Xuất Sắc</h2>
+      
+      <p style="font-size: 1.15rem; line-height: 1.8; color: #1e293b; max-width: 600px; margin: 0 auto 30px;">
+        Đã xuất sắc hoàn thành toàn diện nội dung học tập và bài tập của<br>
+        <strong>BÀI 31: MỘT SỐ BÀI TOÁN VỀ TỈ SỐ VÀ TỈ SỐ PHẦN TRĂM (SGK TRANG 38 - 41)</strong><br>
+        Đạt danh hiệu: <strong id="cert-rank" style="color: #ea580c;">Đại Kiện Tướng Tài Chính</strong> với tổng điểm: <strong id="cert-score">0</strong> XP!
+      </p>
+
+      <div style="display: flex; justify-content: space-around; margin-top: 40px; font-weight: 700; color: #475569;">
+        <div>
+          <p>Ngày hoàn thành</p>
+          <p id="cert-date" style="color: #0f172a; margin-top: 5px;">16/10/2026</p>
+        </div>
+        <div>
+          <p>Ban Giám Khảo Số Học 6</p>
+          <p style="color: #ea580c; margin-top: 5px; font-style: italic;">Hội Đồng Toán Học</p>
+        </div>
+      </div>
+
+      <div style="margin-top: 30px;" class="no-print">
+        <button onclick="window.print()" class="btn-start-game" style="width: auto; padding: 10px 30px;">In Ngay</button>
+        <button onclick="document.getElementById('printable-certificate').style.display='none'" class="btn-hud-tool" style="margin-left: 10px;">Đóng Lại</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

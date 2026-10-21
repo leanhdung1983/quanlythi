@@ -67,6 +67,12 @@ async function startServer() {
         res.json({ status: 'ok', time: new Date() });
     });
 
+    // Serve interactive learning portals directly
+    app.use('/toan6', express.static(path.join(process.cwd(), 'public', 'toan6')));
+    app.use('/toan11', express.static(path.join(process.cwd(), 'public', 'toan11')));
+    app.use('/toan10', express.static(path.join(process.cwd(), 'public', 'toan10')));
+    app.use('/toan12', express.static(path.join(process.cwd(), 'public', 'toan12')));
+
     if (process.env.NODE_ENV !== 'production') {
         const vite = await createViteServer({
             server: { middlewareMode: true },

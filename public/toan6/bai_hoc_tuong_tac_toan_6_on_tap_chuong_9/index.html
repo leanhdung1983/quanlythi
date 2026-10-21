@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn tập cuối Chương IX: Dữ liệu và xác suất thực nghiệm - Toán 6 Tập 2 KNTT</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Toán Học 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Thống Kê & Xác Suất</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Xếp hạng Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">Chương IX: Dữ liệu và xác suất thực nghiệm</span>
+      <h1>ÔN TẬP VÀ BÀI TẬP CUỐI CHƯƠNG IX</h1>
+      <p>Tổng kết toàn diện 6 bài học trọng tâm từ Thu thập dữ liệu, Bảng thống kê, Biểu đồ tranh, Biểu đồ cột, Biểu đồ cột kép đến Kết quả có thể và Xác suất thực nghiệm!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức Toàn Chương IX</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm Tổng Hợp (2 Labs)</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK (10 Câu Hỏi 9.33-9.38)</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Giấy Chứng Nhận</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <div class="card">
+          <h3 class="card-title"><i>📊</i> 1. Thu Thập, Phân Loại & Biểu Diễn Dữ Liệu</h3>
+          <div class="concept-box">
+            <h4>Thu thập & Phân loại dữ liệu (Bài 38)</h4>
+            <p>Dữ liệu là các thông tin thu thập được (văn bản, số, hình ảnh...). Dữ liệu là số gọi là <strong>số liệu</strong>. Phải chọn cách thu thập phù hợp: quan sát trực tiếp, lập phiếu hỏi, hay tra cứu tài liệu sách báo/Internet.</p>
+          </div>
+          <div class="concept-box purple">
+            <h4>Bảng thống kê & Biểu đồ tranh (Bài 39)</h4>
+            <p>Bảng thống kê giúp trình bày dữ liệu cô đọng. Biểu đồ tranh sử dụng các biểu tượng/hình ảnh thay thế cho một số lượng đơn vị cụ thể (ví dụ: 1 ngôi sao = 10 điểm).</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📈</i> 2. Biểu Đồ Cột & Biểu Đồ Cột Kép</h3>
+          <div class="concept-box emerald">
+            <h4>Biểu đồ cột (Bài 40)</h4>
+            <p>Dùng để so sánh số liệu giữa các đối tượng độc lập. Các cột chữ nhật có cùng chiều rộng, cách đều nhau, chiều cao tỉ lệ với số liệu tương ứng.</p>
+          </div>
+          <div class="concept-box amber">
+            <h4>Biểu đồ cột kép (Bài 41)</h4>
+            <p>Ghép 2 biểu đồ cột đơn lại với nhau để so sánh trực quan hai tập dữ liệu cùng loại của các đối tượng (như Nam vs Nữ, Năm 2015 vs 2016...). Cần có <strong>chú giải</strong> phân biệt màu sắc 2 cột.</p>
+          </div>
+        </div>
+
+        <div class="card" style="grid-column: 1 / -1;">
+          <h3 class="card-title"><i>🎲</i> 3. Kết Quả Có Thể & Xác Suất Thực Nghiệm</h3>
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+            <div class="concept-box">
+              <h4>Kết quả có thể & Sự kiện (Bài 42)</h4>
+              <p>• <strong>Kết quả có thể:</strong> Tập hợp tất cả các khả năng có thể xuất hiện trong trò chơi, thí nghiệm.<br>
+                 • <strong>Sự kiện:</strong> Xảy ra nếu kết quả thực tế thỏa mãn điều kiện đề ra, ngược lại là không xảy ra.</p>
+            </div>
+            <div class="concept-box purple">
+              <h4>Xác suất thực nghiệm k/n (Bài 43)</h4>
+              <p>• Đo lường khả năng xảy ra từ <strong>0 đến 1</strong> (0: không bao giờ xảy ra, 1: chắc chắn xảy ra).<br>
+                 • Công thức: <strong>Xác suất thực nghiệm = k / n</strong> (k: số lần sự kiện xảy ra, n: tổng số lần thử).</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Interactive Labs -->
+    <section class="tab-content" id="tab-labs">
+      <!-- Lab 1 -->
+      <div class="card" style="margin-bottom: 24px;">
+        <h3 class="card-title"><i>🏆</i> Lab 1: Máy Khảo Sát Thể Thao & Vẽ Biểu Đồ Kép Tự Động (Bảng 9.11)</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 16px;">
+          Tái hiện số liệu Bài 9.36 (Bảng 9.11 SGK Trang 98): Khảo sát môn thể thao yêu thích của các bạn nam và nữ trong lớp. Vẽ biểu đồ cột kép và thanh ngang trực quan!
+        </p>
+
+        <div class="lab-toolbar">
+          <div style="display: flex; gap: 8px;">
+            <button class="btn-icon" id="toggleLabOrientationBtn">🔄 Đổi dạng: Cột Đứng</button>
+            <button class="btn-icon" id="findMaxSportBtn" style="background: rgba(16, 185, 129, 0.2); color: #34d399;">
+              🔍 Tìm Môn Nam / Nữ Thích Nhất
+            </button>
+          </div>
+          <div style="font-size: 0.85rem; color: #cbd5e1;">
+            Tổng số bạn khảo sát: <strong id="totalSurveyed" style="color: #fbbf24;">31 bạn</strong>
+          </div>
+        </div>
+
+        <div class="canvas-wrapper">
+          <canvas id="reviewChartCanvas" width="900" height="400"></canvas>
+        </div>
+
+        <div id="sportInsightBox" class="concept-box emerald" style="display: none; margin-top: 10px;">
+          <!-- Injected via app.js -->
+        </div>
+
+        <div style="overflow-x: auto; margin-top: 14px;">
+          <table class="data-table-view">
+            <thead>
+              <tr>
+                <th>Môn Thể Thao</th>
+                <th>Bóng đá</th>
+                <th>Cầu lông</th>
+                <th>Bơi lội</th>
+                <th>Bóng rổ</th>
+                <th>Khác</th>
+                <th>Tổng Cộng</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td style="font-weight: 700; color: #ec4899;">Nữ</td>
+                <td>3</td>
+                <td>5</td>
+                <td>7</td>
+                <td>1</td>
+                <td>0</td>
+                <td><strong>16</strong></td>
+              </tr>
+              <tr>
+                <td style="font-weight: 700; color: #38bdf8;">Nam</td>
+                <td>6</td>
+                <td>5</td>
+                <td>2</td>
+                <td>3</td>
+                <td>2</td>
+                <td><strong>18</strong></td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Lab 2 -->
+      <div class="card">
+        <h3 class="card-title"><i>🎁</i> Lab 2: Rút Bi Thử Nghiệm (9.37) & Phần Thưởng Của Quỳnh (9.38)</h3>
+        <p style="color: var(--text-muted); font-size: 0.95rem; margin-bottom: 14px;">
+          Thực hiện hai thí nghiệm kinh điển cuối chương: Lấy bi 100 lần xem tỷ lệ bi đen (Bài 9.37) và chọn ngẫu nhiên 2 phần thưởng từ hộp (2 bút chì, 3 bút bi) để khám phá 3 kết quả có thể (Bài 9.38)!
+        </p>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+          <!-- 9.37 Bi Đen / Trắng -->
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 18px; text-align: center;">
+            <h4 style="color: #38bdf8; margin-bottom: 8px;">Thí nghiệm Bài 9.37: Rút bi (7 Đen, 3 Trắng)</h4>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 14px;">Minh rút 100 lần thấy 58 lần được bi đen. Hãy thử rút tự động 100 lần!</p>
+            <div id="marble100Result" style="font-size: 1.4rem; font-weight: 800; color: #fbbf24; margin-bottom: 14px;">
+              Chưa thực hiện
+            </div>
+            <button class="btn-icon" id="run100MarblesBtn" style="background: linear-gradient(135deg, #06b6d4, #8b5cf6); color: #080d1a; font-weight: 700;">
+              🎲 Chạy thử 100 lần rút bi!
+            </button>
+          </div>
+
+          <!-- 9.38 Hộp 5 Phần Thưởng -->
+          <div style="background: rgba(255, 255, 255, 0.03); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 18px; text-align: center;">
+            <h4 style="color: #c084fc; margin-bottom: 8px;">Thí nghiệm Bài 9.38: Chọn 2 Phần Thưởng</h4>
+            <p style="font-size: 0.85rem; color: #94a3b8; margin-bottom: 14px;">Hộp có 2 bút chì (✏️✏️) và 3 bút bi (🖊️🖊️🖊️). Quỳnh chọn ngẫu nhiên 2 chiếc.</p>
+            <div id="rewardResult" style="font-size: 1.3rem; font-weight: 800; color: #34d399; margin-bottom: 14px;">
+              Chọn thử 2 chiếc!
+            </div>
+            <button class="btn-icon" id="pick2RewardsBtn" style="background: linear-gradient(135deg, #10b981, #3b82f6); color: #fff; font-weight: 700;">
+              🎁 Bốc ngẫu nhiên 2 phần thưởng!
+            </button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: SGK Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div class="quiz-progress">
+          <span style="font-weight: 700; color: #fff;">Tiến độ đấu trường:</span>
+          <span id="arenaProgressText" style="color: var(--text-highlight); font-weight: 800;">0/10</span>
+          <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="arenaProgressBar"></div>
+          </div>
+        </div>
+        <div>
+          <span style="color: var(--text-muted); font-size: 0.9rem;">Điểm đấu trường: </span>
+          <strong id="arenaScore" style="color: var(--accent-gold); font-size: 1.15rem;">0</strong>
+        </div>
+      </div>
+
+      <div id="quizContainer">
+        <!-- 10 Questions injected by app.js -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <h3 style="font-size: 1.3rem; font-weight: 800; color: #fff; margin-bottom: 16px;">🏆 5 Huy Hiệu Danh Dự Cuối Chương IX</h3>
+      <div class="badges-grid" id="badgesGrid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">🌐</div>
+          <div class="badge-name">Nhà Điều Tra Dữ Liệu</div>
+          <div class="badge-desc">Xác định chuẩn xác nguồn thu thập thông tin theo yêu cầu bài 9.33 (Internet, quan sát, sổ ghi chép).</div>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">⚽</div>
+          <div class="badge-name">Thống Kê Thể Thao</div>
+          <div class="badge-desc">Đọc biểu đồ cột kép môn thể thao yêu thích và tìm ra môn nam/nữ chuộng nhất (Bài 9.36).</div>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">🎱</div>
+          <div class="badge-name">Bậc Thầy Bi Đen Bi Trắng</div>
+          <div class="badge-desc">Tính chuẩn xác suất thực nghiệm 58% lấy được viên bi màu đen của bạn Minh (Bài 9.37).</div>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">🎁</div>
+          <div class="badge-name">Thợ Mở Quà May Mắn</div>
+          <div class="badge-desc">Liệt kê đầy đủ 3 kết quả có thể khi Quỳnh bốc 2 phần thưởng từ hộp bút (Bài 9.38).</div>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Kiện Tướng Toàn Năng Chương IX</div>
+          <div class="badge-desc">Chinh phục 10/10 câu hỏi Đấu Trường và đạt trọn vẹn 5 sao danh dự của toàn bộ Chương IX!</div>
+        </div>
+      </div>
+
+      <div class="cert-section">
+        <button class="btn-icon" id="unlockCertBtn" style="font-size: 1.05rem; padding: 12px 24px; background: linear-gradient(135deg, #06b6d4, #8b5cf6); color: #080d1a; font-weight: 800;">
+          📜 Mở Khóa & In Giấy Chứng Nhận
+        </button>
+
+        <div class="certificate-paper" id="certificatePaper">
+          <div class="cert-title">GIẤY CHỨNG NHẬN VINH DANH TỐT NGHIỆP</div>
+          <div class="cert-sub">CHUYÊN GIA TOÀN NĂNG CHƯƠNG IX: DỮ LIỆU VÀ XÁC SUẤT THỰC NGHIỆM</div>
+          
+          <p style="color: #64748b; font-size: 0.9rem;">Trao tặng danh hiệu cao quý cho:</p>
+          <div class="cert-recipient" id="certName">Chiến Binh Toán Học</div>
+
+          <p class="cert-text">
+            Đã hoàn thành xuất sắc toàn bộ 6 bài học trong <strong>Chương IX: Dữ liệu và xác suất thực nghiệm</strong> (Bài 38 $\to$ Bài 43), làm chủ nghệ thuật biểu diễn đồ họa dữ liệu thống kê và chinh phục 10/10 bài tập cuối chương (Trang 98, SGK Toán 6 Tập Hai - Kết Nối Tri Thức Với Cuộc Sống).
+          </p>
+
+          <div class="cert-footer">
+            <div class="cert-seal">🏅</div>
+            <div class="cert-sign">
+              <strong>HỘI ĐỒNG TOÁN HỌC SGK KNTT</strong><br>
+              <em>Chứng thực tốt nghiệp Chương IX</em><br>
+              <span id="certDate">Ngày cấp: 2026</span>
+            </div>
+          </div>
+
+          <div style="margin-top: 20px;">
+            <button class="btn-icon" onclick="window.print()" style="background: #0284c7; color: #fff;">🖨️ In Chứng Chỉ A4</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Navigation Footer -->
+    <footer class="lesson-navigation-footer">
+      <a href="../bai_hoc_tuong_tac_toan_6_bai43/index.html" class="nav-btn prev">
+        ⬅️ Bài 43: Xác Suất Thực Nghiệm
+      </a>
+      <span style="color: var(--text-muted); font-size: 0.85rem;">
+        Toán 6 Tập 2 • Ôn Tập Cuối Chương IX (Trang 98)
+      </span>
+      <a href="../bai_hoc_tuong_tac_toan_6_thuc_hanh_trai_nghiem/index.html" class="nav-btn next">
+        Thực Hành Trải Nghiệm (Cuối Sách) ➡️
+      </a>
+    </footer>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

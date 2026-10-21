@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Chương IV: Quan Hệ Song Song Trong Không Gian - Toán 11</title>
+  <!-- KaTeX Offline Local CSS -->
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <!-- KaTeX Offline Local JS & Auto-render -->
+  <script defer src="katex/katex.min.js"></script>
+  <script defer src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- KHỐI 1: HUD GAMIFICATION HEADER -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Sư Quan Hệ Song Song</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- KHỐI 2: LESSON BANNER -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">TOÁN 11 • KẾT NỐI TRI THỨC • TẬP 1</span>
+      <h1>ÔN TẬP CHƯƠNG IV: QUAN HỆ SONG SONG TRONG KHÔNG GIAN</h1>
+      <p>Tổng kết hệ thống 5 bài học nền tảng không gian: Đường thẳng, Mặt phẳng, Quan hệ song song, Định lí Thalès, Lăng trụ, Hình hộp và Phép chiếu song song!</p>
+    </section>
+
+    <!-- KHỐI 3: NAVIGATION TABS -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu & Vinh Danh</button>
+    </nav>
+
+    <!-- TAB 1: BẢN ĐỒ TRI THỨC -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <!-- Card 1: Bài 10 - Điểm, đường thẳng và mặt phẳng -->
+        <div class="card concept-card">
+          <div class="card-tag">Bài 10 (Nền Tảng Không Gian)</div>
+          <h3>🌐 Đường Thẳng & Mặt Phẳng Trong Không Gian</h3>
+          <p>Các cách xác định duy nhất một mặt phẳng trong không gian:</p>
+          <div class="formula-box">
+            <p>• <strong>Ba điểm không thẳng hàng:</strong> $(ABC)$.</p>
+            <p>• <strong>Một đường thẳng và một điểm ngoài nó:</strong> $(M, d)$ với $M \notin d$.</p>
+            <p>• <strong>Hai đường thẳng cắt nhau:</strong> $(a, b)$ với $a \cap b = \{I\}$.</p>
+            <p>• <strong>Hai đường thẳng song song:</strong> $(a, b)$ với $a \parallel b$.</p>
+          </div>
+          <div class="rule-box gold">
+            <strong>💡 Quy tắc tìm giao tuyến:</strong> Giao tuyến của hai mặt phẳng là đường thẳng đi qua 2 điểm chung phân biệt của chúng: $(\alpha) \cap (\beta) = d$.
+          </div>
+        </div>
+
+        <!-- Card 2: Bài 11 - Hai đường thẳng song song & chéo nhau -->
+        <div class="card concept-card">
+          <div class="card-tag">Bài 11 (Vị Trí Tương Đối)</div>
+          <h3>↔️ Hai Đường Thẳng Trong Không Gian</h3>
+          <p>Bốn vị trí tương đối giữa hai đường thẳng $a$ và $b$:</p>
+          <div class="formula-box">
+            <p>• <strong>Cùng thuộc một mặt phẳng:</strong></p>
+            <p>+ Cắt nhau: $a \cap b = \{M\}$.</p>
+            <p>+ Song song: $a \parallel b$ ($a \cap b = \varnothing$).</p>
+            <p>+ Trùng nhau: $a \equiv b$.</p>
+            <p>• <strong>Không cùng thuộc bất kì mặt phẳng nào:</strong> Chéo nhau ($a$ và $b$ chéo nhau).</p>
+          </div>
+          <div class="rule-box gold">
+            <strong>⭐ Định lí Giao tuyến 3 mặt phẳng:</strong> Nếu 3 mặt phẳng đôi một cắt nhau theo 3 giao tuyến phân biệt thì 3 giao tuyến đó hoặc <strong>đồng quy</strong> hoặc <strong>đôi một song song</strong>.
+          </div>
+        </div>
+
+        <!-- Card 3: Bài 12 - Đường thẳng và mặt phẳng song song -->
+        <div class="card concept-card">
+          <div class="card-tag">Bài 12 (Đường // Mặt)</div>
+          <h3>📏 Đường Thẳng & Mặt Phẳng Song Song</h3>
+          <p>Điều kiện vàng để đường thẳng song song với mặt phẳng:</p>
+          <div class="formula-box">
+            <p class="math-highlight">$$\begin{cases} d \not\subset (\alpha) \\ d \parallel a \subset (\alpha) \end{cases} \implies d \parallel (\alpha)$$</p>
+            <p>• <strong>Tính chất giao tuyến:</strong> Nếu đường thẳng $a$ song song với $(\alpha)$ thì mọi mặt phẳng $(\beta)$ chứa $a$ mà cắt $(\alpha)$ theo giao tuyến $b$ thì $b \parallel a$:</p>
+            <p class="math-highlight">$$\begin{cases} a \parallel (\alpha) \\ a \subset (\beta) \\ (\alpha) \cap (\beta) = b \end{cases} \implies b \parallel a$$</p>
+          </div>
+        </div>
+
+        <!-- Card 4: Bài 13 - Hai mặt phẳng song song & Thalès không gian -->
+        <div class="card concept-card">
+          <div class="card-tag">Bài 13 (Mặt // Mặt & Thalès)</div>
+          <h3>🏢 Hai Mặt Phẳng Song Song & Hình Hộp</h3>
+          <p>Điều kiện nhận biết và định lí Thalès không gian:</p>
+          <div class="formula-box">
+            <p>• <strong>Dấu hiệu nhận biết:</strong></p>
+            <p class="math-highlight">$$\begin{cases} a \subset (\alpha),\ b \subset (\alpha) \\ a \cap b = \{I\} \\ a \parallel (\beta),\ b \parallel (\beta) \end{cases} \implies (\alpha) \parallel (\beta)$$</p>
+            <p>• <strong>Định lí Thalès:</strong> Ba mặt phẳng đôi một song song chắn trên hai cát tuyến bất kì các đoạn thẳng tương ứng tỉ lệ:</p>
+            <p class="math-highlight">$$\frac{AB}{A'B'} = \frac{BC}{B'C'} = \frac{AC}{A'C'}$$</p>
+            <p>• <strong>Hình lăng trụ & Hình hộp:</strong> Các cạnh bên song song và bằng nhau; các mặt đáy là các đa giác đồng dạng bằng nhau và nằm trên các mặt phẳng song song.</p>
+          </div>
+        </div>
+
+        <!-- Card 5: Bài 14 - Phép chiếu song song & Hình biểu diễn -->
+        <div class="card concept-card">
+          <div class="card-tag">Bài 14 (Hình Biểu Diễn)</div>
+          <h3>🎨 Phép Chiếu Song Song & Tính Chất Bảo Toàn</h3>
+          <p>Những nguyên lý bảo toàn cốt lõi khi vẽ hình không gian:</p>
+          <div class="formula-box">
+            <p>• <strong>Bảo toàn:</strong> Tính thẳng hàng, thứ tự các điểm, tính song song giữa hai đường thẳng, tỉ số độ dài hai đoạn thẳng song song hoặc cùng nằm trên một đường thẳng.</p>
+            <p>• <strong>Hệ quả:</strong> Biến trung điểm thành trung điểm; biến trọng tâm tam giác thành trọng tâm tam giác hình chiếu ($\frac{AG}{AM} = \frac{A'G'}{A'M'} = \frac{2}{3}$).</p>
+            <p>• <strong>Hình biểu diễn:</strong> Đường tròn $\to$ Hình elip; Hình vuông / Hình chữ nhật / Hình thoi $\to$ Hình bình hành; Tam giác đều / cân / vuông $\to$ Tam giác bất kì.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 2: PHÒNG THÍ NGHIỆM TƯƠNG TÁC -->
+    <section class="tab-content" id="tab-labs">
+      <!-- LAB 1: SA BÀN HÌNH HỘP 3D & CÁC QUAN HỆ SONG SONG -->
+      <div class="lab-container">
+        <div class="lab-header">
+          <div class="lab-title">
+            <span class="lab-icon">🧊</span>
+            <div>
+              <h3>Phòng Thí Nghiệm 1: Khảo Sát Đa Chiều Hình Hộp $ABCD.A'B'C'D'$</h3>
+              <p>Mô phỏng 3D hình hộp toàn diện: Cặp mặt phẳng song song, đường chéo xuyên qua trọng tâm, hai đường thẳng chéo nhau!</p>
+            </div>
+          </div>
+          <div class="lab-controls">
+            <button class="lab-btn active" id="btnModePlanes">Mặt phẳng // $(AB'D') \parallel (BDC')$</button>
+            <button class="lab-btn" id="btnModeDiagonal">Đường chéo $AC'$ xuyên Trọng tâm</button>
+            <button class="lab-btn" id="btnModeSkew">Đường chéo nhau $A'B$ & $CC'$</button>
+            <button class="lab-btn secondary" id="btnResetRot1">🔄 Đặt lại góc</button>
+          </div>
+        </div>
+
+        <div class="lab-body">
+          <div class="canvas-wrap">
+            <canvas id="canvasLab1" width="700" height="420"></canvas>
+            <div class="canvas-hint">🖱️ Nhấp & Kéo chuột để xoay hình hộp 360° • Lăn chuột thu phóng</div>
+          </div>
+          <div class="lab-panel">
+            <div class="panel-card">
+              <h4>📊 Trạng Thái Quan Hệ Không Gian</h4>
+              <div class="status-indicator gold" id="lab1StatusBadge">Mặt phẳng (AB'D') // Mặt phẳng (BDC')</div>
+              <p id="lab1Desc">
+                Hai mặt phẳng $(AB'D')$ và $(BDC')$ song song với nhau vì có hai cặp đường thẳng cắt nhau đôi một song song: $AB' \parallel DC'$ và $AD' \parallel BC'$!
+              </p>
+            </div>
+
+            <div class="panel-card">
+              <h4>🎛️ Tùy Chọn Hiển Thị</h4>
+              <label class="toggle-control">
+                <input type="checkbox" id="chkAutoRot1">
+                <span>Tự động quay góc nhìn</span>
+              </label>
+              <label class="toggle-control">
+                <input type="checkbox" id="chkShowLabels" checked>
+                <span>Hiển thị tên các đỉnh $A, B, C, D, A', B', C', D'$</span>
+              </label>
+            </div>
+
+            <div class="panel-card note-box">
+              <strong>⭐ Định Lí Hình Hộp (Bài 4.45 SGK):</strong>
+              Đường chéo $AC'$ đâm xuyên qua trọng tâm $G_1$ của $\triangle A'BD$ và trọng tâm $G_2$ của $\triangle B'D'C$, đồng thời bị hai mặt phẳng này chia thành ba phần bằng nhau: $AG_1 = G_1 G_2 = G_2 C'$!
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- LAB 2: PHÒNG THÍ NGHIỆM THIẾT DIỆN & TỈ LỆ THALÈS 3D -->
+      <div class="lab-container">
+        <div class="lab-header">
+          <div class="lab-title">
+            <span class="lab-icon">📐</span>
+            <div>
+              <h3>Phòng Thí Nghiệm 2: Thiết Diện Tứ Diện Song Song & Định Lí Thalès</h3>
+              <p>Khảo sát tứ diện $ABCD$ (Bài 4.46 SGK). Mặt phẳng $(\alpha)$ qua điểm $M$ trên $AB$ song song với $AD$ và $BC$ cắt tứ diện tạo thành thiết diện hình bình hành $MNPQ$!</p>
+            </div>
+          </div>
+          <div class="lab-controls">
+            <button class="lab-btn secondary" id="btnResetRot2">🔄 Đặt lại góc</button>
+          </div>
+        </div>
+
+        <div class="lab-body">
+          <div class="canvas-wrap">
+            <canvas id="canvasLab2" width="700" height="420"></canvas>
+            <div class="canvas-hint">🖱️ Nhấp & Kéo chuột để xoay tứ diện không gian 3D</div>
+          </div>
+          <div class="lab-panel">
+            <div class="panel-card">
+              <h4>📏 Bảng Tính Tỉ Lệ Thalès & Thiết Diện</h4>
+              <div class="status-indicator" id="lab2StatusBadge">Thiết diện MNPQ luôn là Hình Bình Hành</div>
+              <div class="thales-calc-box">
+                <p>• Vị trí điểm $M$ trên cạnh $AB$: <strong id="valAM_MB">AM/AB = 0.50</strong></p>
+                <p>• Tỉ số đáy: $\frac{KC}{CD} = \frac{MB}{AB} =$ <strong id="valKC_CD">0.50</strong></p>
+                <p>• Dạng hình học thiết diện: <strong id="valSectionShape" class="text-gold">Hình Bình Hành</strong></p>
+              </div>
+            </div>
+
+            <div class="panel-card">
+              <h4>🎚️ Điều Khiển Vị Trí Điểm $M$</h4>
+              <div class="slider-group">
+                <label for="sliderPosM">Tỉ số vị trí $\frac{AM}{AB}$:</label>
+                <input type="range" id="sliderPosM" min="10" max="90" value="50" step="1">
+                <span id="valPosM" class="slider-val">0.50</span>
+              </div>
+              <label class="toggle-control">
+                <input type="checkbox" id="chkShowPlanes" checked>
+                <span>Tô màu thiết diện mặt cắt $(\alpha)$</span>
+              </label>
+            </div>
+
+            <div class="panel-card note-box">
+              <strong>💡 Nguyên Lí Cắt Song Song:</strong>
+              Vì $(\alpha) \parallel AD$ nên $MN \parallel PQ \parallel AD$. Vì $(\alpha) \parallel BC$ nên $MQ \parallel NP \parallel BC$. Thiết diện có các cặp cạnh đối song song nên luôn luôn là một <strong>hình bình hành</strong>!
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- TAB 3: ĐẤU TRƯỜNG SGK -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>⚔️ Đấu Trường SGK: Chinh Phục Toàn Diện Chương IV</h2>
+          <p>10 câu hỏi trắc nghiệm tinh hoa tổng hợp bám sát SGK Kết Nối Tri Thức (Bài tập cuối chương IV trang 102-103).</p>
+        </div>
+        <div class="arena-score-box">
+          <div class="arena-stat">
+            <span class="stat-label">Tiến Độ</span>
+            <span class="arena-val" id="arenaProgress">0/10</span>
+          </div>
+          <div class="arena-stat">
+            <span class="stat-label">Điểm Arena</span>
+            <span class="arena-val highlight" id="arenaScore">0 XP</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="quiz-container" id="quizContainer">
+        <!-- 10 câu hỏi sẽ được app.js render tự động -->
+      </div>
+    </section>
+
+    <!-- TAB 4: HUY HIỆU & VINH DANH -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-card" id="badge-1">
+          <div class="badge-icon">🌐</div>
+          <div class="badge-name">Khởi Động Không Gian</div>
+          <div class="badge-desc">Gia nhập tổng kết Chương IV Quan hệ song song.</div>
+        </div>
+        <div class="badge-card" id="badge-2">
+          <div class="badge-icon">🧊</div>
+          <div class="badge-name">Chuyên Gia Hình Hộp</div>
+          <div class="badge-desc">Khám phá các quan hệ song song trong Lab 3D.</div>
+        </div>
+        <div class="badge-card" id="badge-3">
+          <div class="badge-icon">📐</div>
+          <div class="badge-name">Kiến Trúc Sư Thiết Diện</div>
+          <div class="badge-desc">Vượt qua 5 câu hỏi đấu trường chương IV.</div>
+        </div>
+        <div class="badge-card" id="badge-4">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Bậc Thầy Thalès</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong đấu trường SGK.</div>
+        </div>
+        <div class="badge-card" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Đại Hiệp Không Gian</div>
+          <div class="badge-desc">Chinh phục tuyệt đối 10/10 câu hỏi chương IV.</div>
+        </div>
+      </div>
+
+      <!-- KHUNG CHỨNG NHẬN IN A4 HOÀN THÀNH CHƯƠNG IV -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <span class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</span>
+          <span class="cert-title">GIẤY CHỨNG NHẬN TỐT NGHIỆP CHƯƠNG IV</span>
+          <span class="cert-subtitle">QUAN HỆ SONG SONG TRONG KHÔNG GIAN • HÌNH HỌC 11</span>
+        </div>
+
+        <div class="cert-body">
+          <p class="cert-presented">Chứng nhận học sinh:</p>
+          <h2 class="cert-student" id="certStudentName">Chiến Binh Logic</h2>
+          <p class="cert-desc">
+            Đã hoàn thành xuất sắc toàn bộ chuyên đề <strong>Chương IV: Quan hệ song song trong không gian</strong> bao gồm 5 bài học lý thuyết, 10 phòng thí nghiệm tương tác 3D và vượt qua Đấu trường SGK chuẩn mực.
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-stamp">
+            <span class="stamp-icon">⭐</span>
+            <span>HÌNH HỌC KHÔNG GIAN</span>
+          </div>
+          <div class="cert-sign">
+            <span id="certDate">Đà Nẵng, ngày ... tháng ... năm ...</span>
+            <strong>GIÁO VIÊN BỘ MÔN TOÁN</strong>
+          </div>
+        </div>
+
+        <div class="cert-actions">
+          <button class="btn-primary" id="btnPrintCert">🖨️ In Giấy Chứng Nhận A4</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- KHỐI 4: SEQUENTIAL NAVIGATION FOOTER -->
+        <!-- Sequential Lesson Navigation Footer -->
+        <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan11_bai14/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 14: Phép Chiếu Song Song</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 11 KNTT</span>
+        <span class="nav-title">🏠 Mục Lục 46 Bài</span>
+      </a>
+      <a href="../toan11_bai15/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 15: Giới Hạn Của Dãy Số</span>
+      </a>
+    </footer>
+
+    <!-- KHỐI 5: MODAL CHỌN AVATAR (ẨN KHI KHỞI ĐỘNG) -->
+    <div class="modal-overlay" id="avatarModal" style="display: none;">
+      <div class="modal-box">
+        <div class="modal-header">
+          <h3>Chọn Nhân Vật Đồng Hành</h3>
+          <button class="modal-close-btn" id="closeAvatarModal">✕</button>
+        </div>
+        <div class="avatar-grid" id="avatarGrid">
+          <!-- Render danh sách avatar -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
