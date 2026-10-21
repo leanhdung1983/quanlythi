@@ -11,11 +11,15 @@ import {
   ArrowRight,
   Award,
   BookOpen,
+  Calendar,
   Check,
   CheckCircle2,
   ChevronRight,
+  Clock,
+  Crown,
   ExternalLink,
   GraduationCap,
+  History,
   Layers,
   Loader2,
   Lock,
@@ -100,6 +104,16 @@ const primary =
 const secondary =
   "inline-flex items-center justify-center gap-2 rounded-xl border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-600 hover:bg-slate-50 disabled:opacity-40 shadow-sm";
 
+interface LearningHistoryItem {
+  lessonId: string;
+  lessonTitle: string;
+  grade: string;
+  chapterNumber?: number;
+  score?: number;
+  completed?: boolean;
+  timestamp: number;
+}
+
 export const Learning: React.FC = () => {
   const { user } = useAuthStore();
   const teacher = user?.role === "ADMIN" || user?.role === "TEACHER";
@@ -142,8 +156,12 @@ export const Learning: React.FC = () => {
   const [activeSubTab, setActiveSubTab] = useState<LessonSubTab>("all");
   const [interactiveExpanded, setInteractiveExpanded] = useState(false);
 
-  // Storage keys for progress
-  const g6StorageKey = "learning_hub:grade6:" + (user?.id || "guest");
+  // Định danh tài khoản học sinh theo tên đăng nhập (username)
+  const studentUsername = (user?.username || "").trim().toLowerCase();
+  const accountKey = studentUsername || (user?.id ? String(user.id) : "guest");
+
+  // Storage keys for progress & history lưu chính xác theo tên đăng nhập của học sinh
+  const g6StorageKey = "learning_hub:grade6:" + accountKey;
   const [g6Progress, setG6Progress] = useState<Record<string, GradeProgress>>(() => {
     try {
       return JSON.parse(localStorage.getItem(g6StorageKey) || "{}");
@@ -152,7 +170,7 @@ export const Learning: React.FC = () => {
     }
   });
 
-  const g10StorageKey = "learning_hub:grade10:" + (user?.id || "guest");
+  const g10StorageKey = "learning_hub:grade10:" + accountKey;
   const [g10Progress, setG10Progress] = useState<Record<string, GradeProgress>>(() => {
     try {
       return JSON.parse(localStorage.getItem(g10StorageKey) || "{}");
@@ -161,7 +179,7 @@ export const Learning: React.FC = () => {
     }
   });
 
-  const g11StorageKey = "learning_hub:grade11:" + (user?.id || "guest");
+  const g11StorageKey = "learning_hub:grade11:" + accountKey;
   const [g11Progress, setG11Progress] = useState<Record<string, GradeProgress>>(() => {
     try {
       return JSON.parse(localStorage.getItem(g11StorageKey) || "{}");
@@ -170,7 +188,7 @@ export const Learning: React.FC = () => {
     }
   });
 
-  const g12StorageKey = "learning_hub:grade12:" + (user?.id || "guest");
+  const g12StorageKey = "learning_hub:grade12:" + accountKey;
   const [g12Progress, setG12Progress] = useState<Record<string, GradeProgress>>(() => {
     try {
       return JSON.parse(localStorage.getItem(g12StorageKey) || "{}");
@@ -178,6 +196,40 @@ export const Learning: React.FC = () => {
       return {};
     }
   });
+
+  // Quản lý Lịch sử học tập (Learning History)
+  const historyStorageKey = "learning_hub:history:" + accountKey;
+  const [historyItems, setHistoryItems] = useState<LearningHistoryItem[]>(() => {
+    try {
+      return JSON.parse(localStorage.getItem(historyStorageKey) || "[]");
+    } catch {
+      return [];
+    }
+  });
+  const [showHistoryModal, setShowHistoryModal] = useState(false);
+  const [historyLoading, setHistoryLoading] = useState(false);
+
+  // Phân quyền Free vs Pro
+  const isProUser = Boolean(
+    user?.role === "ADMIN" ||
+    user?.role === "TEACHER" ||
+    user?.is_pro
+  );
+
+  // Quy định tài khoản Free chỉ được học bài đầu tiên của mỗi chương
+  const isLessonFree = useCallback((lesson: { tag?: string; unitNumber?: number; title?: string }): boolean => {
+    const tag = (lesson.tag || "").trim().toLowerCase();
+    if (tag === "bài 1" || tag.startsWith("bài 1 ") || tag.startsWith("bài 01")) return true;
+    if (lesson.unitNumber === 1) return true;
+    return false;
+  }, []);
+
+  const canAccessLesson = useCallback((lesson: { tag?: string; unitNumber?: number; title?: string }): boolean => {
+    if (isProUser) return true;
+    return isLessonFree(lesson);
+  }, [isProUser, isLessonFree]);
+
+  const [proModalLesson, setProModalLesson] = useState<InteractiveLesson | null>(null);
 
   // Active Standard Unit state
   const [sections, setSections] = useState<LearningSection[]>([]);
@@ -198,8 +250,46 @@ export const Learning: React.FC = () => {
   const [manageBusy, setManageBusy] = useState(false);
   const [manageError, setManageError] = useState("");
 
-  const resumeKey = "learning-hub:v2:" + (user?.id || "guest");
+  const resumeKey = "learning-hub:v2:" + accountKey;
   const [resume, setResume] = useState<Resume | null>(() => readResume(resumeKey));
+
+  // Tự động đồng bộ tiến độ & lịch sử khi thay đổi tài khoản học sinh
+  useEffect(() => {
+    try {
+      setG6Progress(JSON.parse(localStorage.getItem(g6StorageKey) || "{}"));
+      setG10Progress(JSON.parse(localStorage.getItem(g10StorageKey) || "{}"));
+      setG11Progress(JSON.parse(localStorage.getItem(g11StorageKey) || "{}"));
+      setG12Progress(JSON.parse(localStorage.getItem(g12StorageKey) || "{}"));
+      setHistoryItems(JSON.parse(localStorage.getItem(historyStorageKey) || "[]"));
+    } catch {
+      /* ignore */
+    }
+
+    if (user?.id) {
+      setHistoryLoading(true);
+      apiService.fetchLessonHistory()
+        .then((res: any) => {
+          if (res?.data && Array.isArray(res.data)) {
+            const serverHistory: LearningHistoryItem[] = res.data.map((row: any) => ({
+              lessonId: row.lesson_id,
+              lessonTitle: row.lesson_title,
+              grade: row.grade,
+              score: Number(row.score || 0),
+              completed: Boolean(row.completed),
+              timestamp: new Date(row.last_studied_at || Date.now()).getTime(),
+            }));
+            if (serverHistory.length > 0) {
+              setHistoryItems(serverHistory);
+              try {
+                localStorage.setItem(historyStorageKey, JSON.stringify(serverHistory));
+              } catch {}
+            }
+          }
+        })
+        .catch(() => {})
+        .finally(() => setHistoryLoading(false));
+    }
+  }, [accountKey, user?.id, g6StorageKey, g10StorageKey, g11StorageKey, g12StorageKey, historyStorageKey]);
 
   const requestToken = useRef(0);
   const catalogToken = useRef(0);
@@ -350,6 +440,51 @@ export const Learning: React.FC = () => {
     }
   }, [unitId, loadUnit, resumeKey, teacher, workspace]);
 
+  // Ghi nhận lịch sử học tập vào localStorage và DB máy chủ
+  const recordLessonActivity = useCallback(
+    (lesson: InteractiveLesson, targetGrade: string, score?: number, completed?: boolean) => {
+      const now = Date.now();
+      const item: LearningHistoryItem = {
+        lessonId: lesson.id,
+        lessonTitle: lesson.title,
+        grade: targetGrade,
+        chapterNumber: lesson.chapterNumber,
+        score: score !== undefined ? score : undefined,
+        completed: completed !== undefined ? completed : false,
+        timestamp: now,
+      };
+
+      setHistoryItems((prev) => {
+        const filtered = prev.filter((h) => h.lessonId !== lesson.id);
+        const existing = prev.find((h) => h.lessonId === lesson.id);
+        const resolvedScore = score !== undefined ? Math.max(score, existing?.score || 0) : existing?.score;
+        const isCompleted = completed || existing?.completed || false;
+        const updated: LearningHistoryItem = {
+          ...item,
+          score: resolvedScore,
+          completed: isCompleted,
+        };
+        const next = [updated, ...filtered].slice(0, 100);
+        try {
+          localStorage.setItem(historyStorageKey, JSON.stringify(next));
+        } catch {}
+        return next;
+      });
+
+      // Gửi lên backend lưu vào DB nếu đã đăng nhập
+      if (user?.id) {
+        apiService.saveLessonHistory({
+          lesson_id: lesson.id,
+          lesson_title: lesson.title,
+          grade: targetGrade,
+          score: score,
+          completed: completed,
+        }).catch((e) => console.warn("Lưu lịch sử bài học lên máy chủ thất bại:", e));
+      }
+    },
+    [user?.id, historyStorageKey]
+  );
+
   // Handle in-app completion & message events
   useEffect(() => {
     const handlePlatformMessage = (event: MessageEvent) => {
@@ -389,10 +524,14 @@ export const Learning: React.FC = () => {
             }
             return next;
           });
+
+          // Ghi nhận lịch sử hoàn thành vào log & DB
+          recordLessonActivity(currentInteractiveLesson, targetGrade, resolvedScore, true);
+
           setNotice(
             `🎉 Chúc mừng bạn đã hoàn thành Đấu trường với ${
               resolvedScore * 10
-            }% điểm số! Tiến độ đã được lưu vào hệ thống.`
+            }% điểm số! Tiến độ đã được lưu cho tài khoản ${user?.username || "học sinh"}.`
           );
         }
 
@@ -414,6 +553,8 @@ export const Learning: React.FC = () => {
     g10StorageKey,
     g11StorageKey,
     g12StorageKey,
+    recordLessonActivity,
+    user?.username,
   ]);
 
   // Navigation handlers
@@ -422,6 +563,15 @@ export const Learning: React.FC = () => {
     setActiveSubTab("all");
     setInteractiveExpanded(false);
     window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
+  const handleOpenInteractiveLesson = (lesson: InteractiveLesson, targetGrade: string) => {
+    if (!canAccessLesson(lesson)) {
+      setProModalLesson(lesson);
+      return;
+    }
+    recordLessonActivity(lesson, targetGrade);
+    openInteractiveLesson(lesson, targetGrade);
   };
 
   const openUnit = (u: LearningUnit, compose = false) => {
@@ -660,6 +810,36 @@ export const Learning: React.FC = () => {
               <Target size={15} />
               EduLoop · Ôn tập cá nhân
             </button>
+            <button
+              onClick={() => setShowHistoryModal(true)}
+              className="inline-flex items-center justify-center gap-1.5 rounded-xl border border-indigo-200 bg-indigo-50/90 px-3.5 py-2 text-xs font-bold text-indigo-700 hover:bg-indigo-100 shadow-2xs transition-all"
+              title="Lịch sử học tập của tài khoản này"
+            >
+              <History size={14} className="text-indigo-600" />
+              <span>Lịch sử học</span>
+              {historyItems.length > 0 && (
+                <span className="px-1.5 py-0.2 bg-indigo-600 text-white rounded-full text-[10px] font-black">
+                  {historyItems.length}
+                </span>
+              )}
+            </button>
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 shadow-2xs text-xs font-bold">
+              {isProUser ? (
+                <span className="flex items-center gap-1 text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-md border border-amber-300 font-black">
+                  <Crown size={12} className="text-amber-600 fill-amber-500" />
+                  PRO
+                </span>
+              ) : (
+                <span className="flex items-center gap-1 text-slate-600 bg-slate-200/80 px-2 py-0.5 rounded-md border border-slate-300">
+                  FREE
+                </span>
+              )}
+              {user?.username && (
+                <span className="text-slate-600 font-mono text-[11px] font-semibold hidden md:inline">
+                  @{user.username}
+                </span>
+              )}
+            </div>
           </div>
         </header>
 
@@ -795,45 +975,82 @@ export const Learning: React.FC = () => {
               </div>
             </div>
 
-            {/* In-App Live Frame */}
-            <div
-              className={`rounded-3xl border border-slate-200 overflow-hidden bg-white shadow-md transition-all flex flex-col ${
-                interactiveExpanded
-                  ? "fixed inset-2 z-50 rounded-2xl shadow-2xl h-[calc(100vh-16px)]"
-                  : "min-h-[780px]"
-              }`}
-            >
-              <div className="bg-slate-900 text-white px-4 py-2.5 text-xs font-bold flex items-center justify-between border-b border-white/10">
-                <div className="flex items-center gap-2">
-                  <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
-                  <span>Phòng học tương tác trực tuyến chuẩn mực Toán {currentLessonGrade} (SGK KNTT)</span>
+            {!canAccessLesson(currentInteractiveLesson) ? (
+              <div className="rounded-3xl border border-amber-300 bg-gradient-to-b from-amber-50/70 via-white to-amber-50/30 p-8 md:p-14 text-center shadow-lg space-y-6">
+                <div className="h-20 w-20 mx-auto rounded-3xl bg-gradient-to-br from-amber-400 to-amber-600 text-white flex items-center justify-center shadow-lg shadow-amber-500/30">
+                  <Lock size={36} />
                 </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[11px] text-slate-400 hidden sm:inline">
-                    Điểm số & Tiến độ tự động ghi nhận khi làm Đấu trường
-                  </span>
+                <div className="space-y-3 max-w-xl mx-auto">
+                  <div className="inline-flex items-center gap-1.5 px-3.5 py-1 rounded-full bg-amber-100 text-amber-800 text-xs font-black border border-amber-300 uppercase tracking-wider">
+                    <Crown size={14} className="text-amber-600 fill-amber-500" />
+                    BÀI HỌC DÀNH CHO TÀI KHOẢN PRO
+                  </div>
+                  <h3 className="text-2xl md:text-3xl font-black text-slate-900">
+                    {currentInteractiveLesson.title}
+                  </h3>
+                  <p className="text-xs md:text-sm text-slate-600 leading-relaxed">
+                    Tài khoản miễn phí (Free) chỉ được học bài đầu tiên của mỗi chương để trải nghiệm hệ thống.
+                    Để xem và học toàn bộ 150+ bài học Toán SGK, 300+ phòng thí nghiệm Canvas mô phỏng động và tham gia Đấu trường trắc nghiệm không giới hạn, vui lòng nâng cấp tài khoản Pro.
+                  </p>
+                </div>
+                <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
                   <button
-                    onClick={() => setInteractiveExpanded((prev) => !prev)}
-                    className="p-1 rounded bg-white/10 hover:bg-white/20 text-white"
-                    title={interactiveExpanded ? "Thu nhỏ" : "Phóng to"}
+                    onClick={() => navigate("/profile")}
+                    className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white px-6 py-3 text-sm font-bold shadow-md hover:shadow-lg transition-all"
                   >
-                    {interactiveExpanded ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
+                    <Crown size={16} />
+                    <span>Nâng cấp Pro mở khóa toàn bộ</span>
+                  </button>
+                  <button
+                    onClick={backToLibrary}
+                    className="inline-flex items-center gap-1.5 px-5 py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-sm font-semibold transition-colors"
+                  >
+                    <ArrowLeft size={16} />
+                    <span>Quay lại thư viện bài học</span>
                   </button>
                 </div>
               </div>
-              <iframe
-                ref={frame}
-                key={currentInteractiveLesson.id + (interactiveExpanded ? "-exp" : "")}
-                title={`Bài học: ${currentInteractiveLesson.title}`}
-                src={`${currentInteractiveLesson.url}${
-                  activeSubTab === "all" ? "" : `#${activeSubTab}`
+            ) : (
+              /* In-App Live Frame */
+              <div
+                className={`rounded-3xl border border-slate-200 overflow-hidden bg-white shadow-md transition-all flex flex-col ${
+                  interactiveExpanded
+                    ? "fixed inset-2 z-50 rounded-2xl shadow-2xl h-[calc(100vh-16px)]"
+                    : "min-h-[780px]"
                 }`}
-                sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals"
-                className={`w-full border-0 transition-all ${
-                  interactiveExpanded ? "flex-1 h-full" : "h-[calc(100vh-220px)] min-h-[750px]"
-                }`}
-              />
-            </div>
+              >
+                <div className="bg-slate-900 text-white px-4 py-2.5 text-xs font-bold flex items-center justify-between border-b border-white/10">
+                  <div className="flex items-center gap-2">
+                    <span className="flex h-2 w-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span>Phòng học tương tác trực tuyến chuẩn mực Toán {currentLessonGrade} (SGK KNTT)</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <span className="text-[11px] text-slate-400 hidden sm:inline">
+                      Điểm số & Tiến độ tự động ghi nhận khi làm Đấu trường
+                    </span>
+                    <button
+                      onClick={() => setInteractiveExpanded((prev) => !prev)}
+                      className="p-1 rounded bg-white/10 hover:bg-white/20 text-white"
+                      title={interactiveExpanded ? "Thu nhỏ" : "Phóng to"}
+                    >
+                      {interactiveExpanded ? <Minimize2 size={13} /> : <Maximize2 size={13} />}
+                    </button>
+                  </div>
+                </div>
+                <iframe
+                  ref={frame}
+                  key={currentInteractiveLesson.id + (interactiveExpanded ? "-exp" : "")}
+                  title={`Bài học: ${currentInteractiveLesson.title}`}
+                  src={`${currentInteractiveLesson.url}${
+                    activeSubTab === "all" ? "" : `#${activeSubTab}`
+                  }`}
+                  sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-downloads allow-modals"
+                  className={`w-full border-0 transition-all ${
+                    interactiveExpanded ? "flex-1 h-full" : "h-[calc(100vh-220px)] min-h-[750px]"
+                  }`}
+                />
+              </div>
+            )}
           </div>
         ) : unitId && current ? (
           /* =========================================================================
@@ -1133,15 +1350,28 @@ export const Learning: React.FC = () => {
                         {chLessons.map((l) => {
                           const isDone = !!g6Progress[l.id]?.completed;
                           const score = g6Progress[l.id]?.score;
+                          const isAccessible = canAccessLesson(l);
                           return (
                             <article
                               key={l.id}
-                              className="group bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-teal-950/5 hover:border-teal-300 transition-all duration-200"
+                              className={`group bg-white rounded-2xl border ${!isAccessible ? "border-amber-200/90 bg-amber-50/15" : "border-slate-200"} p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-teal-950/5 hover:border-teal-300 transition-all duration-200`}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold rounded-lg bg-teal-50 text-teal-700 px-2.5 py-1 border border-teal-100">
-                                  {l.tag.toUpperCase()}
-                                </span>
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-[10px] font-bold rounded-lg bg-teal-50 text-teal-700 px-2.5 py-1 border border-teal-100">
+                                    {l.tag.toUpperCase()}
+                                  </span>
+                                  {!isAccessible ? (
+                                    <span className="text-[10px] font-black rounded-lg bg-amber-50 text-amber-700 px-2 py-0.5 border border-amber-200 flex items-center gap-1 shadow-2xs">
+                                      <Lock size={11} className="text-amber-600" />
+                                      PRO
+                                    </span>
+                                  ) : !isProUser ? (
+                                    <span className="text-[10px] font-extrabold rounded-lg bg-emerald-50 text-emerald-700 px-2 py-0.5 border border-emerald-200">
+                                      MIỄN PHÍ
+                                    </span>
+                                  ) : null}
+                                </div>
                                 {isDone ? (
                                   <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
                                     <CheckCircle2 size={13} />
@@ -1169,13 +1399,23 @@ export const Learning: React.FC = () => {
                                 <span className="font-semibold text-amber-700">🏆 Bằng A4</span>
                               </div>
 
-                              <button
-                                onClick={() => openInteractiveLesson(l, "6")}
-                                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-teal-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
-                              >
-                                <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
-                                <ArrowRight size={14} />
-                              </button>
+                              {!isAccessible ? (
+                                <button
+                                  onClick={() => handleOpenInteractiveLesson(l, "6")}
+                                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm"
+                                >
+                                  <Lock size={14} />
+                                  <span>Mở khóa Pro</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleOpenInteractiveLesson(l, "6")}
+                                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-teal-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
+                                >
+                                  <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
+                                  <ArrowRight size={14} />
+                                </button>
+                              )}
                             </article>
                           );
                         })}
@@ -1250,15 +1490,28 @@ export const Learning: React.FC = () => {
                         {chLessons.map((l) => {
                           const isDone = !!g10Progress[l.id]?.completed;
                           const score = g10Progress[l.id]?.score;
+                          const isAccessible = canAccessLesson(l);
                           return (
                             <article
                               key={l.id}
-                              className="group bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-indigo-950/5 hover:border-indigo-300 transition-all duration-200"
+                              className={`group bg-white rounded-2xl border ${!isAccessible ? "border-amber-200/90 bg-amber-50/15" : "border-slate-200"} p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-indigo-950/5 hover:border-indigo-300 transition-all duration-200`}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold rounded-lg bg-indigo-50 text-indigo-700 px-2.5 py-1 border border-indigo-100">
-                                  {l.tag.toUpperCase()}
-                                </span>
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-[10px] font-bold rounded-lg bg-indigo-50 text-indigo-700 px-2.5 py-1 border border-indigo-100">
+                                    {l.tag.toUpperCase()}
+                                  </span>
+                                  {!isAccessible ? (
+                                    <span className="text-[10px] font-black rounded-lg bg-amber-50 text-amber-700 px-2 py-0.5 border border-amber-200 flex items-center gap-1 shadow-2xs">
+                                      <Lock size={11} className="text-amber-600" />
+                                      PRO
+                                    </span>
+                                  ) : !isProUser ? (
+                                    <span className="text-[10px] font-extrabold rounded-lg bg-emerald-50 text-emerald-700 px-2 py-0.5 border border-emerald-200">
+                                      MIỄN PHÍ
+                                    </span>
+                                  ) : null}
+                                </div>
                                 {isDone ? (
                                   <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
                                     <CheckCircle2 size={13} />
@@ -1286,13 +1539,23 @@ export const Learning: React.FC = () => {
                                 <span className="font-semibold text-amber-700">🏆 5 Badges</span>
                               </div>
 
-                              <button
-                                onClick={() => openInteractiveLesson(l, "10")}
-                                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-indigo-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
-                              >
-                                <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
-                                <ArrowRight size={14} />
-                              </button>
+                              {!isAccessible ? (
+                                <button
+                                  onClick={() => handleOpenInteractiveLesson(l, "10")}
+                                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm"
+                                >
+                                  <Lock size={14} />
+                                  <span>Mở khóa Pro</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleOpenInteractiveLesson(l, "10")}
+                                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-indigo-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
+                                >
+                                  <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
+                                  <ArrowRight size={14} />
+                                </button>
+                              )}
                             </article>
                           );
                         })}
@@ -1368,15 +1631,28 @@ export const Learning: React.FC = () => {
                         {chLessons.map((l) => {
                           const isDone = !!g11Progress[l.id]?.completed;
                           const score = g11Progress[l.id]?.score;
+                          const isAccessible = canAccessLesson(l);
                           return (
                             <article
                               key={l.id}
-                              className="group bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-sky-950/5 hover:border-sky-300 transition-all duration-200"
+                              className={`group bg-white rounded-2xl border ${!isAccessible ? "border-amber-200/90 bg-amber-50/15" : "border-slate-200"} p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-sky-950/5 hover:border-sky-300 transition-all duration-200`}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold rounded-lg bg-sky-50 text-sky-700 px-2.5 py-1 border border-sky-100">
-                                  {l.tag.toUpperCase()}
-                                </span>
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-[10px] font-bold rounded-lg bg-sky-50 text-sky-700 px-2.5 py-1 border border-sky-100">
+                                    {l.tag.toUpperCase()}
+                                  </span>
+                                  {!isAccessible ? (
+                                    <span className="text-[10px] font-black rounded-lg bg-amber-50 text-amber-700 px-2 py-0.5 border border-amber-200 flex items-center gap-1 shadow-2xs">
+                                      <Lock size={11} className="text-amber-600" />
+                                      PRO
+                                    </span>
+                                  ) : !isProUser ? (
+                                    <span className="text-[10px] font-extrabold rounded-lg bg-emerald-50 text-emerald-700 px-2 py-0.5 border border-emerald-200">
+                                      MIỄN PHÍ
+                                    </span>
+                                  ) : null}
+                                </div>
                                 {isDone ? (
                                   <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
                                     <CheckCircle2 size={13} />
@@ -1404,13 +1680,23 @@ export const Learning: React.FC = () => {
                                 <span className="font-semibold text-amber-700">🏆 Bằng A4</span>
                               </div>
 
-                              <button
-                                onClick={() => openInteractiveLesson(l, "11")}
-                                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-sky-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
-                              >
-                                <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
-                                <ArrowRight size={14} />
-                              </button>
+                              {!isAccessible ? (
+                                <button
+                                  onClick={() => handleOpenInteractiveLesson(l, "11")}
+                                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm"
+                                >
+                                  <Lock size={14} />
+                                  <span>Mở khóa Pro</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleOpenInteractiveLesson(l, "11")}
+                                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-sky-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
+                                >
+                                  <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
+                                  <ArrowRight size={14} />
+                                </button>
+                              )}
                             </article>
                           );
                         })}
@@ -1486,15 +1772,28 @@ export const Learning: React.FC = () => {
                         {chLessons.map((l) => {
                           const isDone = !!g12Progress[l.id]?.completed;
                           const score = g12Progress[l.id]?.score;
+                          const isAccessible = canAccessLesson(l);
                           return (
                             <article
                               key={l.id}
-                              className="group bg-white rounded-2xl border border-slate-200 p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-indigo-950/5 hover:border-indigo-300 transition-all duration-200"
+                              className={`group bg-white rounded-2xl border ${!isAccessible ? "border-amber-200/90 bg-amber-50/15" : "border-slate-200"} p-5 flex flex-col gap-3.5 hover:shadow-xl hover:shadow-indigo-950/5 hover:border-indigo-300 transition-all duration-200`}
                             >
                               <div className="flex items-center justify-between">
-                                <span className="text-[10px] font-bold rounded-lg bg-indigo-50 text-indigo-700 px-2.5 py-1 border border-indigo-100">
-                                  BÀI {l.unitNumber}
-                                </span>
+                                <div className="flex items-center gap-1.5 flex-wrap">
+                                  <span className="text-[10px] font-bold rounded-lg bg-indigo-50 text-indigo-700 px-2.5 py-1 border border-indigo-100">
+                                    BÀI {l.unitNumber}
+                                  </span>
+                                  {!isAccessible ? (
+                                    <span className="text-[10px] font-black rounded-lg bg-amber-50 text-amber-700 px-2 py-0.5 border border-amber-200 flex items-center gap-1 shadow-2xs">
+                                      <Lock size={11} className="text-amber-600" />
+                                      PRO
+                                    </span>
+                                  ) : !isProUser ? (
+                                    <span className="text-[10px] font-extrabold rounded-lg bg-emerald-50 text-emerald-700 px-2 py-0.5 border border-emerald-200">
+                                      MIỄN PHÍ
+                                    </span>
+                                  ) : null}
+                                </div>
                                 {isDone ? (
                                   <span className="text-xs font-bold text-emerald-600 flex items-center gap-1">
                                     <CheckCircle2 size={13} />
@@ -1522,13 +1821,23 @@ export const Learning: React.FC = () => {
                                 <span className="font-semibold text-amber-700">🏆 5 Badges</span>
                               </div>
 
-                              <button
-                                onClick={() => openInteractiveLesson(l, "12")}
-                                className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-indigo-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
-                              >
-                                <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
-                                <ArrowRight size={14} />
-                              </button>
+                              {!isAccessible ? (
+                                <button
+                                  onClick={() => handleOpenInteractiveLesson(l, "12")}
+                                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm"
+                                >
+                                  <Lock size={14} />
+                                  <span>Mở khóa Pro</span>
+                                </button>
+                              ) : (
+                                <button
+                                  onClick={() => handleOpenInteractiveLesson(l, "12")}
+                                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-slate-900 hover:bg-indigo-700 text-white py-2.5 text-xs font-bold transition-all shadow-sm group-hover:shadow"
+                                >
+                                  <span>{isDone ? "Học lại bài học" : "Vào học ngay"}</span>
+                                  <ArrowRight size={14} />
+                                </button>
+                              )}
                             </article>
                           );
                         })}
@@ -1624,6 +1933,270 @@ export const Learning: React.FC = () => {
           </div>
         )}
       </div>
+
+      {/* Modal Mở Khóa Gói Học Pro */}
+      {proModalLesson && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl border border-amber-200">
+            {/* Header Modal */}
+            <div className="relative bg-gradient-to-br from-amber-500 via-amber-600 to-amber-700 p-6 text-white text-center">
+              <button
+                onClick={() => setProModalLesson(null)}
+                className="absolute top-4 right-4 p-1.5 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+                title="Đóng"
+              >
+                <X size={18} />
+              </button>
+              <div className="mx-auto w-16 h-16 rounded-2xl bg-white/10 backdrop-blur-md flex items-center justify-center border border-white/20 mb-3 shadow-inner">
+                <Crown size={32} className="text-amber-200" />
+              </div>
+              <span className="text-[11px] font-black uppercase tracking-wider px-3 py-1 rounded-full bg-black/20 text-amber-200 border border-white/10">
+                Gói Học Tập Toàn Diện
+              </span>
+              <h3 className="text-2xl font-black mt-2">Nâng Cấp Tài Khoản PRO</h3>
+              <p className="text-xs text-amber-100 mt-1 max-w-sm mx-auto">
+                Mở khóa không giới hạn toàn bộ bài học tương tác chuẩn SGK mới
+              </p>
+            </div>
+
+            {/* Nội dung Modal */}
+            <div className="p-6 space-y-4">
+              <div className="bg-amber-50/80 rounded-2xl p-4 border border-amber-200/80 flex items-start gap-3">
+                <div className="p-2 rounded-xl bg-amber-500/10 text-amber-700 shrink-0 mt-0.5">
+                  <Lock size={18} />
+                </div>
+                <div>
+                  <h4 className="text-sm font-bold text-amber-950 line-clamp-1">
+                    {proModalLesson.title}
+                  </h4>
+                  <p className="text-xs text-amber-800 mt-1 leading-relaxed">
+                    Tài khoản <strong>Miễn phí (Free)</strong> được học bài đầu tiên của mỗi chương để trải nghiệm. Nâng cấp <strong>PRO</strong> để học toàn bộ bài học, phòng thí nghiệm Canvas và đấu trường không giới hạn!
+                  </p>
+                </div>
+              </div>
+
+              <div className="space-y-2.5">
+                <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
+                  Đặc quyền tài khoản PRO:
+                </p>
+                <div className="grid gap-2 text-xs text-slate-700">
+                  <div className="flex items-center gap-2.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>Mở khóa toàn bộ <strong>150+ bài học</strong> Toán 6, 10, 11, 12</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>Trải nghiệm <strong>300+ phòng thí nghiệm Canvas 2D/3D</strong> động</span>
+                  </div>
+                  <div className="flex items-center gap-2.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>Tham gia <strong>Đấu trường 10 câu</strong> & nhận <strong>Bằng khen in A4</strong></span>
+                  </div>
+                  <div className="flex items-center gap-2.5 bg-slate-50 p-2.5 rounded-xl border border-slate-100">
+                    <CheckCircle2 size={16} className="text-emerald-600 shrink-0" />
+                    <span>Lưu lịch sử học tập & phân tích điểm số theo tài khoản cá nhân</span>
+                  </div>
+                </div>
+              </div>
+
+              <div className="pt-2 flex flex-col gap-2">
+                <button
+                  onClick={() => {
+                    setProModalLesson(null);
+                    navigate("/profile");
+                  }}
+                  className="w-full py-3 px-4 rounded-xl font-extrabold text-sm text-white bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-600 hover:to-amber-700 shadow-md shadow-amber-500/25 flex items-center justify-center gap-2 transition-all cursor-pointer"
+                >
+                  <Sparkles size={16} />
+                  <span>Nâng Cấp PRO Ngay</span>
+                </button>
+                <button
+                  onClick={() => setProModalLesson(null)}
+                  className="w-full py-2.5 px-4 rounded-xl font-bold text-xs text-slate-600 hover:bg-slate-100 transition-colors cursor-pointer"
+                >
+                  Để sau
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Modal Lịch Sử Học Tập */}
+      {showHistoryModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in">
+          <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[85vh] flex flex-col overflow-hidden shadow-2xl border border-slate-200">
+            {/* Header Modal */}
+            <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-5 text-white flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <div className="p-2.5 rounded-2xl bg-white/10 backdrop-blur-sm border border-white/10">
+                  <History size={20} className="text-indigo-400" />
+                </div>
+                <div>
+                  <h3 className="text-lg font-black flex items-center gap-2">
+                    Lịch Sử Học Tập
+                    <span className="text-xs font-semibold px-2 py-0.5 rounded-full bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">
+                      @{studentUsername || user?.id || "học sinh"}
+                    </span>
+                  </h3>
+                  <p className="text-xs text-slate-300">
+                    Tiến độ và kết quả Đấu trường được lưu trữ theo tài khoản của bạn
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-2">
+                <button
+                  onClick={() => {
+                    if (user?.id) {
+                      setHistoryLoading(true);
+                      apiService
+                        .fetchLessonHistory()
+                        .then((res: any) => {
+                          if (res?.data && Array.isArray(res.data)) {
+                            const serverHistory: LearningHistoryItem[] = res.data.map((row: any) => ({
+                              lessonId: row.lesson_id,
+                              lessonTitle: row.lesson_title,
+                              grade: row.grade,
+                              chapterNumber: row.chapter_number,
+                              score: Number(row.score || 0),
+                              completed: Boolean(row.completed),
+                              timestamp: new Date(row.last_studied_at || Date.now()).getTime(),
+                            }));
+                            setHistoryItems(serverHistory);
+                            try {
+                              localStorage.setItem(historyStorageKey, JSON.stringify(serverHistory));
+                            } catch {}
+                          }
+                        })
+                        .catch(() => {})
+                        .finally(() => setHistoryLoading(false));
+                    }
+                  }}
+                  disabled={historyLoading}
+                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors disabled:opacity-50 cursor-pointer"
+                  title="Đồng bộ từ máy chủ"
+                >
+                  <RefreshCw size={16} className={historyLoading ? "animate-spin" : ""} />
+                </button>
+                <button
+                  onClick={() => setShowHistoryModal(false)}
+                  className="p-2 rounded-xl bg-white/10 hover:bg-white/20 text-white transition-colors cursor-pointer"
+                  title="Đóng"
+                >
+                  <X size={16} />
+                </button>
+              </div>
+            </div>
+
+            {/* Body Modal */}
+            <div className="p-5 overflow-y-auto flex-1 space-y-3">
+              {historyLoading ? (
+                <div className="py-16 text-center text-slate-500 flex flex-col items-center gap-3">
+                  <Loader2 size={28} className="animate-spin text-indigo-600" />
+                  <p className="text-xs">Đang đồng bộ dữ liệu bài học...</p>
+                </div>
+              ) : historyItems.length === 0 ? (
+                <div className="py-16 text-center text-slate-400 space-y-3">
+                  <BookOpen size={40} className="mx-auto text-slate-300" />
+                  <p className="text-sm font-bold text-slate-600">Chưa có bài học nào được ghi nhận</p>
+                  <p className="text-xs text-slate-400 max-w-sm mx-auto">
+                    Hãy bắt đầu học bài đầu tiên và vượt qua Đấu trường để lưu lại thành tích của bạn!
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  <div className="flex items-center justify-between text-xs text-slate-500 px-1 font-semibold">
+                    <span>Tổng số: {historyItems.length} bài học đã tham gia</span>
+                    <span>Sắp xếp: Mới nhất</span>
+                  </div>
+                  {historyItems.map((item, index) => {
+                    const gradeColor =
+                      item.grade === "6"
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200"
+                        : item.grade === "11"
+                        ? "bg-sky-50 text-sky-700 border-sky-200"
+                        : "bg-indigo-50 text-indigo-700 border-indigo-200";
+
+                    return (
+                      <div
+                        key={`${item.lessonId}-${index}`}
+                        className="bg-white rounded-2xl border border-slate-200 p-4 hover:border-indigo-300 hover:shadow-md transition-all flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3"
+                      >
+                        <div className="space-y-1 flex-1 min-w-0">
+                          <div className="flex items-center gap-2 flex-wrap">
+                            <span className={`text-[10px] font-black uppercase px-2 py-0.5 rounded-md border ${gradeColor}`}>
+                              Lớp {item.grade}
+                            </span>
+                            {item.completed ? (
+                              <span className="text-[11px] font-bold text-emerald-600 flex items-center gap-1 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                                <CheckCircle2 size={12} />
+                                Đã hoàn thành
+                              </span>
+                            ) : (
+                              <span className="text-[11px] font-medium text-amber-600 bg-amber-50 px-2 py-0.5 rounded-md border border-amber-200">
+                                Đang học
+                              </span>
+                            )}
+                            {item.score !== undefined && item.score > 0 && (
+                              <span className="text-[11px] font-black text-indigo-600 bg-indigo-50 px-2 py-0.5 rounded-md border border-indigo-200">
+                                🎯 {item.score * 10}%
+                              </span>
+                            )}
+                          </div>
+                          <h4 className="font-extrabold text-sm text-slate-900 truncate">
+                            {item.lessonTitle}
+                          </h4>
+                          <p className="text-[11px] text-slate-400 flex items-center gap-1">
+                            <Clock size={11} />
+                            Học gần nhất: {new Date(item.timestamp).toLocaleString("vi-VN")}
+                          </p>
+                        </div>
+
+                        <button
+                          onClick={() => {
+                            setShowHistoryModal(false);
+                            const g = item.grade || "6";
+                            setGrade(g);
+                            let targetLesson: InteractiveLesson | undefined;
+                            if (g === "6") targetLesson = GRADE_6_LESSONS.find((l) => l.id === item.lessonId);
+                            else if (g === "10") targetLesson = GRADE_10_LESSONS.find((l) => l.id === item.lessonId);
+                            else if (g === "11") targetLesson = GRADE_11_LESSONS.find((l) => l.id === item.lessonId);
+                            else if (g === "12") targetLesson = GRADE_12_LESSONS.find((l) => l.id === item.lessonId);
+
+                            if (targetLesson) {
+                              handleOpenInteractiveLesson(targetLesson, g);
+                            } else {
+                              setParams({ grade: g, lesson: item.lessonId });
+                            }
+                          }}
+                          className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-xl bg-slate-900 hover:bg-indigo-700 text-white text-xs font-bold transition-all shrink-0 cursor-pointer"
+                        >
+                          <span>Vào học tiếp</span>
+                          <ArrowRight size={13} />
+                        </button>
+                      </div>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
+
+            {/* Footer Modal */}
+            <div className="bg-slate-50 border-t border-slate-200 p-4 flex items-center justify-between text-xs text-slate-500">
+              <span className="flex items-center gap-1.5">
+                <CheckCircle2 size={13} className="text-emerald-600" />
+                Dữ liệu được lưu an toàn theo tên đăng nhập
+              </span>
+              <button
+                onClick={() => setShowHistoryModal(false)}
+                className="px-4 py-2 rounded-xl bg-white border border-slate-200 font-bold hover:bg-slate-100 text-slate-700 transition-colors cursor-pointer"
+              >
+                Đóng
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

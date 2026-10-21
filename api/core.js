@@ -184,6 +184,10 @@ export async function canManageClass(req, classId) {
 
 export async function canAccessClass(req, classId) {
     if (await canManageClass(req, classId)) return true;
+    const [classroom] = await query('SELECT code, name FROM classes WHERE id = ?', [classId]);
+    if (classroom && (['THY6TO', 'WWHXNV', 'W0DBUX'].includes(classroom.code) || (classroom.name && classroom.name.includes('Tự do')))) {
+        return true;
+    }
     const [membership] = await query('SELECT 1 FROM class_students WHERE class_id = ? AND student_id = ?', [classId, req.user?.id]);
     return Boolean(membership);
 }
@@ -886,6 +890,42 @@ export async function seedDatabase() {
                 CONSTRAINT fk_ulp_section FOREIGN KEY (section_id) REFERENCES lesson_sections(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `).catch(e => console.log("Migration notice (user_lesson_progress):", e.message));
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS student_lesson_history (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                username VARCHAR(50) NOT NULL,
+                lesson_id VARCHAR(100) NOT NULL,
+                lesson_title VARCHAR(255) NOT NULL,
+                grade VARCHAR(10) NOT NULL,
+                score DECIMAL(5,2) DEFAULT 0,
+                completed BOOLEAN DEFAULT FALSE,
+                attempts INT DEFAULT 1,
+                last_studied_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                UNIQUE KEY unique_student_lesson (username, lesson_id),
+                INDEX idx_slh_user (user_id),
+                INDEX idx_slh_username (username),
+                INDEX idx_slh_grade (grade),
+                CONSTRAINT fk_slh_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `).catch(e => console.log("Migration notice (student_lesson_history):", e.message));
+
+        await pool.query(`
+            CREATE TABLE IF NOT EXISTS student_learning_logs (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id INT NOT NULL,
+                username VARCHAR(50) NOT NULL,
+                lesson_id VARCHAR(100) NOT NULL,
+                lesson_title VARCHAR(255) NOT NULL,
+                grade VARCHAR(10) NOT NULL,
+                score DECIMAL(5,2) DEFAULT 0,
+                completed BOOLEAN DEFAULT FALSE,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                INDEX idx_sll_username (username),
+                INDEX idx_sll_lesson (lesson_id)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `).catch(e => console.log("Migration notice (student_learning_logs):", e.message));
 
         await pool.query(`
             CREATE TABLE IF NOT EXISTS system_settings (

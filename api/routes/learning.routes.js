@@ -76,4 +76,75 @@ router.post('/user/lesson-progress', async (req, res) => {
     } catch(e) { res.status(e.status || 500).json({ error: e.message }); }
 });
 
+// Lưu lịch sử học tập theo tên đăng nhập (username)
+router.post('/learning/history', async (req, res) => {
+    try {
+        if (!req.user?.id) return res.status(401).json({ error: 'Cần đăng nhập để lưu lịch sử học tập.' });
+        const user_id = req.user.id;
+        let username = req.user.username;
+        if (!username) {
+            const [u] = await query("SELECT username FROM users WHERE id = ?", [user_id]);
+            username = u?.username || `user_${user_id}`;
+        }
+        const { lesson_id, lesson_title, grade, score, completed } = req.body;
+        if (!lesson_id) return res.status(400).json({ error: 'lesson_id is required' });
+        const safeScore = Number.isFinite(Number(score)) ? Math.max(0, Math.min(10, Number(score))) : 0;
+        const isDone = completed ? 1 : 0;
+
+        await query(`
+            INSERT INTO student_lesson_history 
+                (user_id, username, lesson_id, lesson_title, grade, score, completed, attempts, last_studied_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, 1, NOW())
+            ON DUPLICATE KEY UPDATE
+                score = GREATEST(score, VALUES(score)),
+                completed = (completed OR VALUES(completed)),
+                attempts = attempts + 1,
+                lesson_title = VALUES(lesson_title),
+                grade = VALUES(grade),
+                last_studied_at = NOW()
+        `, [user_id, username, String(lesson_id), String(lesson_title || lesson_id), String(grade || '10'), safeScore, isDone]);
+
+        await query(`
+            INSERT INTO student_learning_logs
+                (user_id, username, lesson_id, lesson_title, grade, score, completed, created_at)
+            VALUES (?, ?, ?, ?, ?, ?, ?, NOW())
+        `, [user_id, username, String(lesson_id), String(lesson_title || lesson_id), String(grade || '10'), safeScore, isDone]).catch(() => {});
+
+        res.json({ success: true, username });
+    } catch(e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
+// Lấy lịch sử học tập theo tên đăng nhập của học sinh
+router.get('/learning/history', async (req, res) => {
+    try {
+        if (!req.user?.id) return res.status(401).json({ error: 'Cần đăng nhập để xem lịch sử học tập.' });
+        const user_id = req.user.id;
+        let username = req.user.username;
+        if (!username) {
+            const [u] = await query("SELECT username FROM users WHERE id = ?", [user_id]);
+            username = u?.username || `user_${user_id}`;
+        }
+        const gradeFilter = req.query.grade;
+        let sql = "SELECT * FROM student_lesson_history WHERE username = ?";
+        const params = [username];
+        if (gradeFilter) {
+            sql += " AND grade = ?";
+            params.push(gradeFilter);
+        }
+        sql += " ORDER BY last_studied_at DESC";
+        const history = await query(sql, params);
+
+        const logs = await query(
+            "SELECT * FROM student_learning_logs WHERE username = ? ORDER BY created_at DESC LIMIT 30",
+            [username]
+        ).catch(() => []);
+
+        res.json({ success: true, username, data: history, recentLogs: logs });
+    } catch(e) {
+        res.status(500).json({ error: e.message });
+    }
+});
+
 export default router;

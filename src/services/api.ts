@@ -188,6 +188,19 @@ export const apiService = {
         });
         return await handleResponse(res, '/user/lesson-progress');
     },
+    async saveLessonHistory(data: { lesson_id: string; lesson_title: string; grade: string; score?: number; completed?: boolean }) {
+        const res = await fetch(`${API_URL}/learning/history`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(data)
+        });
+        return await handleResponse(res, '/learning/history');
+    },
+    async fetchLessonHistory(grade?: string) {
+        const url = `${API_URL}/learning/history${grade ? `?grade=${encodeURIComponent(grade)}` : ''}`;
+        const res = await fetch(url);
+        return await handleResponse(res, '/learning/history');
+    },
     async fetchQuestionsByIds(ids: number[]) {
         const response = await fetch(`${API_URL}/questions/by-ids`, {
             method: 'POST',

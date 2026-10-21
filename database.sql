@@ -368,6 +368,38 @@ CREATE TABLE IF NOT EXISTS user_lesson_progress (
     CONSTRAINT fk_ulp_section FOREIGN KEY (section_id) REFERENCES lesson_sections(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+CREATE TABLE IF NOT EXISTS student_lesson_history (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    lesson_id VARCHAR(100) NOT NULL,
+    lesson_title VARCHAR(255) NOT NULL,
+    grade VARCHAR(10) NOT NULL,
+    score DECIMAL(5,2) DEFAULT 0,
+    completed BOOLEAN DEFAULT FALSE,
+    attempts INT DEFAULT 1,
+    last_studied_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    UNIQUE KEY unique_student_lesson (username, lesson_id),
+    INDEX idx_slh_user (user_id),
+    INDEX idx_slh_username (username),
+    INDEX idx_slh_grade (grade),
+    CONSTRAINT fk_slh_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+CREATE TABLE IF NOT EXISTS student_learning_logs (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id INT NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    lesson_id VARCHAR(100) NOT NULL,
+    lesson_title VARCHAR(255) NOT NULL,
+    grade VARCHAR(10) NOT NULL,
+    score DECIMAL(5,2) DEFAULT 0,
+    completed BOOLEAN DEFAULT FALSE,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    INDEX idx_sll_username (username),
+    INDEX idx_sll_lesson (lesson_id)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- ==========================================
 -- 6.3. CÀI ĐẶT HỆ THỐNG & GIỚI HẠN
 -- ==========================================

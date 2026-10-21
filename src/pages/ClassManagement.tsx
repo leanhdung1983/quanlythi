@@ -13,7 +13,9 @@ interface ClassData {
     name: string;
     code: string;
     created_at: string;
+    teacher_id?: number;
     teacher_name?: string;
+    is_free_class?: boolean | number;
 }
 
 interface StudentData {
@@ -452,18 +454,31 @@ export const ClassManagement = () => {
                                         }`}
                                     >
                                         <div className="flex justify-between items-start">
-                                            <div>
-                                                <h3 className="font-bold text-slate-800">{cls.name}</h3>
+                                            <div className="flex-1 pr-2">
+                                                <div className="flex items-center gap-2 flex-wrap">
+                                                    <h3 className="font-bold text-slate-800">{cls.name}</h3>
+                                                    {(cls.is_free_class || ['THY6TO', 'WWHXNV', 'W0DBUX'].includes(cls.code) || cls.name.includes('Tự do')) && (
+                                                        <span className="px-2 py-0.5 text-[10px] font-bold rounded-md bg-amber-50 text-amber-700 border border-amber-200">
+                                                            Lớp tự do
+                                                        </span>
+                                                    )}
+                                                </div>
                                                 {isTeacher ? (
-                                                    <p className="text-sm text-indigo-600 font-mono mt-1">Mã: {cls.code}</p>
+                                                    <div className="flex items-center gap-2 text-xs mt-1">
+                                                        <span className="text-indigo-600 font-mono font-bold">Mã: {cls.code}</span>
+                                                        {cls.teacher_name && cls.teacher_id !== user?.id && (
+                                                            <span className="text-slate-400">({cls.teacher_name})</span>
+                                                        )}
+                                                    </div>
                                                 ) : (
                                                     <p className="text-sm text-slate-500 mt-1">GV: {cls.teacher_name}</p>
                                                 )}
                                             </div>
-                                            {isTeacher && (
+                                            {isTeacher && !(cls.is_free_class || ['THY6TO', 'WWHXNV', 'W0DBUX'].includes(cls.code) || cls.name.includes('Tự do')) && (user?.role === 'ADMIN' || cls.teacher_id === user?.id) && (
                                                 <button 
                                                     onClick={(e) => { e.stopPropagation(); handleDeleteClass(cls.id); }}
-                                                    className="text-slate-400 hover:text-red-500 p-1"
+                                                    className="text-slate-400 hover:text-red-500 p-1 rounded-md hover:bg-red-50 transition-colors"
+                                                    title="Xoá lớp học"
                                                 >
                                                     <Trash2 className="w-4 h-4" />
                                                 </button>
@@ -508,7 +523,7 @@ export const ClassManagement = () => {
                                     <div className="border rounded-xl p-4">
                                         <div className="flex items-center justify-between mb-4">
                                             <h3 className="font-bold flex items-center gap-2"><Users className="w-5 h-5 text-blue-500"/> Học sinh ({students.length})</h3>
-                                            {isTeacher && (
+                                            {isTeacher && (user?.role === 'ADMIN' || selectedClass?.teacher_id === user?.id) && (
                                                 <button onClick={() => setShowAddStudentModal(true)} className="text-xs bg-blue-50 text-blue-600 hover:bg-blue-100 px-3 py-1 rounded-full font-bold flex items-center gap-1">
                                                     <Plus className="w-3 h-3" /> Thêm HS
                                                 </button>
@@ -525,7 +540,7 @@ export const ClassManagement = () => {
                                                             <p className="font-medium text-sm">{s.full_name || s.username}</p>
                                                             <p className="text-xs text-slate-500">{s.school || 'Chưa cập nhật trường'}</p>
                                                         </div>
-                                                        {isTeacher && (
+                                                        {isTeacher && (user?.role === 'ADMIN' || selectedClass?.teacher_id === user?.id) && (
                                                             <button onClick={() => handleRemoveStudent(s.id)} className="text-slate-400 hover:text-red-500">
                                                                 <Trash2 className="w-4 h-4"/>
                                                             </button>
@@ -541,7 +556,7 @@ export const ClassManagement = () => {
                                         <div className="flex items-center justify-between mb-4">
                                             <h3 className="font-bold flex items-center gap-2"><BookOpen className="w-5 h-5 text-green-500"/> Bài tập ({assignments.length})</h3>
                                             
-                                            {isTeacher && (
+                                            {isTeacher && (user?.role === 'ADMIN' || selectedClass?.teacher_id === user?.id) && (
                                                 <button onClick={openAssignModal} className="text-xs bg-indigo-50 text-indigo-600 hover:bg-indigo-100 px-3 py-1 rounded-full font-bold flex items-center gap-1">
                                                     <Plus className="w-3 h-3" /> Giao bài
                                                 </button>
@@ -612,7 +627,7 @@ export const ClassManagement = () => {
                                                                 </div>
 
                                                                 <div className="flex items-center gap-1 shrink-0">
-                                                                    {isTeacher ? (
+                                                                    {isTeacher && (user?.role === 'ADMIN' || selectedClass?.teacher_id === user?.id) ? (
                                                                         <>
                                                                             <button 
                                                                                 onClick={() => openEditAssignmentModal(a)} 

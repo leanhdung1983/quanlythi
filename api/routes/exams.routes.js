@@ -32,8 +32,13 @@ router.get('/saved-matrices', async (req, res) => {
         const params = [];
         const where = [];
         if (!isAdmin(req)) {
-            where.push('(m.is_public = 1 OR m.created_by IS NULL OR m.created_by = ?)');
-            params.push(req.user.id);
+            if (req.user?.role === 'TEACHER') {
+                where.push('(m.created_by = ? OR (m.created_by IS NULL AND m.is_public = 1) OR (u.role = "ADMIN" AND m.is_public = 1))');
+                params.push(req.user.id);
+            } else {
+                where.push('(m.is_public = 1 OR m.created_by IS NULL OR m.created_by = ?)');
+                params.push(req.user?.id || 0);
+            }
         }
         if (where.length) sql += ` WHERE ${where.join(' AND ')}`;
         sql += " ORDER BY m.created_at DESC";

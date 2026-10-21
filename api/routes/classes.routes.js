@@ -15,9 +15,28 @@ const router = express.Router();
 // 1. Lấy danh sách lớp của một giáo viên
 router.get('/classes', async (req, res) => {
     try {
-        const teacher_id = (req.user?.role === 'ADMIN' && req.query.teacher_id) ? req.query.teacher_id : req.user?.id;
-        if (!teacher_id) return res.status(400).json({ error: "teacher_id is required" });
-        const rows = await query("SELECT * FROM classes WHERE teacher_id = ? ORDER BY created_at DESC", [teacher_id]);
+        let sql = `
+            SELECT c.*, u.full_name AS teacher_name,
+            CASE WHEN (c.code IN ('THY6TO', 'WWHXNV', 'W0DBUX') OR c.name LIKE '%Tự do%') THEN 1 ELSE 0 END AS is_free_class
+            FROM classes c
+            LEFT JOIN users u ON c.teacher_id = u.id
+        `;
+        const params = [];
+        if (req.user?.role === 'ADMIN') {
+            if (req.query.teacher_id) {
+                sql += " WHERE c.teacher_id = ?";
+                params.push(req.query.teacher_id);
+            }
+            sql += " ORDER BY c.created_at DESC";
+        } else if (req.user?.role === 'TEACHER') {
+            // Giáo viên chỉ xem lớp do mình tạo ra HOẶC các lớp tự do, không xem lớp của giáo viên khác
+            sql += " WHERE (c.teacher_id = ? OR c.code IN ('THY6TO', 'WWHXNV', 'W0DBUX') OR c.name LIKE '%Tự do%') ORDER BY (c.teacher_id = ?) DESC, c.created_at DESC";
+            params.push(req.user.id, req.user.id);
+        } else {
+            // Học sinh hoặc role khác
+            sql += " WHERE c.code IN ('THY6TO', 'WWHXNV', 'W0DBUX') OR c.name LIKE '%Tự do%' ORDER BY c.created_at DESC";
+        }
+        const rows = await query(sql, params);
         res.json({ success: true, data: rows });
     } catch (e) { res.status(500).json({ error: e.message }); }
 });
@@ -38,8 +57,11 @@ router.post('/classes', async (req, res) => {
 // 3. Xoá lớp học (Chỉ Giáo viên sở hữu hoặc Admin)
 router.delete('/classes/:id', async (req, res) => {
     try {
-        const [cls] = await query("SELECT teacher_id FROM classes WHERE id = ?", [req.params.id]);
+        const [cls] = await query("SELECT teacher_id, code, name FROM classes WHERE id = ?", [req.params.id]);
         if (!cls) return res.status(404).json({ error: "Lớp học không tồn tại" });
+        if (req.user?.role !== 'ADMIN' && (['THY6TO', 'WWHXNV', 'W0DBUX'].includes(cls.code) || cls.name.includes('Tự do'))) {
+            return res.status(403).json({ error: "Lớp tự do của hệ thống không thể xoá." });
+        }
         if (req.user?.role !== 'ADMIN' && cls.teacher_id !== req.user?.id) {
             return res.status(403).json({ error: "Bạn không có quyền xoá lớp học này." });
         }
