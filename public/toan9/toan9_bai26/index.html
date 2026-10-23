@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 26: Xác Suất Của Biến Cố Liên Quan Tới Phép Thử - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Bậc Thầy Xác Suất Cổ Điển 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">XÁC SUẤT 9 • CHƯƠNG VIII</span>
+      <h1>Bài 26: Xác Suất Của Biến Cố Liên Quan Tới Phép Thử</h1>
+      <p>Làm chủ định nghĩa cổ điển của xác suất trong mô hình các kết quả đồng khả năng: $P(E) = \frac{n(E)}{n(\Omega)}$, tính chất $0 \le P(E) \le 1$ và xác suất của biến cố đối.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Công Thức Tính Xác Suất Cổ Điển</h3>
+              <div class="concept-box cyan">
+                <h4>Định Nghĩa Cổ Điển</h4>
+                <p>Giả thiết rằng các kết quả của một phép thử ngẫu nhiên là <strong>đồng khả năng</strong>. Khi đó, xác suất của biến cố $E$, kí hiệu là $P(E)$, được tính bởi công thức:</p><p class="math-highlight">$$P(E) = \frac{n(E)}{n(\Omega)}$$</p><ul><li>$n(E)$ là số kết quả thuận lợi cho biến cố $E$.</li><li>$n(\Omega)$ là số phần tử của không gian mẫu $\Omega$.</li><li>Xác suất là một phân số (hoặc số thập phân, tỉ số phần trăm) đo lường cơ hội xảy ra của biến cố.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$P(E) = \frac{n(E)}{n(\Omega)}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Công thức P(E) = n(E) / n(Omega) CHỈ ÁP DỤNG KHI tất cả các kết quả trong không gian mẫu là ĐỒNG KHẢ NĂNG.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Các Tính Chất Quan Trọng Của Xác Suất</h3>
+              <div class="concept-box cyan">
+                <h4>Tính Chất Xác Suất</h4>
+                <p>Với mọi biến cố $E$ trong phép thử:</p><ul><li>$0 \le P(E) \le 1$.</li><li>Xác suất của biến cố chắc chắn bằng $1$: $P(\Omega) = 1$.</li><li>Xác suất của biến cố không thể bằng $0$: $P(\varnothing) = 0$.</li><li><strong>Xác suất của biến cố đối $\overline{E}$:</strong> Biến cố "$E$ không xảy ra" gọi là biến cố đối của $E$. Ta có:$$P(\overline{E}) = 1 - P(E)$$</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$0 \le P(E) \le 1; \quad P(\overline{E}) = 1 - P(E)$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Khi việc tính trực tiếp n(E) phức tạp, hãy tính xác suất của biến cố đối rồi lấy 1 trừ đi.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Ba Bước Tính Xác Suất Chuẩn Mực</h3>
+              <div class="concept-box cyan">
+                <h4>Phương Pháp Tính</h4>
+                <p>Để tính xác suất của biến cố $E$, ta thực hiện theo 3 bước:</p><ul><li><strong>Bước 1:</strong> Xác định không gian mẫu $\Omega$ và tính số phần tử $n(\Omega)$.</li><li><strong>Bước 2:</strong> Liệt kê hoặc đếm số kết quả thuận lợi cho biến cố $E$, tức $n(E)$.</li><li><strong>Bước 3:</strong> Lập tỉ số $P(E) = \frac{n(E)}{n(\Omega)}$ và rút gọn phân số về dạng tối giản.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\Omega \xrightarrow{\text{Đếm}} n(\Omega) \quad \text{và} \quad E \xrightarrow{\text{Đếm}} n(E) \implies P(E) = \frac{n(E)}{n(\Omega)}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Đảm bảo phân số xác suất luôn được rút gọn tối giản hoặc quy đổi ra phần trăm chuẩn xác.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Vòng Xoay May Mắn & Tính Xác Suất Lý Thuyết</h3>
+          <p class="lab-desc">Vòng xoay gồm 8 ô bằng nhau (3 ô Vàng, 3 ô Xanh, 2 ô Đỏ). Bấm nút Quay Thưởng để quan sát kim dừng và đối chiếu tần suất thực nghiệm với xác suất lý thuyết.</p>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnSpinWheel" style="padding: 6px 16px; font-size: 0.95rem;">🎡 Quay Vòng May Mắn</button> &nbsp;|&nbsp;
+                    <button class="btn-icon" id="btnSpin100" style="padding: 6px 12px; font-size: 0.85rem;">⚡ Quay Nhanh 100 Lần</button>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas1" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Bốc Thăm Thẻ Số & Tính Xác Suất Biến Cố</h3>
+          <p class="lab-desc">Trong hộp có 20 thẻ đánh số từ 1 đến 20. Bấm nút Bốc Thẻ để kiểm tra xem số bốc được có thỏa mãn các biến cố: Số chẵn, Số chia hết cho 3, Số nguyên tố.</p>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnDrawCard" style="padding: 6px 16px; font-size: 0.95rem;">🎴 Rút Thẻ Ngẫu Nhiên</button> &nbsp;|&nbsp;
+                    <button class="btn-icon" id="btnDrawAllCards" style="padding: 6px 12px; font-size: 0.85rem;">📋 Hiển Thị Toàn Bộ 20 Thẻ</button>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas2" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 26: Xác Suất Của Biến Cố Liên Quan Tới Phép Thử</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">ĐẠI BẬC THẦY XÁC SUẤT CỔ ĐIỂN 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai25/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 25: Phép Thử Ngẫu Nhiên & Không Gian Mẫu</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_ltc_chuong8/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Luyện Tập Chung: Sơ Đồ Cây & Bảng Hai Chiều Tính Xác Suất (Trang 64)</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

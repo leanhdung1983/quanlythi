@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luyện Tập Chung: Góc Nội Tiếp & Đường Tròn Tam Giác (Trang 78) - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Dũng Sĩ Hình Học Tròn 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">HÌNH HỌC 9 • CHƯƠNG IX</span>
+      <h1>Luyện Tập Chung: Góc Nội Tiếp & Đường Tròn Tam Giác</h1>
+      <p>Rèn luyện kỹ năng phối hợp giữa tính chất góc nội tiếp, định lí Thales và tính toán bán kính đường tròn nội tiếp, ngoại tiếp trong các bài toán hình học tổng hợp.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Mối Liên Hệ Giữa Góc Nội Tiếp & Tam Giác Nội Tiếp</h3>
+              <div class="concept-box cyan">
+                <h4>Phối Hợp Kiến Thức</h4>
+                <p>Khi tam giác $ABC$ nội tiếp đường tròn $(O; R)$:</p><ul><li>Mỗi góc của tam giác là một góc nội tiếp của đường tròn: $\widehat{A} = \frac{1}{2}\text{sđ}\overparen{BC}$.</li><li>Định lí $\sin$: $\dfrac{a}{\sin A} = \dfrac{b}{\sin B} = \dfrac{c}{\sin C} = 2R$.</li><li>Đặc biệt nếu $\widehat{A} = 90^\circ$ thì $a = 2R$, cạnh $BC$ là đường kính.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\frac{a}{\sin A} = 2R \implies a = 2R\sin A$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Cạnh đối diện góc nội tiếp có độ dài tỉ lệ thuận với sin của góc nội tiếp đó.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Bán Kính Nội Tiếp & Ngoại Tiếp Tam Giác Cân</h3>
+              <div class="concept-box cyan">
+                <h4>Tính Toán Nâng Cao</h4>
+                <p>Cho tam giác $ABC$ cân tại $A$ có $AB = AC = b$, đáy $BC = a$:</p><ul><li>Đường cao kẻ từ đỉnh: $h = \sqrt{b^2 - (a/2)^2}$.</li><li>Diện tích: $S = \frac{1}{2}ah$. Nửa chu vi: $p = b + \frac{a}{2}$.</li><li>Bán kính ngoại tiếp: $R = \dfrac{b^2}{2h}$.</li><li>Bán kính nội tiếp: $r = \dfrac{S}{p} = \dfrac{ah}{2b + a}$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$R = \frac{b^2}{2h}; \quad r = \frac{ah}{2b + a}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Trong tam giác cân, đường cao đồng thời là đường trung trực của đáy và đường phân giác của góc đỉnh.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Tính Chất Các Tiếp Điểm Đường Tròn Nội Tiếp</h3>
+              <div class="concept-box cyan">
+                <h4>Tiếp Điểm Nội Tiếp</h4>
+                <p>Gọi $D, E, F$ là các tiếp điểm của $(I; r)$ trên các cạnh $BC, CA, AB$:</p><ul><li>Độ dài các đoạn tiếp tuyến kẻ từ một đỉnh bằng nhau:$AF = AE = p - a$; $BD = BF = p - b$; $CD = CE = p - c$.</li><li>Đây là tính chất then chốt để chứng minh các hệ thức hình học và tính toán độ dài đoạn thẳng.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$AF = AE = p - a; \quad BD = BF = p - b; \quad CD = CE = p - c$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Khoảng cách từ đỉnh đến tiếp điểm trên cạnh đối diện luôn bằng nửa chu vi trừ đi cạnh đối diện đó.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Khảo Sát Bán Kính R & r Cho Tam Giác Cân</h3>
+          <p class="lab-desc">Thay đổi chiều cao h và độ rộng đáy a của tam giác cân để quan sát sự thay đổi vị trí tâm ngoại tiếp O và tâm nội tiếp I trên trục đối xứng.</p>
+          
+                <div class="lab-controls">
+                    <label>Độ dài đáy a: <input type="range" id="slBaseA" min="100" max="300" value="200" step="20"></label>
+                    <span id="vBaseA" class="val-display">a = 200</span> &nbsp;|&nbsp;
+                    <label>Chiều cao h: <input type="range" id="slHeightH" min="80" max="220" value="150" step="10"></label>
+                    <span id="vHeightH" class="val-display">h = 150</span>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas1" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Tương Giao Dây Cung & Góc Cùng Nhìn Dây</h3>
+          <p class="lab-desc">Quan sát hai góc nội tiếp cùng chắn một dây cung và chứng minh chúng luôn bằng nhau hoặc bù nhau tùy thuộc vào vị trí cùng phía hay khác phía bờ chứa dây cung.</p>
+          
+                <div class="lab-controls">
+                    <span style="color:#94a3b8;">Hai góc nội tiếp cùng nhìn dây cung BC:</span>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas2" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Luyện Tập Chung: Góc Nội Tiếp & Đường Tròn Tam Giác</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">DŨNG SĨ HÌNH HỌC TRÒN 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai28/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 28: Đường Tròn Ngoại Tiếp & Nội Tiếp Tam Giác</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai29/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 29: Tứ Giác Nội Tiếp</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

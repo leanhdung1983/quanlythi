@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 17: Thu Thập Và Phân Loại Dữ Liệu - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Phân Tích Dữ Liệu 7</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG V: THU THẬP VÀ BIỂU DIỄN DỮ LIỆU • BÀI 17 • TOÁN 7 KNTT</span>
+      <h1>BÀI 17: THU THẬP VÀ PHÂN LOẠI DỮ LIỆU</h1>
+      <p>Chào mừng bạn đến với Khoa học Dữ liệu! Học cách thu thập thông tin chuẩn xác và phân loại dữ liệu định tính, định lượng - kĩ năng thiết yếu của thế kỉ 21.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Phương Pháp Thu Thập Dữ Liệu</h3>
+          <div class="concept-box cyan">
+            <h4>Thu Thập Dữ Liệu</h4>
+            <p>Dữ liệu có thể được thu thập bằng nhiều cách:</p><ul><li><strong>Trực tiếp:</strong> Quan sát, làm thí nghiệm, phỏng vấn, lập phiếu khảo sát.</li><li><strong>Gián tiếp:</strong> Thu thập từ sách báo, niên giám thống kê, cơ sở dữ liệu trên internet.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Dữ liệu thu thập} = \{\text{Số liệu, Chữ cái, Hình ảnh, Âm thanh}\}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Để có kết luận đáng tin cậy, dữ liệu thu thập phải đảm bảo tính chính xác và tính đại diện cho toàn bộ đối tượng khảo sát.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Phân Loại Dữ Liệu Định Tính Và Định Lượng</h3>
+          <div class="concept-box cyan">
+            <h4>Phân Loại Dữ Liệu</h4>
+            <p>Dữ liệu thống kê được phân thành hai loại chính:</p><ul><li><strong>Dữ liệu định tính (phi số):</strong> Biểu thị bằng chữ, kí hiệu hoặc con số nhưng không dùng để tính toán (như: giới tính, xếp loại học lực Giỏi/Khá, màu sắc yêu thích, mã số CCCD).</li><li><strong>Dữ liệu định lượng (dữ liệu số):</strong> Biểu thị bằng các số đo có thể so sánh và thực hiện phép tính (như: chiều cao, cân nặng, điểm kiểm tra, số cây trồng được).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Dữ liệu} \begin{cases} \text{Định tính: Tên, Xếp loại, Nhãn} \\ \text{Định lượng: Số đo, Số đếm} \end{cases}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Dữ liệu định lượng luôn mang đơn vị đo và có thể tính toán số trung bình, tổng.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Tính Đại Diện Của Dữ Liệu</h3>
+          <div class="concept-box cyan">
+            <h4>Tính Đại Diện</h4>
+            <p>Một mẫu dữ liệu có <strong>tính đại diện</strong> khi nó phản ánh trung thực toàn bộ quần thể đối tượng được nghiên cứu.</p><p>Dữ liệu <em>không đại diện</em> nếu mẫu khảo sát quá nhỏ, thiên vị hoặc chỉ chọn một nhóm đối tượng đặc thù.</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Mẫu đại diện} \implies \text{Kết luận khái quát chính xác}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Ví dụ: Muốn khảo sát sở thích đọc sách của học sinh toàn trường, không thể chỉ khảo sát học sinh trong câu lạc bộ đọc sách!</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Tính Hợp Lí Của Dữ Liệu</h3>
+          <div class="concept-box cyan">
+            <h4>Kiểm Tra Dữ Liệu</h4>
+            <p>Dữ liệu thu thập cần được kiểm tra tính hợp lí theo các tiêu chí:</p><ul><li>Đúng định dạng (số hay chữ).</li><li>Nằm trong khoảng thực tế hợp lí (ví dụ: tuổi học sinh lớp 7 phải khoảng 12 - 14 tuổi, không thể là -5 hay 200).</li><li>Tổng các tỉ lệ phần trăm phải bằng $100\%$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\sum p_i = 100\%$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Loại bỏ hoặc kiểm tra lại ngay các dữ liệu bất thường trước khi phân tích thống kê.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Bộ Lọc Phân Loại Dữ Liệu Trực Quan</h3>
+          <p class="lab-desc">Nhấp vào các thẻ dữ liệu mẫu để phân loại chúng vào đúng giỏ 'Định tính' hay 'Định lượng' và nhận phản hồi tức thì.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-icon" id="btnItem1" style="background:#6366f1; color:#fff; padding:6px 12px; border-radius:8px; margin:4px;">Chiều cao (cm)</button>
+                    <button class="btn-icon" id="btnItem2" style="background:#06b6d4; color:#fff; padding:6px 12px; border-radius:8px; margin:4px;">Màu mắt (đen/nâu)</button>
+                    <button class="btn-icon" id="btnItem3" style="background:#10b981; color:#fff; padding:6px 12px; border-radius:8px; margin:4px;">Điểm thi Toán (0-10)</button>
+                    <button class="btn-icon" id="btnItem4" style="background:#f59e0b; color:#fff; padding:6px 12px; border-radius:8px; margin:4px;">Môn thể thao mê thích</button>
+                </div>
+                <div class="lab-output" id="lab1ClassOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Kiểm Tra Tính Đại Diện Của Mẫu Khảo Sát</h3>
+          <p class="lab-desc">Kéo thanh trượt thay đổi tỉ lệ mẫu khảo sát để kiểm tra độ tin cậy và tính đại diện của kết quả điều tra.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Quy mô mẫu khảo sát: <span id="valSamp" style="color:#f59e0b; font-weight:bold;">150 học sinh</span></label>
+                    <input type="range" id="sliderSamp" min="10" max="500" value="150" step="10">
+                </div>
+                <div class="lab-output" id="lab2SampOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 17: THU THẬP VÀ PHÂN LOẠI DỮ LIỆU</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ PHÂN TÍCH DỮ LIỆU 7 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_ontap_chuong4/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Ôn Tập Chương IV: Tam Giác Bằng Nhau</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_bai18/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Bài 18: Biểu Đồ Hình Quạt Tròn</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

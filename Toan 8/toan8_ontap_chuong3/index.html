@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Chương III: Tứ Giác - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Tứ Giác 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG III: TỨ GIÁC • ÔN TẬP TỔNG HỢP • TOÁN 8 KNTT</span>
+      <h1>BÀI TẬP CUỐI CHƯƠNG III: TỨ GIÁC</h1>
+      <p>Tổng kết bức tranh toàn cảnh của Chương III Hình học. Hệ thống hóa mối liên hệ hữu cơ giữa các hình tứ giác và rèn luyện kỹ năng chứng minh hình học chuẩn xác.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Cây Phả Hệ Các Loại Tứ Giác</h3>
+          <div class="concept-box cyan">
+            <h4>Sơ Đồ Phả Hệ</h4>
+            <p>Mối quan hệ kế thừa giữa các loại tứ giác:</p><ol><li><strong>Tứ giác lồi:</strong> Tổng 4 góc bằng $360^{\circ}$.</li><li><strong>Hình thang:</strong> Có 2 cạnh đối song song.</li><li><strong>Hình thang cân:</strong> Hình thang có 2 góc kề một đáy bằng nhau (hoặc 2 đường chéo bằng nhau).</li><li><strong>Hình bình hành:</strong> Có các cạnh đối song song, bằng nhau; 2 đường chéo cắt nhau tại trung điểm.</li><li><strong>Hình chữ nhật:</strong> Hình bình hành có 1 góc vuông (hoặc 2 đường chéo bằng nhau).</li><li><strong>Hình thoi:</strong> Hình bình hành có 2 cạnh kề bằng nhau (hoặc 2 đường chéo vuông góc).</li><li><strong>Hình vuông:</strong> Vừa là hình chữ nhật vừa là hình thoi.</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Tứ giác} \to \text{Hình thang} \to \text{Hình bình hành} \to \begin{cases} \text{Hình chữ nhật} \\ \text{Hình thoi} \end{cases} \to \text{Hình vuông}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Hình vuông là đỉnh cao hội tụ mọi tính chất của tất cả các tứ giác kể trên.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Bảng So Sánh Tính Chất Hai Đường Chéo</h3>
+          <div class="concept-box cyan">
+            <h4>So Sánh Đường Chéo</h4>
+            <p>Phân loại các tứ giác theo tính chất đường chéo:</p><ul><li><strong>Cắt nhau tại trung điểm mỗi đường:</strong> Hình bình hành, hình chữ nhật, hình thoi, hình vuông.</li><li><strong>Bằng nhau:</strong> Hình thang cân, hình chữ nhật, hình vuông.</li><li><strong>Vuông góc với nhau:</strong> Hình thoi, hình vuông.</li><li><strong>Là đường phân giác các góc:</strong> Hình thoi, hình vuông.</li><li><strong>Vừa bằng nhau vừa vuông góc tại trung điểm:</strong> Duy nhất Hình vuông!</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Hình vuông} \iff AC = BD \quad \text{và} \quad AC \perp BD \quad (\text{tại trung điểm } O)$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Nhớ chính xác tính chất đường chéo là chìa khóa giải nhanh 90% bài toán trắc nghiệm hình học tứ giác.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Chiến Lược Chứng Minh Tứ Giác Đặc Biệt</h3>
+          <div class="concept-box cyan">
+            <h4>Phương Pháp Chứng Minh</h4>
+            <p>Sơ đồ suy luận khi làm bài thi:</p><ul><li>Để chứng minh <em>hình bình hành</em>: Tìm 1 cặp cạnh // và = hoặc 2 đường chéo cắt nhau tại trung điểm.</li><li>Để chứng minh <em>hình chữ nhật</em>: Chứng minh hình bình hành có 1 góc vuông hoặc 2 đường chéo bằng nhau.</li><li>Để chứng minh <em>hình thoi</em>: Chứng minh hình bình hành có 2 cạnh kề bằng nhau hoặc 2 đường chéo vuông góc.</li><li>Để chứng minh <em>hình vuông</em>: Chứng minh hình chữ nhật có 2 cạnh kề bằng nhau (hoặc hình thoi có 1 góc vuông).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{HCN} + (AB = AD) \implies \text{Hình vuông};\quad \text{Hình thoi} + (\widehat{A} = 90^{\circ}) \implies \text{Hình vuông}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Luôn đi từ hình có ít tính chất lên hình có nhiều tính chất hơn để tiết kiệm bước chứng minh.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Bản Đồ Phả Hệ Tứ Giác Tương Tác</h3>
+          <p class="lab-desc">Nhấp vào các hình bên dưới để xem tóm tắt đặc điểm và điều kiện chuyển hóa tương ứng.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnHthang">Hình Thang</button>
+                    <button class="btn-primary" id="btnHbh" style="background:#06b6d4;">Hình Bình Hành</button>
+                    <button class="btn-primary" id="btnHcn" style="background:#f59e0b;">Hình Chữ Nhật</button>
+                    <button class="btn-primary" id="btnHthoi" style="background:#ec4899;">Hình Thoi</button>
+                    <button class="btn-primary" id="btnHvuong" style="background:#10b981;">Hình Vuông</button>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Bảng Đo Đoán Hình Học Trắc Nghiệm</h3>
+          <p class="lab-desc">Thử tài phân loại tứ giác dựa trên các giả thiết cho trước.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnTest1">Giả thiết 1: Tứ giác có 2 đường chéo bằng nhau</button>
+                    <button class="btn-primary" id="btnTest2" style="background:#06b6d4;">Giả thiết 2: Tứ giác có 2 đường chéo vuông góc tại trung điểm</button>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI TẬP CUỐI CHƯƠNG III: TỨ GIÁC</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG TỨ GIÁC 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai14/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 14: Hình Thoi Và Hình Vuông</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai15/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 15: Định Lí Thalès Trong Tam Giác</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

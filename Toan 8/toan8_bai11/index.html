@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 11: Hình Thang Cân - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Hiệp Sĩ Hình Thang Cân 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG III: TỨ GIÁC • BÀI 11 • TOÁN 8 KNTT</span>
+      <h1>BÀI 11: HÌNH THANG CÂN</h1>
+      <p>Làm quen với tứ giác có yếu tố song song đầu tiên: Hình thang và dạng đối xứng đặc biệt của nó: Hình thang cân. Khám phá 2 tính chất và 2 dấu hiệu nhận biết.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Hình Thang & Hình Thang Cân</h3>
+          <div class="concept-box cyan">
+            <h4>Định Nghĩa</h4>
+            <p><strong>Hình thang</strong> là tứ giác có hai cạnh đối song song.</p><ul><li>Hai cạnh song song gọi là <strong>hai đáy</strong> (đáy lớn và đáy nhỏ).</li><li>Hai cạnh còn lại gọi là <strong>hai cạnh bên</strong>.</li><li>Đoạn thẳng vuông góc nối hai đáy gọi là <strong>chiều cao</strong>.</li></ul><p><strong>Hình thang cân</strong> là hình thang có hai góc kề một đáy bằng nhau.</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$ABCD \text{ là hình thang cân } (AB \parallel CD) \iff \widehat{C} = \widehat{D} \quad (\text{hoặc } \widehat{A} = \widehat{B})$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Trong hình thang cân, hai góc kề đáy lớn bằng nhau và hai góc kề đáy nhỏ cũng bằng nhau.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Tính Chất Của Hình Thang Cân</h3>
+          <div class="concept-box cyan">
+            <h4>Tính Chất Trọng Tâm</h4>
+            <p>Trong một hình thang cân:</p><ul><li><strong>Tính chất 1 (Cạnh bên):</strong> Hai cạnh bên bằng nhau: $AD = BC$.</li><li><strong>Tính chất 2 (Đường chéo):</strong> Hai đường chéo bằng nhau: $AC = BD$.</li><li><strong>Tính chất góc:</strong> Hai góc kề một cạnh bên bù nhau (tổng bằng $180^{\circ}$ do hai đáy song song trong cùng phía).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$AD = BC;\quad AC = BD;\quad \widehat{A} + \widehat{D} = 180^{\circ};\quad \widehat{B} + \widehat{C} = 180^{\circ}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Hình thang có 2 cạnh bên bằng nhau CHƯA CHẮC là hình thang cân (nó có thể là hình bình hành). Phải dùng 2 đường chéo bằng nhau mới chắc chắn.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Dấu Hiệu Nhận Biết Hình Thang Cân</h3>
+          <div class="concept-box cyan">
+            <h4>Dấu Hiệu Nhận Biết</h4>
+            <p>Để chứng minh một tứ giác là hình thang cân, ta có 2 con đường:</p><ol><li><strong>Dấu hiệu 1:</strong> Hình thang có hai góc kề một đáy bằng nhau là hình thang cân.</li><li><strong>Dấu hiệu 2:</strong> Hình thang có hai đường chéo bằng nhau là hình thang cân.</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\begin{cases} AB \parallel CD \\ AC = BD \end{cases} \implies ABCD \text{ là hình thang cân}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Quy trình chứng minh: Đầu tiên phải chứng minh tứ giác là hình thang ($AB \parallel CD$), sau đó chỉ ra 2 góc kề một đáy bằng nhau HOẶC 2 đường chéo bằng nhau.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Thước Đo Góc Kề Hai Đáy Hình Thang Cân</h3>
+          <p class="lab-desc">Kéo thanh trượt thay đổi chiều cao và góc nghiêng để quan sát sự cân xứng của hai góc đáy và độ dài hai cạnh bên $AD = BC$.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Góc đáy $\widehat{D}$: <input type="range" id="botAngle" min="40" max="85" value="65" step="1"></label>
+                    <span id="dispAng" style="font-weight:bold; color:#f59e0b; margin-left:10px;">65°</span>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Phân Biệt Hình Thang Cân và Hình Bình Hành</h3>
+          <p class="lab-desc">Cả hai hình đều có $AD = BC$. Bấm nút để xem sự khác biệt sống còn giữa Hình Thang Cân và Hình Bình Hành.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnShowIso">Xem Hình Thang Cân</button>
+                    <button class="btn-primary" id="btnShowPara" style="background:#06b6d4;">Xem Hình Bình Hành</button>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 11: HÌNH THANG CÂN</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">HIỆP SĨ HÌNH THANG CÂN 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai10/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 10: Tứ Giác</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai12/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 12: Hình Bình Hành</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

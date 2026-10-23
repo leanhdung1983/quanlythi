@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 18: Hàm Số $y = ax^2\ (a \ne 0)$ - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Hiệp Sĩ Parabol 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">ĐẠI SỐ 9 • CHƯƠNG VI</span>
+      <h1>Bài 18: Hàm Số $y = ax^2\ (a \ne 0)$</h1>
+      <p>Khám phá hình dáng kỳ diệu của đường cong Parabol, các tính chất đối xứng, đỉnh, bảng giá trị và ứng dụng thực tiễn của hàm số bậc hai trong kiến trúc vòm cầu và chuyển động ném.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Khái Niệm Hàm Số $y = ax^2\ (a \ne 0)$</h3>
+              <div class="concept-box cyan">
+                <h4>Khái Niệm & Tính Chất</h4>
+                <p>Hàm số bậc hai đơn giản nhất có dạng:</p><p class="math-highlight">$$y = ax^2 \quad (a \ne 0)$$</p><ul><li>Tập xác định của hàm số là $\mathbb{R}$.</li><li>Nếu $a > 0$: $y > 0$ với mọi $x \ne 0$; khi $x = 0$ thì $y = 0$ (giá trị nhỏ nhất). Hàm số nghịch biến khi $x < 0$ và đồng biến khi $x > 0$.</li><li>Nếu $a < 0$: $y < 0$ với mọi $x \ne 0$; khi $x = 0$ thì $y = 0$ (giá trị lớn nhất). Hàm số đồng biến khi $x < 0$ và nghịch biến khi $x > 0$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$y = ax^2 \quad (a \ne 0)$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Khi a > 0 đồ thị lõm lên trên, đỉnh O(0; 0) là điểm thấp nhất. Khi a < 0 đồ thị úp xuống dưới, đỉnh O(0; 0) là điểm cao nhất.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Đồ Thị Parabol & Trục Đối Xứng</h3>
+              <div class="concept-box cyan">
+                <h4>Hình Học Tọa Độ</h4>
+                <p>Đồ thị hàm số $y = ax^2\ (a \ne 0)$ là một đường cong cong mượt mà đi qua gốc tọa độ $O(0;0)$, nhận trục tung $Oy$ làm <strong>trục đối xứng</strong>.</p><p>Đường cong đó gọi là một <strong>parabol</strong> với đỉnh là gốc tọa độ $O(0;0)$.</p><ul><li>Nếu $a > 0$: Đồ thị nằm hoàn toàn phía trên trục hoành (trừ gốc $O$).</li><li>Nếu $a < 0$: Đồ thị nằm hoàn toàn phía dưới trục hoành (trừ gốc $O$).</li><li>Với hai điểm có hoành độ đối nhau $x$ và $-x$, tung độ $y$ luôn bằng nhau: $f(-x) = a(-x)^2 = ax^2 = f(x)$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$M(x_0; y_0) \in (P) \iff M'(-x_0; y_0) \in (P)$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Trục tung Oy (phương trình x = 0) luôn là trục đối xứng của parabol y = ax^2.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Các Bước Vẽ Đồ Thị Parabol</h3>
+              <div class="concept-box cyan">
+                <h4>Phương Pháp Vẽ</h4>
+                <p>Để vẽ chính xác parabol $(P): y = ax^2\ (a \ne 0)$, ta thực hiện 3 bước:</p><ul><li><strong>Bước 1:</strong> Lập bảng giá trị tương ứng của $x$ và $y$ lấy tối thiểu 5 điểm (thường là $x \in \{-2, -1, 0, 1, 2\}$ hoặc đối xứng qua $0$).</li><li><strong>Bước 2:</strong> Biểu diễn 5 điểm đó trên mặt phẳng tọa độ $Oxy$.</li><li><strong>Bước 3:</strong> Vẽ đường cong mượt đi qua các điểm đó theo đúng tính chất đối xứng qua $Oy$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\text{5 Điểm Mẫu: } (-2; 4a),\ (-1; a),\ (0; 0),\ (1; a),\ (2; 4a)$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Vẽ đường cong trơn mượt không gãy khúc ở đỉnh O. Chú ý độ mở của parabol: |a| càng lớn thì parabol càng hẹp, |a| càng nhỏ thì parabol càng loe rộng.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Máy Khảo Sát Parabol Động $y = ax^2$</h3>
+          <p class="lab-desc">Kéo thanh trượt để thay đổi hệ số a (âm hoặc dương). Quan sát hướng bề lõm, tọa độ các điểm mốc và độ mở của parabol biến thiên tức thì.</p>
+          
+                <div class="lab-controls">
+                    <label>Hệ số a: <input type="range" id="sliderA1" min="-3" max="3" value="1" step="0.25"></label>
+                    <span id="valA1" class="val-display">a = 1.0</span> &nbsp;|&nbsp;
+                    <button class="btn-primary" id="btnTogglePoints1" style="padding: 4px 12px; font-size: 0.85rem;">Hiện/Ẩn 5 Điểm Mốc</button>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas1" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Mô Phỏng Cổng Vòm Parabol Thực Tế</h3>
+          <p class="lab-desc">Mô phỏng kiến trúc cổng vòm có chiều cao h và độ rộng chân cổng w. Kiểm tra xem xe tải có chiều rộng và chiều cao cho trước có chui lọt cổng an toàn hay không.</p>
+          
+                <div class="lab-controls">
+                    <label>Chiều cao cổng H (m): <input type="range" id="gateH" min="3" max="8" value="4.5" step="0.5"></label>
+                    <span id="valH" class="val-display">4.5 m</span> &nbsp;|&nbsp;
+                    <label>Độ rộng chân cổng W (m): <input type="range" id="gateW" min="4" max="10" value="6" step="1"></label>
+                    <span id="valW" class="val-display">6 m</span>
+                </div>
+                <div class="lab-controls" style="margin-top: 6px;">
+                    <label>Chiều rộng xe (m): <input type="range" id="truckW" min="1.5" max="4.0" value="2.4" step="0.1"></label>
+                    <span id="valTW" class="val-display">2.4 m</span> &nbsp;|&nbsp;
+                    <label>Chiều cao xe (m): <input type="range" id="truckH" min="2.0" max="4.5" value="3.0" step="0.1"></label>
+                    <span id="valTH" class="val-display">3.0 m</span>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas2" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 18: Hàm Số $y = ax^2\ (a \ne 0)$</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">HIỆP SĨ PARABOL 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_thuchanh2/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Hoạt động 2: Tính chiều cao và xác định khoảng cách</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai19/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 19: Phương Trình Bậc Hai Một Ẩn</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

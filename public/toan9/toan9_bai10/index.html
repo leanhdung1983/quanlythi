@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 10: Căn Bậc Ba Và Căn Thức Bậc Ba - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Khai Phương Bậc Ba 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">ĐẠI SỐ 9 • CHƯƠNG III</span>
+      <h1>Bài 10: Căn Bậc Ba Và Căn Thức Bậc Ba</h1>
+      <p>Khám phá căn bậc ba của một số thực, sự tồn tại duy nhất trên toàn trục số thực $\mathbb{R}$ và các tính chất nhân chia căn bậc ba.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Khái Niệm Căn Bậc Ba</h3>
+              <div class="concept-box cyan">
+                <h4>Khái Niệm Cốt Lõi</h4>
+                <p><strong>Định nghĩa:</strong> Căn bậc ba của một số thực $a$, kí hiệu là $\sqrt[3]{a}$, là số $x$ sao cho:</p><p class="math-highlight">$$x^3 = a$$</p><ul><li><strong>Sự tồn tại duy nhất:</strong> Mỗi số thực $a$ đều có <strong>duy nhất một</strong> căn bậc ba.</li><li>Căn bậc ba của số dương là số dương: $\sqrt[3]{8} = 2$.</li><li>Căn bậc ba của số âm là số âm: $\sqrt[3]{-27} = -3$.</li><li>Căn bậc ba của số 0 là 0: $\sqrt[3]{0} = 0$.</li><li><strong>Đặc biệt:</strong> Căn bậc ba xác định với <strong>mọi số thực</strong> $a \in \mathbb{R}$ (không cần điều kiện $a \ge 0$ như căn bậc hai!).</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$x = \sqrt[3]{a} \iff x^3 = a \qquad (\forall a \in \mathbb{R})$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Mọi số thực âm đều có căn bậc ba (ví dụ căn bậc ba của -8 là -2), điều này hoàn toàn khác biệt so với căn bậc hai.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Tính Chất Của Căn Bậc Ba</h3>
+              <div class="concept-box cyan">
+                <h4>Tính Chất Cơ Bản</h4>
+                <p>Với các số thực $a, b$ bất kì:</p><ul><li><strong>Thứ tự:</strong> $a < b \iff \sqrt[3]{a} < \sqrt[3]{b}$.</li><li><strong>Nhân căn bậc ba:</strong> $\sqrt[3]{a \cdot b} = \sqrt[3]{a} \cdot \sqrt[3]{b}$.</li><li><strong>Chia căn bậc ba:</strong> $\sqrt[3]{\frac{a}{b}} = \frac{\sqrt[3]{a}}{\sqrt[3]{b}}$ ($b \neq 0$).</li><li><strong>Hằng đẳng thức:</strong> $(\sqrt[3]{a})^3 = \sqrt[3]{a^3} = a$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\sqrt[3]{a \cdot b} = \sqrt[3]{a} \cdot \sqrt[3]{b} \qquad \sqrt[3]{\frac{a}{b}} = \frac{\sqrt[3]{a}}{\sqrt[3]{b}} \qquad (\sqrt[3]{a})^3 = a$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Không cần dấu giá trị tuyệt đối khi khai căn bậc ba của lũy thừa 3: căn bậc 3 của A^3 = A với mọi A.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Căn Thức Bậc Ba & Rút Gọn</h3>
+              <div class="concept-box cyan">
+                <h4>Căn Thức Bậc Ba</h4>
+                <p>Với $A$ là biểu thức đại số, $\sqrt[3]{A}$ là căn thức bậc ba của $A$.</p><ul><li>$\sqrt[3]{A}$ luôn xác định với mọi giá trị của biến làm cho biểu thức $A$ có nghĩa.</li><li>Hằng đẳng thức liên hợp bậc ba: $(a \pm b)(a^2 \mp ab + b^2) = a^3 \pm b^3$.</li><li>Trục căn thức bậc ba ở mẫu: Nhân với bình phương thiếu của tổng hoặc hiệu.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\frac{1}{\sqrt[3]{a} \pm \sqrt[3]{b}} = \frac{\sqrt[3]{a^2} \mp \sqrt[3]{ab} + \sqrt[3]{b^2}}{a \pm b}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Trục căn bậc ba dùng hằng đẳng thức tổng hoặc hiệu hai lập phương.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Phỏng Khối Lập Phương & Căn Bậc Ba Thể Tích</h3>
+          <p class="lab-desc">Kéo thanh trượt thể tích V để quan sát cạnh khối lập phương a = căn bậc 3 của V và hình học 3D tương ứng.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas1" width="600" height="240"></canvas>
+        </div>
+        
+                <div class="lab-controls">
+                    <label>Thể tích V: <input type="range" id="sliderVol" min="-64" max="64" value="27" step="1"></label>
+                    <span id="txtVol" class="val-display">27</span>
+                </div>
+                <div class="lab-output" id="lab1CubeOutput"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Bảng So Sánh Căn Bậc Hai & Căn Bậc Ba</h3>
+          <p class="lab-desc">So sánh trực quan sự khác biệt cốt lõi giữa căn bậc hai (chỉ số chẵn 2) và căn bậc ba (chỉ số lẻ 3).</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas2" width="600" height="240"></canvas>
+        </div>
+        
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnCompPos">Số Dương (+64)</button>
+                    <button class="btn-primary" id="btnCompNeg">Số Âm (-64)</button>
+                    <button class="btn-primary" id="btnCompZero">Số 0</button>
+                </div>
+                <div class="lab-output" id="lab2CompOutput"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 10: Căn Bậc Ba Và Căn Thức Bậc Ba</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KHAI PHƯƠNG BẬC BA 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai9/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 9: Biến Đổi Đơn Giản Và Rút Gọn Biểu Thức Chứa Căn Thức Bậc Hai</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_ontap_chuong3/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương III: Căn Bậc Hai Và Căn Bậc Ba</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

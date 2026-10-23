@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 12: Một số hệ thức giữa cạnh và góc trong tam giác vuông - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Hiệp Sĩ Lượng Giác 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">HÌNH HỌC 9 • TẬP 1 • CHƯƠNG IV</span>
+      <h1>Bài 12: Một số hệ thức giữa cạnh và góc trong tam giác vuông</h1>
+      <p>Các hệ thức giữa cạnh góc vuông, cạnh huyền và các góc nhọn; phương pháp giải tam giác vuông và ứng dụng thực tế</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Hệ thức giữa cạnh góc vuông và cạnh huyền</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                Trong tam giác vuông $ABC$ (vuông tại $A$, cạnh huyền $a = BC$, hai cạnh góc vuông $b = AC$, $c = AB$):
+                <div class="formula-box">
+                    $$b = a \cdot \sin B = a \cdot \cos C$$
+                    $$c = a \cdot \sin C = a \cdot \cos B$$
+                </div>
+                <div class="rule-box gold">
+                    <strong>Định lí 1:</strong> Trong tam giác vuông, mỗi cạnh góc vuông bằng:
+                    <ul style="margin: 6px 0; padding-left: 20px;">
+                        <li>Cạnh huyền nhân với $\sin$ góc đối.</li>
+                        <li>Cạnh huyền nhân với $\cos$ góc kề.</li>
+                    </ul>
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Hệ thức giữa hai cạnh góc vuông</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                Trong tam giác vuông $ABC$ vuông tại $A$:
+                <div class="formula-box">
+                    $$b = c \cdot \tan B = c \cdot \cot C$$
+                    $$c = b \cdot \tan C = b \cdot \cot B$$
+                </div>
+                <div class="rule-box gold">
+                    <strong>Định lí 2:</strong> Trong tam giác vuông, mỗi cạnh góc vuông bằng:
+                    <ul style="margin: 6px 0; padding-left: 20px;">
+                        <li>Cạnh góc vuông kia nhân với $\tan$ góc đối.</li>
+                        <li>Cạnh góc vuông kia nhân với $\cot$ góc kề.</li>
+                    </ul>
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Giải tam giác vuông & Ứng dụng thực tế</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                <p><strong>Giải tam giác vuông</strong> là tìm độ dài tất cả các cạnh và số đo các góc còn lại của tam giác vuông khi đã biết trước hai yếu tố (trong đó phải có ít nhất một cạnh).</p>
+                <p><strong>Các trường hợp cơ bản:</strong></p>
+                <ol style="margin: 6px 0; padding-left: 20px;">
+                    <li>Biết cạnh huyền và một góc nhọn (ví dụ: $a$ và $\widehat{B}$).</li>
+                    <li>Biết một cạnh góc vuông và một góc nhọn (ví dụ: $b$ và $\widehat{B}$).</li>
+                    <li>Biết cạnh huyền và một cạnh góc vuông (ví dụ: $a$ và $b$).</li>
+                    <li>Biết hai cạnh góc vuông ($b$ và $c$).</li>
+                </ol>
+                <div class="rule-box gold">
+                    <strong>Ứng dụng thực tế:</strong> Đo chiều cao của tháp, cây cối hoặc khoảng cách giữa hai điểm bị ngăn cách bởi chướng ngại vật (sông ngòi, núi đồi) mà không cần trực tiếp trèo lên hay đi qua.
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> 🧪 Phòng thí nghiệm 1: Máy tính giải tam giác vuông động</h3>
+          <p class="lab-desc">Nhập độ dài cạnh huyền $a$ và góc nhọn $B$, hệ thống sẽ tự động tính toán và dựng hình tam giác vuông $ABC$</p>
+          
+            <div class="canvas-wrap">
+              <canvas id="solveCanvas" width="600" height="240"></canvas>
+            </div>
+            <div class="lab-controls">
+              
+                <div class="ctrl-group">
+                    <label>Cạnh huyền $a$ (cm): <strong id="lblSideA">12</strong></label>
+                    <input type="range" id="rngSideA" min="6" max="20" step="1" value="12">
+                </div>
+                <div class="ctrl-group">
+                    <label>Góc $\widehat{B}$ (độ): <strong id="lblAngB">35</strong>°</label>
+                    <input type="range" id="rngAngB" min="15" max="75" step="1" value="35">
+                </div>
+                
+            </div>
+            
+                <div class="lab-output">
+                    <p><strong>Kết quả giải tam giác vuông $ABC$ (vuông tại $A$):</strong></p>
+                    <ul style="margin: 6px 0; padding-left: 20px;">
+                        <li>Góc $\widehat{C} = 90^\circ - \widehat{B} =$ <strong id="resAngC">55</strong>°</li>
+                        <li>Cạnh $b = AC = a \cdot \sin B =$ <strong id="resSideB">6.88</strong> cm</li>
+                        <li>Cạnh $c = AB = a \cdot \cos B =$ <strong id="resSideC">9.83</strong> cm</li>
+                        <li>Diện tích: $S = \frac{1}{2} b \cdot c =$ <strong id="resArea">33.81</strong> $\text{cm}^2$</li>
+                    </ul>
+                </div>
+                
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> 🧪 Phòng thí nghiệm 2: Mô phỏng giác kế đo chiều cao ngọn tháp</h3>
+          <p class="lab-desc">Điều chỉnh khoảng cách đặt giác kế $d$ và góc nâng $\alpha$ để tính chiều cao của tháp $H = d \cdot \tan \alpha + h_0$</p>
+          
+            <div class="canvas-wrap">
+              <canvas id="surveyCanvas" width="600" height="240"></canvas>
+            </div>
+            <div class="lab-controls">
+              
+                <div class="ctrl-group">
+                    <label>Khoảng cách $d$ đến chân tháp: <strong id="lblDist">25</strong> m</label>
+                    <input type="range" id="rngDist" min="10" max="50" step="1" value="25">
+                </div>
+                <div class="ctrl-group">
+                    <label>Góc nâng $\alpha$: <strong id="lblElev">38</strong>°</label>
+                    <input type="range" id="rngElev" min="15" max="60" step="1" value="38">
+                </div>
+                
+            </div>
+            
+                <div class="lab-output">
+                    <p>Giác kế có chiều cao chân đế $h_0 = 1.5$ m:</p>
+                    <p>Khoảng cách từ ống ngắm đến đỉnh: $h = d \cdot \tan \alpha = 25 \cdot \tan($<span id="outElev">38</span>$^\circ) =$ <strong id="outPartH">19.53</strong> m</p>
+                    <p>Chiều cao toàn phần của ngọn tháp: $H = h + h_0 =$ <strong id="outTotalH">21.03</strong> m</p>
+                </div>
+                
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 12: Một số hệ thức giữa cạnh và góc trong tam giác vuông</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">HIỆP SĨ LƯỢNG GIÁC 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai11/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 11: Tỉ số lượng giác của góc nhọn</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_ontap_chuong4/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn tập Chương IV: Hệ thức lượng trong tam giác vuông</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

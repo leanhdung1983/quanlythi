@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 9: Biến Đổi Đơn Giản Và Rút Gọn Biểu Thức Chứa Căn Thức Bậc Hai - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Bậc Thầy Trục Căn Thức 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">ĐẠI SỐ 9 • CHƯƠNG III</span>
+      <h1>Bài 9: Biến Đổi Đơn Giản Và Rút Gọn Biểu Thức Chứa Căn Thức Bậc Hai</h1>
+      <p>Làm chủ 4 phép biến đổi kinh điển: đưa thừa số ra ngoài/vào trong dấu căn, khử mẫu của biểu thức lấy căn và trục căn thức ở mẫu bằng nhân liên hợp.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Đưa Thừa Số Ra Ngoài / Vào Trong Dấu Căn</h3>
+              <div class="concept-box cyan">
+                <h4>Phép Biến Đổi 1 & 2</h4>
+                <p><strong>1. Đưa thừa số ra ngoài dấu căn:</strong></p><p class="math-highlight">$$\sqrt{A^2 B} = |A|\sqrt{B} = \begin{cases} A\sqrt{B} & (A \ge 0, B \ge 0) \\ -A\sqrt{B} & (A < 0, B \ge 0) \end{cases}$$</p><p><strong>2. Đưa thừa số vào trong dấu căn:</strong></p><ul><li>Với $A \ge 0, B \ge 0$: $A\sqrt{B} = \sqrt{A^2 B}$.</li><li>Với $A < 0, B \ge 0$: $A\sqrt{B} = -\sqrt{A^2 B}$ (để lại dấu âm bên ngoài!).</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\sqrt{A^2 B} = |A|\sqrt{B} \qquad A\sqrt{B} = \begin{cases} \sqrt{A^2 B} & (A \ge 0) \\ -\sqrt{A^2 B} & (A < 0) \end{cases}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Khi đưa thừa số âm vào trong dấu căn, dấu trừ BẮT BUỘC phải để lại phía trước dấu căn.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Khử Mẫu & Trục Căn Thức Ở Mẫu</h3>
+              <div class="concept-box cyan">
+                <h4>Phép Biến Đổi 3 & 4</h4>
+                <p><strong>1. Khử mẫu của biểu thức lấy căn:</strong> Nhân cả tử và mẫu với mẫu số:</p><p class="math-highlight">$$\sqrt{\frac{A}{B}} = \frac{\sqrt{AB}}{|B|} \quad (AB \ge 0, B \neq 0)$$</p><p><strong>2. Trục căn thức ở mẫu:</strong></p><ul><li>Mẫu dạng $\sqrt{B}$: Nhân cả tử và mẫu với $\sqrt{B}$: $\frac{A}{\sqrt{B}} = \frac{A\sqrt{B}}{B}$ ($B > 0$).</li><li>Mẫu dạng $\sqrt{A} \pm \sqrt{B}$: Nhân cả tử và mẫu với <strong>biểu thức liên hợp</strong>:</li></ul><p class="math-highlight">$$\frac{C}{\sqrt{A} \pm \sqrt{B}} = \frac{C(\sqrt{A} \mp \sqrt{B})}{A - B} \quad (A \ge 0, B \ge 0, A \neq B)$$</p>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\frac{C}{\sqrt{A} + \sqrt{B}} = \frac{C(\sqrt{A} - \sqrt{B})}{A - B} \qquad \frac{C}{\sqrt{A} - \sqrt{B}} = \frac{C(\sqrt{A} + \sqrt{B})}{A - B}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Tận dụng hằng đẳng thức hiệu hai bình phương (a - b)(a + b) = a^2 - b^2 để triệt tiêu hoàn toàn căn ở mẫu.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Kỹ Thuật Rút Gọn Biểu Thức Chứa Căn</h3>
+              <div class="concept-box cyan">
+                <h4>Rút Gọn Biểu Thức</h4>
+                <p>Quy trình rút gọn biểu thức đại số chứa căn thức:</p><ul><li><strong>Bước 1:</strong> Tìm điều kiện xác định (ĐKXĐ).</li><li><strong>Bước 2:</strong> Phân tích tử và mẫu thành nhân tử để rút gọn phân thức (nếu có).</li><li><strong>Bước 3:</strong> Quy đồng mẫu thức các phân thức trong ngoặc trước, ngoài ngoặc sau.</li><li><strong>Bước 4:</strong> Rút gọn tử số và giản ước với mẫu thức chung.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\text{ĐKXĐ} \implies \text{Phân tích nhân tử} \implies \text{Quy đồng} \implies \text{Giản ước}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Cần nhận ra ngay các nhân tử chung dạng x - a = (căn x - căn a)(căn x + căn a).</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Phỏng Đưa Thừa Số Ra/Vào Dấu Căn</h3>
+          <p class="lab-desc">Tùy chỉnh hệ số A và số B để xem máy tự động tính giá trị A căn B và đối chiếu với căn(A^2 B) tương đương.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas1" width="600" height="240"></canvas>
+        </div>
+        
+                <div class="lab-controls">
+                    <label>Thừa số A: <input type="range" id="sliderFactA" min="-4" max="5" value="-3" step="1"></label>
+                    <span id="txtFactA" class="val-display">-3</span> &nbsp;|&nbsp;
+                    <label>Số B (dưới căn): <input type="range" id="sliderFactB" min="2" max="10" value="2" step="1"></label>
+                    <span id="txtFactB" class="val-display">2</span>
+                </div>
+                <div class="lab-output" id="lab1InOutOutput"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Trục Căn Thức Ở Mẫu Bằng Biểu Thức Liên Hợp</h3>
+          <p class="lab-desc">Quan sát quá trình nhân biểu thức liên hợp để làm biến mất hoàn toàn căn thức ở mẫu số theo hằng đẳng thức hiệu hai bình phương.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas2" width="600" height="240"></canvas>
+        </div>
+        
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnConj1">Mẫu (√5 - 2)</button>
+                    <button class="btn-primary" id="btnConj2">Mẫu (√7 + √3)</button>
+                    <button class="btn-primary" id="btnConj3">Mẫu (3 - √5)</button>
+                </div>
+                <div class="lab-output" id="lab2ConjOutput"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 9: Biến Đổi Đơn Giản Và Rút Gọn Biểu Thức Chứa Căn Thức Bậc Hai</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">BẬC THẦY TRỤC CĂN THỨC 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai8/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 8: Khai Căn Bậc Hai Với Phép Nhân Và Phép Chia</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai10/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 10: Căn Bậc Ba Và Căn Thức Bậc Ba</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

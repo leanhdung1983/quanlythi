@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luyện Tập Chung: Sơ Đồ Cây & Bảng Hai Chiều Tính Xác Suất (Trang 64) - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chiến Binh Sơ Đồ Cây 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">XÁC SUẤT 9 • CHƯƠNG VIII</span>
+      <h1>Luyện Tập Chung: Sơ Đồ Cây & Bảng Hai Chiều</h1>
+      <p>Luyện tập sử dụng sơ đồ hình cây (Tree Diagram) và bảng hai chiều (Two-Way Table) để liệt kê toàn diện không gian mẫu cho các phép thử gồm hai công đoạn liên tiếp, chống bỏ sót hoặc đếm trùng kết quả.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Phương Pháp Sơ Đồ Hình Cây</h3>
+              <div class="concept-box cyan">
+                <h4>Công Cụ Liệt Kê</h4>
+                <p>Khi phép thử gồm hai (hoặc nhiều) hành động liên tiếp:</p><ul><li>Từ điểm gốc, vẽ các nhánh cấp 1 ứng với các kết quả của hành động thứ nhất.</li><li>Từ mỗi nhánh cấp 1, vẽ tiếp các nhánh cấp 2 ứng với các kết quả của hành động thứ hai.</li><li>Mỗi đường đi từ gốc đến ngọn của một nhánh cấp 2 cho ta đúng <strong>một kết quả</strong> của phép thử.</li><li>Tổng số ngọn cây chính bằng số phần tử $n(\Omega)$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\text{Gốc} \xrightarrow{\text{Hành động 1}} k_1 \text{ nhánh} \xrightarrow{\text{Hành động 2}} k_2 \text{ nhánh} \implies n(\Omega) = k_1 \times k_2$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Sơ đồ cây giúp trực quan hóa từng bước phân nhánh, đảm bảo không bỏ sót bất kỳ trường hợp nào.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Phương Pháp Bảng Hai Chiều</h3>
+              <div class="concept-box cyan">
+                <h4>Ma Trận Bảng</h4>
+                <p>Khi phép thử gồm đúng 2 công đoạn (ví dụ: gieo 2 xúc xắc, chọn 1 bạn nam và 1 bạn nữ):</p><ul><li>Các hàng biểu diễn các kết quả của công đoạn 1.</li><li>Các cột biểu diễn các kết quả của công đoạn 2.</li><li>Mỗi ô trong bảng là một cặp kết quả $(x; y)$ của không gian mẫu.</li><li>Tổng số ô trong bảng đúng bằng $n(\Omega) = \text{Số hàng} \times \text{Số cột}$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\text{Bảng kích thước } m \times n \implies n(\Omega) = m \times n$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Bảng hai chiều cực kỳ tiện lợi để tính tổng số chấm, hiệu số chấm hoặc kiểm tra các điều kiện đồng thời.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Ứng Dụng Xác Suất Trong Thực Tế</h3>
+              <div class="concept-box cyan">
+                <h4>Bài Toán Thực Tế</h4>
+                <p>Mô hình hóa xác suất giải quyết các bài toán đời sống:</p><ul><li><strong>Kiểm tra chất lượng sản phẩm:</strong> Chọn ngẫu nhiên sản phẩm từ lô hàng để tính xác suất phế phẩm.</li><li><strong>Y tế & di truyền học:</strong> Dự đoán tỉ lệ kiểu gen, nhóm máu của đời con.</li><li><strong>Bảo hiểm & dự báo rủi ro:</strong> Đánh giá mức độ an toàn và ra quyết định tối ưu.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$P(\text{Rủi ro}) < \text{Ngưỡng an toàn} \implies \text{Quyết định đầu tư/sản xuất}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Xác suất là công cụ toán học khoa học giúp con người đưa ra quyết định thông minh trong môi trường không chắc chắn.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Trình Tạo Sơ Đồ Cây Tương Tác 2 Công Đoạn</h3>
+          <p class="lab-desc">Mô phỏng phép thử: Tung đồng xu (S, N) sau đó rút thẻ (1, 2, 3). Bấm vào các nhánh cây để quan sát sự hình thành của 6 kết quả không gian mẫu.</p>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnAnimTree" style="padding: 4px 14px; font-size: 0.85rem;">🌳 Bung Mở Toàn Bộ Cây</button> &nbsp;|&nbsp;
+                    <button class="btn-icon" id="btnTraceBranch" style="padding: 4px 12px; font-size: 0.85rem;">✨ Theo Dõi 1 Nhánh Ngẫu Nhiên</button>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas1" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Ma Trận Bảng Hai Chiều 36 Kết Quả Gieo 2 Xúc Xắc</h3>
+          <p class="lab-desc">Bảng 6x6 thể hiện toàn bộ 36 kết quả có thể xảy ra khi gieo 2 xúc xắc. Chọn điều kiện để tô màu trực quan các kết quả thuận lợi.</p>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnSum7" style="padding: 4px 10px; font-size: 0.85rem;">Tổng = 7 (P = 6/36)</button>
+                    <button class="btn-primary" id="btnDouble" style="padding: 4px 10px; font-size: 0.85rem;">Số đôi (P = 6/36)</button>
+                    <button class="btn-primary" id="btnSumGE9" style="padding: 4px 10px; font-size: 0.85rem;">Tổng &ge; 9 (P = 10/36)</button>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas2" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Luyện Tập Chung: Sơ Đồ Cây & Bảng Hai Chiều</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHIẾN BINH SƠ ĐỒ CÂY 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai26/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 26: Xác Suất Của Biến Cố Liên Quan Tới Phép Thử</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_ontap_chuong8/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương VIII: Xác Suất Của Biến Cố</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

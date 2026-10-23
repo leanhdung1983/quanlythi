@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 38: Hình Chóp Tam Giác Đều - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kiến Trúc Sư Chóp Tam Giác 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG X: HÌNH KHỐI THỰC TIỄN • BÀI 38 • TOÁN 8 KNTT</span>
+      <h1>BÀI 38: HÌNH CHÓP TAM GIÁC ĐỀU</h1>
+      <p>Làm quen với khối không gian có đáy tam giác đều và các mặt bên là tam giác cân bằng nhau. Nắm chắc công thức tính diện tích bề mặt và sức chứa thể tích trong thực tế.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Khái Niệm Hình Chóp Tam Giác Đều</h3>
+          <div class="concept-box cyan">
+            <h4>Đặc Điểm Hình Học</h4>
+            <p><strong>Hình chóp tam giác đều $S.ABC$:</strong></p><ul><li>Đỉnh: $S$.</li><li>Mặt đáy: Tam giác $ABC$ là một <strong>tam giác đều</strong>.</li><li>Các mặt bên: $SAB, SBC, SCA$ là các <strong>tam giác cân bằng nhau</strong> có chung đỉnh $S$.</li><li>Các cạnh bên: $SA = SB = SC$ bằng nhau. Các cạnh đáy: $AB = BC = CA$ bằng nhau.</li><li>Đoạn thẳng nối đỉnh $S$ với trọng tâm $O$ của đáy là <strong>đường cao</strong> ($SO \perp (ABC)$). Độ dài $SO = h$ là <strong>chiều cao</strong>.</li><li>Đường cao vẽ từ đỉnh $S$ của mỗi mặt bên gọi là <strong>trung đoạn</strong> của hình chóp (kí hiệu là $d$).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$S.ABC: \text{Đáy đều } ABC;\, \text{Mặt bên cân } SAB=SBC=SCA;\, SO = h;\, SI = d$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Hình chóp tam giác đều có đáy là tam giác đều, các mặt bên là tam giác cân bằng nhau và cạnh bên bằng nhau.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Diện Tích Xung Quanh & Toàn Phần</h3>
+          <div class="concept-box cyan">
+            <h4>Diện Tích Bề Mặt</h4>
+            <p><strong>Diện tích xung quanh ($S_{xq}$)</strong> của hình chóp tam giác đều bằng tích của nửa chu vi đáy với trung đoạn:</p><p style="text-align:center; font-weight:bold; font-size:1.25rem;">$$S_{xq} = p \cdot d$$</p><p>Trong đó:</p><ul><li>$p = \frac{a + a + a}{2} = \frac{3a}{2}$: Nửa chu vi mặt đáy (với $a$ là độ dài cạnh đáy).</li><li>$d$: Độ dài trung đoạn (chiều cao của mặt bên).</li><li><strong>Diện tích toàn phần ($S_{tp}$):</strong> Bằng tổng diện tích xung quanh và diện tích đáy: $$S_{tp} = S_{xq} + S_{đáy}$$</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$S_{xq} = p \cdot d = \frac{3a}{2} \cdot d \qquad S_{tp} = S_{xq} + S_{đáy}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Diện tích xung quanh bằng nửa chu vi đáy nhân với trung đoạn d (chú ý d là chiều cao mặt bên, không phải chiều cao chóp).</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Thể Tích Hình Chóp Tam Giác Đều</h3>
+          <div class="concept-box cyan">
+            <h4>Công Thức Thể Tích</h4>
+            <p><strong>Thể tích ($V$)</strong> của hình chóp tam giác đều bằng một phần ba tích của diện tích đáy với chiều cao của hình chóp:</p><p style="text-align:center; font-weight:bold; font-size:1.25rem;">$$V = \frac{1}{3} S_{đáy} \cdot h$$</p><p>Trong đó:</p><ul><li>$S_{đáy}$: Diện tích của mặt đáy tam giác đều ($S_{đáy} = \frac{a^2\sqrt{3}}{4}$).</li><li>$h$: Chiều cao của hình chóp (đoạn nối đỉnh $S$ với trọng tâm đáy $O$).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$V = \frac{1}{3} S_{đáy} \cdot h$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Thể tích hình chóp luôn có hệ số 1/3 nhân với diện tích đáy và chiều cao h.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Hình 3D & Tính Diện Tích, Thể Tích Chóp Tam Giác Đều</h3>
+          <p class="lab-desc">Điều chỉnh cạnh đáy $a$, chiều cao $h$ và trung đoạn $d$. Quan sát hình vẽ phối cảnh 3D và các đại lượng $S_{xq}, S_{đáy}, V$ được tính toán tức thì.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Cạnh đáy $a$: <span id="valA38" style="font-weight:bold; color:#06b6d4;">6</span> cm</label>
+                    <input type="range" id="sliderA38" min="4" max="12" value="6" step="1">
+                    <label>Trung đoạn $d$: <span id="valD38" style="font-weight:bold; color:#f59e0b;">8</span> cm</label>
+                    <input type="range" id="sliderD38" min="5" max="15" value="8" step="1">
+                </div>
+                <div class="lab-output" id="lab1Output38" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Mô Hình Gấp Mở Lưới Trải Phẳng (Net)</h3>
+          <p class="lab-desc">Quan sát hình chóp tam giác đều khi mở bung thành 1 tam giác đều ở tâm và 3 tam giác cân xung quanh.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnToggleNet" style="padding:6px 14px;">📦 Bấm Gấp / Mở Lưới Trải Phẳng</button>
+                </div>
+                <div class="lab-output" id="lab2Output38" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 38: HÌNH CHÓP TAM GIÁC ĐỀU</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KIẾN TRÚC SƯ CHÓP TAM GIÁC 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_ontap_chuong9/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Ôn Tập Chương IX: Tam Giác Đồng Dạng</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai39/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 39: Hình Chóp Tứ Giác Đều</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

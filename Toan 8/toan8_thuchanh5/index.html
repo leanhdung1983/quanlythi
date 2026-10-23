@@ -1,0 +1,283 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HĐTN 5: Hàm Số Bậc Nhất Trong Tài Chính - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Tài Chính Tuyến Tính 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHUYÊN ĐỀ TRẢI NGHIỆM TÀI CHÍNH • TOÁN 8 KNTT</span>
+      <h1>HĐTN 5: HÀM SỐ BẬC NHẤT TRONG TÀI CHÍNH</h1>
+      <p>Khám phá cách các nhà quản trị kinh doanh và phân tích tài chính sử dụng hàm số bậc nhất để lập kế hoạch chi phí, tối ưu hóa lợi nhuận và định vị điểm hòa vốn an toàn cho doanh nghiệp.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Hàm Chi Phí Tuyến Tính</h3>
+          <div class="concept-box cyan">
+            <h4>Mô Hình Chi Phí</h4>
+            <p>Trong hoạt động sản xuất kinh doanh, tổng chi phí $C(x)$ để sản xuất $x$ đơn vị sản phẩm thường được mô hình hóa bằng hàm số bậc nhất:</p><p style="text-align:center; font-weight:bold; font-size:1.15rem;">$$C(x) = a \cdot x + b$$</p><ul><li>$b$: <strong>Chi phí cố định (Fixed Cost)</strong> - chi phí không đổi dù có sản xuất hay không (tiền thuê mặt bằng, khấu hao máy móc, tiền bản quyền).</li><li>$a$: <strong>Chi phí biến đổi trên 1 sản phẩm (Variable Cost)</strong> - chi phí nguyên vật liệu, tiền công trực tiếp cho 1 sản phẩm.</li><li>$a \cdot x$: Tổng chi phí biến đổi khi sản xuất $x$ sản phẩm.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$C(x) = a \cdot x + b \quad (a: \text{Biến phí/sp};\, b: \text{Định phí})$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Tổng chi phí bằng Chi phí biến đổi theo số lượng cộng với Chi phí cố định ban đầu.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Hàm Doanh Thu & Hàm Lợi Nhuận</h3>
+          <div class="concept-box cyan">
+            <h4>Doanh Thu & Lợi Nhuận</h4>
+            <p><strong>Hàm doanh thu $R(x)$:</strong> Với đơn giá bán mỗi sản phẩm là $p$ đồng:</p><p style="text-align:center;">$$R(x) = p \cdot x$$</p><p><strong>Hàm lợi nhuận $P(x)$:</strong> Bằng hiệu giữa Doanh thu và Tổng chi phí:</p><p style="text-align:center; font-weight:bold;">$$P(x) = R(x) - C(x) = p \cdot x - (a \cdot x + b) = (p - a)x - b$$</p><ul><li>Nếu $P(x) > 0$: Doanh nghiệp <strong>có lãi</strong>.</li><li>Nếu $P(x) < 0$: Doanh nghiệp <strong>bị lỗ</strong>.</li><li>Nếu $P(x) = 0$: Doanh nghiệp đạt <strong>điểm hòa vốn</strong>.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$P(x) = R(x) - C(x) = (p - a)x - b$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Lợi nhuận bằng Doanh thu trừ Chi phí. Hòa vốn là khi Lợi nhuận bằng 0.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Xác Định Điểm Hòa Vốn (Break-Even Point)</h3>
+          <div class="concept-box cyan">
+            <h4>Điểm Hòa Vốn</h4>
+            <p><strong>Điểm hòa vốn</strong> là mức sản lượng $x_0$ mà tại đó Doanh thu vừa đủ bù đắp Tổng chi phí ($R(x_0) = C(x_0)$):</p><p style="text-align:center;">$$p \cdot x_0 = a \cdot x_0 + b \iff (p - a)x_0 = b \iff x_0 = \frac{b}{p - a}$$</p><ul><li>$p - a$: Lãi gộp trên 1 sản phẩm (Số tiền đóng góp bù đắp chi phí cố định).</li><li>Về mặt hình học: Điểm hòa vốn chính là <strong>giao điểm</strong> của hai đường thẳng đồ thị Doanh thu $y = px$ và Chi phí $y = ax + b$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$x_{\text{hòa vốn}} = \frac{b}{p - a} = \frac{\text{Chi phí cố định}}{\text{Giá bán} - \text{Chi phí biến đổi/sp}}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Sản lượng hòa vốn bằng Chi phí cố định chia cho Lãi gộp trên 1 sản phẩm (p - a).</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Phỏng Biểu Phí Cước Taxi Theo Hàm Bậc Nhất</h3>
+          <p class="lab-desc">Giá mở cửa $15\,000$ đ/km đầu tiên, các km tiếp theo giá $12\,000$ đ/km. Kéo số km đi được $x$ để tính tổng tiền và quan sát đồ thị.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Quãng đường đi ($x$ km): <span id="valKm" style="font-weight:bold; color:#06b6d4;">10</span> km</label>
+                    <input type="range" id="sliderKm" min="1" max="30" value="10" step="1">
+                </div>
+                <div class="lab-output" id="lab1OutputTH5" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Tính Điểm Hòa Vốn Kinh Doanh</h3>
+          <p class="lab-desc">Chi phí cố định $b = 20\text{ triệu}$, chi phí sản xuất $a = 60\,000$ đ/sp, giá bán $p = 100\,000$ đ/sp. Tìm sản lượng hòa vốn.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Chi phí cố định (triệu đ): <input type="number" id="inFixedB" value="20" min="5" max="50" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                    <label>Giá bán $p$ (nghìn đ): <input type="number" id="inPriceP" value="100" min="70" max="200" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                </div>
+                <div class="lab-output" id="lab2OutputTH5" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>HĐTN 5: HÀM SỐ BẬC NHẤT TRONG TÀI CHÍNH</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHUYÊN GIA TÀI CHÍNH TUYẾN TÍNH 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_ontap_chuong10/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Ôn Tập Chương X: Một Số Hình Khối Trong Thực Tiễn</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_thuchanh6/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">HĐTN 6: Đo Chiều Cao Và Khoảng Cách Thực Tế</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Chương VII: Phương Trình Bậc Nhất Và Hàm Số Bậc Nhất - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Kiện Tướng Đại Số Tuyến Tính 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG VII: PHƯƠNG TRÌNH & HÀM SỐ • TỔNG ÔN • TOÁN 8 KNTT</span>
+      <h1>ÔN TẬP CHƯƠNG VII: PHƯƠNG TRÌNH & HÀM SỐ</h1>
+      <p>Tổng kết bức tranh toàn cảnh về đại số tuyến tính lớp 8. Làm chủ mọi kỹ năng từ giải phương trình, thiết lập mô hình bài toán thực tế đến khảo sát đường thẳng trong hình học giải tích.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Phương Trình Bậc Nhất Một Ẩn</h3>
+          <div class="concept-box cyan">
+            <h4>Phương Trình Đại Số</h4>
+            <p><strong>Dạng tổng quát:</strong> $ax + b = 0$ ($a \neq 0$). Luôn có nghiệm duy nhất $x = -\frac{b}{a}$.</p><p><strong>Hai quy tắc biến đổi:</strong></p><ul><li>Quy tắc chuyển vế: Đổi vế thì đổi dấu số hạng.</li><li>Quy tắc nhân: Nhân hoặc chia cả hai vế với cùng một số khác $0$.</li></ul><p><strong>Giải bài toán bằng cách lập PT:</strong> 3 bước (Chọn ẩn & ĐK $\to$ Lập PT $\to$ Giải & Đối chiếu ĐK).</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$ax + b = 0 \iff x = -\frac{b}{a} \quad (a \neq 0)$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Nắm vững 3 bước giải bài toán lập phương trình và luôn kiểm tra điều kiện của ẩn trước khi trả lời.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Hàm Số Bậc Nhất & Hệ Số Góc</h3>
+          <div class="concept-box cyan">
+            <h4>Hàm Số & Đồ Thị</h4>
+            <p><strong>Hàm số bậc nhất:</strong> $y = ax + b$ ($a \neq 0$).</p><ul><li>Đồng biến khi $a > 0$; Nghịch biến khi $a < 0$.</li><li>Đồ thị là đường thẳng cắt $Ox$ tại $A\left(-\frac{b}{a}; 0\right)$, cắt $Oy$ tại $B(0; b)$.</li><li>Hệ số $a$: Hệ số góc (quyết định độ dốc và góc $\alpha$ tạo với $Ox$).</li><li>Hằng số $b$: Tung độ gốc.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$y = ax + b \quad (a > 0: \text{đồng biến};\, a < 0: \text{nghịch biến})$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Đồ thị hàm số bậc nhất luôn là đường thẳng, xác định bởi 2 giao điểm với các trục tọa độ.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Tương Quan Hai Đường Thẳng</h3>
+          <div class="concept-box cyan">
+            <h4>Vị Trí Tương Đối</h4>
+            <p>Cho $d: y = ax + b$ và $d': y = a'x + b'$ ($a, a' \neq 0$):</p><ul><li>$d \parallel d' \iff a = a'$ và $b \neq b'$.</li><li>$d \equiv d' \iff a = a'$ và $b = b'$.</li><li>$d$ cắt $d' \iff a \neq a'$. Tọa độ giao điểm là nghiệm hệ phương trình.</li><li>$d \perp d' \iff a \cdot a' = -1$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$d \parallel d' \iff a = a',\, b \neq b' \qquad d \perp d' \iff a \cdot a' = -1$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>So sánh hai bộ hệ số (a, b) và (a', b') giúp xác định tức thì vị trí tương đối giữa hai đường thẳng.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Bản Đồ Tư Duy Tương Tác Chương VII</h3>
+          <p class="lab-desc">Khám phá sơ đồ tư duy tổng kết 5 chủ đề cốt lõi của Chương VII: Phương trình, Lập PT, Khái niệm hàm số, Hàm số bậc nhất và Hệ số góc.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnC7Topic1" style="padding:5px 10px;">1. Phương Trình</button>
+                    <button class="btn-primary" id="btnC7Topic2" style="padding:5px 10px;">2. Lập Phương Trình</button>
+                    <button class="btn-primary" id="btnC7Topic3" style="padding:5px 10px;">3. Khái Niệm Hàm Số</button>
+                    <button class="btn-primary" id="btnC7Topic4" style="padding:5px 10px;">4. Đồ Thị Đường Thẳng</button>
+                    <button class="btn-primary" id="btnC7Topic5" style="padding:5px 10px;">5. Vị Trí Tương Đối</button>
+                </div>
+                <div class="lab-output" id="lab1OutputC7" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Giải Hệ & Tìm Giao Điểm Đồ Thị</h3>
+          <p class="lab-desc">Tìm tọa độ giao điểm của hai đường thẳng $y = 2x - 3$ và $y = -x + 3$. Quan sát điểm cắt $M(2; 1)$ trên đồ thị.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnSolveInter" style="padding:6px 12px;">🎯 Tính Tọa Độ Giao Điểm Tức Thì</button>
+                </div>
+                <div class="lab-output" id="lab2OutputC7" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>ÔN TẬP CHƯƠNG VII: PHƯƠNG TRÌNH & HÀM SỐ</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">ĐẠI KIỆN TƯỚNG ĐẠI SỐ TUYẾN TÍNH 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai29/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 29: Hệ Số Góc Của Đường Thẳng</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai30/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 30: Kết Quả Có Thể Và Kết Quả Thuận Lợi</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

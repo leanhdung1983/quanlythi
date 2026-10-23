@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 35: Định Lí Pythagore Và Ứng Dụng - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Hiệp Sĩ Pythagore 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG IX: TAM GIÁC ĐỒNG DẠNG • BÀI 35 • TOÁN 8 KNTT</span>
+      <h1>BÀI 35: ĐỊNH LÍ PYTHAGORE VÀ ỨNG DỤNG</h1>
+      <p>Định lí hình học nổi tiếng nhất lịch sử nhân loại. Chiếc chìa khóa vàng mở ra ngành lượng giác và giải tích, ứng dụng từ định vị GPS vệ tinh đến thi công xây dựng công trình hiện đại.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Định Lí Pythagore</h3>
+          <div class="concept-box cyan">
+            <h4>Định Lí Thuận</h4>
+            <p><strong>Định lí Pythagore:</strong> Trong một tam giác vuông, bình phương của cạnh huyền bằng tổng các bình phương của hai cạnh góc vuông.</p><p style="text-align:center; font-weight:bold; font-size:1.25rem;">$$BC^2 = AB^2 + AC^2 \quad \text{hay} \quad a^2 = b^2 + c^2$$</p><p>Trong đó:</p><ul><li>$a = BC$: Độ dài cạnh huyền (cạnh đối diện góc vuông $90^\circ$).</li><li>$b = AC,\, c = AB$: Độ dài hai cạnh góc vuông.</li><li>Hệ quả: $BC = \sqrt{AB^2 + AC^2}$; $AB = \sqrt{BC^2 - AC^2}$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\triangle ABC \text{ vuông tại } A \implies BC^2 = AB^2 + AC^2$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Cạnh huyền bình phương bằng tổng bình phương hai cạnh góc vuông. Cạnh huyền luôn là cạnh dài nhất.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Định Lí Pythagore Đảo</h3>
+          <div class="concept-box cyan">
+            <h4>Định Lí Đảo</h4>
+            <p><strong>Định lí Pythagore đảo:</strong> Nếu một tam giác có bình phương của một cạnh bằng tổng các bình phương của hai cạnh kia thì tam giác đó là <strong>tam giác vuông</strong>.</p><p style="text-align:center;">$$\text{Nếu } BC^2 = AB^2 + AC^2 \implies \triangle ABC \text{ vuông tại } A$$</p><ul><li>Đây là phương pháp hàng đầu để <strong>chứng minh một góc bằng $90^\circ$</strong> (tam giác vuông) mà không cần đo góc.</li><li><strong>Các bộ ba số Pythagore quen thuộc:</strong> $(3; 4; 5)$, $(5; 12; 13)$, $(6; 8; 10)$, $(7; 24; 25)$, $(8; 15; 17)$, $(9; 12; 15)$...</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$BC^2 = AB^2 + AC^2 \implies \widehat{A} = 90^\circ$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Lấy cạnh lớn nhất bình phương so sánh với tổng bình phương hai cạnh còn lại để kết luận tam giác vuông.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Ứng Dụng Thực Tế Của Định Lí Pythagore</h3>
+          <div class="concept-box cyan">
+            <h4>Ứng Dụng Thực Tiễn</h4>
+            <p>Định lí Pythagore có vô vàn ứng dụng trong đời sống:</p><ul><li><strong>Kiểm tra góc vuông thợ xây:</strong> Dùng thước dây đo các đoạn $3\text{ m}, 4\text{ m}, 5\text{ m}$ để tạo góc vuông tuyệt đối khi xây móng nhà, lát gạch.</li><li><strong>Kích thước màn hình TV / Laptop:</strong> Kích thước inch của màn hình (ví dụ 55 inch) là độ dài đường chéo màn hình: $d = \sqrt{w^2 + h^2}$.</li><li><strong>Tính chiều cao và khoảng cách:</strong> Tính chiều cao thang dựa vào tường, khoảng cách chéo giữa hai tòa nhà, độ dài dây neo cột ăng-ten.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$d = \sqrt{w^2 + h^2} \qquad c = \sqrt{a^2 + b^2}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Quy đổi các bài toán khoảng cách, độ dài thang, dây neo về mô hình tam giác vuông để áp dụng Pythagore.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Chứng Minh Trực Quan Diện Tích Pythagore</h3>
+          <p class="lab-desc">Khảo sát tam giác vuông có hai cạnh góc vuông $a, b$. Quan sát diện tích hình vuông cạnh huyền $c^2$ bằng tổng diện tích hai hình vuông $a^2 + b^2$.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Cạnh $a$: <span id="valA35" style="font-weight:bold; color:#06b6d4;">3</span></label>
+                    <input type="range" id="sliderA35" min="2" max="6" value="3" step="1">
+                    <label>Cạnh $b$: <span id="valB35" style="font-weight:bold; color:#f59e0b;">4</span></label>
+                    <input type="range" id="sliderB35" min="2" max="8" value="4" step="1">
+                </div>
+                <div class="lab-output" id="lab1Output35" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Kiểm Tra Tam Giác Vuông (Pythagore Đảo)</h3>
+          <p class="lab-desc">Nhập 3 cạnh $a, b, c$. Hệ thống tự động tìm cạnh lớn nhất và kiểm tra đẳng thức $a^2 + b^2 = c^2$.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Cạnh 1: <input type="number" id="inSide1" value="5" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                    <label>Cạnh 2: <input type="number" id="inSide2" value="12" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                    <label>Cạnh 3: <input type="number" id="inSide3" value="13" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                </div>
+                <div class="lab-output" id="lab2Output35" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 35: ĐỊNH LÍ PYTHAGORE VÀ ỨNG DỤNG</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">HIỆP SĨ PYTHAGORE 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai34/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 34: Ba Trường Hợp Đồng Dạng Của Hai Tam Giác</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai36/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 36: Các Trường Hợp Đồng Dạng Của Hai Tam Giác Vuông</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

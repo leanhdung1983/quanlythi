@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 32: Hình cầu - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Du Hành Không Gian 🌍</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG X: MỘT SỐ HÌNH KHỐI TRONG THỰC TIỄN • BÀI 32</span>
+      <h1>Bài 32: Hình Cầu</h1>
+      <p>Tìm hiểu hình cầu và mặt cầu, công thức tính diện tích mặt cầu và thể tích hình cầu cùng các bài toán thực tiễn lý thú!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <div class="card concept-card">
+  <div class="concept-header">
+    <div class="concept-badge">ĐỊNH NGHĨA</div>
+    <h3>1. Mặt Cầu và Hình Cầu</h3>
+  </div>
+  <div style="text-align: center; margin: 14px 0;">
+    <svg viewBox="0 0 320 210" width="100%" style="max-width: 290px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <radialGradient id="sphereGrad1" cx="38%" cy="32%" r="65%">
+          <stop offset="0%" stop-color="#93c5fd"/>
+          <stop offset="35%" stop-color="#3b82f6"/>
+          <stop offset="75%" stop-color="#1d4ed8"/>
+          <stop offset="100%" stop-color="#0f172a"/>
+        </radialGradient>
+      </defs>
+      <circle cx="160" cy="105" r="80" fill="url(#sphereGrad1)" stroke="#60a5fa" stroke-width="2" />
+      <path d="M 80 105 A 80 22 0 0 1 240 105" fill="none" stroke="#cbd5e1" stroke-width="1.8" stroke-dasharray="5,4" />
+      <path d="M 80 105 A 80 22 0 0 0 240 105" fill="none" stroke="#38bdf8" stroke-width="2.2" />
+      <circle cx="160" cy="105" r="3.5" fill="#f59e0b" />
+      <line x1="160" y1="105" x2="240" y2="105" stroke="#f59e0b" stroke-width="2" />
+      <circle cx="240" cy="105" r="3" fill="#f59e0b" />
+      <circle cx="210" cy="52" r="3" fill="#10b981" />
+      <line x1="160" y1="105" x2="210" y2="52" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,3" />
+      <text x="148" y="120" fill="#f8fafc" font-size="12" font-weight="bold">O</text>
+      <text x="195" y="100" fill="#f59e0b" font-size="12" font-weight="bold">R</text>
+      <text x="214" y="48" fill="#10b981" font-size="12" font-weight="bold">M (OM = R)</text>
+      <text x="80" y="120" fill="#cbd5e1" font-size="11">Đường tròn lớn</text>
+    </svg>
+  </div>
+  <p>Khi quay một nửa hình tròn tâm $O$ bán kính $R$ một vòng quanh đường kính cố định, ta được một <strong>hình cầu</strong>:</p>
+  <ul>
+    <li><strong>Mặt cầu:</strong> Tập hợp tất cả các điểm trong không gian cách điểm $O$ cố định một khoảng bằng $R$ gọi là mặt cầu tâm $O$ bán kính $R$, kí hiệu $S(O; R)$.</li>
+    <li><strong>Khối cầu (hình cầu):</strong> Gồm mặt cầu $S(O; R)$ và tất cả các điểm nằm bên trong mặt cầu (các điểm $M$ thỏa mãn $OM \le R$).</li>
+    <li><strong>Vị trí tương đối của điểm $M$ với mặt cầu $S(O; R)$:</strong>
+      <ul>
+        <li>$OM < R$: Điểm $M$ nằm <em>bên trong</em> mặt cầu.</li>
+        <li>$OM = R$: Điểm $M$ nằm <em>trên</em> mặt cầu.</li>
+        <li>$OM > R$: Điểm $M$ nằm <em>bên ngoài</em> mặt cầu.</li>
+      </ul>
+    </li>
+  </ul>
+</div><div class="card concept-card">
+  <div class="concept-header">
+    <div class="concept-badge">TÍNH CHẤT</div>
+    <h3>2. Cắt Mặt Cầu Bởi Mặt Phẳng</h3>
+  </div>
+  <div style="text-align: center; margin: 14px 0;">
+    <svg viewBox="0 0 320 210" width="100%" style="max-width: 290px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="160" cy="115" r="75" fill="rgba(30, 58, 138, 0.25)" stroke="#60a5fa" stroke-width="1.8" />
+      <polygon points="55,70 245,70 265,50 75,50" fill="rgba(6, 182, 212, 0.2)" stroke="#06b6d4" stroke-width="1.5" />
+      <ellipse cx="160" cy="60" rx="52" ry="15" fill="rgba(16, 185, 129, 0.3)" stroke="#10b981" stroke-width="2.2" />
+      <circle cx="160" cy="115" r="3.5" fill="#f59e0b" />
+      <circle cx="160" cy="60" r="3.5" fill="#f59e0b" />
+      <line x1="160" y1="115" x2="160" y2="60" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="4,3" />
+      <line x1="160" y1="60" x2="212" y2="60" stroke="#10b981" stroke-width="2" />
+      <circle cx="212" cy="60" r="3" fill="#10b981" />
+      <line x1="160" y1="115" x2="212" y2="60" stroke="#f43f5e" stroke-width="2" />
+      <text x="145" y="127" fill="#f8fafc" font-size="12" font-weight="bold">O</text>
+      <text x="145" y="55" fill="#f8fafc" font-size="12" font-weight="bold">H</text>
+      <text x="145" y="90" fill="#f59e0b" font-size="11" font-weight="bold">d</text>
+      <text x="180" y="55" fill="#10b981" font-size="11" font-weight="bold">r</text>
+      <text x="195" y="95" fill="#f43f5e" font-size="11" font-weight="bold">R</text>
+      <text x="35" y="65" fill="#06b6d4" font-size="11" font-weight="bold">(P)</text>
+      <text x="110" y="202" fill="#a5b4fc" font-size="11" font-weight="bold">r = √(R² - d²)</text>
+    </svg>
+  </div>
+  <p>Khi cắt một mặt cầu tâm $O$ bán kính $R$ bởi một mặt phẳng $(P)$ cách tâm $O$ một khoảng $d = OH$:</p>
+  <ul>
+    <li>Nếu $d < R$: Mặt phẳng $(P)$ cắt mặt cầu theo giao tuyến là một <strong>đường tròn</strong> tâm $H$, bán kính $r = \sqrt{R^2 - d^2}$.</li>
+    <li>Nếu $d = 0$ (mặt phẳng đi qua tâm $O$): Giao tuyến là <strong>đường tròn lớn</strong> có bán kính bằng bán kính mặt cầu ($r = R$). Mặt phẳng này chia mặt cầu thành hai <strong>bán cầu</strong> bằng nhau.</li>
+    <li>Nếu $d = R$: Mặt phẳng $(P)$ tiếp xúc với mặt cầu tại một điểm duy nhất (tiếp diện).</li>
+    <li>Nếu $d > R$: Mặt phẳng $(P)$ không cắt mặt cầu.</li>
+  </ul>
+</div><div class="card formula-box">
+  <div class="concept-header">
+    <div class="concept-badge">CÔNG THỨC</div>
+    <h3>3. Diện Tích Mặt Cầu</h3>
+  </div>
+  <p>Diện tích của mặt cầu bán kính $R$ (đường kính $d = 2R$):</p>
+  <p class="math-highlight">$$S = 4\pi R^2 = \pi d^2$$</p>
+  <p><em>Nhận xét:</em> Diện tích mặt cầu gấp $4$ lần diện tích hình tròn lớn của nó ($S_{\text{tròn lớn}} = \pi R^2$).</p>
+</div><div class="card rule-box gold">
+  <div class="concept-header">
+    <div class="concept-badge gold">CÔNG THỨC</div>
+    <h3>4. Thể Tích Hình Cầu</h3>
+  </div>
+  <p>Thể tích của hình cầu bán kính $R$ (đường kính $d = 2R$):</p>
+  <p class="math-highlight">$$V = \frac{4}{3}\pi R^3 = \frac{1}{6}\pi d^3$$</p>
+  <p><em>Mối liên hệ Archimedes:</em> Thể tích khối cầu bằng $\frac{2}{3}$ thể tích hình trụ ngoại tiếp nó (có bán kính đáy $R$ và chiều cao $h = 2R$):</p>
+  <p class="math-highlight">$$V_{\text{cầu}} = \frac{2}{3} V_{\text{trụ ngoại tiếp}} = \frac{2}{3} (\pi R^2 \cdot 2R) = \frac{4}{3}\pi R^3$$</p>
+</div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Mô Phỏng Mặt Cầu 3D & Mặt Phẳng Cắt Tạo Đường Tròn</h3>
+          <p class="lab-desc">Kéo thanh trượt khoảng cách $d$ từ tâm $O$ đến mặt phẳng cắt để quan sát đường tròn giao tuyến và tính bán kính đường tròn cắt $r = \sqrt{R^2 - d^2}$.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas1" width="600" height="240"></canvas>
+        </div>
+        <div class="lab-control-group">
+  <label>Bán kính mặt cầu $R$ (cm): <strong id="valSphR">5</strong></label>
+  <input type="range" id="sliderSphR" min="3" max="8" step="0.5" value="5">
+</div>
+<div class="lab-control-group">
+  <label>Khoảng cách $d$ từ tâm đến mặt phẳng (cm): <strong id="valSphD">3</strong></label>
+  <input type="range" id="sliderSphD" min="0" max="6" step="0.2" value="3">
+</div>
+<div class="lab-output" id="outputSphereCut"></div>
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Mô Phỏng Thể Tích & Thí Nghiệm Bình Nước Archimedes</h3>
+          <p class="lab-desc">Thả một quả cầu kim loại bán kính $R$ vào bình nước hình trụ có bán kính đáy $R_{\text{trụ}}$ và quan sát mực nước dâng cao $\Delta h = \frac{V_{\text{cầu}}}{\pi R_{\text{trụ}}^2}$.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas2" width="600" height="240"></canvas>
+        </div>
+        <div class="lab-control-group">
+  <label>Bán kính quả cầu $R$ (cm): <strong id="valArchR">3</strong></label>
+  <input type="range" id="sliderArchR" min="1.5" max="5" step="0.5" value="3">
+</div>
+<div class="lab-control-group">
+  <label>Bán kính bình trụ $R_{\text{bình}}$ (cm): <strong id="valCylArchR">6</strong></label>
+  <input type="range" id="sliderCylArchR" min="5" max="10" step="0.5" value="6">
+</div>
+<div class="lab-output" id="outputArchimedes"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 32: Hình Cầu</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ DU HÀNH KHÔNG GIAN 🌍 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai31/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 31: Hình trụ và hình nón</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_ltc_chuong10/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Luyện tập chung (trang 106)</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

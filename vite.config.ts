@@ -28,6 +28,7 @@ export default defineConfig(() => {
     build: {
       outDir: 'dist',
       emptyOutDir: true, // Xóa sạch folder dist trước khi build
+      copyPublicDir: false, // Tránh duplicate 1GB học liệu toan6-12 vào dist
       sourcemap: false,
       chunkSizeWarningLimit: 2000,
       rollupOptions: {

@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 23: Bảng Tần Số Tương Đối & Biểu Đồ Tần Số Tương Đối - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Tỉ Lệ Thống Kê 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">THỐNG KÊ 9 • CHƯƠNG VII</span>
+      <h1>Bài 23: Bảng Tần Số Tương Đối & Biểu Đồ Tần Số Tương Đối</h1>
+      <p>Tìm hiểu tần số tương đối (tần suất phần trăm), cách lập bảng tần số tương đối và vẽ biểu đồ cột tương đối hoặc biểu đồ hình quạt tròn để so sánh tỉ trọng của các nhóm số liệu.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Khái Niệm Tần Số Tương Đối</h3>
+              <div class="concept-box cyan">
+                <h4>Công Thức Cốt Lõi</h4>
+                <p><strong>Tần số tương đối</strong> (hay <em>tần suất</em>) của một giá trị là tỉ số giữa tần số của giá trị đó và kích thước mẫu $N$, thường được biểu diễn dưới dạng tỉ số phần trăm:</p><p class="math-highlight">$$f_i = \frac{m_i}{N} \times 100\%$$</p><ul><li>Tổng tất cả các tần số tương đối của các giá trị luôn bằng $100\%$ (hoặc $1$ nếu viết ở dạng số thập phân):$$f_1 + f_2 + \dots + f_k = 100\%$$</li><li>Tần số tương đối cho phép so sánh cơ cấu giữa hai mẫu dữ liệu có quy mô (cỡ mẫu $N$) khác nhau.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$f_i = \frac{m_i}{N} \times 100\%; \quad \sum_{i=1}^k f_i = 100\%$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Tổng các tần số tương đối f_i luôn luôn bằng đúng 100%.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Biểu Đồ Hình Quạt Tròn</h3>
+              <div class="concept-box cyan">
+                <h4>Biểu Đồ Hình Quạt</h4>
+                <p>Để vẽ biểu đồ hình quạt tròn biểu diễn tần số tương đối:</p><ul><li>Hình tròn ứng với $100\%$, tương đương góc ở tâm $360^\circ$.</li><li>Mỗi giá trị $x_i$ có tần số tương đối $f_i$ được biểu diễn bởi một <strong>hình quạt tròn</strong> có số đo góc ở tâm là:$$\alpha_i = f_i \times 360^\circ = \frac{m_i}{N} \times 360^\circ$$</li><li>Ví dụ: $f_i = 25\% \implies \alpha_i = 0,25 \times 360^\circ = 90^\circ$ (một góc vuông).</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\alpha_i = \frac{m_i}{N} \times 360^\circ = f_i \times 360^\circ$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Quy đổi nhanh: 1% tương ứng với 3.6 độ ở tâm hình tròn.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Bảng Tần Số & Tần Số Tương Đối Đồng Thời</h3>
+              <div class="concept-box cyan">
+                <h4>Bảng Tổng Hợp</h4>
+                <p>Trong thực hành, người ta thường ghép bảng tần số và bảng tần số tương đối thành một bảng tổng hợp duy nhất gồm 3 dòng:</p><ul><li>Dòng 1: Giá trị ($x_i$).</li><li>Dòng 2: Tần số ($m_i$).</li><li>Dòng 3: Tần số tương đối ($f_i\ \%$).</li></ul><p>Bảng này cung cấp cả bức tranh số lượng tuyệt đối lẫn tỉ trọng tương đối của mẫu số liệu.</p>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\text{Bảng 3 hàng: Giá trị } x_i \mid \text{Tần số } m_i \mid \text{Tần số tương đối } f_i (\%)$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Bảng tổng hợp vừa cho biết số lượng cụ thể vừa cho thấy tỉ trọng phần trăm đóng góp của mỗi nhóm.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Máy Tính Tần Số Tương Đối & Góc Quạt Tròn</h3>
+          <p class="lab-desc">Nhập số lượng thành viên của 4 câu lạc bộ (Toán, Văn, Anh, Tin). Hệ thống tự động tính tần số tương đối % và góc ở tâm tương ứng.</p>
+          
+                <div class="lab-controls">
+                    <label>Toán: <input type="number" id="clbMath" min="1" max="50" value="20" style="width: 50px;"></label> &nbsp;|&nbsp;
+                    <label>Văn: <input type="number" id="clbLit" min="1" max="50" value="15" style="width: 50px;"></label> &nbsp;|&nbsp;
+                    <label>Anh: <input type="number" id="clbEng" min="1" max="50" value="35" style="width: 50px;"></label> &nbsp;|&nbsp;
+                    <label>Tin: <input type="number" id="clbIT" min="1" max="50" value="10" style="width: 50px;"></label>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas1" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: So Sánh Cơ Cấu Hai Mẫu Số Liệu</h3>
+          <p class="lab-desc">So sánh cơ cấu học lực giữa Lớp 9A (N = 40) và Lớp 9B (N = 50) bằng biểu đồ cột tần số tương đối (cột kép % chuẩn hóa).</p>
+          
+                <div class="lab-controls">
+                    <label>Giỏi 9A (%): <input type="range" id="slG9A" min="10" max="60" value="35" step="5"></label>
+                    <span id="vG9A" class="val-display">35%</span> &nbsp;|&nbsp;
+                    <label>Giỏi 9B (%): <input type="range" id="slG9B" min="10" max="60" value="45" step="5"></label>
+                    <span id="vG9B" class="val-display">45%</span>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas2" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 23: Bảng Tần Số Tương Đối & Biểu Đồ Tần Số Tương Đối</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHUYÊN GIA TỈ LỆ THỐNG KÊ 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai22/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 22: Bảng Tần Số Và Biểu Đồ Tần Số</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_ltc_chuong7/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Luyện Tập Chung: Tần Số & Tần Số Tương Đối (Trang 43)</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

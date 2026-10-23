@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 6: Số Vô Tỉ. Căn Bậc Hai Số Học - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Khai Phá Căn Thức 7</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG II: SỐ THỰC • BÀI 6 • TOÁN 7 KNTT</span>
+      <h1>BÀI 6: SỐ VÔ TỈ. CĂN BẬC HAI SỐ HỌC</h1>
+      <p>Bước vào thế giới của những con số kỳ vĩ không tuần hoàn: Số vô tỉ $\mathbb{I}$, bí mật đường chéo hình vuông cạnh 1 độ dài $\sqrt{2}$ và bản chất căn bậc hai số học theo SGK Toán 7.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Khái Niệm Số Vô Tỉ</h3>
+          <div class="concept-box cyan">
+            <h4>Khái Niệm Mới</h4>
+            <p><strong>Số vô tỉ</strong> là số viết được dưới dạng số thập phân vô hạn không tuần hoàn.</p><p>Tập hợp các số vô tỉ được kí hiệu là $\mathbb{I}$.</p><p>Các ví dụ tiêu biểu:</p><ul><li>Số $\pi = 3,14159265...$ (tỉ số giữa chu vi và đường kính đường tròn).</li><li>Số $\sqrt{2} = 1,41421356...$ (độ dài đường chéo hình vuông cạnh 1).</li><li>Số $0,1010010001...$ (số chữ số 0 tăng dần, không có chu kì lặp lại).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\mathbb{Q} \cap \mathbb{I} = \emptyset$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Một số thập phân vô hạn hoặc là tuần hoàn (số hữu tỉ), hoặc là không tuần hoàn (số vô tỉ). Hai tập hợp $\mathbb{Q}$ và $\mathbb{I}$ không có phần tử chung.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Căn Bậc Hai Số Học</h3>
+          <div class="concept-box cyan">
+            <h4>Căn Bậc Hai Số Học</h4>
+            <p>Căn bậc hai số học của một số $a$ không âm ($a \ge 0$), kí hiệu là $\sqrt{a}$, là số không âm $x$ sao cho $x^2 = a$:</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\sqrt{a} = x \iff \begin{cases} x \ge 0 \\ x^2 = a \end{cases} \quad (a \ge 0)$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Số âm không có căn bậc hai số học vì bình phương của mọi số thực đều không âm ($x^2 \ge 0$). $\sqrt{0} = 0$.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Các Tính Chất Của Căn Bậc Hai Số Học</h3>
+          <div class="concept-box cyan">
+            <h4>Tính Chất Căn Số Học</h4>
+            <p>Với số $a \ge 0$:</p><ul><li>$(\sqrt{a})^2 = a$.</li><li>Nếu $a$ là số chính phương ($a = k^2$ với $k \in \mathbb{N}$) thì $\sqrt{a} = k$. Ví dụ: $\sqrt{25} = 5, \sqrt{81} = 9$.</li><li>Với hai số không âm $a, b$: nếu $a < b$ thì $\sqrt{a} < \sqrt{b}$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\forall a \ge 0: \quad \left(\sqrt{a}\right)^2 = a$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Căn bậc hai số học của phân số không âm: $\sqrt{\frac{a}{b}} = \frac{\sqrt{a}}{\sqrt{b}}$ ($a \ge 0, b > 0$).</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Độ Dài Cạnh Hình Vuông Có Diện Tích a</h3>
+          <div class="concept-box cyan">
+            <h4>Ứng Dụng Hình Học</h4>
+            <p>Nếu một hình vuông có diện tích bằng $S$ ($S > 0$) thì độ dài cạnh $a$ của hình vuông đó chính bằng căn bậc hai số học của diện tích:</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$a = \sqrt{S}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Theo định lí Pythagore: Tam giác vuông cân có hai cạnh góc vuông bằng 1 thì cạnh huyền có độ dài bằng $\sqrt{1^2 + 1^2} = \sqrt{2}$.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Cạnh Hình Vuông Và Căn Bậc Hai</h3>
+          <p class="lab-desc">Kéo thanh trượt để thay đổi diện tích $S$ của hình vuông và quan sát độ dài cạnh $\sqrt{S}$ biến đổi thời gian thực trên Canvas.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Diện tích $S$: <span id="valAreaS" style="color:#10b981; font-weight:bold;">16</span></label>
+                    <input type="range" id="sliderAreaS" min="1" max="49" value="16" step="1">
+                </div>
+                <div class="lab-output" id="lab1SqrtOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Tính Căn Bậc Hai Số Học</h3>
+          <p class="lab-desc">Nhập số không âm $a$ bất kì để tìm căn bậc hai số học $\sqrt{a}$ và kiểm tra xem đó là số hữu tỉ hay số vô tỉ.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                    <div>Nhập số $a \ge 0$: <input type="number" id="l2_inputSqrt" value="2" min="0" step="1" style="width:70px;"></div>
+                    <button class="btn-primary" id="btnCalcSqrt" style="padding:5px 14px;">Tính $\sqrt{a}$</button>
+                </div>
+                <div class="lab-output" id="lab2SqrtOut" style="margin-top:12px; font-weight:600; line-height:1.8;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 6: SỐ VÔ TỈ. CĂN BẬC HAI SỐ HỌC</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ KHAI PHÁ CĂN THỨC 7 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_bai5/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Bài 5: Làm Quen Với Số Thập Phân Vô Hạn Tuần Hoàn</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_bai7/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Bài 7: Tập Hợp Các Số Thực</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

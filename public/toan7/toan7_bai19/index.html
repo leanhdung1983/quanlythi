@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 19: Biểu Đồ Đoạn Thẳng - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Biểu Đồ Thời Gian</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG V: THU THẬP VÀ BIỂU DIỄN DỮ LIỆU • BÀI 19 • TOÁN 7 KNTT</span>
+      <h1>BÀI 19: BIỂU ĐỒ ĐOẠN THẲNG</h1>
+      <p>Làm thế nào để theo dõi nhiệt độ trong ngày, sự phát triển chiều cao của bạn hay tăng trưởng kinh tế qua các năm? Biểu đồ đoạn thẳng chính là câu trả lời!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Biểu Đồ Đoạn Thẳng Là Gì?</h3>
+          <div class="concept-box cyan">
+            <h4>Cấu Tạo Biểu Đồ</h4>
+            <p><strong>Biểu đồ đoạn thẳng</strong> gồm hai trục vuông góc:</p><ul><li><strong>Trục nằm ngang:</strong> Biểu diễn các mốc thời gian (ngày, tháng, năm, giờ...).</li><li><strong>Trục thẳng đứng:</strong> Biểu diễn số lượng, đại lượng thống kê với thang đo đều đặn.</li><li>Mỗi điểm biểu diễn giá trị tại một mốc thời gian; các đoạn thẳng nối liên tiếp các điểm giúp thấy rõ sự liên tục.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Điểm } (t, y) \iff \text{Tại thời điểm } t \text{ có giá trị } y$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Biểu đồ đoạn thẳng đặc biệt phù hợp để biểu diễn dữ liệu thay đổi theo thời gian.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Phân Tích Xu Hướng Của Dữ Liệu</h3>
+          <div class="concept-box cyan">
+            <h4>Xu Hướng Biến Thiên</h4>
+            <p>Dựa vào độ dốc của các đoạn thẳng trên biểu đồ:</p><ul><li><strong>Đoạn thẳng đi lên (từ trái sang phải):</strong> Dữ liệu có xu hướng <em>tăng</em>. Đoạn càng dốc thì tăng càng nhanh.</li><li><strong>Đoạn thẳng đi xuống:</strong> Dữ liệu có xu hướng <em>giảm</em>.</li><li><strong>Đoạn thẳng nằm ngang:</strong> Dữ liệu <em>không đổi (ổn định)</em>.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\Delta y = y_2 - y_1 \begin{cases} > 0: \text{Tăng} \\ < 0: \text{Giảm} \\ = 0: \text{Không đổi} \end{cases}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Phát hiện nhanh chóng điểm đạt giá trị cao nhất (đỉnh) và thấp nhất (đáy) trên biểu đồ.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Kĩ Năng Đọc Và Nhận Xét Biểu Đồ</h3>
+          <div class="concept-box cyan">
+            <h4>Đọc Số Liệu</h4>
+            <p>Khi phân tích biểu đồ đoạn thẳng:</p><ol><li>Đọc tên biểu đồ và đơn vị đo trên hai trục.</li><li>Xác định giá trị tại từng mốc thời gian cụ thể.</li><li>So sánh mức tăng/giảm giữa hai thời điểm liên tiếp: $\\Delta = y_2 - y_1$.</li><li>Dự đoán xu thế phát triển trong tương lai gần.</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Tốc độ tăng trưởng} = \frac{y_2 - y_1}{y_1} \times 100\%$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Luôn kiểm tra gốc tọa độ: Một số biểu đồ có dấu dích dắc biểu thị việc cắt ngắn khoảng cách từ 0 đến giá trị đầu tiên.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Các Bước Vẽ Biểu Đồ Đoạn Thẳng</h3>
+          <div class="concept-box cyan">
+            <h4>Vẽ Biểu Đồ</h4>
+            <p>Quy trình vẽ biểu đồ đoạn thẳng từ bảng số liệu:</p><ul><li>Bước 1: Vẽ hai trục vuông góc và chia khoảng cách tỉ lệ hợp lí.</li><li>Bước 2: Chấm các điểm $(t, y)$ tương ứng trên mặt phẳng.</li><li>Bước 3: Dùng thước thẳng nối các điểm liên tiếp lại với nhau.</li><li>Bước 4: Ghi chú số liệu trên mỗi điểm và đặt tên biểu đồ.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Bảng số liệu } \longrightarrow \text{Chấm điểm } \longrightarrow \text{Nối đoạn thẳng}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Các vạch chia thời gian trên trục hoành phải cách đều nhau theo đúng khoảng cách thời gian.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Vẽ Biểu Đồ Đoạn Thẳng Động</h3>
+          <p class="lab-desc">Kéo thanh trượt thay đổi nhiệt độ ở 4 mốc giờ trong ngày để quan sát đường gấp khúc biểu diễn biến thiên nhiệt độ.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>6h: <span id="valT1" style="color:#6366f1; font-weight:bold;">20°C</span> | 12h: <span id="valT2" style="color:#f59e0b; font-weight:bold;">32°C</span></label>
+                    <input type="range" id="sliderT1" min="15" max="28" value="20" step="1">
+                    <label style="margin-top:6px;">18h: <span id="valT3" style="color:#06b6d4; font-weight:bold;">26°C</span> | 24h: <span id="valT4" style="color:#10b981; font-weight:bold;">22°C</span></label>
+                    <input type="range" id="sliderT3" min="18" max="32" value="26" step="1">
+                </div>
+                <div class="lab-output" id="lab1LineOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Phân Tích Độ Dốc Xu Hướng Tăng Trưởng</h3>
+          <p class="lab-desc">Kéo thanh trượt để thay đổi mức tăng trưởng giữa 2 năm và quan sát độ dốc đoạn thẳng thể hiện tốc độ tăng nhanh hay chậm.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Giá trị Năm 1: 100 tỉ | Giá trị Năm 2: <span id="valYear2" style="color:#10b981; font-weight:bold;">160 tỉ</span></label>
+                    <input type="range" id="sliderYear2" min="50" max="220" value="160" step="5">
+                </div>
+                <div class="lab-output" id="lab2SlopeOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 19: BIỂU ĐỒ ĐOẠN THẲNG</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHUYÊN GIA BIỂU ĐỒ THỜI GIAN 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_bai18/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Bài 18: Biểu Đồ Hình Quạt Tròn</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_ontap_chuong5/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Ôn Tập Chương V: Thu Thập Và Biểu Diễn Dữ Liệu</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

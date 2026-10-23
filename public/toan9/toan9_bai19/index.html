@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 19: Phương Trình Bậc Hai Một Ẩn - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Bậc Thầy Biệt Thức Delta 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">ĐẠI SỐ 9 • CHƯƠNG VI</span>
+      <h1>Bài 19: Phương Trình Bậc Hai Một Ẩn</h1>
+      <p>Làm chủ định nghĩa phương trình bậc hai một ẩn, công thức nghiệm tổng quát bằng biệt thức $\Delta = b^2 - 4ac$, công thức nghiệm thu gọn $\Delta'$ và các kỹ thuật giải phương trình khuyết hệ số.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Khái Niệm Phương Trình Bậc Hai Một Ẩn</h3>
+              <div class="concept-box cyan">
+                <h4>Định Nghĩa Chuẩn</h4>
+                <p><strong>Phương trình bậc hai một ẩn</strong> (ẩn $x$) là phương trình có dạng:</p><p class="math-highlight">$$ax^2 + bx + c = 0 \quad (a \ne 0)$$</p><p>Trong đó $a, b, c$ là những số cho trước gọi là các <em>hệ số</em> ($a$ là hệ số của $x^2$, $b$ là hệ số của $x$, $c$ là hệ số tự do).</p><ul><li>Khuyết $c$ ($c = 0$): $ax^2 + bx = 0 \iff x(ax + b) = 0 \iff x = 0$ hoặc $x = -\frac{b}{a}$.</li><li>Khuyết $b$ ($b = 0$): $ax^2 + c = 0 \iff x^2 = -\frac{c}{a}$ (có nghiệm khi $-ca \ge 0$).</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$ax^2 + bx + c = 0 \quad (a \ne 0)$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Điều kiện sống còn để là phương trình bậc hai một ẩn là hệ số a phải khác 0.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Công Thức Nghiệm Dùng Biệt Thức $\Delta$</h3>
+              <div class="concept-box cyan">
+                <h4>Công Thức Nghiệm Tổng Quát</h4>
+                <p>Đối với phương trình $ax^2 + bx + c = 0\ (a \ne 0)$, xét <strong>biệt thức</strong>:</p><p class="math-highlight">$$\Delta = b^2 - 4ac$$</p><ul><li>Nếu $\Delta > 0$: Phương trình có <strong>hai nghiệm phân biệt</strong>:$$x_1 = \frac{-b + \sqrt{\Delta}}{2a}; \quad x_2 = \frac{-b - \sqrt{\Delta}}{2a}$$</li><li>Nếu $\Delta = 0$: Phương trình có <strong>nghiệm kép</strong>:$$x_1 = x_2 = -\frac{b}{2a}$$</li><li>Nếu $\Delta < 0$: Phương trình <strong>vô nghiệm</strong>.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\Delta = b^2 - 4ac \implies x_{1,2} = \frac{-b \pm \sqrt{\Delta}}{2a}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Dấu của biệt thức Delta quyết định số nghiệm: Delta > 0 có 2 nghiệm; Delta = 0 có nghiệm kép; Delta < 0 vô nghiệm.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Công Thức Nghiệm Thu Gọn Dùng $\Delta'$</h3>
+              <div class="concept-box cyan">
+                <h4>Công Thức Nghiệm Thu Gọn</h4>
+                <p>Khi hệ số $b$ chẵn, đặt $b = 2b'$ (tức $b' = \frac{b}{2}$), ta dùng <strong>biệt thức thu gọn</strong>:</p><p class="math-highlight">$$\Delta' = b'^2 - ac$$</p><ul><li>Nếu $\Delta' > 0$: Phương trình có 2 nghiệm phân biệt:$$x_1 = \frac{-b' + \sqrt{\Delta'}}{a}; \quad x_2 = \frac{-b' - \sqrt{\Delta'}}{a}$$</li><li>Nếu $\Delta' = 0$: Phương trình có nghiệm kép: $x_1 = x_2 = -\frac{b'}{a}$.</li><li>Nếu $\Delta' < 0$: Phương trình vô nghiệm.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\Delta' = b'^2 - ac \quad (b = 2b') \implies x_{1,2} = \frac{-b' \pm \sqrt{\Delta'}}{a}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Khi b là số chẵn, dùng Delta' giúp tính toán nhanh gọn gấp nhiều lần và tránh phân số cồng kềnh.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Máy Tính Biệt Thức $\Delta$ & Nghiệm Trực Quan</h3>
+          <p class="lab-desc">Nhập các hệ số a, b, c để quan sát giá trị biệt thức Delta, số nghiệm và đồ thị parabol cắt trục hoành tại các giao điểm nghiệm.</p>
+          
+                <div class="lab-controls">
+                    <label>Hệ số a: <input type="number" id="inpA" value="1" step="0.5" style="width: 60px; padding: 4px; border-radius: 6px;"></label> &nbsp;|&nbsp;
+                    <label>Hệ số b: <input type="number" id="inpB" value="-3" step="0.5" style="width: 60px; padding: 4px; border-radius: 6px;"></label> &nbsp;|&nbsp;
+                    <label>Hệ số c: <input type="number" id="inpC" value="2" step="0.5" style="width: 60px; padding: 4px; border-radius: 6px;"></label> &nbsp;
+                    <button class="btn-primary" id="btnSolve" style="padding: 4px 12px; font-size: 0.85rem;">Giải Phương Trình</button>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas1" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Hoàn Thành Bình Phương Trực Quan (Hình Học Al-Khwarizmi)</h3>
+          <p class="lab-desc">Mô phỏng phương pháp ghép hình vuông cổ điển của nhà toán học Al-Khwarizmi để biến đổi $x^2 + 2kx = d$ thành $(x + k)^2 = d + k^2$.</p>
+          
+                <div class="lab-controls">
+                    <label>Hệ số k (nửa hệ số x): <input type="range" id="sliderK" min="1" max="4" value="2" step="1"></label>
+                    <span id="valK" class="val-display">k = 2</span> &nbsp;|&nbsp;
+                    <label>Cạnh x: <input type="range" id="sliderX" min="2" max="6" value="4" step="0.5"></label>
+                    <span id="valX" class="val-display">x = 4</span>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas2" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 19: Phương Trình Bậc Hai Một Ẩn</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">BẬC THẦY BIỆT THỨC DELTA 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai18/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 18: Hàm Số $y = ax^2\ (a \ne 0)$</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_ltc_chuong6_1/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Luyện Tập Chung: Hàm Số & Phương Trình Bậc Hai (Trang 18)</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

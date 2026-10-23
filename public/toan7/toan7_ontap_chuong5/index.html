@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Ôn Tập Chương V: Thu Thập Và Biểu Diễn Dữ Liệu - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Đại Sứ Dữ Liệu & Thống Kê 7</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG V: THU THẬP VÀ BIỂU DIỄN DỮ LIỆU • ÔN TẬP CHƯƠNG • TOÁN 7 KNTT</span>
+      <h1>ÔN TẬP CHƯƠNG V: THU THẬP VÀ BIỂU DIỄN DỮ LIỆU</h1>
+      <p>Làm chủ trọn vẹn bộ kĩ năng xử lí dữ liệu: Từ thu thập, phân loại, đến lựa chọn đúng loại biểu đồ (quạt tròn hay đoạn thẳng) để truyền tải thông điệp số liệu mạnh mẽ nhất.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Dữ Liệu Định Tính & Định Lượng</h3>
+          <div class="concept-box cyan">
+            <h4>Phân Loại Dữ Liệu</h4>
+            <p>Hệ thống hóa dữ liệu:</p><ul><li><strong>Định tính:</strong> Chữ cái, tên gọi, phẩm chất, mức độ hài lòng. Không dùng để tính toán cộng trừ.</li><li><strong>Định lượng:</strong> Dữ liệu số đo, số đếm có thể tính trung bình, tổng, so sánh hơn kém.</li><li><strong>Tính đại diện:</strong> Mẫu phải ngẫu nhiên, đủ lớn và không thiên vị.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Dữ liệu} = \begin{cases} \text{Định tính: Nhãn, Nhóm, Thứ tự} \\ \text{Định lượng: Đo lường, Số đếm} \end{cases}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Luôn kiểm tra tính hợp lí của dữ liệu trước khi đem phân tích.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Biểu Đồ Hình Quạt Tròn</h3>
+          <div class="concept-box cyan">
+            <h4>Biểu Đồ Quạt Tròn</h4>
+            <p>Đặc trưng của biểu đồ quạt tròn:</p><ul><li>Biểu thị cơ cấu tỉ lệ phần trăm của các thành phần so với toàn thể ($100\%$).</li><li>Góc ở tâm: $\\alpha = 360^\\circ \\times \\frac{p}{100}$.</li><li>Tổng các góc: $\\sum \\alpha_i = 360^\\circ$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\alpha = 360^\circ \times \frac{p\%}{100\%}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Thích hợp nhất khi muốn so sánh phần trăm cơ cấu.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Biểu Đồ Đoạn Thẳng</h3>
+          <div class="concept-box cyan">
+            <h4>Biểu Đồ Đoạn Thẳng</h4>
+            <p>Đặc trưng của biểu đồ đoạn thẳng:</p><ul><li>Trục hoành: Mốc thời gian liên tiếp.</li><li>Trục tung: Đại lượng đo lường.</li><li>Các đoạn thẳng thể hiện xu hướng tăng, giảm hay ổn định.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Đoạn thẳng dốc lên: Tăng} \quad | \quad \text{Đoạn thẳng dốc xuống: Giảm}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Thích hợp nhất khi theo dõi sự biến thiên liên tục theo thời gian.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Tiêu Chuẩn Lựa Chọn Biểu Đồ Phù Hợp</h3>
+          <div class="concept-box cyan">
+            <h4>Lựa Chọn Biểu Đồ</h4>
+            <p>Cách chọn loại biểu đồ phù hợp:</p><ul><li>Muốn so sánh cơ cấu, tỉ lệ phần trăm $\\implies$ <strong>Biểu đồ quạt tròn</strong>.</li><li>Muốn theo dõi xu hướng thay đổi qua thời gian $\\implies$ <strong>Biểu đồ đoạn thẳng</strong>.</li><li>Muốn so sánh số lượng đơn thuần giữa các đối tượng $\\implies$ <strong>Biểu đồ cột</strong>.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Mục tiêu phân tích} \longrightarrow \text{Lựa chọn biểu đồ chuẩn xác}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Chọn sai loại biểu đồ sẽ làm sai lệch thông điệp truyền tải của dữ liệu.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: So Sánh Ba Dạng Biểu Diễn Dữ Liệu</h3>
+          <p class="lab-desc">Nhấp chọn dạng biểu đồ để thấy cùng một bộ dữ liệu hiển thị dưới dạng Bảng, Quạt tròn hay Đoạn thẳng.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-icon" id="btnShowPie" style="background:#6366f1; color:#fff; padding:6px 14px; border-radius:8px;">Biểu đồ quạt tròn</button>
+                    <button class="btn-icon" id="btnShowLine" style="background:#06b6d4; color:#fff; padding:6px 14px; border-radius:8px; margin-left:8px;">Biểu đồ đoạn thẳng</button>
+                </div>
+                <div class="lab-output" id="lab1RevOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Kiểm Tra Tỉ Lệ Góc Ở Tâm</h3>
+          <p class="lab-desc">Kéo thanh trượt để thử nghiệm chuyển đổi tỉ lệ phần trăm thành góc ở tâm tương ứng.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Tỉ lệ phần trăm: <span id="valCheckP" style="color:#f59e0b; font-weight:bold;">30%</span></label>
+                    <input type="range" id="sliderCheckP" min="5" max="95" value="30" step="5">
+                </div>
+                <div class="lab-output" id="lab2CheckOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>ÔN TẬP CHƯƠNG V: THU THẬP VÀ BIỂU DIỄN DỮ LIỆU</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">ĐẠI SỨ DỮ LIỆU & THỐNG KÊ 7 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_bai19/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Bài 19: Biểu Đồ Đoạn Thẳng</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_thuchanh1/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Hoạt Động Thực Hành: Vẽ Hình Đơn Giản Với Phần Mềm GeoGebra</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

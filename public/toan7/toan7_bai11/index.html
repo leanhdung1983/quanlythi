@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 11: Định Lí Và Chứng Minh Định Lí - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Logic Học Hình Học 7</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG III: GÓC VÀ ĐƯỜNG THẲNG SONG SONG • BÀI 11 • TOÁN 7 KNTT</span>
+      <h1>BÀI 11: ĐỊNH LÍ VÀ CHỨNG MINH ĐỊNH LÍ</h1>
+      <p>Làm quen với phương pháp suy luận diễn dịch khoa học: Phân tích Giả thiết $\implies$ Kết luận và viết các bước chứng minh hình học chuẩn mực theo SGK Toán 7.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Khái Niệm Định Lí</h3>
+          <div class="concept-box cyan">
+            <h4>Khái Niệm Cốt Lõi</h4>
+            <p><strong>Định lí</strong> là một khẳng định toán học được suy ra từ những khẳng định được coi là đúng (tiên đề, định nghĩa, định lí đã biết).</p><p>Một định lí thường được phát biểu dưới dạng: <em>'Nếu ... thì ...'</em>:</p><ul><li>Phần nằm giữa từ <em>'Nếu'</em> và từ <em>'thì'</em> là <strong>Giả thiết (GT)</strong> của định lí (điều đã cho).</li><li>Phần nằm sau từ <em>'thì'</em> là <strong>Kết luận (KL)</strong> của định lí (điều cần chứng minh/suy ra).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Nếu } [\text{Giả Thiết}] \implies \text{thì } [\text{Kết Luận}]$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Khi phát biểu không có từ 'Nếu... thì...', ta cần diễn đạt lại dưới dạng 'Nếu... thì...' để xác định chính xác GT và KL.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Chứng Minh Định Lí</h3>
+          <div class="concept-box cyan">
+            <h4>Quy Trình Khoa Học</h4>
+            <p><strong>Chứng minh định lí</strong> là dùng lập luận logic để từ giả thiết suy ra kết luận.</p><p>Các bước chứng minh một định lí hình học:</p><ul><li><strong>Bước 1:</strong> Vẽ hình minh hoạ cho định lí.</li><li><strong>Bước 2:</strong> Ghi tóm tắt Giả thiết (GT) và Kết luận (KL) bằng các kí hiệu hình học.</li><li><strong>Bước 3:</strong> Trình bày các bước lập luận, mỗi bước có nêu rõ căn cứ (định nghĩa, tính chất, định lí đã biết) để từ GT dẫn tới KL.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{GT} \xrightarrow{\text{Lập luận logic}} \text{Bước 1} \xrightarrow{\text{Căn cứ}} \dots \xrightarrow{\text{Căn cứ}} \text{KL}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Mỗi bước suy luận đều phải có lí do chứng minh kèm theo đặt trong dấu ngoặc đơn $(\ )$, không được tự ý suy đoán.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Ví Dụ Mẫu: Chứng Minh Hai Góc Đối Đỉnh</h3>
+          <div class="concept-box cyan">
+            <h4>Ví Dụ Mẫu Mực</h4>
+            <p><strong>Định lí:</strong> Hai góc đối đỉnh thì bằng nhau.</p><p><strong>GT:</strong> $\widehat{O_1}$ và $\widehat{O_3}$ là hai góc đối đỉnh.</p><p><strong>KL:</strong> $\widehat{O_1} = \widehat{O_3}$.</p><p><strong>Chứng minh:</strong></p><ul><li>Ta có $\widehat{O_1} + \widehat{O_2} = 180^\circ$ (vì $\widehat{O_1}$ và $\widehat{O_2}$ kề bù).</li><li>Ta có $\widehat{O_3} + \widehat{O_2} = 180^\circ$ (vì $\widehat{O_3}$ và $\widehat{O_2}$ kề bù).</li><li>Suy ra $\widehat{O_1} + \widehat{O_2} = \widehat{O_3} + \widehat{O_2} \implies \widehat{O_1} = \widehat{O_3}$ (điều phải chứng minh).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\widehat{O_1} = 180^\circ - \widehat{O_2} = \widehat{O_3}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Hai góc cùng bù với một góc thứ ba thì bằng nhau.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Khái Niệm Mở Rộng: Định Lí Đảo</h3>
+          <div class="concept-box cyan">
+            <h4>Định Lí Đảo</h4>
+            <p>Đổi chỗ Giả thiết và Kết luận của một định lí, ta được mệnh đề đảo của định lí đó.</p><p>Nếu mệnh đề đảo cũng đúng thì nó được gọi là <strong>định lí đảo</strong> của định lí ban đầu:</p><ul><li>Định lí thuận: $a \parallel b \implies$ Các cặp góc so le trong bằng nhau.</li><li>Định lí đảo: Một cặp góc so le trong bằng nhau $\implies a \parallel b$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Thuận: } A \implies B; \quad \text{Đảo: } B \implies A$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Không phải mọi định lí đảo đều đúng. Phải chứng minh chặt chẽ trước khi sử dụng như một định lí.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Cây Phân Tích Giả Thiết - Kết Luận</h3>
+          <p class="lab-desc">Chọn một định lí hình học mẫu để tự động phân tích và bóc tách thành hai khối Giả thiết (GT) và Kết luận (KL) trực quan.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Chọn định lí mẫu:</label>
+                    <select id="l1_thmSelect" style="padding:5px 10px; font-weight:bold; background:#1e1b4b; color:#fff; border:1px solid #818cf8; border-radius:6px; width:100%; max-width:420px;">
+                        <option value="1">Định lí 1: Hai góc đối đỉnh thì bằng nhau</option>
+                        <option value="2">Định lí 2: Hai đường thẳng cùng vuông góc đường thứ ba thì song song</option>
+                        <option value="3">Định lí 3: Tia phân giác chia đôi góc thành hai góc bằng nhau</option>
+                    </select>
+                </div>
+                <div class="lab-output" id="lab1ThmOut" style="margin-top:12px; font-weight:600; line-height:1.8;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Xưởng Ghép Nối Suy Luận Chứng Minh</h3>
+          <p class="lab-desc">Sắp xếp các bước chứng minh theo đúng trình tự logic để đi từ Giả thiết đến Kết luận hoàn hảo.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <p style="margin-bottom:6px;">Chứng minh: <em>'Hai góc cùng phụ với một góc thứ ba thì bằng nhau'</em></p>
+                    <button class="btn-primary" id="btnShowProofChain" style="padding:5px 14px;">Xem Chuỗi Suy Luận Chuẩn</button>
+                </div>
+                <div class="lab-output" id="lab2ProofOut" style="margin-top:12px; font-weight:600; line-height:1.8;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 11: ĐỊNH LÍ VÀ CHỨNG MINH ĐỊNH LÍ</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ LOGIC HỌC HÌNH HỌC 7 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_bai10/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Bài 10: Tiên Đề Euclid. Tính Chất Của Hai Đường Thẳng Song Song</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_ontap_chuong3/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Bài Tập Cuối Chương III - Tổng Ôn Góc Và Đường Thẳng Song Song</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

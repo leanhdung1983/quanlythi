@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luyện Tập Chung: Hàm Số & Phương Trình Bậc Hai (Trang 18) - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Dũng Sĩ Tương Giao 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">ĐẠI SỐ 9 • CHƯƠNG VI</span>
+      <h1>Luyện Tập Chung: Hàm Số & Phương Trình Bậc Hai</h1>
+      <p>Rèn luyện chuyên sâu kỹ năng tương giao giữa parabol $y = ax^2$ và đường thẳng $y = mx + n$, phương pháp đặt ẩn phụ giải phương trình trùng phương và phương trình chứa ẩn dưới mẫu.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Sự Tương Giao Của Parabol $(P)$ Và Đường Thẳng $(d)$</h3>
+              <div class="concept-box cyan">
+                <h4>Hình Học Tọa Độ</h4>
+                <p>Cho parabol $(P): y = ax^2\ (a \ne 0)$ và đường thẳng $(d): y = mx + n$. Hoành độ giao điểm là nghiệm của phương trình:</p><p class="math-highlight">$$ax^2 = mx + n \iff ax^2 - mx - n = 0$$</p><ul><li>Nếu $\Delta > 0$: $(d)$ cắt $(P)$ tại <strong>2 điểm phân biệt</strong>.</li><li>Nếu $\Delta = 0$: $(d)$ <strong>tiếp xúc</strong> với $(P)$ tại 1 điểm duy nhất (tiếp điểm).</li><li>Nếu $\Delta < 0$: $(d)$ và $(P)$ <strong>không có điểm chung</strong>.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$ax^2 - mx - n = 0 \implies \Delta = m^2 + 4an$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Số giao điểm của đường thẳng và parabol đúng bằng số nghiệm của phương trình hoành độ giao điểm.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Phương Trình Trùng Phương</h3>
+              <div class="concept-box cyan">
+                <h4>Phương Trình Quy Về Bậc Hai</h4>
+                <p>Phương trình trùng phương có dạng:</p><p class="math-highlight">$$ax^4 + bx^2 + c = 0 \quad (a \ne 0)$$</p><ul><li><strong>Cách giải:</strong> Đặt ẩn phụ $t = x^2$ với điều kiện $t \ge 0$.</li><li>Phương trình trở thành phương trình bậc hai: $at^2 + bt + c = 0$.</li><li>Giải tìm các nghiệm $t \ge 0$, sau đó thay lại $x = \pm \sqrt{t}$.</li><li>Mỗi nghiệm $t > 0$ cho 2 nghiệm $x$; nghiệm $t = 0$ cho 1 nghiệm $x = 0$; nghiệm $t < 0$ bị loại.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$ax^4 + bx^2 + c = 0 \xrightarrow{t = x^2 \ge 0} at^2 + bt + c = 0$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Bắt buộc đặt điều kiện t >= 0 khi đặt ẩn phụ t = x^2 và phải đối chiếu điều kiện trước khi tìm x.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Phương Trình Đưa Về Dạng Tích Hoặc Có Ẩn Ở Mẫu</h3>
+              <div class="concept-box cyan">
+                <h4>Phương Trình Tích</h4>
+                <p>Đối với các phương trình có bậc cao hơn hoặc chứa ẩn ở mẫu thức:</p><ul><li><strong>Bước 1:</strong> Tìm điều kiện xác định (mẫu thức khác $0$).</li><li><strong>Bước 2:</strong> Quy đồng mẫu thức hai vế rồi khử mẫu, hoặc phân tích vế trái thành nhân tử để đưa về dạng tích $A(x) \cdot B(x) = 0$.</li><li><strong>Bước 3:</strong> Giải các phương trình thành phần và đối chiếu điều kiện xác định để kết luận nghiệm.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$A(x) \cdot B(x) = 0 \iff A(x) = 0 \text{ hoặc } B(x) = 0$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Luôn kiểm tra điều kiện xác định để loại nghiệm ngoại lai sinh ra trong quá trình khử mẫu.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Tương Giao Parabol & Đường Thẳng Động</h3>
+          <p class="lab-desc">Điều chỉnh hệ số góc m và tung độ gốc n của đường thẳng d: y = mx + n để quan sát 3 trạng thái: cắt tại 2 điểm, tiếp xúc, hoặc không giao nhau.</p>
+          
+                <div class="lab-controls">
+                    <label>Hệ số góc m: <input type="range" id="slM" min="-3" max="3" value="1" step="0.5"></label>
+                    <span id="vM" class="val-display">m = 1.0</span> &nbsp;|&nbsp;
+                    <label>Tung độ gốc n: <input type="range" id="slN" min="-4" max="4" value="2" step="0.5"></label>
+                    <span id="vN" class="val-display">n = 2.0</span>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas1" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Giải Phương Trình Trùng Phương Bằng Ẩn Phụ</h3>
+          <p class="lab-desc">Nhập các hệ số phương trình trùng phương ax^4 + bx^2 + c = 0 để quan sát quá trình đổi biến t = x^2, xét điều kiện t >= 0 và tìm các nghiệm x.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas2" width="600" height="240"></canvas>
+        </div>
+        
+                <div class="lab-controls">
+                    <label>a: <input type="number" id="biA" value="1" style="width: 50px;"></label> &nbsp;|&nbsp;
+                    <label>b: <input type="number" id="biB" value="-5" style="width: 50px;"></label> &nbsp;|&nbsp;
+                    <label>c: <input type="number" id="biC" value="4" style="width: 50px;"></label> &nbsp;
+                    <button class="btn-primary" id="btnSolveBi" style="padding: 4px 12px; font-size: 0.85rem;">Giải Trùng Phương</button>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top: 10px; font-size: 1rem; line-height: 1.6; min-height: 150px; background: #0f172a; padding: 16px; border-radius: 12px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Luyện Tập Chung: Hàm Số & Phương Trình Bậc Hai</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">DŨNG SĨ TƯƠNG GIAO 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai19/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 19: Phương Trình Bậc Hai Một Ẩn</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai20/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 20: Định Lí Viète Và Ứng Dụng</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

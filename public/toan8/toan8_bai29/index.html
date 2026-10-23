@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 29: Hệ Số Góc Của Đường Thẳng - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Hệ Số Góc 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG VII: PHƯƠNG TRÌNH & HÀM SỐ • BÀI 29 • TOÁN 8 KNTT</span>
+      <h1>BÀI 29: HỆ SỐ GÓC CỦA ĐƯỜNG THẲNG</h1>
+      <p>Làm chủ khái niệm hình học trực quan nhất của đường thẳng: Độ dốc (Slope) hay Hệ số góc. Ứng dụng xác định vị trí tương đối giữa các đường thẳng trong không gian tọa độ phẳng.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Khái Niệm Hệ Số Góc Của Đường Thẳng</h3>
+          <div class="concept-box cyan">
+            <h4>Khái Niệm Cốt Lõi</h4>
+            <p>Trong mặt phẳng tọa độ $Oxy$, gọi $\alpha$ là góc tạo bởi đường thẳng $y = ax + b$ ($a \neq 0$) và trục hoành $Ox$ (góc giữa tia $Ax$ và tia $AT$ hướng lên phía trên):</p><ul><li>Hệ số $a$ trong phương trình $y = ax + b$ được gọi là <strong>hệ số góc</strong> của đường thẳng $y = ax + b$.</li><li>Khi $a > 0$: Góc $\alpha$ là <strong>góc nhọn</strong> ($0^\circ < \alpha < 90^\circ$). Khi $a$ tăng thì góc $\alpha$ tăng.</li><li>Khi $a < 0$: Góc $\alpha$ là <strong>góc tù</strong> ($90^\circ < \alpha < 180^\circ$). Khi $a$ tăng thì góc $\alpha$ tăng.</li><li>Hằng số $b$ gọi là <strong>tung độ gốc</strong> (giao điểm của đường thẳng với trục tung là $(0; b)$).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$y = ax + b \implies a: \text{Hệ số góc} \qquad b: \text{Tung độ gốc}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Đường thẳng có hệ số góc dương luôn tạo góc nhọn với trục Ox; hệ số góc âm luôn tạo góc tù với trục Ox.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Hai Đường Thẳng Song Song & Cắt Nhau</h3>
+          <div class="concept-box cyan">
+            <h4>Vị Trí Tương Đối</h4>
+            <p>Cho hai đường thẳng $d: y = ax + b$ và $d': y = a'x + b'$ ($a, a' \neq 0$):</p><ul><li><strong>$d$ song song với $d'$ ($d \parallel d'$):</strong> Khi và chỉ khi chúng có cùng hệ số góc và khác tung độ gốc:</li></ul><p style="text-align:center;">$$d \parallel d' \iff a = a' \text{ và } b \neq b'$$</p><ul><li><strong>$d$ trùng với $d'$ ($d \equiv d'$):</strong> Khi và chỉ khi:</li></ul><p style="text-align:center;">$$d \equiv d' \iff a = a' \text{ và } b = b'$$</p><ul><li><strong>$d$ cắt $d'$:</strong> Khi và chỉ khi chúng có hệ số góc khác nhau:</li></ul><p style="text-align:center;">$$d \text{ cắt } d' \iff a \neq a'$$</p><p><em>Đặc biệt:</em> $d \perp d' \iff a \cdot a' = -1$ (hai đường thẳng vuông góc khi tích hệ số góc bằng $-1$).</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$d \parallel d' \iff \begin{cases} a = a' \\ b \neq b' \end{cases} \qquad d \text{ cắt } d' \iff a \neq a'$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Cùng hệ số góc thì song song (hoặc trùng nhau); khác hệ số góc thì chắc chắn cắt nhau tại đúng một điểm.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Tìm Tọa Độ Giao Điểm Của Hai Đường Thẳng</h3>
+          <div class="concept-box cyan">
+            <h4>Ứng Dụng Đại Số</h4>
+            <p>Để tìm tọa độ giao điểm của hai đường thẳng cắt nhau $d: y = ax + b$ và $d': y = a'x + b'$ ($a \neq a'$):</p><ol><li><strong>Bước 1:</strong> Xét phương trình hoành độ giao điểm: $ax + b = a'x + b'$.</li><li><strong>Bước 2:</strong> Giải phương trình bậc nhất trên để tìm nghiệm hoành độ $x_0$.</li><li><strong>Bước 3:</strong> Thay $x_0$ vào một trong hai công thức hàm số để tính tung độ $y_0 = ax_0 + b$.</li><li><strong>Bước 4:</strong> Kết luận tọa độ giao điểm là $M(x_0; y_0)$.</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$ax + b = a'x + b' \implies x_0 = \frac{b' - b}{a - a'} \implies y_0 = ax_0 + b$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Phương trình hoành độ giao điểm cho ta hoành độ x₀, thay vào một trong hai hàm số để tìm tung độ y₀.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Phỏng Hệ Số Góc & Góc Tạo Với Ox</h3>
+          <p class="lab-desc">Kéo thanh trượt để thay đổi hệ số góc $a$. Quan sát sự thay đổi giữa góc nhọn ($a > 0$), góc vuông ($a \to \infty$) và góc tù ($a < 0$).</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Hệ số góc $a$: <span id="valA29" style="font-weight:bold; color:#06b6d4;">1.73</span></label>
+                    <input type="range" id="sliderA29" min="-3" max="3" value="1.73" step="0.2">
+                </div>
+                <div class="lab-output" id="lab1Output29" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Khảo Sát Vị Trí Tương Đối Hai Đường Thẳng</h3>
+          <p class="lab-desc">Điều chỉnh hệ số $a_1, a_2$ và $b_1, b_2$ để kiểm tra điều kiện song song, cắt nhau hoặc trùng nhau của hai đường thẳng.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>$a_1$: <input type="number" id="inA1" value="2" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                    <label>$b_1$: <input type="number" id="inB1" value="1" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                    <label>$a_2$: <input type="number" id="inA2" value="2" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                    <label>$b_2$: <input type="number" id="inB2" value="-3" style="width:55px; padding:3px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                </div>
+                <div class="lab-output" id="lab2Output29" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 29: HỆ SỐ GÓC CỦA ĐƯỜNG THẲNG</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHUYÊN GIA HỆ SỐ GÓC 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai28/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 28: Hàm Số Bậc Nhất Và Đồ Thị Của Hàm Số Bậc Nhất</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_ontap_chuong7/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương VII: Phương Trình Bậc Nhất Và Hàm Số Bậc Nhất</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

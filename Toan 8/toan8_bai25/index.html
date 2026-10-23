@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 25: Phương Trình Bậc Nhất Một Ẩn - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Bậc Thầy Giải Phương Trình 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG VII: PHƯƠNG TRÌNH & HÀM SỐ • BÀI 25 • TOÁN 8 KNTT</span>
+      <h1>BÀI 25: PHƯƠNG TRÌNH BẬC NHẤT MỘT ẨN</h1>
+      <p>Bước đầu tiên chinh phục thế giới phương trình đại số. Nắm vững hai quy tắc vàng chuyển vế đổi dấu và nhân chia hai vế để tìm ra nghiệm chính xác của mọi phương trình bậc nhất.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Khái Niệm Phương Trình Bậc Nhất Một Ẩn</h3>
+          <div class="concept-box cyan">
+            <h4>Định Nghĩa Cốt Lõi</h4>
+            <p><strong>Phương trình bậc nhất một ẩn</strong> là phương trình có dạng:</p><p style="text-align:center; font-weight:bold; font-size:1.15rem;">$$ax + b = 0$$</p><p>Trong đó $a, b$ là hai số đã cho và $a \neq 0$. $x$ được gọi là ẩn số.</p><ul><li>Ví dụ: $2x - 6 = 0$ (với $a = 2, b = -6$), $-\frac{1}{2}x + 3 = 0$ (với $a = -\frac{1}{2}, b = 3$).</li><li>Phương trình $0x + 5 = 0$ hay $x^2 - 1 = 0$ <strong>không phải</strong> là phương trình bậc nhất một ẩn (vì hệ số $a = 0$ hoặc bậc của $x$ là $2$).</li><li>Số $x_0$ thỏa mãn đẳng thức $a x_0 + b = 0$ gọi là <strong>nghiệm</strong> của phương trình.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$ax + b = 0 \quad (a, b \in \mathbb{R},\, a \neq 0)$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Bậc của ẩn số luôn luôn phải là bậc 1 và hệ số a gắn với ẩn phải khác 0.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Hai Quy Tắc Biến Đổi Phương Trình</h3>
+          <div class="concept-box cyan">
+            <h4>Hai Quy Tắc Vàng</h4>
+            <p><strong>Quy tắc chuyển vế:</strong> Trong một phương trình, ta có thể chuyển một số hạng từ vế này sang vế kia và <strong>đổi dấu</strong> số hạng đó:</p><p style="text-align:center;">$$ax + b = 0 \iff ax = -b$$</p><p><strong>Quy tắc nhân với một số:</strong> Trong một phương trình, ta có thể nhân (hoặc chia) cả hai vế với cùng một số khác $0$:</p><p style="text-align:center;">$$ax = -b \iff x = -\frac{b}{a} \quad (a \neq 0)$$</p><p><strong>Kết luận:</strong> Phương trình bậc nhất $ax + b = 0$ ($a \neq 0$) luôn có <strong>nghiệm duy nhất</strong> $x = -\frac{b}{a}$. Tập nghiệm $S = \left\{-\frac{b}{a}\right\}$.</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$ax + b = 0 \iff ax = -b \iff x = -\frac{b}{a}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Chuyển vế thì PHẢI đổi dấu (+ thành -, - thành +). Chia cả hai vế cho hệ số a khác 0.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Phương Trình Đưa Được Về Dạng ax + b = 0</h3>
+          <div class="concept-box cyan">
+            <h4>Phương Trình Mở Rộng</h4>
+            <p>Các phương trình có chứa dấu ngoặc hoặc chứa mẫu số dạng số:</p><ol><li><strong>Phương trình chứa dấu ngoặc:</strong> Áp dụng quy tắc nhân phá ngoặc, dấu ngoặc để đưa về dạng các đơn thức, sau đó chuyển các số hạng chứa ẩn sang vế trái, hằng số sang vế phải.</li><li><strong>Phương trình chứa mẫu số là các hằng số:</strong> Quy đồng mẫu số hai vế rồi khử mẫu (nhân cả hai vế với mẫu số chung), sau đó thu gọn về dạng $ax + b = 0$.</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Khử mẫu / Phá ngoặc} \to \text{Chuyển vế thu gọn } Ax = B \to x = \frac{B}{A}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Gom toàn bộ số hạng chứa ẩn về một vế, gom toàn bộ hằng số tự do về vế còn lại rồi thu gọn.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Cán Cân Đại Số Biến Đổi Phương Trình</h3>
+          <p class="lab-desc">Mô phỏng phương trình $a x + b = c$. Kéo thanh trượt để quan sát quá trình chuyển vế hằng số và chia hai vế để tìm $x$.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Hệ số $a$: <span id="valA25" style="font-weight:bold; color:#06b6d4;">2</span></label>
+                    <input type="range" id="sliderA25" min="-5" max="5" value="2" step="1">
+                    <label>Hằng số $b$: <span id="valB25" style="font-weight:bold; color:#f59e0b;">-6</span></label>
+                    <input type="range" id="sliderB25" min="-10" max="10" value="-6" step="1">
+                </div>
+                <div class="lab-output" id="lab1Output25" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Giải Phương Trình Từng Bước</h3>
+          <p class="lab-desc">Tự động phân tích và giải phương trình có ngoặc $k(x - 1) + m = 2x + 4$.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Hệ số $k$: <input type="number" id="inK25" value="3" style="width:65px; padding:4px 8px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                    <label>Hằng số $m$: <input type="number" id="inM25" value="5" style="width:65px; padding:4px 8px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                </div>
+                <div class="lab-output" id="lab2Output25" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 25: PHƯƠNG TRÌNH BẬC NHẤT MỘT ẨN</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">BẬC THẦY GIẢI PHƯƠNG TRÌNH 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_ontap_chuong6/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Ôn Tập Chương VI: Phân Thức Đại Số</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai26/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 26: Giải Bài Toán Bằng Cách Lập Phương Trình</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

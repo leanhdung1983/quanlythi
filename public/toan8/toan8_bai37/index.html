@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 37: Hình Đồng Dạng - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Thiết Kế Hình Đồng Dạng 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG IX: TAM GIÁC ĐỒNG DẠNG • BÀI 37 • TOÁN 8 KNTT</span>
+      <h1>BÀI 37: HÌNH ĐỒNG DẠNG</h1>
+      <p>Tổng quát hóa khái niệm đồng dạng lên toàn bộ thế giới hình học. Tìm hiểu cách thu phóng ảnh kỹ thuật số, vẽ bản đồ địa lý và ngắm nhìn các cấu trúc đồng dạng fractal kỳ thú trong tự nhiên.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Hình Đồng Dạng Phối Cảnh</h3>
+          <div class="concept-box cyan">
+            <h4>Khái Niệm Cốt Lõi</h4>
+            <p>Cho điểm $O$ và số $k > 0$. Phép biến đổi biến mỗi điểm $M$ thành điểm $M'$ sao cho tia $OM'$ trùng với tia $OM$ và $OM' = k \cdot OM$ được gọi là <strong>phép phóng to (nếu $k > 1$)</strong> hoặc <strong>thu nhỏ (nếu $k < 1$)</strong> với tâm $O$, tỉ số $k$.</p><ul><li>Hình $H'$ gọi là <strong>đồng dạng phối cảnh</strong> (hay vị tự) với hình $H$ nếu mỗi điểm trên $H$ tương ứng với một điểm trên $H'$ qua phép biến hình trên.</li><li>Điểm $O$ gọi là <strong>tâm phối cảnh</strong>.</li><li>Tỉ số $k = \frac{A'B'}{AB}$ gọi là <strong>tỉ số vị tự (tỉ số phối cảnh)</strong>.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$OM' = k \cdot OM \quad (k > 0,\, O \text{ là tâm phối cảnh})$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Các đường nối các cặp điểm tương ứng luôn đồng quy tại một điểm duy nhất - gọi là tâm phối cảnh O.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Khái Niệm Hình Đồng Dạng Tổng Quát</h3>
+          <div class="concept-box cyan">
+            <h4>Mở Rộng Không Gian</h4>
+            <p>Hai hình được gọi là <strong>đồng dạng</strong> với nhau nếu hình này <em>bằng</em> một hình đồng dạng phối cảnh với hình kia.</p><ul><li>Như vậy, hai hình đồng dạng là hai hình có <strong>cùng hình dạng</strong> nhưng kích thước có thể khác nhau (và có thể quay hoặc tịnh tiến ở các vị trí khác nhau).</li><li><em>Ví dụ:</em> Hai hình tròn bất kì luôn đồng dạng với nhau; Hai hình vuông bất kì luôn đồng dạng với nhau; Hai tam giác đều bất kì luôn đồng dạng với nhau.</li><li>Hai bức ảnh cùng chụp một người nhưng in ở các cỡ ảnh khác nhau (ảnh $3 \times 4$ và ảnh $4 \times 6$) là hai hình đồng dạng.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Hình tròn, Hình vuông, Đa giác đều cùng số cạnh luôn ĐỒNG DẠNG}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Cùng hình dạng nhưng kích thước có thể khác nhau là bản chất của quan hệ đồng dạng.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Hình Đồng Dạng Trong Thực Tế</h3>
+          <div class="concept-box cyan">
+            <h4>Thực Tiễn Đời Sống</h4>
+            <p>Khái niệm hình đồng dạng hiện diện khắp nơi trong đời sống và kỹ thuật:</p><ul><li><strong>Bản đồ địa lí:</strong> Bản đồ tỉ lệ $1 : 1\,000\,000$ là hình đồng dạng thu nhỏ của địa hình thực tế với tỉ số $k = 10^{-6}$.</li><li><strong>Kiến trúc & Xây dựng:</strong> Bản vẽ thiết kế mặt bằng ngôi nhà đồng dạng với ngôi nhà thực tế.</li><li><strong>Tự nhiên:</strong> Lá dương xỉ, vỏ ốc anh vũ (vòng xoắn ốc Fibonacci đồng dạng), bông tuyết (fractal đồng dạng tự thân).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Tỉ lệ bản đồ } 1 : N \implies k = \frac{1}{N}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Mọi tỉ lệ bản đồ và mô hình thu nhỏ đều dựa trên nguyên lý của phép đồng dạng.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Máy Phóng Đại Hình Đồng Dạng Phối Cảnh</h3>
+          <p class="lab-desc">Kéo thanh trượt để thay đổi tỉ số phối cảnh $k$ từ tâm $O$. Quan sát các tia đồng quy từ tâm $O$ phóng to tứ giác $ABCD$.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Tỉ số phóng đại $k$: <span id="valK37" style="font-weight:bold; color:#06b6d4;">1.8</span></label>
+                    <input type="range" id="sliderK37" min="1.0" max="2.5" value="1.8" step="0.1">
+                </div>
+                <div class="lab-output" id="lab1Output37" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Nhận Diện Hình Đồng Dạng Trong Kiến Trúc</h3>
+          <p class="lab-desc">So sánh các cặp hình học: Hình tròn, hình chữ nhật, hình vuông. Nhận diện các hình luôn luôn đồng dạng.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnPair1" style="padding:6px 12px;">Hai Hình Tròn</button>
+                    <button class="btn-primary" id="btnPair2" style="padding:6px 12px;">Hai Hình Vuông</button>
+                    <button class="btn-primary" id="btnPair3" style="padding:6px 12px;">Hai Hình Chữ Nhật</button>
+                </div>
+                <div class="lab-output" id="lab2Output37" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 37: HÌNH ĐỒNG DẠNG</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ THIẾT KẾ HÌNH ĐỒNG DẠNG 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai36/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 36: Các Trường Hợp Đồng Dạng Của Hai Tam Giác Vuông</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_ontap_chuong9/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn Tập Chương IX: Tam Giác Đồng Dạng</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

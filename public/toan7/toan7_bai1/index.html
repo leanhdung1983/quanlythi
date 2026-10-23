@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 1: Tập Hợp Các Số Hữu Tỉ - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Thám Hiểm Số Hữu Tỉ 7</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG I: SỐ HỮU TỈ • BÀI 1 • TOÁN 7 KNTT</span>
+      <h1>BÀI 1: TẬP HỢP CÁC SỐ HỮU TỈ</h1>
+      <p>Làm chủ khái niệm nền tảng về số hữu tỉ $\mathbb{Q}$, cách viết một số dưới dạng phân số tối giản $\frac{a}{b}$, định vị điểm trên trục số và tìm số đối chuẩn mực theo SGK Toán 7 Kết nối tri thức.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Khái Niệm Số Hữu Tỉ</h3>
+          <div class="concept-box cyan">
+            <h4>Khái Niệm Cốt Lõi</h4>
+            <p><strong>Số hữu tỉ</strong> là số viết được dưới dạng phân số $\frac{a}{b}$ với $a, b \in \mathbb{Z}, b \neq 0$.</p><p>Tập hợp các số hữu tỉ được kí hiệu là $\mathbb{Q}$.</p><p>Mọi số tự nhiên, số nguyên, hỗn số, số thập phân hữu hạn đều là số hữu tỉ vì đều viết được thành phân số $\frac{a}{b}$:</p><ul><li>Số nguyên: $-3 = \frac{-3}{1} = \frac{-6}{2}$</li><li>Số thập phân: $0,25 = \frac{25}{100} = \frac{1}{4}$</li><li>Hỗn số: $2\frac{1}{3} = \frac{7}{3}$</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\mathbb{N} \subset \mathbb{Z} \subset \mathbb{Q}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Mỗi số hữu tỉ có vô số phân số bằng nhau biểu diễn nó. Khi thực hiện tính toán, ta thường đưa về phân số tối giản với mẫu số dương.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Biểu Diễn Số Hữu Tỉ Trên Trục Số</h3>
+          <div class="concept-box cyan">
+            <h4>Hình Học Số Trục</h4>
+            <p>Để biểu diễn số hữu tỉ $\frac{a}{b}$ ($b > 0$) trên trục số nằm ngang:</p><ul><li>Chia đoạn đơn vị (từ 0 đến 1 hoặc từ -1 đến 0) thành $b$ phần bằng nhau. Mỗi phần có độ dài $\frac{1}{b}$.</li><li>Nếu $a > 0$: Điểm biểu diễn nằm bên phải gốc 0 và cách gốc 0 một đoạn bằng $a$ phần.</li><li>Nếu $a < 0$: Điểm biểu diễn nằm bên trái gốc 0 và cách gốc 0 một đoạn bằng $|a|$ phần.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Điểm } \frac{a}{b} \text{ cách gốc 0 một khoảng } \left|\frac{a}{b}\right|$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Trên trục số nằm ngang, điểm biểu diễn số âm luôn nằm bên trái gốc 0; điểm biểu diễn số dương luôn nằm bên phải gốc 0.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Số Đối Của Một Số Hữu Tỉ</h3>
+          <div class="concept-box cyan">
+            <h4>Quy Tắc Đối Xứng</h4>
+            <p>Hai số hữu tỉ có điểm biểu diễn trên trục số cách đều điểm gốc 0 và nằm về hai phía của gốc 0 gọi là <strong>hai số đối nhau</strong>.</p><p>Số đối của số hữu tỉ $x$ được kí hiệu là $-x$.</p><p>Số đối của 0 là chính số 0: $-0 = 0$.</p><p>Nếu $x = \frac{a}{b}$ ($b > 0$) thì số đối của $x$ là:</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$-x = -\frac{a}{b} = \frac{-a}{b} = \frac{a}{-b}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Tổng của hai số đối nhau luôn bằng 0: $x + (-x) = 0$.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. So Sánh Hai Số Hữu Tỉ</h3>
+          <div class="concept-box cyan">
+            <h4>Kỹ Thuật So Sánh</h4>
+            <p>Với hai số hữu tỉ bất kì $x, y$, luôn xảy ra một trong ba trường hợp: $x < y$ hoặc $x = y$ hoặc $x > y$.</p><ul><li>Trên trục số nằm ngang, nếu $x < y$ thì điểm $x$ nằm bên trái điểm $y$.</li><li>Số hữu tỉ lớn hơn 0 gọi là <strong>số hữu tỉ dương</strong>.</li><li>Số hữu tỉ nhỏ hơn 0 gọi là <strong>số hữu tỉ âm</strong>.</li><li>Số 0 không là số hữu tỉ dương, cũng không là số hữu tỉ âm.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Nếu } a, b > 0 \text{ và } \frac{a}{m} < \frac{b}{m} \iff a < b$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Để so sánh hai số hữu tỉ khác mẫu, ta quy đồng mẫu số về cùng mẫu dương rồi so sánh các tử số với nhau.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Trục Số Hữu Tỉ Tương Tác</h3>
+          <p class="lab-desc">Kéo thanh trượt để thay đổi tử số $a$ và mẫu số $b$. Quan sát vị trí phân số $\frac{a}{b}$ trên trục số, số đối $-\frac{a}{b}$ và dạng thập phân tương ứng.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Tử số $a$: <span id="valA" style="font-weight:bold; color:#f59e0b;">3</span></label>
+                    <input type="range" id="sliderA" min="-8" max="8" value="3" step="1">
+                    <label>Mẫu số $b$: <span id="valB" style="font-weight:bold; color:#06b6d4;">4</span></label>
+                    <input type="range" id="sliderB" min="1" max="8" value="4" step="1">
+                    <button class="btn-primary" id="btnToggleOpposite" style="margin-top:8px;">Hiển Thị Số Đối</button>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Cán Cân So Sánh Hai Số Hữu Tỉ</h3>
+          <p class="lab-desc">Nhập hai phân số bất kì $\frac{a}{b}$ và $\frac{c}{d}$ để kiểm tra cán cân so sánh trực quan và xem từng bước quy đồng mẫu số.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls" style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+                    <div>
+                        <span style="color:#f59e0b; font-weight:bold;">Phân số 1:</span>
+                        <input type="number" id="inputA" value="-2" style="width:50px;"> /
+                        <input type="number" id="inputB" value="5" style="width:50px;">
+                    </div>
+                    <div>
+                        <span style="color:#06b6d4; font-weight:bold;">Phân số 2:</span>
+                        <input type="number" id="inputC" value="-1" style="width:50px;"> /
+                        <input type="number" id="inputD" value="3" style="width:50px;">
+                    </div>
+                    <button class="btn-primary" id="btnCompare" style="padding:6px 14px;">So Sánh Ngay</button>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 1: TẬP HỢP CÁC SỐ HỮU TỈ</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ THÁM HIỂM SỐ HỮU TỈ 7 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Cổng Học Liệu Toán 7</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_bai2/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Bài 2: Cộng, Trừ, Nhân, Chia Số Hữu Tỉ</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

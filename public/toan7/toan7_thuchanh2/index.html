@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hoạt Động Thực Hành: Dân Số Và Cơ Cấu Dân Số Việt Nam - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Nhân Khẩu Học Trẻ 7</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">HOẠT ĐỘNG THỰC HÀNH TRẢI NGHIỆM • BÀI 2 • TOÁN 7 KNTT</span>
+      <h1>DÂN SỐ VÀ CƠ CẤU DÂN SỐ VIỆT NAM</h1>
+      <p>Đưa toán học vào cuộc sống thực tế! Cùng phân tích bức tranh dân số nước ta: Từ một quốc gia hơn 52 triệu dân năm 1979 đến gần 100 triệu người ngày nay và cơ cấu dân số vàng của đất nước.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Dữ Liệu Dân Số Việt Nam Qua Các Cuộc Tổng Điều Tra</h3>
+          <div class="concept-box cyan">
+            <h4>Số Liệu Thực Tế</h4>
+            <p>Theo số liệu Tổng cục Thống kê Việt Nam:</p><ul><li>Năm 1979: $52.7$ triệu người.</li><li>Năm 1989: $64.4$ triệu người.</li><li>Năm 1999: $76.3$ triệu người.</li><li>Năm 2009: $85.8$ triệu người.</li><li>Năm 2019: $96.2$ triệu người; Năm 2021: khoảng $98.5$ triệu người.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Tăng từ } 52.7 \text{ triệu (1979)} \longrightarrow 98.5 \text{ triệu (2021)}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Quy mô dân số Việt Nam tăng liên tục qua các thập kỉ, hiện đứng thứ 3 Đông Nam Á và thứ 15 trên thế giới.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Biểu Diễn Quy Mô Dân Số Bằng Biểu Đồ Đoạn Thẳng</h3>
+          <div class="concept-box cyan">
+            <h4>Biểu Đồ Tăng Trưởng</h4>
+            <p>Để quan sát tốc độ tăng dân số qua các mốc 10 năm:</p><ul><li>Trục hoành: Các năm điều tra (1979, 1989, 1999, 2009, 2019).</li><li>Trục tung: Dân số (triệu người).</li><li>Đoạn thẳng dốc lên thể hiện dân số nước ta liên tục tăng trưởng qua từng thời kì.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\Delta D = D_{2019} - D_{1979} = 96.2 - 52.7 = 43.5\text{ triệu người}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Biểu đồ đoạn thẳng giúp dự báo mốc đạt 100 triệu dân của Việt Nam.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Cơ Cấu Dân Số Theo Nhóm Tuổi</h3>
+          <div class="concept-box cyan">
+            <h4>Cơ Cấu Nhóm Tuổi</h4>
+            <p>Dân số được chia thành ba nhóm tuổi chính:</p><ul><li><strong>Dưới tuổi lao động (0 - 14 tuổi):</strong> Chiếm khoảng $24.3\%$.</li><li><strong>Trong tuổi lao động (15 - 64 tuổi):</strong> Chiếm khoảng $68.0\%$ (thời kì cơ cấu <em>dân số vàng</em>).</li><li><strong>Hết tuổi lao động (từ 65 tuổi trở lên):</strong> Chiếm khoảng $7.7\%$ (bắt đầu bước vào giai đoạn <em>già hóa dân số</em>).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\sum p_i = 24.3\% + 68.0\% + 7.7\% = 100\%$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Dùng biểu đồ hình quạt tròn để so sánh tỉ lệ 3 nhóm tuổi này.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Ý Nghĩa Thực Tiễn Của Thống Kê Dân Số</h3>
+          <div class="concept-box cyan">
+            <h4>Ý Nghĩa Kinh Tế - Xã Hội</h4>
+            <p>Thống kê dân số và cơ cấu tuổi có vai trò quyết định:</p><ul><li>Quy hoạch trường học, bệnh viện, nhà ở và giao thông công cộng.</li><li>Định hướng đào tạo nghề và tạo việc làm cho lực lượng lao động trẻ dồi dào.</li><li>Chủ động chính sách an sinh xã hội cho người cao tuổi trong tương lai.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Thống kê chính xác} \implies \text{Hoạch định chính sách tương lai đúng đắn}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Toán học là nền tảng cốt lõi của khoa học xã hội và quản lí quốc gia.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Biểu Đồ Tăng Trưởng Dân Số Việt Nam (1979 - 2021)</h3>
+          <p class="lab-desc">Rê chuột trên các mốc thời gian để xem chi tiết số triệu dân và mức tăng trưởng qua từng thập kỉ của Việt Nam.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Mốc khảo sát: </label>
+                    <button class="btn-icon" id="btnVN1979" style="background:#6366f1; color:#fff; padding:5px 10px; border-radius:6px; margin:2px;">1979</button>
+                    <button class="btn-icon" id="btnVN1989" style="background:#6366f1; color:#fff; padding:5px 10px; border-radius:6px; margin:2px;">1989</button>
+                    <button class="btn-icon" id="btnVN1999" style="background:#6366f1; color:#fff; padding:5px 10px; border-radius:6px; margin:2px;">1999</button>
+                    <button class="btn-icon" id="btnVN2009" style="background:#6366f1; color:#fff; padding:5px 10px; border-radius:6px; margin:2px;">2009</button>
+                    <button class="btn-icon" id="btnVN2019" style="background:#10b981; color:#fff; padding:5px 10px; border-radius:6px; margin:2px;">2019</button>
+                </div>
+                <div class="lab-output" id="lab1VNPopOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Cơ Cấu Ba Nhóm Tuổi Dân Số Việt Nam</h3>
+          <p class="lab-desc">Quan sát biểu đồ hình quạt tròn thể hiện cơ cấu dân số vàng của Việt Nam theo 3 nhóm tuổi.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Cơ cấu 3 nhóm tuổi năm 2019 (Việt Nam)</label>
+                </div>
+                <div class="lab-output" id="lab2VNAgeOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>DÂN SỐ VÀ CƠ CẤU DÂN SỐ VIỆT NAM</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ NHÂN KHẨU HỌC TRẺ 7 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_thuchanh1/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Hoạt Động Thực Hành: Vẽ Hình Đơn Giản Với Phần Mềm GeoGebra</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_bai20/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Bài 20: Tỉ Lệ Thức</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

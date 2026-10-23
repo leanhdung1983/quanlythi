@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 25: Phép Thử Ngẫu Nhiên & Không Gian Mẫu - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Khám Phá Không Gian Mẫu 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">XÁC SUẤT 9 • CHƯƠNG VIII</span>
+      <h1>Bài 25: Phép Thử Ngẫu Nhiên & Không Gian Mẫu</h1>
+      <p>Làm quen với phép thử ngẫu nhiên, tập hợp không gian mẫu $\Omega$, các kết quả thuận lợi và cách biểu diễn biến cố trong các trò chơi xác suất quen thuộc như tung đồng xu, gieo xúc xắc và quay thưởng.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Phép Thử Ngẫu Nhiên & Không Gian Mẫu</h3>
+              <div class="concept-box cyan">
+                <h4>Khái Niệm Cốt Lõi</h4>
+                <p><strong>Phép thử ngẫu nhiên</strong> (gọi tắt là <em>phép thử</em>) là một hoạt động hay thí nghiệm mà ta không thể biết trước kết quả nào sẽ xảy ra, nhưng biết trước tập hợp tất cả các kết quả có thể có của nó.</p><ul><li>Tập hợp tất cả các kết quả có thể xảy ra của một phép thử được gọi là <strong>không gian mẫu</strong> của phép thử đó, kí hiệu là $\Omega$ (đọc là Ô-mê-ga).</li><li>Số phần tử của không gian mẫu được kí hiệu là $n(\Omega)$ hoặc $|\Omega|$.</li><li>Ví dụ: Gieo một con xúc xắc 6 mặt cân đối: $\Omega = \{1, 2, 3, 4, 5, 6\} \implies n(\Omega) = 6$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\Omega = \{e_1, e_2, \dots, e_n\} \implies n(\Omega) = n$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Không gian mẫu Omega phải bao gồm đầy đủ tất cả các kết quả có thể xảy ra của phép thử, không được bỏ sót.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Biến Cố & Kết Quả Thuận Lợi</h3>
+              <div class="concept-box cyan">
+                <h4>Biến Cố</h4>
+                <p><strong>Biến cố</strong> (hay <em>biến cố ngẫu nhiên</em>) là một sự kiện liên quan đến phép thử, có thể xảy ra hoặc không xảy ra tùy thuộc vào kết quả của phép thử.</p><ul><li>Mỗi biến cố $E$ được đồng nhất với một <strong>tập con</strong> của không gian mẫu: $E \subset \Omega$.</li><li>Một kết quả thuộc $E$ được gọi là một <strong>kết quả thuận lợi</strong> cho biến cố $E$. Số kết quả thuận lợi kí hiệu là $n(E)$.</li><li><strong>Biến cố chắc chắn:</strong> Là biến cố luôn luôn xảy ra, trùng với toàn bộ không gian mẫu: $E = \Omega$.</li><li><strong>Biến cố không thể:</strong> Là biến cố không bao giờ xảy ra, là tập rỗng: $E = \varnothing$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$E \subset \Omega; \quad n(E) \le n(\Omega)$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Biến cố E xảy ra khi và chỉ khi kết quả của phép thử là một phần tử thuộc tập hợp E.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Một Số Mô Hình Phép Thử Điển Hình</h3>
+              <div class="concept-box cyan">
+                <h4>Các Mô Hình Quen Thuộc</h4>
+                <p><strong>1. Tung một đồng xu:</strong> $\Omega = \{S, N\}$ (Sấp, Ngửa), $n(\Omega) = 2$.</p><p><strong>2. Tung hai đồng xu phân biệt:</strong> $\Omega = \{SS, SN, NS, NN\}$, $n(\Omega) = 4$.</p><p><strong>3. Gieo một con xúc xắc:</strong> $\Omega = \{1, 2, 3, 4, 5, 6\}$, $n(\Omega) = 6$. Biến cố "Xuất hiện mặt chẵn": $E = \{2, 4, 6\} \implies n(E) = 3$.</p><p><strong>4. Chọn ngẫu nhiên một thẻ từ hộp:</strong> Nếu hộp có 10 thẻ đánh số $1 \to 10$ thì $\Omega = \{1, 2, \dots, 10\}$, $n(\Omega) = 10$.</p>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\text{Tung 2 đồng xu: } n(\Omega) = 2^2 = 4; \quad \text{Gieo 2 xúc xắc: } n(\Omega) = 6^2 = 36$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Khi phép thử gồm k công đoạn độc lập, số phần tử không gian mẫu bằng tích số kết quả của từng công đoạn.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Phỏng Gieo Xúc Xắc & Ghi Nhận Không Gian Mẫu</h3>
+          <p class="lab-desc">Bấm nút Gieo Xúc Xắc để xem chuyển động quay ngẫu nhiên 3D phẳng của con xúc xắc và quan sát kết quả được gom vào tập hợp không gian mẫu.</p>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnRollDice1" style="padding: 6px 16px; font-size: 0.95rem;">🎲 Gieo Xúc Xắc Ngẫu Nhiên</button> &nbsp;|&nbsp;
+                    <button class="btn-icon" id="btnRoll10" style="padding: 6px 12px; font-size: 0.85rem;">🎲 Gieo 10 Lần Nhanh</button> &nbsp;|&nbsp;
+                    <button class="btn-icon" id="btnResetDice" style="padding: 6px 12px; font-size: 0.85rem;">🔄 Đặt Lại</button>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas1" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Tung Hai Đồng Xu & Bảng Không Gian Mẫu 4 Kết Quả</h3>
+          <p class="lab-desc">Tung ngẫu nhiên 2 đồng xu phân biệt (Đồng 1 & Đồng 2). Xem kết quả (S; S), (S; N), (N; S) hoặc (N; N) được chiếu sáng trên ma trận không gian mẫu.</p>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnFlipCoins" style="padding: 6px 16px; font-size: 0.95rem;">🪙 Tung Hai Đồng Xu</button> &nbsp;|&nbsp;
+                    <button class="btn-icon" id="btnFlip50" style="padding: 6px 12px; font-size: 0.85rem;">🪙 Tung 50 Lần Thử Nghiệm</button>
+                </div>
+                <div class="canvas-wrap" style="position: relative; width: 100%; height: 320px;">
+                    <canvas id="labCanvas2" width="600" height="320" style="width: 100%; height: 100%; background: #0f172a; border-radius: 12px;"></canvas>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top: 10px; font-size: 0.95rem;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 25: Phép Thử Ngẫu Nhiên & Không Gian Mẫu</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ KHÁM PHÁ KHÔNG GIAN MẪU 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_ontap_chuong7/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Ôn Tập Chương VII: Tần Số & Tần Số Tương Đối</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai26/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 26: Xác Suất Của Biến Cố Liên Quan Tới Phép Thử</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

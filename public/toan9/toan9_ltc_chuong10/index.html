@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Luyện tập chung (trang 106) - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Thiết Kế Không Gian 🚀</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG X: MỘT SỐ HÌNH KHỐI TRONG THỰC TIỄN • LUYỆN TẬP CHUNG</span>
+      <h1>Luyện Tập Chung: Các Hình Khối Tổ Hợp Thực Tế</h1>
+      <p>Luyện tập giải các bài toán thực tế phong phú: hình tổ hợp trụ - nón - cầu, bài toán viên nang, bình đo thể tích Archimedes!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <div class="card concept-card">
+  <div class="concept-header">
+    <div class="concept-badge">TỔNG HỢP 1</div>
+    <h3>1. Phương Pháp Giải Vật Thể Tổ Hợp</h3>
+  </div>
+  <p>Nhiều đồ vật trong thực tế được tạo thành từ việc ghép nối hoặc khoét bớt các hình khối cơ bản:</p>
+  <ul>
+    <li><strong>Ghép khối (Cộng thể tích):</strong>
+      <p class="math-highlight">$$V_{\text{tổng}} = V_1 + V_2 + \dots$$</p>
+    </li>
+    <li><strong>Khoét khối (Trừ thể tích):</strong>
+      <p class="math-highlight">$$V_{\text{còn lại}} = V_{\text{ngoài}} - V_{\text{khoét trong}}$$</p>
+    </li>
+    <li><strong>Diện tích bề mặt vật thể tổ hợp:</strong> Chỉ tính các mặt tiếp xúc với không gian bên ngoài. <strong>Lưu ý:</strong> Không tính phần diện tích mặt đáy chung bị che khuất!</li>
+  </ul>
+</div><div class="card formula-box">
+  <div class="concept-header">
+    <div class="concept-badge">MÔ HÌNH 1</div>
+    <h3>2. Mô Hình Viên Nang Thuốc (Trụ + 2 Nửa Cầu)</h3>
+  </div>
+  <div style="text-align: center; margin: 14px 0;">
+    <svg viewBox="0 0 320 180" width="100%" style="max-width: 290px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="capGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%" stop-color="#38bdf8" stop-opacity="0.35"/>
+          <stop offset="100%" stop-color="#0284c7" stop-opacity="0.6"/>
+        </linearGradient>
+      </defs>
+      <!-- Bán cầu trái -->
+      <path d="M 110 50 A 40 40 0 0 0 110 130 Z" fill="rgba(244, 63, 94, 0.4)" stroke="#f43f5e" stroke-width="2" />
+      <!-- Thân trụ -->
+      <rect x="110" y="50" width="100" height="80" fill="url(#capGrad)" stroke="#38bdf8" stroke-width="2" />
+      <!-- Bán cầu phải -->
+      <path d="M 210 50 A 40 40 0 0 1 210 130 Z" fill="rgba(16, 185, 129, 0.4)" stroke="#10b981" stroke-width="2" />
+      <!-- Ranh giới bán cầu -->
+      <ellipse cx="110" cy="90" rx="12" ry="40" fill="none" stroke="#f43f5e" stroke-width="1.5" stroke-dasharray="4,3" />
+      <ellipse cx="210" cy="90" rx="12" ry="40" fill="none" stroke="#10b981" stroke-width="1.5" stroke-dasharray="4,3" />
+      <!-- Chiều dài thân trụ h & bán kính r -->
+      <line x1="110" y1="145" x2="210" y2="145" stroke="#f59e0b" stroke-width="1.8" />
+      <line x1="110" y1="140" x2="110" y2="150" stroke="#f59e0b" stroke-width="1.8" />
+      <line x1="210" y1="140" x2="210" y2="150" stroke="#f59e0b" stroke-width="1.8" />
+      <text x="145" y="160" fill="#f59e0b" font-size="12" font-weight="bold">h (Trụ)</text>
+      <line x1="110" y1="90" x2="70" y2="90" stroke="#f43f5e" stroke-width="1.8" stroke-dasharray="3,3" />
+      <text x="80" y="82" fill="#f43f5e" font-size="11" font-weight="bold">r</text>
+      <text x="115" y="38" fill="#f8fafc" font-size="11" font-weight="bold">Viên nang: Trụ + 2 Nửa cầu = Trụ + Cầu</text>
+    </svg>
+  </div>
+  <p>Một viên nang thuốc gồm một hình trụ chiều dài $h$, bán kính $r$ gắn với hai nửa hình cầu cùng bán kính $r$ ở hai đầu:</p>
+  <ul>
+    <li>Hai nửa cầu ghép lại tạo thành một <strong>hình cầu hoàn chỉnh</strong> bán kính $r$.</li>
+    <li><strong>Diện tích bề mặt viên nang:</strong>
+      <p class="math-highlight">$$S = S_{xq\text{ trụ}} + S_{\text{cầu}} = 2\pi r h + 4\pi r^2 = 2\pi r(h + 2r)$$</p>
+    </li>
+    <li><strong>Thể tích viên nang:</strong>
+      <p class="math-highlight">$$V = V_{\text{trụ}} + V_{\text{cầu}} = \pi r^2 h + \frac{4}{3}\pi r^3$$</p>
+    </li>
+  </ul>
+</div><div class="card rule-box gold">
+  <div class="concept-header">
+    <div class="concept-badge gold">MÔ HÌNH 2</div>
+    <h3>3. Mô Hình Tháp Chuông / Bút Chì (Trụ + Nón)</h3>
+  </div>
+  <div style="text-align: center; margin: 14px 0;">
+    <svg viewBox="0 0 320 210" width="100%" style="max-width: 290px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+      <!-- Thân trụ -->
+      <rect x="110" y="85" width="100" height="90" fill="rgba(6, 182, 212, 0.3)" stroke="#06b6d4" stroke-width="2" />
+      <!-- Đáy trụ -->
+      <ellipse cx="160" cy="175" rx="50" ry="16" fill="rgba(6, 182, 212, 0.2)" stroke="#06b6d4" stroke-width="2" />
+      <!-- Ranh giới trụ - nón -->
+      <ellipse cx="160" cy="85" rx="50" ry="16" fill="none" stroke="#cbd5e1" stroke-width="1.5" stroke-dasharray="4,3" />
+      <!-- Chóp nón -->
+      <path d="M 160 20 L 110 85 A 50 16 0 0 0 210 85 Z" fill="rgba(244, 63, 94, 0.35)" stroke="#f43f5e" stroke-width="2" />
+      <!-- Trục & Chiều cao -->
+      <line x1="160" y1="20" x2="160" y2="175" stroke="#f59e0b" stroke-width="1.5" stroke-dasharray="4,3" />
+      <!-- Nhãn -->
+      <text x="215" y="55" fill="#f43f5e" font-size="11" font-weight="bold">Nón (h₂)</text>
+      <text x="215" y="130" fill="#06b6d4" font-size="11" font-weight="bold">Trụ (h₁)</text>
+      <text x="135" y="195" fill="#38bdf8" font-size="11" font-weight="bold">Đáy chung (r)</text>
+    </svg>
+  </div>
+  <p>Vật thể gồm thân hình trụ bán kính $r$, chiều cao $h_1$ và đỉnh hình nón cùng bán kính $r$, chiều cao $h_2$, đường sinh $l$:</p>
+  <ul>
+    <li><strong>Diện tích xung quanh bên ngoài (không đáy chung):</strong>
+      <p class="math-highlight">$$S_{\text{ngoài}} = S_{xq\text{ trụ}} + S_{xq\text{ nón}} = 2\pi r h_1 + \pi r l$$</p>
+    </li>
+    <li><strong>Thể tích toàn bộ:</strong>
+      <p class="math-highlight">$$V = V_{\text{trụ}} + V_{\text{nón}} = \pi r^2 h_1 + \frac{1}{3}\pi r^2 h_2$$</p>
+    </li>
+  </ul>
+</div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Mô Phỏng 3D Khối Viên Nang Thuốc (Trụ + 2 Bán Cầu)</h3>
+          <p class="lab-desc">Tùy chỉnh bán kính đầu cầu $r$ và chiều dài phần thân trụ $h$ để tính toán diện tích vỏ bao màng phim và thể tích chứa bột thuốc.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas1" width="600" height="240"></canvas>
+        </div>
+        <div class="lab-control-group">
+  <label>Bán kính đầu cầu $r$ (mm): <strong id="valCapsuleR">3</strong></label>
+  <input type="range" id="sliderCapsuleR" min="1.5" max="5" step="0.5" value="3">
+</div>
+<div class="lab-control-group">
+  <label>Chiều dài thân trụ $h$ (mm): <strong id="valCapsuleH">10</strong></label>
+  <input type="range" id="sliderCapsuleH" min="4" max="20" step="1" value="10">
+</div>
+<div class="lab-output" id="outputCapsule"></div>
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Mô Phỏng Vật Thể Trụ Ghép Nón (Bút Chì / Tháp Chuông)</h3>
+          <p class="lab-desc">Tùy biến bán kính đáy $r$, chiều cao thân trụ $h_1$ và chiều cao đỉnh nón $h_2$ để tính thể tích và diện tích bề mặt bên ngoài của vật thể.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas2" width="600" height="240"></canvas>
+        </div>
+        <div class="lab-control-group">
+  <label>Bán kính đáy $r$ (cm): <strong id="valPencilR">3</strong></label>
+  <input type="range" id="sliderPencilR" min="1" max="6" step="0.5" value="3">
+</div>
+<div class="lab-control-group">
+  <label>Chiều cao thân trụ $h_1$ (cm): <strong id="valPencilH1">8</strong></label>
+  <input type="range" id="sliderPencilH1" min="4" max="14" step="1" value="8">
+</div>
+<div class="lab-control-group">
+  <label>Chiều cao chóp nón $h_2$ (cm): <strong id="valPencilH2">4</strong></label>
+  <input type="range" id="sliderPencilH2" min="2" max="8" step="0.5" value="4">
+</div>
+<div class="lab-output" id="outputPencil"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Luyện Tập Chung: Các Hình Khối Tổ Hợp Thực Tế</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ THIẾT KẾ KHÔNG GIAN 🚀 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai32/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 32: Hình cầu</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_ontap_chuong10/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Ôn tập Chương X (trang 108)</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

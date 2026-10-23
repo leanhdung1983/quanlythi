@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 16: Vị trí tương đối của đường thẳng và đường tròn - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Hiệp Sĩ Đường Tròn 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">HÌNH HỌC 9 • TẬP 1 • CHƯƠNG V</span>
+      <h1>Bài 16: Vị trí tương đối của đường thẳng và đường tròn</h1>
+      <p>Ba vị trí tương đối giữa đường thẳng và đường tròn, dấu hiệu nhận biết tiếp tuyến và tính chất hai tiếp tuyến cắt nhau</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Ba vị trí tương đối của đường thẳng và đường tròn</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                Cho đường tròn $(O; R)$ và đường thẳng $a$. Gọi $d$ là khoảng cách từ tâm $O$ đến đường thẳng $a$:
+                <div class="quiz-table-wrap">
+                    <table class="quiz-table">
+                        <thead>
+                            <tr>
+                                <th>Vị trí tương đối</th>
+                                <th>Số điểm chung</th>
+                                <th>Hệ thức giữa $d$ và $R$</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Đường thẳng và đường tròn <strong>cắt nhau</strong></td>
+                                <td>$2$ điểm chung</td>
+                                <td>$d < R$</td>
+                            </tr>
+                            <tr>
+                                <td>Đường thẳng và đường tròn <strong>tiếp xúc nhau</strong></td>
+                                <td>$1$ điểm chung</td>
+                                <td>$d = R$</td>
+                            </tr>
+                            <tr>
+                                <td>Đường thẳng và đường tròn <strong>không giao nhau</strong></td>
+                                <td>$0$ điểm chung</td>
+                                <td>$d > R$</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Dấu hiệu nhận biết & Tính chất tiếp tuyến</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                <div class="rule-box gold">
+                    <strong>Định lí:</strong> Nếu một đường thẳng là tiếp tuyến của một đường tròn thì nó <strong>vuông góc với bán kính</strong> đi qua tiếp điểm.<br>
+                    <strong>Dấu hiệu nhận biết:</strong> Nếu một đường thẳng đi qua một điểm của đường tròn và vuông góc với bán kính đi qua điểm đó thì đường thẳng đó là tiếp tuyến của đường tròn.
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Tính chất của hai tiếp tuyến cắt nhau</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                Nếu hai tiếp tuyến của đường tròn $(O)$ cắt nhau tại điểm $M$ (với các tiếp điểm $A$ và $B$):
+                <div class="formula-box">
+                    $$MA = MB$$
+                    $$MO \text{ là tia phân giác của góc } \widehat{AMB}$$
+                    $$OM \text{ là tia phân giác của góc } \widehat{AOB}$$
+                </div>
+                <div class="rule-box gold">
+                    <strong>Đường tròn nội tiếp tam giác:</strong> Là đường tròn tiếp xúc với cả ba cạnh của tam giác. Tâm của nó là giao điểm ba đường phân giác trong của tam giác.
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> 🧪 Phòng thí nghiệm 1: Vị trí tương đối của đường thẳng và đường tròn</h3>
+          <p class="lab-desc">Kéo thanh trượt khoảng cách $d$ từ tâm $O$ đến đường thẳng $a$ để quan sát 3 trạng thái: cắt nhau, tiếp xúc và không giao nhau</p>
+          
+            <div class="canvas-wrap">
+              <canvas id="lineCircleCanvas" width="600" height="240"></canvas>
+            </div>
+            <div class="lab-controls">
+              
+                <div class="ctrl-group">
+                    <label>Bán kính $R$: <strong id="lblLCR">5</strong> cm</label>
+                    <input type="range" id="rngLCR" min="4" max="7" step="1" value="5">
+                </div>
+                <div class="ctrl-group">
+                    <label>Khoảng cách $d$: <strong id="lblLCD">4</strong> cm</label>
+                    <input type="range" id="rngLCD" min="1" max="8" step="0.5" value="4">
+                </div>
+                
+            </div>
+            
+                <div class="lab-output">
+                    <p>So sánh khoảng cách $d =$ <span id="outLCD">4.0</span> cm và bán kính $R =$ <span id="outLCR">5.0</span> cm:</p>
+                    <p><strong>Trạng thái:</strong> <span class="badge" id="outLCStatus" style="background: #10b981; color: white; padding: 4px 8px; border-radius: 4px;">Cắt nhau tại 2 điểm (d < R)</span></p>
+                </div>
+                
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> 🧪 Phòng thí nghiệm 2: Tính chất hai tiếp tuyến cắt nhau</h3>
+          <p class="lab-desc">Kéo điểm ngoài M để kiểm chứng tính chất $MA = MB$ và $MO$ là tia phân giác góc $\widehat{AMB}$</p>
+          
+            <div class="canvas-wrap">
+              <canvas id="tanCanvas" width="600" height="240"></canvas>
+            </div>
+            <div class="lab-controls">
+              
+                <div class="ctrl-group">
+                    <label>Khoảng cách $OM$: <strong id="lblOMTan">10</strong> cm</label>
+                    <input type="range" id="rngOMTan" min="7" max="14" step="0.5" value="10">
+                </div>
+                
+            </div>
+            
+                <div class="lab-output">
+                    <p>Đường tròn $(O; R = 5\text{ cm})$, điểm $M$ ngoài đường tròn có $OM =$ <span id="outOMVal">10.0</span> cm:</p>
+                    <p>Độ dài hai tiếp tuyến: $MA = MB = \sqrt{OM^2 - R^2} =$ <strong id="outMATan">8.66</strong> cm</p>
+                    <p>Góc ở tâm: $\widehat{AOB} =$ <strong id="outAOB">120.0</strong>° | Góc ngoài: $\widehat{AMB} =$ <strong id="outAMB">60.0</strong>°</p>
+                </div>
+                
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 16: Vị trí tương đối của đường thẳng và đường tròn</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">HIỆP SĨ ĐƯỜNG TRÒN 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai15/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 15: Độ dài cung tròn, diện tích hình quạt tròn và hình vành khuyên</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai17/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 17: Vị trí tương đối của hai đường tròn</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

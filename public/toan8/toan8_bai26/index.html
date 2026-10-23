@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 26: Giải Bài Toán Bằng Cách Lập Phương Trình - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Mô Hình Hóa Toán Học 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG VII: PHƯƠNG TRÌNH & HÀM SỐ • BÀI 26 • TOÁN 8 KNTT</span>
+      <h1>BÀI 26: GIẢI BÀI TOÁN BẰNG CÁCH LẬP PHƯƠNG TRÌNH</h1>
+      <p>Ứng dụng đại số giải quyết các câu đố dân gian, bài toán chuyển động giao thông, năng suất lao động và tài chính thực tiễn một cách logic và chính xác tuyệt đối.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Ba Bước Giải Bài Toán Bằng Cách Lập Phương Trình</h3>
+          <div class="concept-box cyan">
+            <h4>Quy Trình Chuẩn</h4>
+            <p>Để giải một bài toán bằng cách lập phương trình, ta thực hiện theo 3 bước:</p><ol><li><strong>Bước 1: Lập phương trình:</strong><ul><li>Chọn ẩn số và đặt điều kiện thích hợp cho ẩn số.</li><li>Biểu diễn các đại lượng chưa biết theo ẩn và các đại lượng đã biết.</li><li>Lập phương trình biểu thị mối quan hệ giữa các đại lượng.</li></ul></li><li><strong>Bước 2: Giải phương trình:</strong> Sử dụng các quy tắc đại số để giải phương trình vừa lập được.</li><li><strong>Bước 3: Trả lời:</strong> Kiểm tra xem trong các nghiệm của phương trình, nghiệm nào thỏa mãn điều kiện của ẩn, nghiệm nào không, rồi kết luận.</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Bước 1: Lập PT } \to \text{Bước 2: Giải PT } \to \text{Bước 3: Đối chiếu ĐK & Kết luận}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Luôn luôn đặt đơn vị và điều kiện thực tế cho ẩn (nguyên dương, lớn hơn 0...) trước khi giải.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Dạng Toán Chuyển Động Cơ Học</h3>
+          <div class="concept-box cyan">
+            <h4>Toán Chuyển Động</h4>
+            <p>Ba đại lượng cốt lõi: <strong>Quãng đường ($S$)</strong>, <strong>Vận tốc ($v$)</strong>, <strong>Thời gian ($t$)</strong>.</p><p style="text-align:center;">$$S = v \cdot t \qquad v = \frac{S}{t} \qquad t = \frac{S}{v}$$</p><ul><li><strong>Hai xe đi ngược chiều gặp nhau:</strong> Tổng quãng đường hai xe đi bằng khoảng cách ban đầu: $S_1 + S_2 = S_{AB}$.</li><li><strong>Hai xe đi cùng chiều đuổi nhau:</strong> Hiệu quãng đường xe đi nhanh trừ xe đi chậm bằng khoảng cách ban đầu: $S_{\text{nhanh}} - S_{\text{chậm}} = \Delta S$.</li><li><strong>Chuyển động trên dòng nước:</strong> $v_{\text{xuôi}} = v_{\text{thực}} + v_{\text{dòng}}$; $v_{\text{ngược}} = v_{\text{thực}} - v_{\text{dòng}}$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$S = v \cdot t \qquad S_1 + S_2 = S_{AB} \qquad v_{\text{xuôi}} - v_{\text{ngược}} = 2 v_{\text{dòng}}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Lập bảng 3 cột (S, v, t) cho từng đối tượng chuyển động để dễ dàng tìm ra phương trình liên hệ.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Dạng Toán Năng Suất & Tương Quan</h3>
+          <div class="concept-box cyan">
+            <h4>Toán Năng Suất & Tỉ Lệ</h4>
+            <p><strong>Toán năng suất lao động:</strong></p><p style="text-align:center;">$$\text{Khối lượng công việc } (A) = \text{Năng suất } (N) \cdot \text{Thời gian } (t)$$</p><ul><li>Toán làm chung công việc: Quy ước toàn bộ công việc là $1$ đơn vị. Năng suất trong 1 đơn vị thời gian là $\frac{1}{t}$.</li><li>Năng suất chung bằng tổng các năng suất riêng: $N_{\text{chung}} = N_1 + N_2$.</li><li><strong>Toán quan hệ số:</strong> Số có hai chữ số $\overline{ab} = 10a + b$ ($a, b \in \mathbb{N}, 1 \le a \le 9, 0 \le b \le 9$).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$A = N \cdot t \qquad \overline{ab} = 10a + b$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Coi toàn bộ công việc hoàn thành là 1, từ đó biểu diễn năng suất 1 ngày/giờ là phân số 1/t.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Phỏng Bài Toán Chuyển Động Hai Xe Gặp Nhau</h3>
+          <p class="lab-desc">Quãng đường $AB = 120\text{ km}$. Xe 1 đi từ $A$ với $v_1$, xe 2 đi từ $B$ với $v_2$. Kéo thanh trượt để quan sát thời gian và điểm gặp nhau $t = \frac{120}{v_1 + v_2}$.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Vận tốc xe A ($v_1$): <span id="valV1" style="font-weight:bold; color:#06b6d4;">40</span> km/h</label>
+                    <input type="range" id="sliderV1" min="20" max="80" value="40" step="5">
+                    <label>Vận tốc xe B ($v_2$): <span id="valV2" style="font-weight:bold; color:#f59e0b;">20</span> km/h</label>
+                    <input type="range" id="sliderV2" min="10" max="60" value="20" step="5">
+                </div>
+                <div class="lab-output" id="lab1Output26" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Bảng Phân Tích Đại Lượng Bài Toán Cổ</h3>
+          <p class="lab-desc">Bài toán cổ: 'Vừa gà vừa chó, bó lại cho tròn, ba mươi sáu con, một trăm chân chẵn'. Đổi số gà $x$ để kiểm tra phương trình tổng số chân.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Số con gà ($x$): <span id="valGa" style="font-weight:bold; color:#06b6d4;">22</span></label>
+                    <input type="range" id="sliderGa" min="0" max="36" value="22" step="1">
+                </div>
+                <div class="lab-output" id="lab2Output26" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 26: GIẢI BÀI TOÁN BẰNG CÁCH LẬP PHƯƠNG TRÌNH</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ MÔ HÌNH HÓA TOÁN HỌC 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai25/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 25: Phương Trình Bậc Nhất Một Ẩn</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai27/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 27: Khái Niệm Hàm Số Và Đồ Thị Của Hàm Số</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

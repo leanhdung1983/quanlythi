@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 23: Phép Cộng Và Phép Trừ Phân Thức Đại Số - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kiện Tướng Phép Tính Phân Thức 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG VI: PHÂN THỨC ĐẠI SỐ • BÀI 23 • TOÁN 8 KNTT</span>
+      <h1>BÀI 23: PHÉP CỘNG VÀ PHÉP TRỪ PHÂN THỨC ĐẠI SỐ</h1>
+      <p>Làm chủ hai phép toán nền tảng của đại số phân thức. Rèn luyện tư duy quy đồng mẫu thức chuẩn xác, rút gọn triệt để và tính toán nhanh bằng tính chất đối xứng.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Cộng, Trừ Hai Phân Thức Cùng Mẫu</h3>
+          <div class="concept-box cyan">
+            <h4>Quy Tắc Cơ Bản</h4>
+            <p><strong>Cộng hai phân thức cùng mẫu thức:</strong> Muốn cộng hai phân thức có cùng mẫu thức, ta cộng các tử thức với nhau và giữ nguyên mẫu thức:</p><p style="text-align:center;">$$\frac{A}{M} + \frac{B}{M} = \frac{A + B}{M}$$</p><p><strong>Trừ hai phân thức cùng mẫu thức:</strong> Muốn trừ hai phân thức có cùng mẫu thức, ta trừ tử thức của phân thức bị trừ cho tử thức của phân thức trừ và giữ nguyên mẫu thức:</p><p style="text-align:center;">$$\frac{A}{M} - \frac{B}{M} = \frac{A - B}{M}$$</p><p><em>Lưu ý:</em> Kết quả của phép cộng hoặc trừ phải luôn được rút gọn về dạng tối giản.</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\frac{A}{M} \pm \frac{B}{M} = \frac{A \pm B}{M}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Cùng mẫu thức: Cộng trừ các tử thức với nhau, giữ nguyên mẫu thức rồi rút gọn kết quả.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Cộng, Trừ Hai Phân Thức Khác Mẫu</h3>
+          <div class="concept-box cyan">
+            <h4>Quy Đồng Mẫu Thức</h4>
+            <p>Muốn cộng (hoặc trừ) hai phân thức có mẫu thức khác nhau, ta thực hiện theo 3 bước:</p><ol><li><strong>Bước 1: Quy đồng mẫu thức:</strong> Tìm MTC và nhân tử phụ để biến đổi các phân thức về cùng mẫu thức.</li><li><strong>Bước 2: Thực hiện phép tính:</strong> Áp dụng quy tắc cộng (hoặc trừ) các phân thức có cùng mẫu thức vừa tìm được.</li><li><strong>Bước 3: Rút gọn:</strong> Thu gọn tử thức, phân tích thành nhân tử và rút gọn phân thức thu được (nếu có thể).</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\frac{A}{B} \pm \frac{C}{D} = \frac{A \cdot D'}{M} \pm \frac{C \cdot B'}{M} = \frac{A \cdot D' \pm C \cdot B'}{M} \quad (M = \text{MTC})$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Khác mẫu thức: Bắt buộc quy đồng về cùng mẫu thức chung trước khi thực hiện cộng hoặc trừ tử thức.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Phân Thức Đối & Tính Chất Phép Cộng</h3>
+          <div class="concept-box cyan">
+            <h4>Phân Thức Đối & Tính Chất</h4>
+            <p><strong>Phân thức đối:</strong> Hai phân thức được gọi là đối nhau nếu tổng của chúng bằng $0$.</p><p>Phân thức đối của $\frac{A}{B}$ kí hiệu là $-\frac{A}{B}$. Ta có: $-\frac{A}{B} = \frac{-A}{B} = \frac{A}{-B}$.</p><p>Phép trừ là phép cộng với phân thức đối: $\frac{A}{B} - \frac{C}{D} = \frac{A}{B} + \left(-\frac{C}{D}\right)$.</p><p><strong>Tính chất phép cộng:</strong></p><ul><li>Giao hoán: $\frac{A}{B} + \frac{C}{D} = \frac{C}{D} + \frac{A}{B}$.</li><li>Kết hợp: $\left(\frac{A}{B} + \frac{C}{D}\right) + \frac{E}{F} = \frac{A}{B} + \left(\frac{C}{D} + \frac{E}{F}\right)$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\frac{A}{B} + \left(-\frac{A}{B}\right) = 0 \qquad \frac{A}{B} - \frac{C}{D} = \frac{A}{B} + \left(-\frac{C}{D}\right)$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Nhờ tính chất giao hoán và kết hợp, ta có thể đổi chỗ và nhóm các phân thức có cùng mẫu thức để tính toán nhanh chóng.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Phỏng Cộng Trừ Phân Thức Trực Quan</h3>
+          <p class="lab-desc">Thực hiện phép tính $\frac{A}{x + 1} + \frac{B}{x + 1} = \frac{A + B}{x + 1}$. Kéo các thanh trượt $A, B$ để quan sát phép gộp tử thức trên thanh đại số.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Tử thức $A$: <span id="valA23" style="font-weight:bold; color:#06b6d4;">3</span></label>
+                    <input type="range" id="sliderA23" min="-8" max="8" value="3" step="1">
+                    <label>Tử thức $B$: <span id="valB23" style="font-weight:bold; color:#f59e0b;">5</span></label>
+                    <input type="range" id="sliderB23" min="-8" max="8" value="5" step="1">
+                </div>
+                <div class="lab-output" id="lab1Output23" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Cán Cân Phân Thức Đối & Phép Trừ</h3>
+          <p class="lab-desc">Kiểm tra tính chất phân thức đối: $\frac{A}{B} + \left(-\frac{A}{B}\right) = 0$. Cân bằng hoàn hảo khi hai phân thức triệt tiêu lẫn nhau.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Hệ số $k$ phân thức 1: <input type="number" id="inK23" value="5" style="width:65px; padding:4px 8px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                    <label>Hệ số $p$ phân thức 2: <input type="number" id="inP23" value="-5" style="width:65px; padding:4px 8px; border-radius:6px; background:#1e293b; color:#fff; border:1px solid #6366f1;"></label>
+                </div>
+                <div class="lab-output" id="lab2Output23" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 23: PHÉP CỘNG VÀ PHÉP TRỪ PHÂN THỨC ĐẠI SỐ</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KIỆN TƯỚNG PHÉP TÍNH PHÂN THỨC 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai22/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 22: Tính Chất Cơ Bản Của Phân Thức Đại Số</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai24/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 24: Phép Nhân Và Phép Chia Phân Thức Đại Số</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

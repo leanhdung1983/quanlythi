@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 2: Giải Hệ Hai Phương Trình Bậc Nhất Hai Ẩn - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Bậc Thầy Khử Ẩn 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">ĐẠI SỐ 9 • CHƯƠNG I</span>
+      <h1>Bài 2: Giải Hệ Hai Phương Trình Bậc Nhất Hai Ẩn</h1>
+      <p>Làm chủ hai phương pháp giải hệ phương trình kinh điển: phương pháp thế và phương pháp cộng đại số, nắm vững thuật toán khử ẩn để tìm nghiệm chính xác.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Phương Pháp Thế</h3>
+              <div class="concept-box cyan">
+                <h4>Phương Pháp 1</h4>
+                <p><strong>Nguyên tắc:</strong> Rút một ẩn từ một phương trình rồi <em>thế</em> vào phương trình còn lại để đưa về phương trình một ẩn duy nhất.</p><ul><li><strong>Bước 1:</strong> Từ một trong hai phương trình, biểu diễn một ẩn theo ẩn kia (ví dụ $y = f(x)$ hoặc $x = g(y)$).</li><li><strong>Bước 2:</strong> Thay biểu thức đó vào phương trình còn lại để thu được phương trình bậc nhất một ẩn.</li><li><strong>Bước 3:</strong> Giải phương trình một ẩn tìm được, rồi thay giá trị vào biểu thức ở Bước 1 để tìm ẩn còn lại.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\begin{cases} x - 2y = 1 \\ 3x + y = 10 \end{cases} \iff \begin{cases} x = 2y + 1 \\ 3(2y + 1) + y = 10 \end{cases}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Nên chọn rút ẩn có hệ số bằng 1 hoặc -1 để tránh xuất hiện phân số phức tạp.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Phương Pháp Cộng Đại Số</h3>
+              <div class="concept-box cyan">
+                <h4>Phương Pháp 2</h4>
+                <p><strong>Nguyên tắc:</strong> Biến đổi để hệ số của cùng một ẩn trong hai phương trình bằng nhau hoặc đối nhau, sau đó cộng hoặc trừ từng vế hai phương trình để <em>khử</em> ẩn đó.</p><ul><li><strong>Bước 1:</strong> Nhân hai vế của mỗi phương trình với số thích hợp (nếu cần) để hệ số của $x$ (hoặc $y$) bằng nhau hoặc đối nhau.</li><li><strong>Bước 2:</strong> Cộng hoặc trừ từng vế hai phương trình để triệt tiêu một ẩn, thu được phương trình một ẩn.</li><li><strong>Bước 3:</strong> Giải phương trình một ẩn vừa nhận được, rồi thay giá trị đó vào một trong các phương trình ban đầu để tìm ẩn kia.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$\begin{cases} 2x - 3y = 7 \\ 3x + 3y = 3 \end{cases} \xrightarrow{\text{Cộng hai vế}} 5x = 10 \iff x = 2$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Hệ số đối nhau -> Cộng hai vế. Hệ số bằng nhau -> Trừ hai vế.</p>
+                </div>
+                
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Kết Luận Nghiệm & Ứng Dụng</h3>
+              <div class="concept-box cyan">
+                <h4>Tổng Kết & Kiểm Tra</h4>
+                <p>Khi giải hệ phương trình bằng các phép biến đổi đại số, ta có thể gặp 3 trường hợp:</p><ul><li>Thu được phương trình $0x = 0$ (hoặc $0y = 0$): Hệ có <strong>vô số nghiệm</strong>.</li><li>Thu được phương trình $0x = k$ với $k \neq 0$: Hệ <strong>vô nghiệm</strong>.</li><li>Tìm được cặp nghiệm duy nhất $(x_0; y_0)$: Kết luận tập nghiệm $S = \{(x_0; y_0)\}$.</li></ul>
+              </div>
+              
+                <div class="formula-box">
+                  <p class="math-highlight">$$S = \{(x_0; y_0)\} \quad \text{hoặc} \quad S = \emptyset \quad \text{hoặc} \quad S = \{(x; y) \mid ax + by = c\}$$</p>
+                </div>
+                
+              
+                <div class="rule-box gold">
+                  <h4>💡 Ghi nhớ trọng tâm</h4>
+                  <p>Luôn kiểm tra lại nghiệm tìm được bằng cách thay vào cả hai phương trình ban đầu hoặc dùng chức năng giải hệ trên máy tính CASIO.</p>
+                </div>
+                
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Thao Diễn Từng Bước Phương Pháp Thế</h3>
+          <p class="lab-desc">Tự chọn ẩn để rút và xem máy tính thế vào phương trình thứ hai, đơn giản hóa và tìm nghiệm từng bước tường minh.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas1" width="600" height="240"></canvas>
+        </div>
+        
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnStep1">Bước 1: Rút x theo y</button>
+                    <button class="btn-primary" id="btnStep2">Bước 2: Thế vào PT2</button>
+                    <button class="btn-primary" id="btnStep3">Bước 3: Tìm y</button>
+                    <button class="btn-primary" id="btnStep4">Bước 4: Tìm x & Kết luận</button>
+                </div>
+                <div class="lab-output" id="lab1StepOutput">
+                    <strong>Hệ mẫu:</strong> $\begin{cases} x - 2y = 1 \quad (1) \\ 2x + 3y = 9 \quad (2) \end{cases}$
+                </div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Tính Giải Hệ Phương Trình Cramer Trực Quan</h3>
+          <p class="lab-desc">Tùy chỉnh cả 6 hệ số a1, b1, c1 và a2, b2, c2 để máy tính giải theo định thức Cramer và vẽ giao điểm trực quan.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas2" width="600" height="240"></canvas>
+        </div>
+        
+                <div class="lab-controls">
+                    <label>a1: <input type="number" id="inpA1" value="3" style="width:50px;"></label>
+                    <label>b1: <input type="number" id="inpB1" value="2" style="width:50px;"></label>
+                    <label>c1: <input type="number" id="inpC1" value="7" style="width:50px;"></label>
+                    &nbsp;|&nbsp;
+                    <label>a2: <input type="number" id="inpA2" value="1" style="width:50px;"></label>
+                    <label>b2: <input type="number" id="inpB2" value="-1" style="width:50px;"></label>
+                    <label>c2: <input type="number" id="inpC2" value="4" style="width:50px;"></label>
+                    <button class="btn-primary" id="btnSolveSys" style="padding:4px 8px;">Giải Hệ</button>
+                </div>
+                <div class="lab-output" id="lab2SolveOutput"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 2: Giải Hệ Hai Phương Trình Bậc Nhất Hai Ẩn</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">BẬC THẦY KHỬ ẨN 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_bai1/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 1: Khái Niệm Phương Trình Và Hệ Hai Phương Trình Bậc Nhất Hai Ẩn</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai3/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 3: Giải Bài Toán Bằng Cách Lập Hệ Phương Trình</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

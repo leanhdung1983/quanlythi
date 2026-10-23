@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HĐTN 8: Mô Tả Thí Nghiệm Ngẫu Nhiên Với Excel - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Phân Tích Dữ Liệu Excel 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHUYÊN ĐỀ TIN HỌC THỐNG KÊ • TOÁN 8 KNTT</span>
+      <h1>HĐTN 8: THÍ NGHIỆM NGẪU NHIÊN VỚI EXCEL</h1>
+      <p>Biến bảng tính Excel thành một phòng thí nghiệm toán học ảo. Tạo ra hàng nghìn phép thử ngẫu nhiên chỉ trong chớp mắt bằng các hàm logic và quan sát quy luật số lớn sinh động.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Hàm =RANDBETWEEN Trong Excel</h3>
+          <div class="concept-box cyan">
+            <h4>Hàm Tạo Số Ngẫu Nhiên</h4>
+            <p>Hàm <code>=RANDBETWEEN(bottom, top)</code> trả về một số nguyên ngẫu nhiên nằm giữa hai số cho trước (bao gồm cả hai số đó):</p><ul><li><strong>Mô phỏng gieo đồng xu:</strong> <code>=RANDBETWEEN(0, 1)</code> (Quy ước 0 là Sấp, 1 là Ngửa).</li><li><strong>Mô phỏng gieo xúc xắc 6 mặt:</strong> <code>=RANDBETWEEN(1, 6)</code>.</li><li><strong>Rút thăm ngẫu nhiên từ 1 đến 50:</strong> <code>=RANDBETWEEN(1, 50)</code>.</li><li>Mỗi khi nhấn phím <code>F9</code> (hoặc thực hiện thao tác tính toán), Excel sẽ tự động sinh ra một đợt số ngẫu nhiên mới!</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Hàm Excel: } =\text{RANDBETWEEN}(1, 6)$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Dùng =RANDBETWEEN(1, 6) để giả lập việc gieo một con xúc xắc cân đối và đồng chất.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Hàm Đếm Có Điều Kiện =COUNTIF</h3>
+          <div class="concept-box cyan">
+            <h4>Hàm Thống Kê Đếm</h4>
+            <p>Hàm <code>=COUNTIF(range, criteria)</code> đếm số ô trong một vùng thỏa mãn một điều kiện nhất định:</p><ul><li><code>range</code>: Vùng dữ liệu cần đếm (ví dụ <code>A1:A100</code> chứa kết quả của 100 lần gieo xúc xắc).</li><li><code>criteria</code>: Điều kiện đếm (ví dụ <code>6</code> để đếm số lần xuất hiện mặt 6 chấm).</li><li><strong>Tính tần số thực nghiệm:</strong> <code>=COUNTIF(A1:A100, 6) / 100</code>.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Tần số thực nghiệm: } =\frac{\text{COUNTIF}(A1:A100, 6)}{100}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>COUNTIF đếm số lần biến cố xuất hiện trong tập dữ liệu thử nghiệm.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Vẽ Biểu Đồ Thống Kê & Quan Sát Hội Tụ</h3>
+          <div class="concept-box cyan">
+            <h4>Biểu Đồ Trực Quan</h4>
+            <p>Sử dụng công cụ <strong>Insert -> Charts (Biểu đồ cột - Column Chart)</strong>:</p><ul><li>Vẽ biểu đồ biểu diễn tần số xuất hiện của 6 mặt sau 100 lần gieo.</li><li>Khi tăng số lần thử nghiệm từ 100 lên 1.000 và 10.000 dòng, chiều cao của 6 cột sẽ tiến sát bằng nhau (mỗi cột chiếm xấp xỉ $\frac{1}{6} \approx 16{,}7\%$).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Khi } N \to \infty \implies \text{Cột } 1 = \text{Cột } 2 = \dots = \text{Cột } 6 \approx 16{,}67\%$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Biểu đồ cột trực quan hóa sự hội tụ đều của các kết quả đồng khả năng khi số phép thử đủ lớn.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Bảng Tính Excel Giả Lập Hàm RANDBETWEEN</h3>
+          <p class="lab-desc">Nhấp nút 'F9 - Sinh Số Ngẫu Nhiên' để tạo 10 số ngẫu nhiên `=RANDBETWEEN(1, 6)` và tự động đếm bằng `=COUNTIF`.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnF9Excel" style="padding:6px 14px;">⚡ Bấm F9 (Sinh Số Mới)</button>
+                </div>
+                <div class="lab-output" id="lab1OutputTH8" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Vẽ Biểu Đồ Cột Tần Số Thực Nghiệm Tự Động</h3>
+          <p class="lab-desc">Mô phỏng 600 lần gieo xúc xắc trong Excel. Quan sát 6 cột tần số tự động cân bằng quanh giá trị lý thuyết 100 lần.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnSim600" style="padding:6px 14px;">📊 Gieo 600 Lần & Vẽ Biểu Đồ</button>
+                </div>
+                <div class="lab-output" id="lab2OutputTH8" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>HĐTN 8: THÍ NGHIỆM NGẪU NHIÊN VỚI EXCEL</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ PHÂN TÍCH DỮ LIỆU EXCEL 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_thuchanh7/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">HĐTN 7: Tính Toán Phân Thức & Đồ Thị Với GeoGebra</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_ontap_cuoinam/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài Tập Ôn Tập Cuối Năm Toán 8</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

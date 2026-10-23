@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 19: Biểu Diễn Dữ Liệu Bằng Bảng, Biểu Đồ - Toán 8 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kiến Trúc Sư Biểu Đồ 8</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 8">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG V: DỮ LIỆU & BIỂU ĐỒ • BÀI 19 • TOÁN 8 KNTT</span>
+      <h1>BÀI 19: BIỂU DIỄN DỮ LIỆU BẰNG BẢNG, BIỂU ĐỒ</h1>
+      <p>Một hình vẽ đáng giá ngàn lời nói! Làm chủ kỹ năng lựa chọn và biểu diễn dữ liệu bằng các dạng biểu đồ chuyên nghiệp: Cột kép, đoạn thẳng và quạt tròn theo chuẩn SGK Toán 8.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 1. Nguyên Tắc Lựa Chọn Biểu Đồ Thích Hợp</h3>
+          <div class="concept-box cyan">
+            <h4>Lựa Chọn Biểu Đồ</h4>
+            <p>Tùy theo mục đích biểu diễn số liệu, ta chọn dạng biểu đồ thích hợp:</p><ul><li><strong>Biểu đồ cột / Cột kép:</strong> Thích hợp nhất khi muốn <em>so sánh số liệu</em> giữa các đối tượng hoặc các danh mục khác nhau.</li><li><strong>Biểu đồ đoạn thẳng:</strong> Thích hợp nhất khi muốn thể hiện <em>sự thay đổi, xu hướng phát triển</em> của một đại lượng theo thời gian (ngày, tháng, năm...).</li><li><strong>Biểu đồ hình quạt tròn:</strong> Thích hợp nhất khi muốn thể hiện <em>tỉ lệ phần trăm, cơ cấu</em> của các thành phần trong toàn thể (tổng các phần bằng $100\%$).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{So sánh } \to \text{Cột};\quad \text{Xu hướng thời gian } \to \text{Đoạn thẳng};\quad \text{Cơ cấu phần trăm } \to \text{Quạt tròn}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Chọn đúng dạng biểu đồ giúp người xem nắm bắt thông tin nhanh chóng và đưa ra kết luận chuẩn xác.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 2. Bảng Thống Kê & Bảng Ghép Nhóm</h3>
+          <div class="concept-box cyan">
+            <h4>Bảng Số Liệu Ngang</h4>
+            <p>Mọi dữ liệu trước khi vẽ biểu đồ đều được sắp xếp thành bảng thống kê khoa học:</p><div class="quiz-table-wrap"><table class="quiz-table"><thead><tr><th>Môn học</th><th>Toán</th><th>Văn</th><th>Anh</th><th>Khoa học</th></tr></thead><tbody><tr><td>Số học sinh yêu thích</td><td>18</td><td>12</td><td>14</td><td>6</td></tr></tbody></table></div><p>Bảng số liệu ngang giúp dễ dàng so sánh các chỉ số và lập tỉ lệ phần trăm tương ứng.</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Tỉ lệ phần trăm } = \frac{\text{Số liệu từng phần}}{\text{Tổng số liệu}} \times 100\%$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Trong biểu đồ quạt tròn, góc ở tâm tương ứng với tỉ lệ $p\%$ được tính bằng: $\alpha = 360^{\circ} \times \frac{p}{100}$.</p>
+          </div>
+        </div>
+
+        <div class="card">
+          <h3 class="card-title"><i>📖</i> 3. Các Thành Phần Bắt Buộc Của Một Biểu Đồ Chuẩn</h3>
+          <div class="concept-box cyan">
+            <h4>Chuẩn Hóa Trực Quan</h4>
+            <p>Một biểu đồ đạt chuẩn SGK phải có đầy đủ 4 yếu tố:</p><ol><li><strong>Tiêu đề biểu đồ:</strong> Nêu rõ biểu đồ biểu diễn nội dung gì, ở đâu, thời gian nào.</li><li><strong>Các trục tọa độ (với biểu đồ cột, đoạn thẳng):</strong> Trục ngang (thời gian / danh mục), trục đứng (đơn vị đo số liệu).</li><li><strong>Chú giải (nếu có từ 2 dãy số liệu trở lên):</strong> Phân biệt màu sắc, ký hiệu giữa các đối tượng.</li><li><strong>Nhãn số liệu:</strong> Ghi rõ giá trị cụ thể tại từng cột, mốc hoặc cung tròn.</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Biểu đồ chuẩn} = \text{Tiêu đề} + \text{Trục toạ độ} + \text{Chú giải} + \text{Nhãn số liệu}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Thiếu đơn vị đo hoặc tiêu đề là lỗi phổ biến nhất làm mất điểm trong các bài thi thống kê.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Máy Chuyển Đổi Biểu Đồ Cột Sang Biểu Đồ Tròn</h3>
+          <p class="lab-desc">Quan sát bảng phân phối thời gian biểu trong ngày (8h ngủ, 6h học, 4h giải trí, 6h khác) chuyển đổi linh hoạt giữa biểu đồ cột và biểu đồ tròn.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnShowBar">Xem Biểu Đồ Cột</button>
+                    <button class="btn-primary" id="btnShowPie" style="background:#06b6d4;">Xem Biểu Đồ Hình Quạt Tròn</button>
+                </div>
+                <div class="lab-output" id="lab1Output" style="margin-top:10px;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Trình Dựng Biểu Đồ Đoạn Thẳng Xu Hướng Tương Tác</h3>
+          <p class="lab-desc">Quan sát diễn biến nhiệt độ trong 5 ngày trong tuần được vẽ bằng biểu đồ đoạn thẳng.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <button class="btn-primary" id="btnGenTemp">Tạo Chuỗi Nhiệt Độ Mới</button>
+                </div>
+                <div class="lab-output" id="lab2Output" style="margin-top:10px;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 8</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 8</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 19: BIỂU DIỄN DỮ LIỆU BẰNG BẢNG, BIỂU ĐỒ</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 8 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KIẾN TRÚC SƯ BIỂU ĐỒ 8 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan8_bai18/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Bài 18: Thu Thập Và Phân Loại Dữ Liệu</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 8 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan8_bai20/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 20: Phân Tích Số Liệu Thống Kê Dựa Vào Biểu Đồ</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 8</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 8">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 8">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 8">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 8">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 8">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 8">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Thức 8">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 8">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

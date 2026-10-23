@@ -1,0 +1,2034 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cổng Học Liệu Số Toán 7 (KNTT) - Hệ Thống 53 Bài Học Tương Tác</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="portal-container">
+    <!-- Master HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Thủ Khoa Toàn Khóa Toán 7 KNTT</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Tổng Bài Học</span>
+          <span class="stat-value">53/53</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Câu Hỏi Arena</span>
+          <span class="stat-value xp">530 Câu • 10.600 XP</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Phòng Thí Nghiệm</span>
+          <span class="stat-value streak">🧪 106 Labs</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Huy Hiệu</span>
+          <span class="stat-value" style="color: #38bdf8;">🏆 265 Danh Hiệu</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <button class="btn-icon" id="soundToggle">🔊 Âm thanh: BẬT</button>
+      </div>
+    </header>
+
+    <!-- Hero Banner -->
+    <section class="portal-hero">
+      <div class="hero-badge">
+        <span class="pulsing-dot"></span>
+        CỔNG HỌC LIỆU SỐ TOÁN 7 • KẾT NỐI TRI THỨC VỚI CUỘC SỐNG
+      </div>
+      <h1>HỆ THỐNG 53 BÀI HỌC TƯƠNG TÁC TOÁN 7</h1>
+      <p class="hero-desc">
+        Hệ thống học liệu số hóa toàn diện trọn bộ SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống (Tập Một & Tập Hai: Chương I đến Chương X, 5 Hoạt động thực hành trải nghiệm và Bài tập ôn tập cuối năm). Mỗi bài học tích hợp trọn vẹn 4 phân hệ tương tác: <strong>Bản đồ Tri thức</strong> (KaTeX Computer Modern sắc nét), <strong>2 Phòng Thí Nghiệm</strong> (Canvas 2D/3D tương tác trực quan), <strong>Đấu Trường 10 Câu Hỏi</strong> (Âm thanh Web Audio API phản hồi tức thì) và <strong>Giấy Chứng Nhận</strong> phong cách văn bằng danh dự chuẩn in A4.
+      </p>
+
+      <div class="hero-actions">
+        <a href="toan7_bai1/index.html" class="btn-hero primary" id="btnStartHero">
+          <span>🚀 Bắt Đầu Từ Bài 1 (Số Hữu Tỉ)</span>
+        </a>
+        <a href="toan7_bai20/index.html" class="btn-hero secondary">
+          <span>📖 Khởi Đầu Tập 2 Từ Bài 20 (Tỉ Lệ Thức)</span>
+        </a>
+        <a href="toan7_ontap_cuoinam/index.html" class="btn-hero secondary">
+          <span>🏆 Ôn Tập Cuối Năm & Nhận Bằng A4</span>
+        </a>
+      </div>
+
+      <div class="hero-features-ribbon">
+        <div class="ribbon-item"><i>⚡</i> 100% Pure Vanilla Web (Offline Không Cần Mạng)</div>
+        <div class="ribbon-item"><i>📐</i> KaTeX Offline & MathML Sắc Nét</div>
+        <div class="ribbon-item"><i>🔊</i> Web Audio API Tổng Hợp Trực Tiếp</div>
+        <div class="ribbon-item"><i>📱</i> Tương Thích Hoàn Hảo PC, Tablet & Mobile</div>
+        <div class="ribbon-item"><i>🎓</i> Tương Thích SCORM & LMS</div>
+      </div>
+    </section>
+
+    <!-- Search & Filter Controls -->
+    <section class="portal-toolbar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input type="text" id="searchInput" placeholder="Tìm kiếm bài học, chủ đề, công thức (số hữu tỉ, đa thức, tỉ lệ thức, tam giác bằng nhau, hình lăng trụ, xác suất...)..." autocomplete="off">
+        <button id="clearSearch" style="display: none;">✕</button>
+      </div>
+
+      <div class="filter-pills" id="filterPills">
+        <button class="filter-pill active" data-filter="all">Tất Cả (53)</button>
+        <button class="filter-pill pill-indigo" data-filter="chuong1">Chương I (5)</button>
+        <button class="filter-pill pill-cyan" data-filter="chuong2">Chương II (4)</button>
+        <button class="filter-pill pill-emerald" data-filter="chuong3">Chương III (5)</button>
+        <button class="filter-pill pill-amber" data-filter="chuong4">Chương IV (6)</button>
+        <button class="filter-pill pill-rose" data-filter="chuong5">Chương V (4)</button>
+        <button class="filter-pill pill-cyan" data-filter="chuong6">Chương VI (5)</button>
+        <button class="filter-pill pill-indigo" data-filter="chuong7">Chương VII (6)</button>
+        <button class="filter-pill pill-amber" data-filter="chuong8">Chương VIII (3)</button>
+        <button class="filter-pill pill-emerald" data-filter="chuong9">Chương IX (6)</button>
+        <button class="filter-pill pill-rose" data-filter="chuong10">Chương X (3)</button>
+        <button class="filter-pill pill-purple" data-filter="thuchanh">Thực Hành & Tổng Ôn (6)</button>
+      </div>
+    </section>
+
+    <!-- Curriculum Chapters Grid -->
+    <main class="portal-main" id="portalMain">
+
+      <section class="chapter-section theme-indigo" id="chuong1" data-chapter="chuong1">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG I • Tập Một (Trang 5 – 27)</span>
+            <h2>Chương I: Số Hữu Tỉ</h2>
+            <p>Tập hợp các số hữu tỉ, bốn phép tính cộng, trừ, nhân, chia, luỹ thừa với số mũ tự nhiên và quy tắc chuyển vế.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">5</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 1: tập hợp các số hữu tỉ" data-tag="số hữu tỉ" data-desc="hiểu rõ định nghĩa số hữu tỉ là phân số $\frac{a}{b}$, biểu diễn trên trục số, số đối và quy tắc so sánh hai số hữu tỉ bất kì.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Số Hữu Tỉ</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 1: Tập Hợp Các Số Hữu Tỉ</h3>
+            <p class="lesson-desc">Hiểu rõ định nghĩa số hữu tỉ là phân số $\frac{a}{b}$, biểu diễn trên trục số, số đối và quy tắc so sánh hai số hữu tỉ bất kì.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Trục Số Hữu Tỉ Tương Tác & Cán Cân So Sánh Số Hữu Tỉ</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai1/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai1/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai1/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai1/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai1/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 2: cộng, trừ, nhân, chia số hữu tỉ" data-tag="phép tính số hữu tỉ" data-desc="thành thạo các phép cộng, trừ, nhân, chia số hữu tỉ; áp dụng quy tắc bỏ dấu ngoặc và tính chất phân phối để tính nhanh hợp lí.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Phép Tính Số Hữu Tỉ</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 2: Cộng, Trừ, Nhân, Chia Số Hữu Tỉ</h3>
+            <p class="lesson-desc">Thành thạo các phép cộng, trừ, nhân, chia số hữu tỉ; áp dụng quy tắc bỏ dấu ngoặc và tính chất phân phối để tính nhanh hợp lí.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Máy Tính Phân Số 4 Phép Tính & Mô Phỏng Dãy Tính Hợp Lí</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai2/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai2/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai2/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai2/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai2/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 3: luỹ thừa với số mũ tự nhiên của một số hữu tỉ" data-tag="luỹ thừa hữu tỉ" data-desc="làm chủ các công thức luỹ thừa $x^m \cdot x^n = x^{m+n}$, $(x^m)^n = x^{m \cdot n}$, $(x \cdot y)^n = x^n \cdot y^n$ và ứng dụng rút gọn biểu thức luỹ thừa.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Luỹ Thừa Hữu Tỉ</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 3: Luỹ Thừa Với Số Mũ Tự Nhiên Của Một Số Hữu Tỉ</h3>
+            <p class="lesson-desc">Làm chủ các công thức luỹ thừa $x^m \cdot x^n = x^{m+n}$, $(x^m)^n = x^{m \cdot n}$, $(x \cdot y)^n = x^n \cdot y^n$ và ứng dụng rút gọn biểu thức luỹ thừa.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Tháp Nhân Chia Luỹ Thừa & Bàn Tính Luỹ Thừa Bậc n</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai3/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai3/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai3/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai3/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai3/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 4: thứ tự thực hiện các phép tính. quy tắc chuyển vế" data-tag="thứ tự & chuyển vế" data-desc="nắm vững thứ tự thực hiện phép tính có ngoặc, quy tắc chuyển vế $a + b = c \iff a = c - b$ và vận dụng giải các bài toán tìm x chuẩn mực.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Thứ Tự & Chuyển Vế</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 4: Thứ Tự Thực Hiện Các Phép Tính. Quy Tắc Chuyển Vế</h3>
+            <p class="lesson-desc">Nắm vững thứ tự thực hiện phép tính có ngoặc, quy tắc chuyển vế $A + B = C \iff A = C - B$ và vận dụng giải các bài toán tìm x chuẩn mực.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Cán Cân Chuyển Vế Đổi Dấu & Cây Phân Tích Thứ Tự Phép Tính</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai4/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai4/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai4/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai4/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai4/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập cuối chương i - tổng ôn số hữu tỉ" data-tag="tổng ôn chương i" data-desc="tổng kết kiến thức trọng tâm chương i: khái niệm số hữu tỉ, biểu diễn trục số, 4 phép tính, luỹ thừa và quy tắc chuyển vế; thử thách 10 câu trắc nghiệm tổng hợp nhận chứng nhận a4.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tổng Ôn Chương I</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Cuối Chương I - Tổng Ôn Số Hữu Tỉ</h3>
+            <p class="lesson-desc">Tổng kết kiến thức trọng tâm Chương I: Khái niệm số hữu tỉ, biểu diễn trục số, 4 phép tính, luỹ thừa và quy tắc chuyển vế; thử thách 10 câu trắc nghiệm tổng hợp nhận chứng nhận A4.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Vòng Xoay Số Hữu Tỉ Đa Năng & Bảng Tính Biểu Thức Tổng Hợp</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong1/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong1/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong1/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong1/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong1/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-cyan" id="chuong2" data-chapter="chuong2">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG II • Tập Một (Trang 28 – 45)</span>
+            <h2>Chương II: Số Thực</h2>
+            <p>Số thập phân vô hạn tuần hoàn, số vô tỉ, căn bậc hai số học, tập hợp số thực $\mathbb{R}$ và giá trị tuyệt đối.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">4</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 5: làm quen với số thập phân vô hạn tuần hoàn" data-tag="số thập phân tuần hoàn" data-desc="nhận biết số thập phân hữu hạn và vô hạn tuần hoàn, xác định chu kì của số thập phân và làm tròn số theo hàng quy định.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Số Thập Phân Tuần Hoàn</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 5: Làm Quen Với Số Thập Phân Vô Hạn Tuần Hoàn</h3>
+            <p class="lesson-desc">Nhận biết số thập phân hữu hạn và vô hạn tuần hoàn, xác định chu kì của số thập phân và làm tròn số theo hàng quy định.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Máy Phân Tích Chu Kì Thập Phân & Thước Đo Làm Tròn Số</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai5/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai5/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai5/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai5/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai5/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 6: số vô tỉ. căn bậc hai số học" data-tag="số vô tỉ & căn bậc hai" data-desc="hiểu rõ định nghĩa số vô tỉ là số thập phân vô hạn không tuần hoàn, khái niệm căn bậc hai số học $\sqrt{a}$ và cách sử dụng máy tính cầm tay để tính căn.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Số Vô Tỉ & Căn Bậc Hai</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 6: Số Vô Tỉ. Căn Bậc Hai Số Học</h3>
+            <p class="lesson-desc">Hiểu rõ định nghĩa số vô tỉ là số thập phân vô hạn không tuần hoàn, khái niệm căn bậc hai số học $\sqrt{a}$ và cách sử dụng máy tính cầm tay để tính căn.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Căn Bậc Hai Hình Vuộng & Thước Đo Căn Thức Trên Trục Số</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai6/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai6/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai6/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai6/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai6/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 7: tập hợp các số thực" data-tag="tập hợp số thực" data-desc="làm chủ cấu trúc tập hợp số thực $\mathbb{r} = \mathbb{q} \cup \mathbb{i}$, bản chất trục số thực liên tục và quy tắc tính giá trị tuyệt đối $|x|$.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tập Hợp Số Thực</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 7: Tập Hợp Các Số Thực</h3>
+            <p class="lesson-desc">Làm chủ cấu trúc tập hợp số thực $\mathbb{R} = \mathbb{Q} \cup \mathbb{I}$, bản chất trục số thực liên tục và quy tắc tính giá trị tuyệt đối $|x|$.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Vũ Trụ Số Thực Venn & Thước Đo Giá Trị Tuyệt Đối</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai7/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai7/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai7/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai7/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai7/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập cuối chương ii - tổng ôn số thực" data-tag="tổng ôn chương ii" data-desc="tổng kết kiến thức chương ii: phân biệt số hữu tỉ và số vô tỉ, căn bậc hai số học, giá trị tuyệt đối của số thực và làm tròn số; hoàn thành 10 câu trắc nghiệm nhận chứng nhận danh dự.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tổng Ôn Chương II</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Cuối Chương II - Tổng Ôn Số Thực</h3>
+            <p class="lesson-desc">Tổng kết kiến thức Chương II: Phân biệt số hữu tỉ và số vô tỉ, căn bậc hai số học, giá trị tuyệt đối của số thực và làm tròn số; hoàn thành 10 câu trắc nghiệm nhận chứng nhận danh dự.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Kính Lúp Trục Số Thực & Trạm Tính Toán Căn Bậc Hai Đa Năng</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong2/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong2/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong2/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong2/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong2/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-emerald" id="chuong3" data-chapter="chuong3">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG III • Tập Một (Trang 46 – 64)</span>
+            <h2>Chương III: Góc Và Đường Thẳng Song Song</h2>
+            <p>Góc kề bù, góc đối đỉnh, tia phân giác, dấu hiệu nhận biết đường thẳng song song, tiên đề Euclid và chứng minh định lí.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">5</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 8: góc ở vị trí đặc biệt. tia phân giác của một góc" data-tag="góc đặc biệt & phân giác" data-desc="nhận biết hai góc kề bù (tổng bằng $180^\circ$), hai góc đối đỉnh (bằng nhau) và tính chất tia phân giác chia đôi góc thành hai góc bằng nhau.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Góc Đặc Biệt & Phân Giác</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 8: Góc Ở Vị Trí Đặc Biệt. Tia Phân Giác Của Một Góc</h3>
+            <p class="lesson-desc">Nhận biết hai góc kề bù (tổng bằng $180^\circ$), hai góc đối đỉnh (bằng nhau) và tính chất tia phân giác chia đôi góc thành hai góc bằng nhau.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Thước Đo Góc Đối Đỉnh Động & Mô Phỏng Tia Phân Giác Chia Đôi Góc</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai8/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai8/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai8/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai8/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai8/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 9: hai đường thẳng song song và dấu hiệu nhận biết" data-tag="hai đt song song" data-desc="nhận biết các cặp góc so le trong, đồng vị, trong cùng phía khi một đường thẳng cắt hai đường thẳng; nắm vững dấu hiệu chứng minh hai đường thẳng song song.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Hai ĐT Song Song</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 9: Hai Đường Thẳng Song Song Và Dấu Hiệu Nhận Biết</h3>
+            <p class="lesson-desc">Nhận biết các cặp góc so le trong, đồng vị, trong cùng phía khi một đường thẳng cắt hai đường thẳng; nắm vững dấu hiệu chứng minh hai đường thẳng song song.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Sa Bàn Cát Tuyến & Trắc Nghiệm Dấu Hiệu Song Song</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai9/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai9/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai9/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai9/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai9/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 10: tiên đề euclid. tính chất của hai đường thẳng song song" data-tag="tiên đề euclid & tính chất" data-desc="nắm vững tiên đề euclid 'qua 1 điểm ngoài đường thẳng chỉ kẻ được duy nhất 1 đường song song', các tính chất vuông góc đến song song và hai đường cùng song song đường thứ ba.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tiên Đề Euclid & Tính Chất</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 10: Tiên Đề Euclid. Tính Chất Của Hai Đường Thẳng Song Song</h3>
+            <p class="lesson-desc">Nắm vững tiên đề Euclid 'Qua 1 điểm ngoài đường thẳng chỉ kẻ được duy nhất 1 đường song song', các tính chất vuông góc đến song song và hai đường cùng song song đường thứ ba.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Tính Duy Nhất Tiên Đề Euclid & Mạng Lưới Vuông Góc Đến Song Song</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai10/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai10/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai10/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai10/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai10/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 11: định lí và chứng minh định lí" data-tag="định lí & chứng minh" data-desc="hiểu rõ cấu trúc một định lí toán học gồm giả thiết (gt) và kết luận (kl); nắm vững các bước suy luận logic để chứng minh một khẳng định hình học.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Định Lí & Chứng Minh</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 11: Định Lí Và Chứng Minh Định Lí</h3>
+            <p class="lesson-desc">Hiểu rõ cấu trúc một định lí toán học gồm Giả thiết (GT) và Kết luận (KL); nắm vững các bước suy luận logic để chứng minh một khẳng định hình học.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Cây Suy Luận Giả Thiết - Kết Luận & Xưởng Lắp Ráp Chứng Minh Hình Học</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai11/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai11/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai11/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai11/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai11/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập cuối chương iii - tổng ôn góc và đường thẳng song song" data-tag="tổng ôn chương iii" data-desc="tổng kết kiến thức trọng tâm chương iii: góc kề bù, đối đỉnh, tia phân giác, dấu hiệu song song, tiên đề euclid, từ vuông góc đến song song; hoàn thành 10 câu trắc nghiệm nhận chứng nhận danh dự.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tổng Ôn Chương III</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Cuối Chương III - Tổng Ôn Góc Và Đường Thẳng Song Song</h3>
+            <p class="lesson-desc">Tổng kết kiến thức trọng tâm Chương III: Góc kề bù, đối đỉnh, tia phân giác, dấu hiệu song song, tiên đề Euclid, từ vuông góc đến song song; hoàn thành 10 câu trắc nghiệm nhận chứng nhận danh dự.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Sa Bàn Đường Thẳng Song Song Đa Tầng & Trạm Kiểm Tra Góc Euclid</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong3/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong3/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong3/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong3/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong3/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-amber" id="chuong4" data-chapter="chuong4">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG IV • Tập Một (Trang 65 – 89)</span>
+            <h2>Chương IV: Tam Giác Bằng Nhau</h2>
+            <p>Tổng ba góc trong tam giác, ba trường hợp bằng nhau c-c-c, c-g-c, g-c-g, các trường hợp tam giác vuông, tam giác cân và đường trung trực.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">6</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 12: tổng các góc trong một tam giác" data-tag="tổng ba góc & góc ngoài" data-desc="khám phá định lí bất biến: tổng ba góc của một tam giác luôn bằng $180^\\circ$. tính chất hai góc nhọn phụ nhau trong tam giác vuông và góc ngoài bằng tổng hai góc trong không kề.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tổng Ba Góc & Góc Ngoài</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 12: Tổng Các Góc Trong Một Tam Giác</h3>
+            <p class="lesson-desc">Khám phá định lí bất biến: Tổng ba góc của một tam giác luôn bằng $180^\\circ$. Tính chất hai góc nhọn phụ nhau trong tam giác vuông và góc ngoài bằng tổng hai góc trong không kề.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Biến Hình Ba Góc Tam Giác & Phòng Thí Nghiệm Góc Ngoài Động</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai12/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai12/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai12/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai12/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai12/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 13: hai tam giác bằng nhau. trường hợp thứ nhất (c-c-c)" data-tag="hai tam giác bằng nhau & c-c-c" data-desc="hiểu rõ định nghĩa hai tam giác bằng nhau khi chúng trùng khít lên nhau, quy ước viết đúng thứ tự đỉnh tương ứng và trường hợp bằng nhau thứ nhất: cạnh - cạnh - cạnh (c-c-c).">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Hai Tam Giác Bằng Nhau & C-C-C</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 13: Hai Tam Giác Bằng Nhau. Trường Hợp Thứ Nhất (c-c-c)</h3>
+            <p class="lesson-desc">Hiểu rõ định nghĩa hai tam giác bằng nhau khi chúng trùng khít lên nhau, quy ước viết đúng thứ tự đỉnh tương ứng và trường hợp bằng nhau thứ nhất: Cạnh - Cạnh - Cạnh (c-c-c).</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Trùng Khít Hai Tam Giác & Dựng Tam Giác Ba Cạnh Bằng Thước Compa</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai13/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai13/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai13/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai13/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai13/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 14: trường hợp bằng nhau thứ hai (c-g-c) và thứ ba (g-c-g)" data-tag="c-g-c & g-c-g" data-desc="nắm vững hai định lí then chốt: cạnh - góc - cạnh (góc xen giữa) và góc - cạnh - góc (cạnh kề hai góc). phân biệt chính xác vị trí góc xen giữa và cạnh xen giữa.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">C-G-C & G-C-G</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 14: Trường Hợp Bằng Nhau Thứ Hai (c-g-c) Và Thứ Ba (g-c-g)</h3>
+            <p class="lesson-desc">Nắm vững hai định lí then chốt: Cạnh - Góc - Cạnh (góc xen giữa) và Góc - Cạnh - Góc (cạnh kề hai góc). Phân biệt chính xác vị trí góc xen giữa và cạnh xen giữa.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Góc Xen Giữa Động (C-G-C) & Phòng Thí Nghiệm Cạnh Kề Hai Góc (G-C-G)</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai14/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai14/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai14/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai14/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai14/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 15: các trường hợp bằng nhau của tam giác vuông" data-tag="tam giác vuông bằng nhau" data-desc="khám phá 4 trường hợp bằng nhau đặc sắc của tam giác vuông: hai cạnh góc vuông, cạnh góc vuông - góc nhọn, cạnh huyền - góc nhọn và trường hợp đặc biệt cạnh huyền - cạnh góc vuông.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tam Giác Vuông Bằng Nhau</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 15: Các Trường Hợp Bằng Nhau Của Tam Giác Vuông</h3>
+            <p class="lesson-desc">Khám phá 4 trường hợp bằng nhau đặc sắc của tam giác vuông: Hai cạnh góc vuông, cạnh góc vuông - góc nhọn, cạnh huyền - góc nhọn và trường hợp đặc biệt cạnh huyền - cạnh góc vuông.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Cạnh Huyền - Góc Nhọn & Kiểm Nghiệm Cạnh Huyền - Cạnh Góc Vuông</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai15/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai15/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai15/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai15/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai15/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 16: tam giác cân. đường trung trực của đoạn thẳng" data-tag="tam giác cân & trung trực" data-desc="nắm vững định nghĩa và tính chất của tam giác cân (hai cạnh bằng nhau, hai góc ở đáy bằng nhau), tam giác đều (ba góc bằng 60°), cùng định nghĩa và tính chất cách đều của đường trung trực.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tam Giác Cân & Trung Trực</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 16: Tam Giác Cân. Đường Trung Trực Của Đoạn Thẳng</h3>
+            <p class="lesson-desc">Nắm vững định nghĩa và tính chất của tam giác cân (hai cạnh bằng nhau, hai góc ở đáy bằng nhau), tam giác đều (ba góc bằng 60°), cùng định nghĩa và tính chất cách đều của đường trung trực.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Tam Giác Cân Động & Khám Phá Tính Chất Cách Đều Của Đường Trung Trực</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai16/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai16/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai16/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai16/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai16/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="ôn tập chương iv: tam giác bằng nhau" data-tag="tổng ôn tam giác bằng nhau" data-desc="củng cố vững chắc toàn diện: tổng các góc trong tam giác, ba trường hợp bằng nhau của tam giác thường (c-c-c, c-g-c, g-c-g), bốn trường hợp bằng nhau của tam giác vuông và tính chất tam giác cân, đường trung trực.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tổng Ôn Tam Giác Bằng Nhau</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Ôn Tập Chương IV: Tam Giác Bằng Nhau</h3>
+            <p class="lesson-desc">Củng cố vững chắc toàn diện: Tổng các góc trong tam giác, ba trường hợp bằng nhau của tam giác thường (c-c-c, c-g-c, g-c-g), bốn trường hợp bằng nhau của tam giác vuông và tính chất tam giác cân, đường trung trực.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Cây Sơ Đồ Tiêu Chuẩn Bằng Nhau Động & Đấu Trường Tổng Hợp Hình Học 7</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong4/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong4/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong4/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong4/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong4/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-rose" id="chuong5" data-chapter="chuong5">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG V • Tập Một (Trang 90 – 107)</span>
+            <h2>Chương V: Thu Thập Và Biểu Diễn Dữ Liệu</h2>
+            <p>Phương pháp thu thập, phân loại dữ liệu định tính và định lượng, biểu đồ hình quạt tròn và biểu đồ đoạn thẳng.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">4</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 17: thu thập và phân loại dữ liệu" data-tag="dữ liệu thống kê & phân loại" data-desc="tìm hiểu các phương pháp thu thập dữ liệu (trực tiếp, gián tiếp), phân biệt rạch ròi dữ liệu định tính (chữ, nhãn, thứ tự) và dữ liệu định lượng (số đo, đếm được), cùng tiêu chuẩn dữ liệu đại diện.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Dữ Liệu Thống Kê & Phân Loại</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 17: Thu Thập Và Phân Loại Dữ Liệu</h3>
+            <p class="lesson-desc">Tìm hiểu các phương pháp thu thập dữ liệu (trực tiếp, gián tiếp), phân biệt rạch ròi dữ liệu định tính (chữ, nhãn, thứ tự) và dữ liệu định lượng (số đo, đếm được), cùng tiêu chuẩn dữ liệu đại diện.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Bộ Lọc Phân Loại Dữ Liệu Trực Quan & Máy Kiểm Tra Tính Đại Diện Của Mẫu</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai17/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai17/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai17/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai17/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai17/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 18: biểu đồ hình quạt tròn" data-tag="biểu đồ quạt tròn & tỉ lệ %" data-desc="làm chủ biểu đồ hình quạt tròn: cách đọc cơ cấu phần trăm, mối liên hệ giữa tỉ lệ $p\%$ và góc ở tâm $\alpha = 360^\circ \times \frac{p}{100}$, cùng kĩ năng vẽ biểu đồ quạt chuẩn xác.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Biểu Đồ Quạt Tròn & Tỉ Lệ %</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 18: Biểu Đồ Hình Quạt Tròn</h3>
+            <p class="lesson-desc">Làm chủ biểu đồ hình quạt tròn: Cách đọc cơ cấu phần trăm, mối liên hệ giữa tỉ lệ $p\%$ và góc ở tâm $\alpha = 360^\circ \times \frac{p}{100}$, cùng kĩ năng vẽ biểu đồ quạt chuẩn xác.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Vòng Tròn Cơ Cấu Tỉ Lệ Động & Thước Đo Góc Ở Tâm Biểu Đồ Quạt</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai18/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai18/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai18/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai18/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai18/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 19: biểu đồ đoạn thẳng" data-tag="biểu đồ đoạn thẳng & xu hướng" data-desc="khám phá biểu đồ đoạn thẳng: cấu tạo trục ngang (thời gian), trục dọc (số liệu), cách nối các điểm dữ liệu và phân tích xu hướng tăng, giảm, ổn định qua từng giai đoạn.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Biểu Đồ Đoạn Thẳng & Xu Hướng</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 19: Biểu Đồ Đoạn Thẳng</h3>
+            <p class="lesson-desc">Khám phá biểu đồ đoạn thẳng: Cấu tạo trục ngang (thời gian), trục dọc (số liệu), cách nối các điểm dữ liệu và phân tích xu hướng tăng, giảm, ổn định qua từng giai đoạn.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Vẽ Biểu Đồ Đoạn Thẳng Động & Phân Tích Độ Dốc Xu Hướng Tăng Trưởng</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai19/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai19/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai19/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai19/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai19/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="ôn tập chương v: thu thập và biểu diễn dữ liệu" data-tag="tổng ôn thống kê dữ liệu 7" data-desc="tổng kết hệ thống hóa toàn bộ kiến thức chương v: nhận diện dữ liệu định tính và định lượng, chuyển đổi tỉ lệ phần trăm sang góc ở tâm biểu đồ quạt tròn và phân tích xu hướng biểu đồ đoạn thẳng.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Tổng Ôn Thống Kê Dữ Liệu 7</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Ôn Tập Chương V: Thu Thập Và Biểu Diễn Dữ Liệu</h3>
+            <p class="lesson-desc">Tổng kết hệ thống hóa toàn bộ kiến thức Chương V: Nhận diện dữ liệu định tính và định lượng, chuyển đổi tỉ lệ phần trăm sang góc ở tâm biểu đồ quạt tròn và phân tích xu hướng biểu đồ đoạn thẳng.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">So Sánh Ba Dạng Biểu Diễn Dữ Liệu & Đấu Trường Thống Kê Tổng Hợp</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong5/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong5/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong5/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong5/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong5/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-cyan" id="chuong6" data-chapter="chuong6">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG VI • Tập Hai (Trang 4 – 23)</span>
+            <h2>Chương VI: Tỉ Lệ Thức Và Đại Lượng Tỉ Lệ</h2>
+            <p>Tỉ lệ thức, tính chất của dãy tỉ số bằng nhau, đại lượng tỉ lệ thuận, đại lượng tỉ lệ nghịch và giải toán thực tiễn.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">5</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 20: tỉ lệ thức" data-tag="bài 20" data-desc="định nghĩa tỉ lệ thức $\frac{a}{b} = \frac{c}{d}$, tính chất cơ bản $a \cdot d = b \cdot c$ và cách tìm một số hạng chưa biết trong tỉ lệ thức.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Bài 20</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 20: Tỉ Lệ Thức</h3>
+            <p class="lesson-desc">Định nghĩa tỉ lệ thức $\frac{a}{b} = \frac{c}{d}$, tính chất cơ bản $a \cdot d = b \cdot c$ và cách tìm một số hạng chưa biết trong tỉ lệ thức.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Lab 1: Cân Bằng Tích Chéo Tỉ Lệ Thức • Lab 2: Máy Tìm Số Hạng Chưa Biết</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai20/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai20/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai20/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai20/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai20/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 21: tính chất của dãy tỉ số bằng nhau" data-tag="bài 21" data-desc="tính chất của dãy tỉ số bằng nhau $\frac{a}{b} = \frac{c}{d} = \frac{a+c}{b+d} = \frac{a-c}{b-d}$ và ứng dụng chia một số thành các phần tỉ lệ.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Bài 21</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 21: Tính Chất Của Dãy Tỉ Số Bằng Nhau</h3>
+            <p class="lesson-desc">Tính chất của dãy tỉ số bằng nhau $\frac{a}{b} = \frac{c}{d} = \frac{a+c}{b+d} = \frac{a-c}{b-d}$ và ứng dụng chia một số thành các phần tỉ lệ.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Lab 1: Máy Phân Phối Dãy Tỉ Số • Lab 2: Chia Phần Thưởng Ba Bạn</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai21/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai21/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai21/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai21/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai21/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 22: đại lượng tỉ lệ thuận" data-tag="bài 22" data-desc="định nghĩa hai đại lượng tỉ lệ thuận $y = kx$ ($k \neq 0$), tính chất tỉ số không đổi và giải các bài toán tỉ lệ thuận thực tế.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Bài 22</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 22: Đại Lượng Tỉ Lệ Thuận</h3>
+            <p class="lesson-desc">Định nghĩa hai đại lượng tỉ lệ thuận $y = kx$ ($k \neq 0$), tính chất tỉ số không đổi và giải các bài toán tỉ lệ thuận thực tế.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Lab 1: Đồ Thị Tuyến Tính y = kx • Lab 2: Bảng Tỉ Lệ Thuận Mua Sắm</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai22/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai22/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai22/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai22/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai22/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 23: đại lượng tỉ lệ nghịch" data-tag="bài 23" data-desc="định nghĩa hai đại lượng tỉ lệ nghịch $y = \frac{a}{x} \iff x \cdot y = a$, tính chất tích không đổi và giải các bài toán tỉ lệ nghịch thực tế.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Bài 23</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 23: Đại Lượng Tỉ Lệ Nghịch</h3>
+            <p class="lesson-desc">Định nghĩa hai đại lượng tỉ lệ nghịch $y = \frac{a}{x} \iff x \cdot y = a$, tính chất tích không đổi và giải các bài toán tỉ lệ nghịch thực tế.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Lab 1: Đường Cong Tỉ Lệ Nghịch • Lab 2: Bài Toán Vận Tốc & Thời Gian</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai23/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai23/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai23/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai23/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai23/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập cuối chương vi - tổng ôn tỉ lệ thức & đại lượng tỉ lệ" data-tag="ôn tập vi" data-desc="hệ thống hóa toàn diện tỉ lệ thức, tính chất dãy tỉ số bằng nhau, đại lượng tỉ lệ thuận và đại lượng tỉ lệ nghịch; 10 câu trắc nghiệm tổng hợp nhận bằng a4.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Ôn Tập VI</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Cuối Chương VI - Tổng Ôn Tỉ Lệ Thức & Đại Lượng Tỉ Lệ</h3>
+            <p class="lesson-desc">Hệ thống hóa toàn diện tỉ lệ thức, tính chất dãy tỉ số bằng nhau, đại lượng tỉ lệ thuận và đại lượng tỉ lệ nghịch; 10 câu trắc nghiệm tổng hợp nhận bằng A4.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Lab 1: Bản Đồ So Sánh Tỉ Lệ Thuận & Nghịch • Lab 2: Ma Trận Thử Thách Chương VI</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong6/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong6/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong6/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong6/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong6/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-indigo" id="chuong7" data-chapter="chuong7">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG VII • Tập Hai (Trang 24 – 49)</span>
+            <h2>Chương VII: Biểu Thức Đại Số Và Đa Thức Một Biến</h2>
+            <p>Biểu thức đại số, đơn thức, đa thức một biến, nghiệm của đa thức, bốn phép tính cộng, trừ, nhân, chia đa thức một biến.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">6</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 24: biểu thức đại số" data-tag="biểu thức đại số" data-desc="làm quen với biểu thức chứa chữ đại diện cho số, quy tắc viết gọn và phương pháp thay số để tính giá trị biểu thức đại số.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Biểu Thức Đại Số</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 24: Biểu Thức Đại Số</h3>
+            <p class="lesson-desc">Làm quen với biểu thức chứa chữ đại diện cho số, quy tắc viết gọn và phương pháp thay số để tính giá trị biểu thức đại số.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Máy Tính Giá Trị Biểu Thức Đại Số Động • Mô Hình Hình Học: Chu Vi & Diện Tích Đại Số</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai24/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai24/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai24/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai24/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai24/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 25: đa thức một biến" data-tag="đa thức một biến" data-desc="nắm vững khái niệm đa thức một biến, bậc của đa thức, hệ số cao nhất, hệ số tự do và cách tìm nghiệm của đa thức một biến.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Đa Thức Một Biến</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 25: Đa Thức Một Biến</h3>
+            <p class="lesson-desc">Nắm vững khái niệm đa thức một biến, bậc của đa thức, hệ số cao nhất, hệ số tự do và cách tìm nghiệm của đa thức một biến.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Bộ Phân Tích Cấu Trúc Đa Thức Một Biến • Máy Dò Nghiệm Đa Thức Trên Trục Số</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai25/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai25/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai25/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai25/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai25/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 26: phép cộng và trừ đa thức một biến" data-tag="cộng trừ đa thức" data-desc="thành thạo hai phương pháp cộng trừ đa thức một biến: cộng trừ theo hàng ngang (nhóm hạng tử cùng bậc) và đặt tính theo cột dọc.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Cộng Trừ Đa Thức</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 26: Phép Cộng Và Trừ Đa Thức Một Biến</h3>
+            <p class="lesson-desc">Thành thạo hai phương pháp cộng trừ đa thức một biến: cộng trừ theo hàng ngang (nhóm hạng tử cùng bậc) và đặt tính theo cột dọc.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Bảng Đặt Tính Cột Dọc Cộng Trừ Hai Đa Thức • Mô Phỏng Triệt Tiêu Hạng Tử Đồng Dạng</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai26/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai26/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai26/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai26/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai26/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 27: phép nhân đa thức một biến" data-tag="nhân đa thức" data-desc="thành thạo phép nhân đơn thức với đơn thức, đơn thức với đa thức và quy tắc phân phối nhân hai đa thức một biến.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Nhân Đa Thức</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 27: Phép Nhân Đa Thức Một Biến</h3>
+            <p class="lesson-desc">Thành thạo phép nhân đơn thức với đơn thức, đơn thức với đa thức và quy tắc phân phối nhân hai đa thức một biến.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Hình Diện Tích: Hình Học Hóa Phép Nhân (x + a)(x + b) • Máy Nhân Phân Phối Đa Thức Tự Động</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai27/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai27/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai27/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai27/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai27/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 28: phép chia đa thức một biến" data-tag="chia đa thức" data-desc="làm chủ thuật toán chia đơn thức và thuật toán chia đa thức có dư: $a = b \cdot q + r$ với $\text{deg}(r) < \text{deg}(b)$.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Chia Đa Thức</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 28: Phép Chia Đa Thức Một Biến</h3>
+            <p class="lesson-desc">Làm chủ thuật toán chia đơn thức và thuật toán chia đa thức có dư: $A = B \cdot Q + R$ với $\text{deg}(R) < \text{deg}(B)$.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Thuật Toán Đặt Tính Chia Đa Thức • Kiểm Tra Đẳng Thức Chia Có Dư A = B · Q + R</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai28/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai28/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai28/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai28/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai28/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập cuối chương vii" data-tag="ôn tập chương vii" data-desc="tổng kết và khắc sâu toàn bộ kiến thức: biểu thức đại số, đơn thức, đa thức một biến, 4 phép tính đại số và phương pháp tìm nghiệm.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Ôn Tập Chương VII</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Cuối Chương VII</h3>
+            <p class="lesson-desc">Tổng kết và khắc sâu toàn bộ kiến thức: Biểu thức đại số, đơn thức, đa thức một biến, 4 phép tính đại số và phương pháp tìm nghiệm.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Sơ Đồ Tư Duy Tương Tác Chương VII • Máy Kiểm Tra Toàn Diện Đa Thức</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong7/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong7/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong7/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong7/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong7/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-amber" id="chuong8" data-chapter="chuong8">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG VIII • Tập Hai (Trang 50 – 62)</span>
+            <h2>Chương VIII: Làm Quen Với Biến Cố Và Xác Suất Của Biến Cố</h2>
+            <p>Biến cố chắc chắn, không thể, ngẫu nhiên; xác suất của biến cố trong các trò chơi gieo xúc xắc và tung đồng xu.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">3</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 29: làm quen với biến cố" data-tag="biến cố" data-desc="làm quen với các hiện tượng ngẫu nhiên trong đời sống, phân loại 3 loại biến cố: chắc chắn, không thể và ngẫu nhiên.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Biến Cố</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 29: Làm Quen Với Biến Cố</h3>
+            <p class="lesson-desc">Làm quen với các hiện tượng ngẫu nhiên trong đời sống, phân loại 3 loại biến cố: chắc chắn, không thể và ngẫu nhiên.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Máy Gieo Xúc Xắc & Phân Loại Biến Cố • Hộp Bốc Bi Màu Ngẫu Nhiên</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai29/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai29/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai29/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai29/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai29/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 30: làm quen với xác suất" data-tag="xác suất" data-desc="tìm hiểu thước đo khả năng xảy ra của biến cố: xác suất của biến cố chắc chắn, không thể và các biến cố đồng khả năng.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Xác Suất</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 30: Làm Quen Với Xác Suất</h3>
+            <p class="lesson-desc">Tìm hiểu thước đo khả năng xảy ra của biến cố: xác suất của biến cố chắc chắn, không thể và các biến cố đồng khả năng.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Vòng Quay May Mắn Tính Xác Suất • Thí Nghiệm Tung Đồng Xu 100 Lần</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai30/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai30/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai30/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai30/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai30/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập cuối chương viii" data-tag="ôn tập chương viii" data-desc="củng cố và hệ thống hóa toàn bộ kiến thức: phân loại biến cố, phép thử ngẫu nhiên và tính xác suất của biến cố đồng khả năng.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Ôn Tập Chương VIII</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Cuối Chương VIII</h3>
+            <p class="lesson-desc">Củng cố và hệ thống hóa toàn bộ kiến thức: phân loại biến cố, phép thử ngẫu nhiên và tính xác suất của biến cố đồng khả năng.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Thước Đo Thang Xác Suất Từ 0 Đến 1 • Bàn Cờ Thử Nghiệm Hai Xúc Xắc</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong8/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong8/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong8/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong8/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong8/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-emerald" id="chuong9" data-chapter="chuong9">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG IX • Tập Hai (Trang 63 – 88)</span>
+            <h2>Chương IX: Quan Hệ Giữa Các Yếu Tố Trong Một Tam Giác</h2>
+            <p>Góc và cạnh đối diện, đường vuông góc và đường xiên, bất đẳng thức tam giác, tính chất đồng quy của 4 loại đường trong tam giác.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">6</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 31: góc và cạnh đối diện trong tam giác" data-tag="góc và cạnh" data-desc="khám phá định lí quan hệ giữa góc và cạnh đối diện: trong một tam giác, đối diện với cạnh lớn hơn là góc lớn hơn và ngược lại.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Góc Và Cạnh</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 31: Góc Và Cạnh Đối Diện Trong Tam Giác</h3>
+            <p class="lesson-desc">Khám phá định lí quan hệ giữa góc và cạnh đối diện: trong một tam giác, đối diện với cạnh lớn hơn là góc lớn hơn và ngược lại.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Động: Góc Đối Diện Cạnh Lớn Hơn • Tam Giác Vuông & Cạnh Huyền Lớn Nhất</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai31/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai31/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai31/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai31/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai31/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 32: đường vuông góc và đường xiên" data-tag="đường vuông góc & xiên" data-desc="tìm hiểu mối quan hệ giữa đoạn vuông góc và đoạn xiên kẻ từ một điểm đến một đường thẳng: đoạn vuông góc luôn là đoạn ngắn nhất.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Đường Vuông Góc & Xiên</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 32: Đường Vuông Góc Và Đường Xiên</h3>
+            <p class="lesson-desc">Tìm hiểu mối quan hệ giữa đoạn vuông góc và đoạn xiên kẻ từ một điểm đến một đường thẳng: đoạn vuông góc luôn là đoạn ngắn nhất.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Thí Nghiệm So Sánh Đoạn Vuông Góc & Đoạn Xiên • Mô Phỏng Người Bơi Qua Sông Ngắn Nhất</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai32/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai32/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai32/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai32/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai32/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 33: quan hệ giữa ba cạnh tam giác" data-tag="bất đẳng thức tam giác" data-desc="nắm vững bất đẳng thức tam giác: trong một tam giác, độ dài một cạnh luôn lớn hơn hiệu và nhỏ hơn tổng độ dài hai cạnh kia.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Bất Đẳng Thức Tam Giác</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 33: Quan Hệ Giữa Ba Cạnh Tam Giác</h3>
+            <p class="lesson-desc">Nắm vững bất đẳng thức tam giác: trong một tam giác, độ dài một cạnh luôn lớn hơn hiệu và nhỏ hơn tổng độ dài hai cạnh kia.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Ghép 3 Thanh Gỗ Thành Tam Giác • Bộ Kiểm Tra Ba Cạnh Bất Kì</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai33/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai33/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai33/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai33/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai33/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 34: ba đường trung tuyến & phân giác" data-tag="trung tuyến & phân giác" data-desc="tìm hiểu tính chất đồng quy của ba đường trung tuyến tại trọng tâm g (tỉ lệ 2/3) và ba đường phân giác tại điểm i cách đều ba cạnh.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Trung Tuyến & Phân Giác</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 34: Ba Đường Trung Tuyến & Phân Giác</h3>
+            <p class="lesson-desc">Tìm hiểu tính chất đồng quy của ba đường trung tuyến tại Trọng tâm G (tỉ lệ 2/3) và ba đường phân giác tại điểm I cách đều ba cạnh.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Trọng Tâm G & Tỉ Lệ 2/3 • Mô Phỏng Ba Phân Giác & Đường Tròn Nội Tiếp</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai34/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai34/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai34/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai34/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai34/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 35: ba đường trung trực & đường cao" data-tag="trung trực & đường cao" data-desc="khám phá tính chất đồng quy của ba đường trung trực tại tâm ngoại tiếp o và ba đường cao tại trực tâm h.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Trung Trực & Đường Cao</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 35: Ba Đường Trung Trực & Đường Cao</h3>
+            <p class="lesson-desc">Khám phá tính chất đồng quy của ba đường trung trực tại tâm ngoại tiếp O và ba đường cao tại trực tâm H.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Ba Trung Trực & Đường Tròn Ngoại Tiếp • Mô Phỏng Trực Tâm H & 3 Dạng Tam Giác</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai35/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai35/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai35/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai35/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai35/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập cuối chương ix" data-tag="ôn tập chương ix" data-desc="tổng kết toàn bộ kiến thức chương ix: góc đối diện cạnh, đường vuông góc - đường xiên, bất đẳng thức tam giác và 4 điểm đồng quy (g, i, o, h).">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Ôn Tập Chương IX</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Cuối Chương IX</h3>
+            <p class="lesson-desc">Tổng kết toàn bộ kiến thức Chương IX: Góc đối diện cạnh, đường vuông góc - đường xiên, bất đẳng thức tam giác và 4 điểm đồng quy (G, I, O, H).</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Bảng Điều Khiển 4 Điểm Đồng Quy Kỳ Diệu • Máy So Sánh Quan Hệ Góc & Cạnh Nhanh</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong9/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong9/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong9/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong9/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong9/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-rose" id="chuong10" data-chapter="chuong10">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">CHƯƠNG X • Tập Hai (Trang 89 – 102)</span>
+            <h2>Chương X: Một Số Hình Khối Trong Thực Tiễn</h2>
+            <p>Đặc điểm hình học, diện tích xung quanh và thể tích của hình hộp chữ nhật, hình lập phương, hình lăng trụ đứng tam giác và tứ giác.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">3</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card " data-title="bài 36: hình hộp chữ nhật & hình lập phương" data-tag="hình khối thực tiễn" data-desc="nhận biết các yếu tố đỉnh, cạnh, mặt, đường chéo; làm chủ công thức tính diện tích xung quanh và thể tích hình hộp chữ nhật, hình lập phương.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Hình Khối Thực Tiễn</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 36: Hình Hộp Chữ Nhật & Hình Lập Phương</h3>
+            <p class="lesson-desc">Nhận biết các yếu tố đỉnh, cạnh, mặt, đường chéo; làm chủ công thức tính diện tích xung quanh và thể tích hình hộp chữ nhật, hình lập phương.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Hình 3D Hình Hộp Chữ Nhật Tương Tác • Trải Phẳng Hình Lập Phương & Tính Diện Tích Toàn Phần</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai36/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai36/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai36/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai36/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai36/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card " data-title="bài 37: lăng trụ đứng tam giác & tứ giác" data-tag="lăng trụ đứng" data-desc="tìm hiểu hình lăng trụ đứng tam giác và tứ giác trong thực tế: lều cắm trại, thanh socola toblerone, cột nhà; công thức sxq và thể tích v.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Lăng Trụ Đứng</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài 37: Lăng Trụ Đứng Tam Giác & Tứ Giác</h3>
+            <p class="lesson-desc">Tìm hiểu hình lăng trụ đứng tam giác và tứ giác trong thực tế: lều cắm trại, thanh socola toblerone, cột nhà; công thức Sxq và thể tích V.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Hình 3D Lăng Trụ Đứng Tam Giác • Mô Phỏng Lăng Trụ Đứng Đáy Hình Thang</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_bai37/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_bai37/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_bai37/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_bai37/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_bai37/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập cuối chương x" data-tag="ôn tập chương x" data-desc="hệ thống hóa toàn bộ công thức tính diện tích xung quanh, diện tích toàn phần và thể tích của hình hộp chữ nhật, hình lập phương, hình lăng trụ đứng.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Ôn Tập Chương X</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Cuối Chương X</h3>
+            <p class="lesson-desc">Hệ thống hóa toàn bộ công thức tính diện tích xung quanh, diện tích toàn phần và thể tích của hình hộp chữ nhật, hình lập phương, hình lăng trụ đứng.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Bảng So Sánh 4 Khối Hình Thực Tiễn • Máy Tính Sức Chứa Bể Nước Thực Tiễn</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_chuong10/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_chuong10/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_chuong10/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_chuong10/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_chuong10/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+      <section class="chapter-section theme-purple" id="thuchanh" data-chapter="thuchanh">
+        <div class="chapter-header">
+          <div class="chapter-meta">
+            <span class="chapter-badge">HOẠT ĐỘNG THỰC HÀNH TRẢI NGHIỆM & TỔNG ÔN CUỐI NĂM</span>
+            <h2>Hoạt Động Thực Hành Trải Nghiệm & Ôn Tập Cuối Năm</h2>
+            <p>Ứng dụng GeoGebra, phân tích dân số, đại lượng tỉ lệ, vòng quay may mắn, làm hộp quà & lịch để bàn, và tổng ôn tập toàn diện cuối năm.</p>
+          </div>
+          <div class="chapter-count">
+            <span class="count-num">6</span>
+            <span class="count-label">Bài Học</span>
+          </div>
+        </div>
+
+        <div class="lessons-grid">
+
+          <div class="lesson-card gold-card" data-title="hoạt động thực hành: vẽ hình đơn giản với phần mềm geogebra" data-tag="geogebra & hình học động" data-desc="trải nghiệm sức mạnh của phần mềm toán học geogebra: sử dụng các công cụ vẽ điểm, vẽ đoạn thẳng có độ dài cho trước, dựng đường thẳng song song, đường vuông góc, đường trung trực, tia phân giác và kiểm chứng tính chất hình học khi kéo rê đỉnh tự do.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">GeoGebra & Hình Học Động</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Hoạt Động Thực Hành: Vẽ Hình Đơn Giản Với Phần Mềm GeoGebra</h3>
+            <p class="lesson-desc">Trải nghiệm sức mạnh của phần mềm toán học GeoGebra: Sử dụng các công cụ vẽ điểm, vẽ đoạn thẳng có độ dài cho trước, dựng đường thẳng song song, đường vuông góc, đường trung trực, tia phân giác và kiểm chứng tính chất hình học khi kéo rê đỉnh tự do.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Bảng Dựng Hình GeoGebra Tương Tác & Thước Đo Góc & Độ Dài Tự Động</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_thuchanh1/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_thuchanh1/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_thuchanh1/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_thuchanh1/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_thuchanh1/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="hoạt động thực hành: dân số và cơ cấu dân số việt nam" data-tag="dân số việt nam & thống kê thực tế" data-desc="dự án thực tế liên môn toán - địa lí: thu thập và xử lí số liệu tổng điều tra dân số việt nam (1979 - 2021), vẽ biểu đồ đoạn thẳng mô tả quy mô dân số và biểu đồ hình quạt tròn biểu diễn cơ cấu tuổi, giới tính, từ đó rút ra bài học phát triển kinh tế - xã hội.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Dân Số Việt Nam & Thống Kê Thực Tế</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Hoạt Động Thực Hành: Dân Số Và Cơ Cấu Dân Số Việt Nam</h3>
+            <p class="lesson-desc">Dự án thực tế liên môn Toán - Địa lí: Thu thập và xử lí số liệu Tổng điều tra dân số Việt Nam (1979 - 2021), vẽ biểu đồ đoạn thẳng mô tả quy mô dân số và biểu đồ hình quạt tròn biểu diễn cơ cấu tuổi, giới tính, từ đó rút ra bài học phát triển kinh tế - xã hội.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Biểu Đồ Tăng Trưởng Dân Số Việt Nam (1979-2021) & Tháp Cơ Cấu Tuổi Động</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_thuchanh2/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_thuchanh2/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_thuchanh2/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_thuchanh2/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_thuchanh2/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="thực hành 3: đại lượng tỉ lệ trong đời sống" data-tag="thực hành trải nghiệm" data-desc="thực hành ứng dụng tỉ lệ thức vào tính toán pha chế dung dịch dinh dưỡng, quy đổi tỉ lệ bản đồ địa lí và phân chia lợi nhuận theo tỉ lệ vốn góp.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Thực Hành Trải Nghiệm</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Thực Hành 3: Đại Lượng Tỉ Lệ Trong Đời Sống</h3>
+            <p class="lesson-desc">Thực hành ứng dụng tỉ lệ thức vào tính toán pha chế dung dịch dinh dưỡng, quy đổi tỉ lệ bản đồ địa lí và phân chia lợi nhuận theo tỉ lệ vốn góp.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Máy Tính Pha Chế Nước Sát Khuẩn Tỉ Lệ • Máy Đo Khoảng Cách Thực Tế Theo Tỉ Lệ Bản Đồ</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_thuchanh3/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_thuchanh3/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_thuchanh3/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_thuchanh3/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_thuchanh3/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="thực hành 4: vòng quay may mắn" data-tag="thực hành trải nghiệm" data-desc="thiết kế vòng quay may mắn với các hình quạt màu sắc khác nhau, ghi chép tần số thực nghiệm và đối chiếu với xác suất lí thuyết.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Thực Hành Trải Nghiệm</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Thực Hành 4: Vòng Quay May Mắn</h3>
+            <p class="lesson-desc">Thiết kế vòng quay may mắn với các hình quạt màu sắc khác nhau, ghi chép tần số thực nghiệm và đối chiếu với xác suất lí thuyết.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Vòng Quay May Mắn Tự Động Quay 50 Lần • Máy So Sánh Tỉ Lệ Lý Thuyết & Thực Nghiệm</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_thuchanh4/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_thuchanh4/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_thuchanh4/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_thuchanh4/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_thuchanh4/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="thực hành 5: hộp quà & chân đế lịch" data-tag="thực hành trải nghiệm" data-desc="áp dụng kiến thức hình hộp chữ nhật, hình lập phương và hình lăng trụ tam giác để tính toán, cắt dán hộp quà và chân đế lịch để bàn.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Thực Hành Trải Nghiệm</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Thực Hành 5: Hộp Quà & Chân Đế Lịch</h3>
+            <p class="lesson-desc">Áp dụng kiến thức hình hộp chữ nhật, hình lập phương và hình lăng trụ tam giác để tính toán, cắt dán hộp quà và chân đế lịch để bàn.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Mô Phỏng Trải Phẳng Chân Đế Lịch Để Bàn • Máy Tính Diện Tích Giấy Bìa Hộp Quà Tối Ưu</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_thuchanh5/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_thuchanh5/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_thuchanh5/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_thuchanh5/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_thuchanh5/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+          <div class="lesson-card gold-card" data-title="bài tập ôn tập cuối năm" data-tag="ôn tập cuối năm" data-desc="tổng kết bức tranh toàn cảnh môn toán lớp 7: số học & đại số (số hữu tỉ, số thực, tỉ lệ thức, đa thức một biến), hình học & đo lường (góc, đường song song, tam giác bằng nhau, quan hệ trong tam giác, hình khối) và thống kê & xác suất.">
+            <div class="lesson-card-header">
+              <span class="lesson-tag">Ôn Tập Cuối Năm</span>
+              <span class="lesson-meta-chips">
+                <span class="meta-chip">⚔️ 10 Câu Arena</span>
+                <span class="meta-chip">🧪 2 Labs</span>
+              </span>
+            </div>
+            <h3 class="lesson-title">Bài Tập Ôn Tập Cuối Năm</h3>
+            <p class="lesson-desc">Tổng kết bức tranh toàn cảnh môn Toán lớp 7: Số học & Đại số (Số hữu tỉ, Số thực, Tỉ lệ thức, Đa thức một biến), Hình học & Đo lường (Góc, Đường song song, Tam giác bằng nhau, Quan hệ trong tam giác, Hình khối) và Thống kê & Xác suất.</p>
+            
+            <div class="lesson-labs-box">
+              <span class="labs-icon">🧪</span>
+              <span class="labs-text">Vòng Tròn Tri Thức Toàn Cảnh Toán 7 KNTT • Bảng Vinh Danh Năng Lực Toán 7</span>
+            </div>
+
+            <!-- Quick Tab Shortcuts -->
+            <div class="quick-tab-strip">
+              <a href="toan7_ontap_cuoinam/index.html#theory" class="q-tab" title="Mở phần Lý thuyết">📖 Tri thức</a>
+              <a href="toan7_ontap_cuoinam/index.html#labs" class="q-tab" title="Mở phòng thí nghiệm">🧪 Labs</a>
+              <a href="toan7_ontap_cuoinam/index.html#arena" class="q-tab" title="Vào Đấu trường SGK">⚔️ Đấu trường</a>
+              <a href="toan7_ontap_cuoinam/index.html#badges" class="q-tab" title="Xem Huy hiệu & Bằng khen">🏆 Vinh danh</a>
+            </div>
+
+            <div class="lesson-actions">
+              <a href="toan7_ontap_cuoinam/index.html" class="btn-enter-lesson" title="Mở toàn bộ bài học này">
+                <span>🚀 Vào Học Ngay</span>
+                <span class="arrow-icon">→</span>
+              </a>
+            </div>
+          </div>
+
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="portal-footer">
+      <div class="footer-seal">★ CỔNG HỌC LIỆU SỐ TOÁN HỌC K-12 ★</div>
+      <p class="footer-title">TRƯỜNG THPT LƯƠNG THẾ VINH — TỔ TOÁN</p>
+      <p class="footer-sub">Chương trình Sách giáo khoa Toán 7 (Kết Nối Tri Thức Với Cuộc Sống) • Trọn bộ 53 bài học số hóa chuẩn E-Learning</p>
+      <p class="footer-copy">© 2026 Antigravity Educational Web Engine • Hoạt động 100% Offline • Đà Nẵng, Việt Nam</p>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-card">
+      <h3>Chọn Nhân Vật Đồng Hành Của Bạn</h3>
+      <div class="avatar-picker">
+        <button class="av-opt" data-av="👑" data-name="Chiến Binh Logic">👑 Chiến Binh Logic</button>
+        <button class="av-opt" data-av="🧙‍♂️" data-name="Phù Thủy Đại Số">🧙‍♂️ Phù Thủy Đại Số</button>
+        <button class="av-opt" data-av="🎲" data-name="Bậc Thầy Số Học">🎲 Bậc Thầy Số Học</button>
+        <button class="av-opt" data-av="🦉" data-name="Cú Mèo Tri Thức">🦉 Cú Mèo Tri Thức</button>
+        <button class="av-opt" data-av="⚡" data-name="Tia Chớp Phản Xạ">⚡ Tia Chớp Phản Xạ</button>
+        <button class="av-opt" data-av="💎" data-name="Đại Sư Hình Học">💎 Đại Sư Hình Học</button>
+        <button class="av-opt" data-av="🚀" data-name="Phi Hành Gia Toán Học">🚀 Phi Hành Gia Toán Học</button>
+        <button class="av-opt" data-av="🛡️" data-name="Hiệp Sĩ Euclid">🛡️ Hiệp Sĩ Euclid</button>
+      </div>
+      <div style="text-align: center; margin-top: 15px;">
+        <button class="btn-hero primary" id="btnCloseModal" style="padding: 8px 24px;">Xác Nhận & Đóng</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

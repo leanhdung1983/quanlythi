@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 5: Làm Quen Với Số Thập Phân Vô Hạn Tuần Hoàn - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Nhà Giải Mã Chu Kì 7</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG II: SỐ THỰC • BÀI 5 • TOÁN 7 KNTT</span>
+      <h1>BÀI 5: LÀM QUEN VỚI SỐ THẬP PHÂN VÔ HẠN TUẦN HOÀN</h1>
+      <p>Khám phá bản chất kỳ diệu khi chia phân số không dứt, nhận diện chu kì lặp lại vô tận của số thập phân vô hạn tuần hoàn và làm chủ quy tắc làm tròn số chuẩn mực.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Số Thập Phân Hữu Hạn Và Vô Hạn Tuần Hoàn</h3>
+          <div class="concept-box cyan">
+            <h4>Phân Loại Thập Phân</h4>
+            <p>Khi thực hiện phép chia tử số cho mẫu số của một phân số tối giản với mẫu dương:</p><ul><li>Nếu mẫu số không có ước nguyên tố nào khác 2 và 5 thì phân số đó viết được dưới dạng <strong>số thập phân hữu hạn</strong>. Ví dụ: $\frac{3}{4} = 0,75$; $\frac{7}{20} = 0,35$.</li><li>Nếu mẫu số có chứa ước nguyên tố khác 2 và 5 thì phân số đó viết được dưới dạng <strong>số thập phân vô hạn tuần hoàn</strong>. Ví dụ: $\frac{1}{3} = 0,333... = 0,(3)$; $\frac{5}{6} = 0,8333... = 0,8(3)$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\frac{a}{b} \in \mathbb{Q} \iff \text{Số thập phân hữu hạn hoặc vô hạn tuần hoàn}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Mỗi số hữu tỉ đều được biểu diễn bởi một số thập phân hữu hạn hoặc vô hạn tuần hoàn và ngược lại.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Chu Kì Của Số Thập Phân Vô Hạn Tuần Hoàn</h3>
+          <div class="concept-box cyan">
+            <h4>Khái Niệm Chu Kì</h4>
+            <p>Nhóm chữ số lặp đi lặp lại vô hạn lần ở phần thập phân được gọi là <strong>chu kì</strong> của số thập phân vô hạn tuần hoàn.</p><p>Người ta đặt chu kì trong dấu ngoặc đơn $(\ )$ ngay sau dấu phẩy hoặc sau phần thập phân không tuần hoàn:</p><ul><li>$0,333... = 0,(3)$ có chu kì là $3$.</li><li>$0,1666... = 0,1(6)$ có chu kì là $6$.</li><li>$0,1212... = 0,(12)$ có chu kì là $12$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$0,(d_1 d_2...d_k) = \frac{d_1 d_2...d_k}{\underbrace{99...9}_{k \text{ chữ số 9}}}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Chữ số sau dấu ngoặc đơn lặp lại vô tận. Để đổi phân số ra số thập phân, ta chỉ việc chia tử cho mẫu.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Quy Tắc Làm Tròn Số</h3>
+          <div class="concept-box cyan">
+            <h4>Kỹ Thuật Làm Tròn</h4>
+            <p>Để làm tròn số thập phân đến một hàng nào đó (hàng làm tròn):</p><ul><li>Nếu chữ số ngay sau hàng làm tròn nhỏ hơn 5: ta giữ nguyên chữ số hàng làm tròn và bỏ hết các chữ số phía sau.</li><li>Nếu chữ số ngay sau hàng làm tròn lớn hơn hoặc bằng 5: ta cộng thêm 1 vào chữ số hàng làm tròn và bỏ hết các chữ số phía sau.</li><li>(Nếu phần nguyên hoặc trước dấu phẩy thì thay các chữ số bỏ đi bằng chữ số 0).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$3,14159 \approx 3,14 \quad (\text{làm tròn đến hàng phần trăm})$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Làm tròn theo độ chính xác $d$: Nếu $d = 0,05$ ta làm tròn đến hàng phần mười; nếu $d = 0,005$ ta làm tròn đến hàng phần trăm.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Mối Liên Hệ Giữa Hàng Làm Tròn Và Độ Chính Xác</h3>
+          <div class="concept-box cyan">
+            <h4>Độ Chính Xác d</h4>
+            <p>Khi làm tròn số đến một hàng nào đó, kết quả có độ chính xác bằng một nửa đơn vị của hàng làm tròn:</p><ul><li>Làm tròn đến hàng đơn vị: độ chính xác $d = 0,5$.</li><li>Làm tròn đến hàng phần mười ($0,1$): độ chính xác $d = 0,05$.</li><li>Làm tròn đến hàng phần trăm ($0,01$): độ chính xác $d = 0,005$.</li><li>Làm tròn đến hàng phần nghìn ($0,001$): độ chính xác $d = 0,0005$.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Độ chính xác } d = \frac{1}{2} \times \text{Đơn vị hàng làm tròn}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Quy tắc xác định hàng làm tròn từ độ chính xác $d$: Hàng làm tròn là hàng của chữ số khác 0 đầu tiên bên trái của $d$ nhân đôi.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Máy Phân Tích Chu Kì Thập Phân</h3>
+          <p class="lab-desc">Nhập tử số $a$ và mẫu số $b$ để kiểm tra thuật toán chia phân số, phát hiện chu kì tuần hoàn và biểu diễn dưới dạng ngoặc đơn $0,(...)$.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                    <div>Tử số $a$: <input type="number" id="l1_decA" value="5" style="width:50px;"></div>
+                    <div>Mẫu số $b$: <input type="number" id="l1_decB" value="12" style="width:50px;"></div>
+                    <button class="btn-primary" id="btnAnalyzeDec" style="padding:5px 12px;">Phân Tích Chu Kì</button>
+                </div>
+                <div class="lab-output" id="lab1DecOut" style="margin-top:12px; font-weight:600; line-height:1.8;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Thước Đo Kỹ Thuật Làm Tròn Số</h3>
+          <p class="lab-desc">Nhập một số thập phân và chọn hàng làm tròn để quan sát quy tắc xét chữ số đằng sau và kết quả làm tròn tức thì.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls" style="display:flex; flex-wrap:wrap; gap:10px; align-items:center;">
+                    <div>Số cần làm tròn: <input type="number" id="l2_roundVal" value="3.141592" step="0.0001" style="width:100px;"></div>
+                    <div>
+                        Làm tròn đến:
+                        <select id="l2_roundTarget" style="padding:4px 8px; font-weight:bold; background:#1e1b4b; color:#fff; border:1px solid #818cf8; border-radius:6px;">
+                            <option value="0">Hàng đơn vị</option>
+                            <option value="1">Hàng phần mười (0.1)</option>
+                            <option value="2" selected>Hàng phần trăm (0.01)</option>
+                            <option value="3">Hàng phần nghìn (0.001)</option>
+                        </select>
+                    </div>
+                    <button class="btn-primary" id="btnRunRound" style="padding:5px 12px;">Làm Tròn</button>
+                </div>
+                <div class="lab-output" id="lab2RoundOut" style="margin-top:12px; font-weight:600; line-height:1.8;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 5: LÀM QUEN VỚI SỐ THẬP PHÂN VÔ HẠN TUẦN HOÀN</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">NHÀ GIẢI MÃ CHU KÌ 7 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_ontap_chuong1/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Bài Tập Cuối Chương I - Tổng Ôn Số Hữu Tỉ</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_bai6/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Bài 6: Số Vô Tỉ. Căn Bậc Hai Số Học</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

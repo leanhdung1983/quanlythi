@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 31: Hình trụ và hình nón - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Kỹ Sư Hình Khối Không Gian 🏛️</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG X: MỘT SỐ HÌNH KHỐI TRONG THỰC TIỄN • BÀI 31</span>
+      <h1>Bài 31: Hình Trụ và Hình Nón</h1>
+      <p>Khám phá cấu tạo, diện tích xung quanh, thể tích của hình trụ và hình nón cùng vô vàn ứng dụng thực tế phong phú!</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        <div class="card concept-card">
+  <div class="concept-header">
+    <div class="concept-badge">ĐỊNH NGHĨA 1</div>
+    <h3>1. Hình Trụ và Các Yếu Tố Hình Trụ</h3>
+  </div>
+  <div style="text-align: center; margin: 14px 0;">
+    <svg viewBox="0 0 320 210" width="100%" style="max-width: 290px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="cylGrad1" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" stop-color="#6366f1" stop-opacity="0.4"/>
+          <stop offset="50%" stop-color="#06b6d4" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#6366f1" stop-opacity="0.4"/>
+        </linearGradient>
+      </defs>
+      <path d="M 80 48 L 240 48 L 240 162 L 80 162 Z" fill="url(#cylGrad1)" />
+      <path d="M 80 162 A 80 24 0 0 1 240 162" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="5,4" />
+      <path d="M 80 162 A 80 24 0 0 0 240 162" fill="none" stroke="#06b6d4" stroke-width="2.5" />
+      <line x1="80" y1="48" x2="80" y2="162" stroke="#06b6d4" stroke-width="2.5" />
+      <line x1="240" y1="48" x2="240" y2="162" stroke="#06b6d4" stroke-width="2.5" />
+      <ellipse cx="160" cy="48" rx="80" ry="24" fill="rgba(6, 182, 212, 0.25)" stroke="#06b6d4" stroke-width="2.5" />
+      <line x1="160" y1="48" x2="160" y2="162" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="5,4" />
+      <circle cx="160" cy="48" r="3.5" fill="#f59e0b" />
+      <circle cx="160" cy="162" r="3.5" fill="#f59e0b" />
+      <line x1="160" y1="48" x2="240" y2="48" stroke="#f43f5e" stroke-width="2" />
+      <circle cx="240" cy="48" r="3" fill="#f43f5e" />
+      <text x="144" y="42" fill="#f8fafc" font-size="12" font-weight="bold">O</text>
+      <text x="142" y="177" fill="#f8fafc" font-size="12" font-weight="bold">O'</text>
+      <text x="195" y="42" fill="#f43f5e" font-size="12" font-weight="bold">r</text>
+      <text x="246" y="110" fill="#06b6d4" font-size="12" font-weight="bold">l = h</text>
+      <text x="20" y="110" fill="#cbd5e1" font-size="11">Đường sinh</text>
+      <text x="165" y="110" fill="#f59e0b" font-size="11">Trục h</text>
+    </svg>
+  </div>
+  <p>Khi quay một hình chữ nhật $ABCD$ một vòng quanh cạnh $AB$ cố định, ta được một <strong>hình trụ</strong>:</p>
+  <ul>
+    <li><strong>Hai đáy:</strong> Hai hình tròn bằng nhau $(A; AD)$ và $(B; BC)$ nằm trong hai mặt phẳng song song, có bán kính đáy $r = AD = BC$.</li>
+    <li><strong>Mặt xung quanh:</strong> Mặt do cạnh $CD$ quét nên.</li>
+    <li><strong>Đường sinh:</strong> Các đoạn thẳng song song với trục, nối hai điểm trên hai đường tròn đáy ($l = CD = AB$). Trong hình trụ, đường sinh bằng chiều cao: $l = h$.</li>
+    <li><strong>Trục hình trụ:</strong> Đường thẳng $AB$. Chiều cao $h = AB$ là khoảng cách giữa hai mặt phẳng chứa đáy.</li>
+  </ul>
+</div><div class="card formula-box">
+  <div class="concept-header">
+    <div class="concept-badge">CÔNG THỨC TRỤ</div>
+    <h3>2. Diện Tích và Thể Tích Hình Trụ</h3>
+  </div>
+  <p>Với hình trụ có bán kính đáy $r$ và chiều cao $h$:</p>
+  <ul>
+    <li><strong>Diện tích xung quanh:</strong>
+      <p class="math-highlight">$$S_{xq} = 2\pi r h$$</p>
+    </li>
+    <li><strong>Diện tích toàn phần:</strong>
+      <p class="math-highlight">$$S_{tp} = S_{xq} + 2S_{\text{đáy}} = 2\pi r h + 2\pi r^2 = 2\pi r(h + r)$$</p>
+    </li>
+    <li><strong>Thể tích hình trụ:</strong>
+      <p class="math-highlight">$$V = S_{\text{đáy}} \cdot h = \pi r^2 h$$</p>
+    </li>
+  </ul>
+</div><div class="card concept-card">
+  <div class="concept-header">
+    <div class="concept-badge">ĐỊNH NGHĨA 2</div>
+    <h3>3. Hình Nón và Các Yếu Tố Hình Nón</h3>
+  </div>
+  <div style="text-align: center; margin: 14px 0;">
+    <svg viewBox="0 0 320 210" width="100%" style="max-width: 290px; height: auto;" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="coneGrad1" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" stop-color="#a855f7" stop-opacity="0.4"/>
+          <stop offset="50%" stop-color="#ec4899" stop-opacity="0.2"/>
+          <stop offset="100%" stop-color="#a855f7" stop-opacity="0.4"/>
+        </linearGradient>
+      </defs>
+      <path d="M 160 28 L 240 168 A 80 24 0 0 1 80 168 Z" fill="url(#coneGrad1)" />
+      <path d="M 80 168 A 80 24 0 0 1 240 168" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-dasharray="5,4" />
+      <path d="M 80 168 A 80 24 0 0 0 240 168" fill="none" stroke="#ec4899" stroke-width="2.5" />
+      <line x1="160" y1="28" x2="80" y2="168" stroke="#ec4899" stroke-width="2.5" />
+      <line x1="160" y1="28" x2="240" y2="168" stroke="#ec4899" stroke-width="2.5" />
+      <line x1="160" y1="28" x2="160" y2="168" stroke="#f59e0b" stroke-width="1.8" stroke-dasharray="5,4" />
+      <circle cx="160" cy="28" r="3.5" fill="#ec4899" />
+      <circle cx="160" cy="168" r="3.5" fill="#f59e0b" />
+      <line x1="160" y1="168" x2="240" y2="168" stroke="#38bdf8" stroke-width="2" stroke-dasharray="4,3" />
+      <circle cx="240" cy="168" r="3" fill="#38bdf8" />
+      <path d="M 160 160 L 168 160 L 168 168" fill="none" stroke="#f59e0b" stroke-width="1.2" />
+      <text x="155" y="20" fill="#ec4899" font-size="12" font-weight="bold">A (Đỉnh)</text>
+      <text x="145" y="184" fill="#f8fafc" font-size="12" font-weight="bold">O</text>
+      <text x="246" y="172" fill="#38bdf8" font-size="12" font-weight="bold">B</text>
+      <text x="195" y="182" fill="#38bdf8" font-size="12" font-weight="bold">r</text>
+      <text x="135" y="100" fill="#f59e0b" font-size="12" font-weight="bold">h</text>
+      <text x="210" y="95" fill="#ec4899" font-size="12" font-weight="bold">l (Đường sinh)</text>
+    </svg>
+  </div>
+  <p>Khi quay tam giác vuông $OAB$ (vuông tại $O$) một vòng quanh cạnh góc vuông $OA$ cố định, ta được một <strong>hình nón</strong>:</p>
+  <ul>
+    <li><strong>Đỉnh hình nón:</strong> Điểm $A$.</li>
+    <li><strong>Mặt đáy:</strong> Hình tròn tâm $O$ bán kính $r = OB$.</li>
+    <li><strong>Mặt xung quanh:</strong> Mặt do cạnh huyền $AB$ quét nên.</li>
+    <li><strong>Đường sinh $l$:</strong> Độ dài cạnh huyền $l = AB$. Mối liên hệ theo định lí Pythagore:
+      <p class="math-highlight">$$l = \sqrt{h^2 + r^2} \iff l^2 = h^2 + r^2$$</p>
+    </li>
+    <li><strong>Chiều cao $h$:</strong> Khoảng cách từ đỉnh $A$ đến tâm đáy $O$: $h = OA$.</li>
+  </ul>
+</div><div class="card rule-box gold">
+  <div class="concept-header">
+    <div class="concept-badge gold">CÔNG THỨC NÓN</div>
+    <h3>4. Diện Tích và Thể Tích Hình Nón</h3>
+  </div>
+  <p>Với hình nón có bán kính đáy $r$, chiều cao $h$ và đường sinh $l$:</p>
+  <ul>
+    <li><strong>Diện tích xung quanh:</strong>
+      <p class="math-highlight">$$S_{xq} = \pi r l$$</p>
+    </li>
+    <li><strong>Diện tích toàn phần:</strong>
+      <p class="math-highlight">$$S_{tp} = S_{xq} + S_{\text{đáy}} = \pi r l + \pi r^2 = \pi r(l + r)$$</p>
+    </li>
+    <li><strong>Thể tích hình nón:</strong>
+      <p class="math-highlight">$$V = \frac{1}{3} S_{\text{đáy}} \cdot h = \frac{1}{3}\pi r^2 h$$</p>
+    </li>
+  </ul>
+</div>
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Mô Phỏng 3D Hình Trụ & Tính Toán Thời Gian Thực</h3>
+          <p class="lab-desc">Kéo thanh trượt để thay đổi bán kính đáy $r$ và chiều cao $h$. Quan sát hình ảnh 3D và kết quả tính diện tích xung quanh, toàn phần và thể tích tức thì.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas1" width="600" height="240"></canvas>
+        </div>
+        <div class="lab-control-group">
+  <label>Bán kính đáy $r$ (cm): <strong id="valCylR">4</strong></label>
+  <input type="range" id="sliderCylR" min="1" max="10" step="0.5" value="4">
+</div>
+<div class="lab-control-group">
+  <label>Chiều cao $h$ (cm): <strong id="valCylH">8</strong></label>
+  <input type="range" id="sliderCylH" min="2" max="16" step="0.5" value="8">
+</div>
+<div class="lab-output" id="outputCylinder"></div>
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Mô Phỏng Hình Nón & Trải Mặt Xung Quanh</h3>
+          <p class="lab-desc">Điều chỉnh bán kính đáy $r$ và chiều cao $h$ của hình nón. Quan sát đường sinh $l$ và mặt xung quanh được trải phẳng thành một hình quạt tròn góc $\alpha = \frac{r}{l} \cdot 360^\circ$.</p>
+          
+        <div class="canvas-wrap">
+          <canvas id="labCanvas2" width="600" height="240"></canvas>
+        </div>
+        <div class="lab-control-group">
+  <label>Bán kính đáy $r$ (cm): <strong id="valConeR">3</strong></label>
+  <input type="range" id="sliderConeR" min="1" max="8" step="0.5" value="3">
+</div>
+<div class="lab-control-group">
+  <label>Chiều cao $h$ (cm): <strong id="valConeH">4</strong></label>
+  <input type="range" id="sliderConeH" min="2" max="10" step="0.5" value="4">
+</div>
+<div class="lab-output" id="outputCone"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 31: Hình Trụ và Hình Nón</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">KỸ SƯ HÌNH KHỐI KHÔNG GIAN 🏛️ 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_ontap_chuong9/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Ôn Tập Chương IX: Đường Tròn Ngoại Tiếp & Nội Tiếp</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai32/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 32: Hình cầu</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

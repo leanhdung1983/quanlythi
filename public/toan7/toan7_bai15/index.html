@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 15: Các Trường Hợp Bằng Nhau Của Tam Giác Vuông - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chuyên Gia Tam Giác Vuông</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG IV: TAM GIÁC BẰNG NHAU • BÀI 15 • TOÁN 7 KNTT</span>
+      <h1>BÀI 15: CÁC TRƯỜNG HỢP BẰNG NHAU CỦA TAM GIÁC VUÔNG</h1>
+      <p>Tam giác vuông đã có sẵn một góc bằng $90^\\circ$! Vì thế chỉ cần thêm 2 yếu tố tương ứng bằng nhau là đủ kết luận hai tam giác vuông bằng nhau.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Các Trường Hợp Suy Ra Trực Tiếp</h3>
+          <div class="concept-box cyan">
+            <h4>Suy Ra Từ C-G-C & G-C-G</h4>
+            <p>Vì góc xen giữa hai cạnh góc vuông luôn bằng $90^\\circ$ nên:</p><ul><li><strong>Hai cạnh góc vuông:</strong> Nếu hai cạnh góc vuông của tam giác vuông này bằng hai cạnh góc vuông của tam giác vuông kia thì hai tam giác vuông đó bằng nhau (suy ra từ c-g-c).</li><li><strong>Cạnh góc vuông - góc nhọn kề:</strong> Nếu một cạnh góc vuông và một góc nhọn kề cạnh ấy bằng nhau thì hai tam giác vuông đó bằng nhau (suy ra từ g-c-g).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\begin{cases} AB = A'B' \\ AC = A'C' \\ \widehat{A} = \widehat{A'} = 90^\circ \end{cases} \implies \triangle ABC = \triangle A'B'C'$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Chỉ cần 2 yếu tố về cạnh/góc nhọn (thay vì 3 yếu tố như tam giác thường).</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Trường Hợp Cạnh Huyền - Góc Nhọn</h3>
+          <div class="concept-box cyan">
+            <h4>Cạnh Huyền - Góc Nhọn</h4>
+            <p><strong>Định lí:</strong> Nếu cạnh huyền và một góc nhọn của tam giác vuông này bằng cạnh huyền và một góc nhọn của tam giác vuông kia thì hai tam giác vuông đó bằng nhau:</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\begin{cases} BC = B'C'\text{ (cạnh huyền)} \\ \widehat{B} = \widehat{B'}\text{ (góc nhọn)} \\ \widehat{A} = \widehat{A'} = 90^\circ \end{cases} \implies \triangle ABC = \triangle A'B'C'$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Lí do: Vì hai góc nhọn phụ nhau nên biết một góc nhọn sẽ suy ra góc nhọn còn lại, đưa về trường hợp (g-c-g).</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Trường Hợp Cạnh Huyền - Cạnh Góc Vuông</h3>
+          <div class="concept-box cyan">
+            <h4>Đặc Biệt: Huyền - Góc Vuông</h4>
+            <p><strong>Định lí đặc biệt:</strong> Nếu cạnh huyền và một cạnh góc vuông của tam giác vuông này bằng cạnh huyền và một cạnh góc vuông của tam giác vuông kia thì hai tam giác vuông đó bằng nhau:</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\begin{cases} BC = B'C'\text{ (cạnh huyền)} \\ AB = A'B'\text{ (cạnh góc vuông)} \\ \widehat{A} = \widehat{A'} = 90^\circ \end{cases} \implies \triangle ABC = \triangle A'B'C'$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Đây là trường hợp rất mạnh, giúp chứng minh hai tam giác vuông bằng nhau mà không cần biết số đo bất kì góc nhọn nào.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Tổng Hợp 4 Trường Hợp Bằng Nhau Của Tam Giác Vuông</h3>
+          <div class="concept-box cyan">
+            <h4>Bảng Tổng Hợp 4 Dạng</h4>
+            <p>Bốn tiêu chuẩn vàng để chứng minh hai tam giác vuông bằng nhau:</p><ol><li>Hai cạnh góc vuông (c-g-c).</li><li>Cạnh góc vuông - góc nhọn kề (g-c-g).</li><li>Cạnh huyền - góc nhọn.</li><li>Cạnh huyền - cạnh góc vuông.</li></ol>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$\text{Hai tam giác vuông} \iff \text{Chỉ cần 2 điều kiện tương ứng}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Luôn nêu rõ đỉnh góc vuông khi mở đầu bài chứng minh: 'Xét hai tam giác vuông $\\triangle ABC$ (vuông tại $A$) và $\\triangle A'B'C'$ (vuông tại $A'$)...'</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Mô Phỏng Cạnh Huyền - Góc Nhọn</h3>
+          <p class="lab-desc">Kéo thanh trượt thay đổi góc nhọn $\\widehat{B}$ với cạnh huyền cố định $BC = 200$, quan sát hai tam giác vuông luôn bằng nhau.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Cạnh huyền cố định $BC = 200$</label>
+                    <label style="margin-top:6px;">Góc nhọn $\\widehat{B}$: <span id="valRt_B" style="color:#06b6d4; font-weight:bold;">35°</span></label>
+                    <input type="range" id="sliderRt_B" min="15" max="75" value="35" step="1">
+                </div>
+                <div class="lab-output" id="lab1RtOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Kiểm Nghiệm Cạnh Huyền - Cạnh Góc Vuông</h3>
+          <p class="lab-desc">Kéo thanh trượt thay đổi cạnh góc vuông $AC$ với cạnh huyền $BC = 220$ cố định, quan sát cạnh góc vuông còn lại $AB$ xác định duy nhất.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Cạnh huyền $BC = 220$</label>
+                    <label style="margin-top:6px;">Cạnh góc vuông $AC$: <span id="valLegAC" style="color:#f59e0b; font-weight:bold;">120</span></label>
+                    <input type="range" id="sliderLegAC" min="40" max="190" value="120" step="5">
+                </div>
+                <div class="lab-output" id="lab2LegOut" style="margin-top:10px; font-weight:600;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 15: CÁC TRƯỜNG HỢP BẰNG NHAU CỦA TAM GIÁC VUÔNG</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHUYÊN GIA TAM GIÁC VUÔNG 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_bai14/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Bài 14: Trường Hợp Bằng Nhau Thứ Hai (c-g-c) Và Thứ Ba (g-c-g)</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_bai16/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Bài 16: Tam Giác Cân. Đường Trung Trực Của Đoạn Thẳng</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

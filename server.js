@@ -69,8 +69,11 @@ async function startServer() {
 
     // Serve interactive learning portals directly
     app.use('/toan6', express.static(path.join(process.cwd(), 'public', 'toan6')));
-    app.use('/toan11', express.static(path.join(process.cwd(), 'public', 'toan11')));
+    app.use('/toan7', express.static(path.join(process.cwd(), 'public', 'toan7')));
+    app.use('/toan8', express.static(path.join(process.cwd(), 'public', 'toan8')));
+    app.use('/toan9', express.static(path.join(process.cwd(), 'public', 'toan9')));
     app.use('/toan10', express.static(path.join(process.cwd(), 'public', 'toan10')));
+    app.use('/toan11', express.static(path.join(process.cwd(), 'public', 'toan11')));
     app.use('/toan12', express.static(path.join(process.cwd(), 'public', 'toan12')));
 
     if (process.env.NODE_ENV !== 'production') {

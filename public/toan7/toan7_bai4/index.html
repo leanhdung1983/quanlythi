@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 4: Thứ Tự Thực Hiện Các Phép Tính. Quy Tắc Chuyển Vế - Toán 7 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Chiến Binh Logic Phương Trình 7</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 7">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">CHƯƠNG I: SỐ HỮU TỈ • BÀI 4 • TOÁN 7 KNTT</span>
+      <h1>BÀI 4: THỨ TỰ THỰC HIỆN CÁC PHÉP TÍNH. QUY TẮC CHUYỂN VẾ</h1>
+      <p>Làm chủ quy chuẩn ưu tiên toán học khi tính toán biểu thức nhiều tầng ngoặc và quy tắc chuyển vế 'đổi vế thì phải đổi dấu' - chìa khóa giải phương trình xuyên suốt cấp THCS.</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 1. Thứ Tự Thực Hiện Các Phép Tính</h3>
+          <div class="concept-box cyan">
+            <h4>Thứ Tự Ưu Tiên</h4>
+            <p>Đối với biểu thức không có dấu ngoặc:</p><p>$$\text{Luỹ thừa } \longrightarrow \text{ Nhân và chia } \longrightarrow \text{ Cộng và trừ}$$</p><p>Đối với biểu thức có dấu ngoặc, ta thực hiện theo thứ tự:</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$(\ ) \longrightarrow [\ ] \longrightarrow \{\ \}$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Nếu biểu thức chỉ có phép cộng và trừ (hoặc chỉ có phép nhân và chia), ta thực hiện lần lượt từ trái sang phải.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 2. Quy Tắc Chuyển Vế</h3>
+          <div class="concept-box cyan">
+            <h4>Quy Tắc Sống Còn</h4>
+            <p>Khi chuyển một số hạng từ vế này sang vế kia của một đẳng thức, ta phải <strong>đổi dấu</strong> số hạng đó:</p>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$A + B = C \iff A = C - B; \quad A - B = C \iff A = C + B$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Quy tắc vàng: 'Chuyển vế thì đổi dấu'. Dấu $+$ chuyển thành $-$, dấu $-$ chuyển thành $+$.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 3. Các Tính Chất Của Đẳng Thức</h3>
+          <div class="concept-box cyan">
+            <h4>Tính Chất Đẳng Thức</h4>
+            <p>Với mọi số hữu tỉ $a, b, c$:</p><ul><li>Nếu $a = b$ thì $a + c = b + c$ và $a - c = b - c$.</li><li>Nếu $a = b$ thì $a \cdot c = b \cdot c$.</li><li>Nếu $a = b$ và $c \neq 0$ thì $\frac{a}{c} = \frac{b}{c}$.</li><li>Nếu $a = b$ thì $b = a$.</li><li>Nếu $a = b$ và $b = c$ thì $a = c$ (tính chất bắc cầu).</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$a = b \iff a \pm c = b \pm c$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Cộng, trừ, nhân hoặc chia cả hai vế của một đẳng thức với cùng một số (khác 0 khi chia) ta được một đẳng thức mới bằng nhau.</p>
+          </div>
+        </div>
+
+        <div class="concept-card">
+          <h3 class="card-title"><i>📖</i> 4. Các Bước Tìm x Chuẩn Mực</h3>
+          <div class="concept-box cyan">
+            <h4>Kỹ Năng Giải Toán</h4>
+            <p>Để tìm $x$ trong biểu thức chứa số hữu tỉ:</p><ul><li><strong>Bước 1:</strong> Thực hiện các phép tính thu gọn ở từng vế (nếu có).</li><li><strong>Bước 2:</strong> Áp dụng quy tắc chuyển vế, chuyển các số hạng chứa $x$ về một vế (thường là vế trái), các số hạng tự do về vế còn lại.</li><li><strong>Bước 3:</strong> Thu gọn hai vế về dạng $a \cdot x = b$.</li><li><strong>Bước 4:</strong> Tìm $x = b : a$ và kết luận.</li></ul>
+          </div>
+          <div class="formula-box">
+            <p class="math-highlight">$$a \cdot x = b \iff x = \frac{b}{a} \quad (a \neq 0)$$</p>
+          </div>
+          <div class="rule-box gold">
+            <h4>💡 Ghi nhớ trọng tâm</h4>
+            <p>Luôn kiểm tra lại giá trị $x$ tìm được bằng cách thay trực tiếp vào biểu thức ban đầu để đảm bảo tính chính xác 100%.</p>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 1: Cán Cân Chuyển Vế Đổi Dấu</h3>
+          <p class="lab-desc">Kéo chuyển số hạng $b$ từ vế trái sang vế phải của phương trình $x + b = c$ và quan sát sự đổi dấu tức thì.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas1" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls" style="display:flex; flex-wrap:wrap; gap:12px; align-items:center;">
+                    <div>Hệ số $b$: <input type="number" id="l1_transB" value="3" style="width:50px;"></div>
+                    <div>Hằng số $c$: <input type="number" id="l1_transC" value="7" style="width:50px;"></div>
+                    <button class="btn-primary" id="btnTransfer" style="padding:5px 12px;">Chuyển Vế $b$</button>
+                    <button class="btn-icon" id="btnResetTrans" style="padding:5px 10px;">Đặt Lại</button>
+                </div>
+                <div class="lab-output" id="lab1TransOut" style="margin-top:12px; font-weight:600; line-height:1.8;"></div>
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> Lab 2: Máy Tính Biểu Thức Nhiều Tầng Ngoặc</h3>
+          <p class="lab-desc">Nhập một biểu thức mẫu có đủ luỹ thừa, nhân chia, cộng trừ và các tầng ngoặc $(\ ), [\ ]$ để xem từng bước phân giải.</p>
+          <div class="canvas-wrap">
+            <canvas id="labCanvas2" width="600" height="240"></canvas>
+          </div>
+          
+                <div class="lab-controls">
+                    <label>Chọn biểu thức mẫu:</label>
+                    <select id="l2_sampleExpr" style="padding:5px 10px; font-weight:bold; background:#1e1b4b; color:#fff; border:1px solid #818cf8; border-radius:6px; width:100%; max-width:400px;">
+                        <option value="1">Mẫu 1: 1/2 + 3/4 * (2 - 1/3)</option>
+                        <option value="2">Mẫu 2: [ (1/2)^2 + 3/4 ] : 2/5</option>
+                        <option value="3">Mẫu 3: 5/6 - [ 1/3 + (1/2)^3 * 4 ]</option>
+                    </select>
+                    <button class="btn-primary" id="btnStepEval" style="margin-top:8px;">Giải Chi Tiết Từng Bước</button>
+                </div>
+                <div class="lab-output" id="lab2StepOut" style="margin-top:12px; font-weight:600; line-height:1.8;"></div>
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 7</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THPT LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 7</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>BÀI 4: THỨ TỰ THỰC HIỆN CÁC PHÉP TÍNH. QUY TẮC CHUYỂN VẾ</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 7 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">CHIẾN BINH LOGIC PHƯƠNG TRÌNH 7 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THPT LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THPT</em><br>
+            <span id="certDate">Đà Nẵng, ngày 20 tháng 10 năm 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <nav class="sequential-nav" aria-label="Điều hướng bài học">
+      <footer class="lesson-footer">
+        <a href="../toan7_bai3/index.html" class="nav-btn prev">
+          <span class="nav-sub">⬅️ Bài trước</span>
+          <span class="nav-title">Bài 3: Luỹ Thừa Với Số Mũ Tự Nhiên Của Một Số Hữu Tỉ</span>
+        </a>
+        <a href="../index.html" class="nav-btn home">
+          <span class="nav-sub">Toán 7 KNTT</span>
+          <span class="nav-title">🏠 Mục Lục 53 Bài</span>
+        </a>
+        <a href="../toan7_ontap_chuong1/index.html" class="nav-btn next">
+          <span class="nav-sub">Bài tiếp theo ➡️</span>
+          <span class="nav-title">Bài Tập Cuối Chương I - Tổng Ôn Số Hữu Tỉ</span>
+        </a>
+      </footer>
+    </nav>
+  </div>
+
+  <!-- Avatar Selector Modal -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 7</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 7">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 7">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 7">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 7">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Thống Kê 7">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 7">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Phân Số 7">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 7">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>

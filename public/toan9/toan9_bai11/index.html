@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bài 11: Tỉ số lượng giác của góc nhọn - Toán 9 KNTT</title>
+  <link rel="stylesheet" href="katex/katex.min.css">
+  <link rel="stylesheet" href="style.css">
+  <script src="katex/katex.min.js"></script>
+  <script src="katex/contrib/auto-render.min.js"></script>
+</head>
+<body>
+  <div class="container">
+    <!-- HUD Header -->
+    <header class="hud-header">
+      <div class="hud-profile">
+        <div class="avatar-badge" id="avatarBtn" title="Bấm để đổi Avatar!">👑</div>
+        <div class="user-meta">
+          <h2 id="userNameDisplay">Chiến Binh Logic 🌟</h2>
+          <span class="user-title" id="userTitle">Hiệp Sĩ Lượng Giác 9</span>
+        </div>
+      </div>
+
+      <div class="hud-stats">
+        <div class="stat-item">
+          <span class="stat-label">Cấp Độ Sao</span>
+          <div class="star-rating" id="starRating">⭐⭐☆☆☆</div>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Kinh Nghiệm (XP)</span>
+          <span class="stat-value xp" id="xpDisplay">0</span>
+        </div>
+        <div class="stat-item">
+          <span class="stat-label">Chuỗi Đúng</span>
+          <span class="stat-value streak" id="streakDisplay">🔥 0</span>
+        </div>
+      </div>
+
+      <div class="hud-actions">
+        <a href="../index.html" class="btn-icon" style="text-decoration: none;" title="Quay về Cổng Học Liệu Toán 9">🏠 Cổng Học Liệu</a>
+        <button class="btn-icon" id="soundToggle" title="Bật/Tắt âm thanh">🔊 Âm thanh: BẬT</button>
+        <button class="btn-icon" id="resetProgress" title="Đặt lại tiến trình">🔄 Làm mới</button>
+      </div>
+    </header>
+
+    <!-- Lesson Banner -->
+    <section class="lesson-banner">
+      <span class="lesson-badge">HÌNH HỌC 9 • TẬP 1 • CHƯƠNG IV</span>
+      <h1>Bài 11: Tỉ số lượng giác của góc nhọn</h1>
+      <p>Khái niệm sin, cos, tan, cot của góc nhọn; tỉ số lượng giác của hai góc phụ nhau và bảng giá trị góc đặc biệt</p>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="section-nav">
+      <button class="nav-tab active" data-tab="theory">📖 Bản Đồ Tri Thức</button>
+      <button class="nav-tab" data-tab="labs">🧪 Phòng Thí Nghiệm</button>
+      <button class="nav-tab" data-tab="arena">⚔️ Đấu Trường SGK</button>
+      <button class="nav-tab" data-tab="badges">🏆 Huy Hiệu &amp; Vinh Danh</button>
+    </nav>
+
+    <!-- Tab 1: Theory -->
+    <section class="tab-content active" id="tab-theory">
+      <div class="card-grid">
+        
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 1. Định nghĩa tỉ số lượng giác của góc nhọn</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                Cho tam giác $ABC$ vuông tại $A$, xét góc nhọn $B = \alpha$:
+                <ul style="margin: 8px 0; padding-left: 20px;">
+                    <li>Cạnh đối diện góc $B$ là $AC$ (cạnh đối).</li>
+                    <li>Cạnh kề góc $B$ là $AB$ (cạnh kề).</li>
+                    <li>Cạnh huyền là $BC$.</li>
+                </ul>
+                <div class="formula-box">
+                    $$\sin \alpha = \frac{\text{Cạnh đối}}{\text{Cạnh huyền}} = \frac{AC}{BC}$$
+                    $$\cos \alpha = \frac{\text{Cạnh kề}}{\text{Cạnh huyền}} = \frac{AB}{BC}$$
+                    $$\tan \alpha = \frac{\text{Cạnh đối}}{\text{Cạnh kề}} = \frac{AC}{AB}$$
+                    $$\cot \alpha = \frac{\text{Cạnh kề}}{\text{Cạnh đối}} = \frac{AB}{AC}$$
+                </div>
+                <div class="rule-box gold">
+                    <strong>💡 Mẹo ghi nhớ dân gian:</strong><br>
+                    <em>"Sin đi học (đối / huyền), Cos khóc hoài (kề / huyền), Tan đoàn kết (đối / kề), Cot kết đoàn (kề / đối)".</em><br>
+                    <strong>Nhận xét:</strong> Với mọi góc nhọn $\alpha$, ta luôn có: $0 < \sin \alpha < 1$, $0 < \cos \alpha < 1$, $\tan \alpha > 0$, $\cot \alpha > 0$.
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 2. Tỉ số lượng giác của hai góc phụ nhau</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                Trong tam giác vuông $ABC$ (vuông tại $A$), hai góc nhọn $B$ và $C$ phụ nhau: $\widehat{B} + \widehat{C} = 90^\circ$.
+                <div class="formula-box">
+                    $$\sin B = \cos C \quad ; \quad \cos B = \sin C$$
+                    $$\tan B = \cot C \quad ; \quad \cot B = \tan C$$
+                </div>
+                <p><strong>Định lí:</strong> Nếu hai góc phụ nhau thì $\sin$ góc này bằng $\cos$ góc kia, $\tan$ góc này bằng $\cot$ góc kia.</p>
+                <div class="rule-box gold">
+                    <strong>Ví dụ:</strong> $\sin 30^\circ = \cos 60^\circ = \frac{1}{2}$; $\tan 45^\circ = \cot 45^\circ = 1$; $\sin 25^\circ = \cos 65^\circ$.
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+            <div class="card">
+              <h3 class="card-title"><i>📖</i> 3. Tỉ số lượng giác các góc đặc biệt & Hệ thức liên hệ</h3>
+              <div class="concept-box cyan">
+                <h4>Trọng Tâm Lý Thuyết</h4>
+                
+                Bảng giá trị lượng giác của các góc đặc biệt $30^\circ, 45^\circ, 60^\circ$:
+                <div class="quiz-table-wrap">
+                    <table class="quiz-table">
+                        <thead>
+                            <tr>
+                                <th>Tỉ số / Góc $\alpha$</th>
+                                <th>$30^\circ$</th>
+                                <th>$45^\circ$</th>
+                                <th>$60^\circ$</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr><td>$\sin \alpha$</td><td>$\frac{1}{2}$</td><td>$\frac{\sqrt{2}}{2}$</td><td>$\frac{\sqrt{3}}{2}$</td></tr>
+                            <tr><td>$\cos \alpha$</td><td>$\frac{\sqrt{3}}{2}$</td><td>$\frac{\sqrt{2}}{2}$</td><td>$\frac{1}{2}$</td></tr>
+                            <tr><td>$\tan \alpha$</td><td>$\frac{\sqrt{3}}{3}$</td><td>$1$</td><td>$\sqrt{3}$</td></tr>
+                            <tr><td>$\cot \alpha$</td><td>$\sqrt{3}$</td><td>$1$</td><td>$\frac{\sqrt{3}}{3}$</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="formula-box">
+                    $$\tan \alpha = \frac{\sin \alpha}{\cos \alpha} \quad ; \quad \cot \alpha = \frac{\cos \alpha}{\sin \alpha} \quad ; \quad \tan \alpha \cdot \cot \alpha = 1$$
+                    $$\sin^2 \alpha + \cos^2 \alpha = 1$$
+                </div>
+                
+              </div>
+              
+              
+            </div>
+            
+      </div>
+    </section>
+
+    <!-- Tab 2: Labs -->
+    <section class="tab-content" id="tab-labs">
+      <div class="lab-grid">
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> 🧪 Phòng thí nghiệm 1: Đo góc & Khám phá 4 tỉ số lượng giác</h3>
+          <p class="lab-desc">Kéo thanh trượt để thay đổi góc nhọn $\alpha$ của tam giác vuông và quan sát sự biến thiên của sin, cos, tan, cot</p>
+          
+            <div class="canvas-wrap">
+              <canvas id="trigCanvas" width="600" height="240"></canvas>
+            </div>
+            <div class="lab-controls">
+              
+                <div class="ctrl-group">
+                    <label>Góc nhọn $\alpha$: <strong id="lblAngle">30</strong>°</label>
+                    <input type="range" id="rngAngle" min="10" max="80" step="1" value="30">
+                </div>
+                <div class="ctrl-group">
+                    <label>Độ dài cạnh huyền $BC$: <strong id="lblHyp">10</strong> cm</label>
+                    <input type="range" id="rngHyp" min="6" max="15" step="1" value="10">
+                </div>
+                
+            </div>
+            
+                <div class="lab-output">
+                    <p>Tam giác $ABC$ vuông tại $A$ với $\widehat{B} = \alpha =$ <span id="outAngle">30</span>°:</p>
+                    <p>Cạnh đối $AC =$ <strong id="outOpp">5.00</strong> cm | Cạnh kề $AB =$ <strong id="outAdj">8.66</strong> cm | Cạnh huyền $BC =$ <strong id="outHyp">10.00</strong> cm</p>
+                    <div style="margin-top: 8px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px;">
+                        <div>$\sin \alpha = \frac{AC}{BC} =$ <span id="valSin">0.5000</span></div>
+                        <div>$\cos \alpha = \frac{AB}{BC} =$ <span id="valCos">0.8660</span></div>
+                        <div>$\tan \alpha = \frac{AC}{AB} =$ <span id="valTan">0.5774</span></div>
+                        <div>$\cot \alpha = \frac{AB}{AC} =$ <span id="valCot">1.7321</span></div>
+                    </div>
+                </div>
+                
+            
+        </div>
+
+        <div class="card lab-card">
+          <h3 class="card-title"><i>🧪</i> 🧪 Phòng thí nghiệm 2: So sánh hai góc phụ nhau</h3>
+          <p class="lab-desc">Chọn một góc nhọn bất kỳ để kiểm chứng trực quan tính chất: $\sin \alpha = \cos(90^\circ - \alpha)$ và $\tan \alpha = \cot(90^\circ - \alpha)$</p>
+          
+            <div class="canvas-wrap">
+              <canvas id="compCanvas" width="600" height="240"></canvas>
+            </div>
+            <div class="lab-controls">
+              
+                <div class="ctrl-group">
+                    <label>Chọn góc $\alpha$:</label>
+                    <div style="display: flex; gap: 8px; flex-wrap: wrap; margin-top: 5px;">
+                        <button class="btn-primary" onclick="setCompAngle(30)" style="padding: 4px 10px;">30°</button>
+                        <button class="btn-primary" onclick="setCompAngle(45)" style="padding: 4px 10px;">45°</button>
+                        <button class="btn-primary" onclick="setCompAngle(60)" style="padding: 4px 10px;">60°</button>
+                        <button class="btn-primary" onclick="setCompAngle(20)" style="padding: 4px 10px;">20°</button>
+                        <button class="btn-primary" onclick="setCompAngle(75)" style="padding: 4px 10px;">75°</button>
+                    </div>
+                </div>
+                
+            </div>
+            
+                <div class="lab-output" id="compOutput">
+                    <p>Góc $\alpha =$ <strong id="lblAlpha">30</strong>° và góc phụ $\beta = 90^\circ - \alpha =$ <strong id="lblBeta">60</strong>°:</p>
+                    <ul style="margin: 8px 0; padding-left: 20px;">
+                        <li>$\sin \alpha = \sin$ <span id="cA1">30</span>° = <span id="vSinA">0.5000</span> = $\cos$ <span id="cB1">60</span>° = $\cos \beta$</li>
+                        <li>$\cos \alpha = \cos$ <span id="cA2">30</span>° = <span id="vCosA">0.8660</span> = $\sin$ <span id="cB2">60</span>° = $\sin \beta$</li>
+                        <li>$\tan \alpha = \tan$ <span id="cA3">30</span>° = <span id="vTanA">0.5774</span> = $\cot$ <span id="cB3">60</span>° = $\cot \beta$</li>
+                        <li>$\cot \alpha = \cot$ <span id="cA4">30</span>° = <span id="vCotA">1.7321</span> = $\tan$ <span id="cB4">60</span>° = $\tan \beta$</li>
+                    </ul>
+                </div>
+                
+            
+        </div>
+      </div>
+    </section>
+
+    <!-- Tab 3: Arena -->
+    <section class="tab-content" id="tab-arena">
+      <div class="arena-header">
+        <div>
+          <h2>Đấu Trường Trắc Nghiệm Chuẩn SGK</h2>
+          <p>Chinh phục 10 thử thách chọn lọc theo chương trình Kết nối tri thức - Tích lũy tối đa 200 XP</p>
+        </div>
+        <div class="arena-score-box">
+          <span class="arena-progress-label">Tiến Độ: <strong id="arenaProgress">0/10</strong></span>
+          <span class="arena-score-label">Điểm Arena: <strong id="arenaScore">0 XP</strong></span>
+        </div>
+      </div>
+      <div class="quiz-container" id="quizContainer">
+        <!-- Dynamic Quiz Cards -->
+      </div>
+    </section>
+
+    <!-- Tab 4: Badges & Certificate -->
+    <section class="tab-content" id="tab-badges">
+      <div class="badge-grid">
+        <div class="badge-item locked" id="badge-1">
+          <div class="badge-icon">📖</div>
+          <div class="badge-name">Học Giả Khởi Hành</div>
+          <div class="badge-desc">Khám phá toàn bộ Bản đồ tri thức</div>
+        </div>
+        <div class="badge-item locked" id="badge-2">
+          <div class="badge-icon">🧪</div>
+          <div class="badge-name">Nhà Thực Nghiệm 9</div>
+          <div class="badge-desc">Tương tác và điều khiển cả 2 phòng thí nghiệm</div>
+        </div>
+        <div class="badge-item locked" id="badge-3">
+          <div class="badge-icon">🔥</div>
+          <div class="badge-name">Chiến Binh Combo</div>
+          <div class="badge-desc">Đạt chuỗi trả lời đúng 5 câu liên tiếp</div>
+        </div>
+        <div class="badge-item locked" id="badge-4">
+          <div class="badge-icon">⭐</div>
+          <div class="badge-name">Bậc Thầy Chuyên Đề</div>
+          <div class="badge-desc">Đạt từ 160 XP trở lên trong Đấu Trường</div>
+        </div>
+        <div class="badge-item locked" id="badge-5">
+          <div class="badge-icon">👑</div>
+          <div class="badge-name">Thủ Khoa Tuyệt Đối</div>
+          <div class="badge-desc">Chinh phục hoàn hảo 10/10 câu hỏi SGK</div>
+        </div>
+      </div>
+
+      <!-- Printable A4 Certificate -->
+      <div class="cert-container" id="gradCert">
+        <div class="cert-header">
+          <h2 class="cert-school">TRƯỜNG THCS LƯƠNG THẾ VINH</h2>
+          <p class="cert-subtitle">HỆ THỐNG HỌC LIỆU SỐ E-LEARNING TOÁN 9</p>
+          <h1 class="cert-title">GIẤY CHỨNG NHẬN HOÀN THÀNH BÀI HỌC</h1>
+        </div>
+
+        <div class="cert-body">
+          <p>Trân trọng chứng nhận học sinh:</p>
+          <span class="cert-student-name" id="certStudentName">Chiến Binh Logic</span>
+          <p>
+            Đã hoàn thành xuất sắc chuyên đề <strong>Bài 11: Tỉ số lượng giác của góc nhọn</strong><br>
+            Nắm vững bản chất kiến thức trọng tâm, thực hành thí nghiệm trực quan và xuất sắc vượt qua các thử thách trắc nghiệm theo chuẩn SGK Toán 9 Kết Nối Tri Thức Với Cuộc Sống.
+          </p>
+          <p style="font-weight: 700; color: #312e81;">
+            Danh hiệu đạt được: <span id="certHonorsTitle">HIỆP SĨ LƯỢNG GIÁC 9 🏅</span>
+          </p>
+        </div>
+
+        <div class="cert-footer">
+          <div class="cert-seal">🏅</div>
+          <div class="cert-sign">
+            <strong>TRƯỜNG THCS LƯƠNG THẾ VINH</strong><br>
+            <em>Tổ Chuyên Môn Toán THCS</em><br>
+            <span id="certDate">Đà Nẵng, ngày cấp: 2026</span>
+          </div>
+        </div>
+
+        <div style="margin-top: 24px;">
+          <button class="btn-primary" id="btnPrintCert" onclick="window.print()" style="margin: 0 auto; display: block;">
+            🖨️ In Giấy Chứng Nhận A4
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sequential Lesson Navigation Footer -->
+    <footer class="lesson-footer">
+      <a href="../toan9_ontap_chuong3/index.html" class="nav-btn prev">
+        <span class="nav-sub">⬅️ Bài trước</span>
+        <span class="nav-title">Ôn Tập Chương III: Căn Bậc Hai Và Căn Bậc Ba</span>
+      </a>
+      <a href="../index.html" class="nav-btn home">
+        <span class="nav-sub">Toán 9 KNTT</span>
+        <span class="nav-title">🏠 Cổng Học Liệu Số</span>
+      </a>
+      <a href="../toan9_bai12/index.html" class="nav-btn next">
+        <span class="nav-sub">Bài tiếp theo ➡️</span>
+        <span class="nav-title">Bài 12: Một số hệ thức giữa cạnh và góc trong tam giác vuông</span>
+      </a>
+    </footer>
+  </div>
+
+  <!-- Avatar Selector Modal (Mặc định ẩn không bật khi khởi động) -->
+  <div class="modal-overlay" id="avatarModal" style="display: none;">
+    <div class="modal-content">
+      <div class="modal-title">Chọn Avatar Chiến Binh Toán 9</div>
+      <div class="avatar-grid" id="avatarGrid">
+        <div class="avatar-choice" data-avatar="👑" data-title="Thủ Khoa Hoàng Gia 9">👑</div>
+        <div class="avatar-choice" data-avatar="🚀" data-title="Phi Hành Gia Logic 9">🚀</div>
+        <div class="avatar-choice" data-avatar="🧙‍♂️" data-title="Pháp Sư Đại Số 9">🧙‍♂️</div>
+        <div class="avatar-choice" data-avatar="🦁" data-title="Dũng Sĩ Hình Học 9">🦁</div>
+        <div class="avatar-choice" data-avatar="💎" data-title="Thần Đồng Lượng Giác 9">💎</div>
+        <div class="avatar-choice" data-avatar="🦉" data-title="Bậc Thầy Trí Tuệ 9">🦉</div>
+        <div class="avatar-choice" data-avatar="🎯" data-title="Xạ Thủ Căn Thức 9">🎯</div>
+        <div class="avatar-choice" data-avatar="🏅" data-title="Chiến Binh Olympic 9">🏅</div>
+      </div>
+      <button class="btn-primary" id="btnCloseModal" style="width: 100%;">Xác Nhận Avatar</button>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      if (typeof renderMathInElement === "function") {
+        renderMathInElement(document.body, {
+          delimiters: [
+            { left: "$$", right: "$$", display: true },
+            { left: "$", right: "$", display: false }
+          ],
+          macros: {
+            "\\overparen": "\\overgroup{#1}",
+            "\\wideparen": "\\overgroup{#1}",
+            "\\overarc": "\\overgroup{#1}",
+            "\\arc": "\\overgroup{#1}"
+          },
+          throwOnError: false,
+          strict: false
+        });
+      }
+    });
+  </script>
+</body>
+</html>
