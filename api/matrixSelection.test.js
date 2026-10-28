@@ -23,4 +23,35 @@ describe('random lesson matrices', () => {
     it('aggregates AI inventory by lesson without fixing forms', () => {
         expect(lessonMatrixInventory(rows.map(r => ({ legacy_full_id: r.id_full, type: r.type_code })), true)).toEqual([{ key: '2-D-1-1-*', type: 'TN', available: { N: 5, H: 0, V: 0, C: 0 } }]);
     });
+    it('generates distinct questions across multiple exams when pool is sufficient', () => {
+        const pool = [1, 2, 3, 4, 5, 6].map((form, i) => ({ id: i + 1, id_full: `2D1N1-${form}`, type_code: 'TN' }));
+        const batchUsed = new Set();
+        const exam1 = selectLessonQuestions(pool, { ...req, quantity: 3 }, batchUsed);
+        exam1.forEach(q => batchUsed.add(q.id));
+        const exam2 = selectLessonQuestions(pool, { ...req, quantity: 3 }, batchUsed);
+        
+        expect(exam1.length).toBe(3);
+        expect(exam2.length).toBe(3);
+        // Ensure no overlap between exam 1 and exam 2
+        const exam1Ids = new Set(exam1.map(q => q.id));
+        const exam2Ids = new Set(exam2.map(q => q.id));
+        expect([...exam1Ids].some(id => exam2Ids.has(id))).toBe(false);
+    });
+    it('supports allowReuse with least used fallback across batch when pool is smaller than total needed', () => {
+        // Pool has 4 questions, each exam needs 3 questions (total 6 needed for 2 exams)
+        const pool = [1, 2, 3, 4].map((form, i) => ({ id: i + 1, id_full: `2D1N1-${form}`, type_code: 'TN' }));
+        const batchUsed = new Set();
+        const batchUsageMap = new Map();
+        
+        const exam1 = selectLessonQuestions(pool, { ...req, quantity: 3 }, batchUsed, Math.random, { allowReuse: true, batchUsageMap });
+        exam1.forEach(q => { batchUsed.add(q.id); batchUsageMap.set(q.id, 1); });
+        
+        const exam2 = selectLessonQuestions(pool, { ...req, quantity: 3 }, batchUsed, Math.random, { allowReuse: true, batchUsageMap });
+        
+        expect(exam1.length).toBe(3);
+        expect(exam2.length).toBe(3);
+        // Within exam2, no duplicates
+        expect(new Set(exam2.map(q => q.id)).size).toBe(3);
+    });
 });
+

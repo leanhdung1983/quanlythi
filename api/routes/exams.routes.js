@@ -785,7 +785,7 @@ router.get('/irt/analysis', async (req, res) => {
 
 router.post('/generate-exam-matrix', async (req, res) => {
     try {
-        let { matrix, matrix_id, mode, exam_title, duration, grade_id, school_name } = req.body;
+        let { matrix, matrix_id, mode, exam_title, duration, grade_id, school_name, exam_count, start_code } = req.body;
 
         // 1. If matrix_id is provided, load template from DB
         if (matrix_id && (!matrix || Object.keys(matrix).length === 0)) {
@@ -797,6 +797,8 @@ router.post('/generate-exam-matrix', async (req, res) => {
                 if (parsed.settings) {
                     duration = duration || parsed.settings.duration;
                     grade_id = grade_id ?? parsed.settings.grade_id;
+                    exam_count = exam_count || parsed.settings.exam_count;
+                    start_code = start_code || parsed.settings.start_code;
                 }
             }
         }
@@ -807,11 +809,15 @@ router.post('/generate-exam-matrix', async (req, res) => {
             mode = mode || matrix.mode;
             exam_title = exam_title || matrix.exam_title;
             school_name = school_name || matrix.school_name;
+            exam_count = exam_count || matrix.exam_count;
+            start_code = start_code || matrix.start_code;
             if (matrix.settings) {
                 duration = duration || matrix.settings.duration;
                 grade_id = grade_id ?? matrix.settings.grade_id;
                 exam_title = exam_title || matrix.settings.name;
                 mode = mode || matrix.settings.mode;
+                exam_count = exam_count || matrix.settings.exam_count;
+                start_code = start_code || matrix.settings.start_code;
             }
             if (matrix.matrix) {
                 matrix = matrix.matrix;
@@ -822,7 +828,9 @@ router.post('/generate-exam-matrix', async (req, res) => {
             return res.status(400).json({ error: "Dữ liệu ma trận không hợp lệ." });
         }
 
-        const finalQuestions = { TN: [], TF: [], KQ: [], TL: [] };
+        const numExams = Math.max(1, Math.min(50, Number.isInteger(Number(exam_count)) ? Number(exam_count) : 1));
+        const baseStartCode = String(start_code || '101').trim();
+
         const allRequirements = [];
 
         // 3. Extract requirements from matrix
@@ -883,9 +891,11 @@ router.post('/generate-exam-matrix', async (req, res) => {
         if (allRequirements.length === 0) {
             return res.json({
                 success: true,
-                data: finalQuestions,
+                data: { TN: [], TF: [], KQ: [], TL: [] },
                 tex: "",
                 total_questions: 0,
+                exam_count: numExams,
+                exams: [],
                 message: "Ma trận chưa có câu hỏi nào được cấu hình."
             });
         }
@@ -898,122 +908,225 @@ router.post('/generate-exam-matrix', async (req, res) => {
             WHERE q.legacy_full_id IS NOT NULL
         `);
 
-        const pickedIds = new Set();
-        const reqMapping = {};
+        const batchUsedIds = new Set();
+        const batchUsageCount = new Map();
+        const examsPlan = [];
+        const warnings = [];
+        let totalOverlapCount = 0;
 
-        // Randomly iterate through requirements
-        for (const req of allRequirements.sort((a, b) => Number(a.count === '*') - Number(b.count === '*'))) {
-            const { qType, cls, sub, chap, unit, count, lvl, quantity } = req;
-            if (count === '*') {
-                const selected = selectLessonQuestions(allIds, req, pickedIds);
-                selected.forEach(row => { pickedIds.add(row.id); reqMapping[row.id] = qType; });
-                continue;
+        for (let examIdx = 0; examIdx < numExams; examIdx++) {
+            let code = '';
+            const isNumericStart = /^\d+$/.test(baseStartCode);
+            if (isNumericStart) {
+                code = String(parseInt(baseStartCode, 10) + examIdx);
+            } else {
+                code = numExams === 1 ? baseStartCode : `${baseStartCode}-${examIdx + 1}`;
             }
 
-            const classes = [String(cls)];
-            if (cls === 2) classes.push('12');
-            else if (cls === 12) classes.push('2');
-            else if (cls === 1) classes.push('11');
-            else if (cls === 11) classes.push('1');
-            else if (cls === 0) classes.push('10');
-            else if (cls === 10) classes.push('0');
+            const currTitle = numExams === 1 
+                ? (exam_title || "ĐỀ KIỂM TRA ĐỊNH KỲ")
+                : `${exam_title || "ĐỀ KIỂM TRA ĐỊNH KỲ"} - Mã đề ${code}`;
 
-            const unitStr = unit < 10 ? `0${unit}` : `${unit}`;
-            const countStr = count < 10 ? `0${count}` : `${count}`;
+            const examPickedIds = new Set();
+            const reqMapping = {};
 
-            const exactPatterns = [];
-            for (const c of classes) {
-                exactPatterns.push(
-                    `${c}${sub}${chap}${lvl}${unit}-${count}`,
-                    `${c}${sub}${chap}${lvl}${unitStr}-${count}`,
-                    `${c}${sub}${chap}${lvl}${unit}-${countStr}`,
-                    `${c}${sub}${chap}${lvl}${unitStr}-${countStr}`
-                );
+            // Randomly iterate through requirements
+            for (const req of allRequirements.sort((a, b) => Number(a.count === '*') - Number(b.count === '*'))) {
+                const { qType, cls, sub, chap, unit, count, lvl, quantity } = req;
+                if (count === '*') {
+                    const selected = selectLessonQuestions(allIds, req, batchUsedIds, Math.random, {
+                        allowReuse: true,
+                        batchUsageMap: batchUsageCount,
+                        examPicked: examPickedIds
+                    });
+                    for (const row of selected) {
+                        if (batchUsedIds.has(row.id)) {
+                            totalOverlapCount++;
+                        }
+                        examPickedIds.add(row.id);
+                        batchUsedIds.add(row.id);
+                        batchUsageCount.set(row.id, (batchUsageCount.get(row.id) || 0) + 1);
+                        reqMapping[row.id] = qType;
+                    }
+                    continue;
+                }
+
+                const classes = [String(cls)];
+                if (cls === 2) classes.push('12');
+                else if (cls === 12) classes.push('2');
+                else if (cls === 1) classes.push('11');
+                else if (cls === 11) classes.push('1');
+                else if (cls === 0) classes.push('10');
+                else if (cls === 10) classes.push('0');
+
+                const unitStr = unit < 10 ? `0${unit}` : `${unit}`;
+                const countStr = count < 10 ? `0${count}` : `${count}`;
+
+                const exactPatterns = [];
+                for (const c of classes) {
+                    exactPatterns.push(
+                        `${c}${sub}${chap}${lvl}${unit}-${count}`,
+                        `${c}${sub}${chap}${lvl}${unitStr}-${count}`,
+                        `${c}${sub}${chap}${lvl}${unit}-${countStr}`,
+                        `${c}${sub}${chap}${lvl}${unitStr}-${countStr}`
+                    );
+                }
+
+                let pool = allIds.filter(q => {
+                    if (examPickedIds.has(q.id)) return false;
+                    if (q.type_code && q.type_code !== qType) return false;
+                    const full = (q.id_full || "").replace(/[\[\]]/g, '').trim();
+                    return exactPatterns.some(p => full === p || full.includes(p));
+                });
+
+                // Fallback 1: match same unit & level
+                if (pool.length < quantity) {
+                    const unitPrefixes = [];
+                    for (const c of classes) {
+                        unitPrefixes.push(`${c}${sub}${chap}${lvl}${unit}-`, `${c}${sub}${chap}${lvl}${unitStr}-`);
+                    }
+                    const fallbackPool = allIds.filter(q => {
+                        if (examPickedIds.has(q.id)) return false;
+                        if (pool.some(p => p.id === q.id)) return false;
+                        if (q.type_code && q.type_code !== qType) return false;
+                        const full = (q.id_full || "").replace(/[\[\]]/g, '').trim();
+                        return unitPrefixes.some(p => full.startsWith(p));
+                    });
+                    pool = [...pool, ...fallbackPool];
+                }
+
+                // Fallback 2: match same chapter & level
+                if (pool.length < quantity) {
+                    const chapPrefixes = classes.map(c => `${c}${sub}${chap}${lvl}`);
+                    const fallbackChap = allIds.filter(q => {
+                        if (examPickedIds.has(q.id)) return false;
+                        if (pool.some(p => p.id === q.id)) return false;
+                        if (q.type_code && q.type_code !== qType) return false;
+                        const full = (q.id_full || "").replace(/[\[\]]/g, '').trim();
+                        return chapPrefixes.some(p => full.startsWith(p));
+                    });
+                    pool = [...pool, ...fallbackChap];
+                }
+
+                // Prioritize unused questions in this batch
+                const unused = pool.filter(q => !batchUsedIds.has(q.id));
+                unused.sort(() => 0.5 - Math.random());
+
+                let selected = [];
+                if (unused.length >= quantity) {
+                    selected = unused.slice(0, quantity);
+                } else {
+                    selected = [...unused];
+                    const remainingNeeded = quantity - unused.length;
+                    const reusable = pool.filter(q => batchUsedIds.has(q.id) && !unused.some(u => u.id === q.id));
+                    reusable.sort((a, b) => ((batchUsageCount.get(a.id) || 0) - (batchUsageCount.get(b.id) || 0)) || (0.5 - Math.random()));
+                    const reused = reusable.slice(0, remainingNeeded);
+                    totalOverlapCount += reused.length;
+                    if (reused.length > 0) {
+                        warnings.push(`Dạng ${cls}${sub}${chap}${lvl}${unit}-${count} chỉ có ${pool.length} câu trong kho, không đủ cho ${numExams} đề. Đề ${code} đã dùng lại ${reused.length} câu.`);
+                    }
+                    selected = [...selected, ...reused];
+                }
+
+                for (const row of selected) {
+                    examPickedIds.add(row.id);
+                    batchUsedIds.add(row.id);
+                    batchUsageCount.set(row.id, (batchUsageCount.get(row.id) || 0) + 1);
+                    reqMapping[row.id] = qType;
+                }
             }
 
-            let pool = allIds.filter(q => {
-                if (pickedIds.has(q.id)) return false;
-                if (q.type_code && q.type_code !== qType) return false;
-                const full = (q.id_full || "").replace(/[\[\]]/g, '').trim();
-                return exactPatterns.some(p => full === p || full.includes(p));
+            examsPlan.push({
+                examIdx,
+                code,
+                title: currTitle,
+                pickedIds: Array.from(examPickedIds),
+                reqMapping
+            });
+        }
+
+        const allPickedArray = Array.from(batchUsedIds);
+        const rowDatas = allPickedArray.length > 0 ? await query(
+            `SELECT id, legacy_full_id as id_full, content_latex as raw_latex, content_latex_original AS original_latex 
+             FROM questions 
+             WHERE id IN (?)`,
+            [allPickedArray]
+        ) : [];
+
+        const rowMap = new Map(rowDatas.map(r => [r.id, r]));
+
+        const generatedExams = examsPlan.map(plan => {
+            const examQuestions = { TN: [], TF: [], KQ: [], TL: [] };
+            for (const qId of plan.pickedIds) {
+                const row = rowMap.get(qId);
+                if (row) {
+                    const qType = plan.reqMapping[qId];
+                    if (examQuestions[qType]) {
+                        examQuestions[qType].push(row);
+                    }
+                }
+            }
+
+            const tex = buildLatexDocument({
+                questionsByType: examQuestions,
+                title: plan.title,
+                grade: grade_id ?? 12,
+                duration: duration || 90,
+                mode: mode || 'EXAM',
+                schoolName: school_name || 'TRƯỜNG THPT CHUYÊN'
             });
 
-            // Fallback 1: match same unit & level
-            if (pool.length < quantity) {
-                const unitPrefixes = [];
-                for (const c of classes) {
-                    unitPrefixes.push(`${c}${sub}${chap}${lvl}${unit}-`, `${c}${sub}${chap}${lvl}${unitStr}-`);
-                }
-                const fallbackPool = allIds.filter(q => {
-                    if (pickedIds.has(q.id)) return false;
-                    if (pool.some(p => p.id === q.id)) return false;
-                    if (q.type_code && q.type_code !== qType) return false;
-                    const full = (q.id_full || "").replace(/[\[\]]/g, '').trim();
-                    return unitPrefixes.some(p => full.startsWith(p));
-                });
-                pool = [...pool, ...fallbackPool];
-            }
+            const total_questions = Object.values(examQuestions).reduce((sum, list) => sum + list.length, 0);
 
-            // Fallback 2: match same chapter & level
-            if (pool.length < quantity) {
-                const chapPrefixes = classes.map(c => `${c}${sub}${chap}${lvl}`);
-                const fallbackChap = allIds.filter(q => {
-                    if (pickedIds.has(q.id)) return false;
-                    if (pool.some(p => p.id === q.id)) return false;
-                    if (q.type_code && q.type_code !== qType) return false;
-                    const full = (q.id_full || "").replace(/[\[\]]/g, '').trim();
-                    return chapPrefixes.some(p => full.startsWith(p));
-                });
-                pool = [...pool, ...fallbackChap];
-            }
-
-            // Random shuffle to ensure fresh questions every time
-            pool.sort(() => 0.5 - Math.random());
-            const selected = pool.slice(0, quantity);
-            for (const row of selected) {
-                pickedIds.add(row.id);
-                reqMapping[row.id] = qType;
-            }
-        }
-
-        const pickedArray = Array.from(pickedIds);
-        if (pickedArray.length > 0) {
-            const rowDatas = await query(
-                `SELECT id, legacy_full_id as id_full, content_latex as raw_latex, content_latex_original AS original_latex 
-                 FROM questions 
-                 WHERE id IN (?)`,
-                [pickedArray]
-            );
-
-            // Retain requirement type mapping
-            for (const row of rowDatas) {
-                const qType = reqMapping[row.id];
-                if (finalQuestions[qType]) {
-                    finalQuestions[qType].push(row);
-                }
-            }
-
-            // Update question used_count asynchronously
-            query(`UPDATE questions SET used_count = used_count + 1 WHERE id IN (?)`, [pickedArray]).catch(() => {});
-        }
-
-        // 5. Generate complete TeX document according to latest Ministry standards
-        const tex = buildLatexDocument({
-            questionsByType: finalQuestions,
-            title: exam_title || "ĐỀ KIỂM TRA ĐỊNH KỲ",
-            grade: grade_id ?? 12,
-            duration: duration || 90,
-            mode: mode || 'EXAM',
-            schoolName: school_name || 'TRƯỜNG THPT CHUYÊN'
+            return {
+                id: plan.examIdx + 1,
+                code: plan.code,
+                title: plan.title,
+                data: examQuestions,
+                tex,
+                total_questions
+            };
         });
 
-        const total_questions = Object.values(finalQuestions).reduce((sum, list) => sum + list.length, 0);
+        // Combined LaTeX document
+        let combined_tex = "";
+        if (generatedExams.length === 1) {
+            combined_tex = generatedExams[0]?.tex || "";
+        } else {
+            combined_tex = `% ==============================================================================
+% BỘ ${generatedExams.length} ĐỀ THI TẠO TỰ ĐỘNG TỪ MA TRẬN
+% CÁC ĐỀ CÓ CÂU HỎI KHÁC NHAU VÀ ĐỀU TUÂN THỦ 100% CẤU TRÚC MA TRẬN
+% THỜI GIAN TẠO: ${new Date().toLocaleString('vi-VN')}
+% ==============================================================================
+
+` + generatedExams.map((ex, idx) => {
+                return `% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+% ĐỀ SỐ ${idx + 1} - MÃ ĐỀ: ${ex.code}
+% ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+${ex.tex}
+\\newpage
+`;
+            }).join('\n');
+        }
+
+        // Update question used_count asynchronously
+        if (allPickedArray.length > 0) {
+            query(`UPDATE questions SET used_count = used_count + 1 WHERE id IN (?)`, [allPickedArray]).catch(() => {});
+        }
+
+        const distinct_status = totalOverlapCount === 0 ? 'FULL_DISTINCT' : 'PARTIAL_DISTINCT';
 
         res.json({
             success: true,
-            data: finalQuestions,
-            tex,
-            total_questions
+            data: generatedExams[0]?.data || { TN: [], TF: [], KQ: [], TL: [] },
+            tex: generatedExams[0]?.tex || "",
+            total_questions: generatedExams[0]?.total_questions || 0,
+            exam_count: numExams,
+            distinct_status,
+            overlap_count: totalOverlapCount,
+            warnings: [...new Set(warnings)],
+            exams: generatedExams,
+            combined_tex
         });
     } catch(e) {
         console.error("Exam Gen Error:", e);

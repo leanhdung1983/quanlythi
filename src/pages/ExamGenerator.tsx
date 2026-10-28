@@ -7,7 +7,7 @@ import {
     ListChecks, CheckSquare, Type, AlignLeft, ChevronDown, ChevronRight, 
     Layers, FolderOpen, Database, Edit3, FileSpreadsheet,
     Settings, ShieldCheck, Folder, Sparkles, Copy, Check, Download,
-    PanelLeftClose, PanelLeft, Plus, CheckCircle2
+    PanelLeftClose, PanelLeft, Plus, CheckCircle2, AlertTriangle, Archive, Hash
 } from 'lucide-react';
 import { useLanguageStore } from '../services/languageStore';
 import { useAuthStore } from '../services/authStore';
@@ -15,6 +15,16 @@ import { MatrixLibrary } from '../components/MatrixLibrary';
 import { LessonMatrixProposal } from '../components/LessonMatrixProposal';
 import { describeMatrix, parseMatrixData, normalizeGrade, editableMatrixSections, MATRIX_PURPOSES, MATRIX_STATUSES } from '../../shared/matrixCatalog';
 import { generateDocxBlob, generateCombinedLatex } from '../utils/matrixExportUtils';
+import { downloadZip } from '../utils/zipUtils';
+
+interface GeneratedExamItem {
+    id: number;
+    code: string;
+    title: string;
+    data: Record<QuestionType, Question[]>;
+    tex: string;
+    total_questions: number;
+}
 
 interface LevelCounts {
     N: number;
@@ -56,6 +66,17 @@ export const ExamGenerator: React.FC = () => {
     const [totalQuestions, setTotalQuestions] = useState(0);
     const [tabTotals, setTabTotals] = useState<Record<QuestionType, number>>({ TN:0, TF:0, KQ:0, TL:0 });
     const [copied, setCopied] = useState(false);
+
+    // Multi-exam generation state
+    const [examCount, setExamCount] = useState<number>(1);
+    const [startCode, setStartCode] = useState<string>('101');
+    const [generatedExamsList, setGeneratedExamsList] = useState<GeneratedExamItem[]>([]);
+    const [activeExamIndex, setActiveExamIndex] = useState<number>(0);
+    const [combinedTex, setCombinedTex] = useState<string>('');
+    const [distinctStatus, setDistinctStatus] = useState<'FULL_DISTINCT' | 'PARTIAL_DISTINCT' | null>(null);
+    const [overlapCount, setOverlapCount] = useState<number>(0);
+    const [generationWarnings, setGenerationWarnings] = useState<string[]>([]);
+    const [showWarningDetails, setShowWarningDetails] = useState<boolean>(false);
 
     // Config Modal State
     const [showSaveModal, setShowSaveModal] = useState(false);
@@ -209,6 +230,8 @@ export const ExamGenerator: React.FC = () => {
             setTotalPointsTF(Number(settings.total_points_tf) || 0);
             setTotalPointsKQ(Number(settings.total_points_kq) || 0);
             setTfScoringMode(settings.tf_scoring_mode || '10-25-50-100');
+            if (settings.exam_count) setExamCount(Number(settings.exam_count) || 1);
+            if (settings.start_code) setStartCode(String(settings.start_code) || '101');
         }
 
         // Auto navigate to the first subject / tab that has configured questions
@@ -231,6 +254,7 @@ export const ExamGenerator: React.FC = () => {
     const handleQuickGenerateTex = async (m: any) => {
         if (!handleSelectMatrix(m)) return;
         setGenerating(true);
+        setGenerationWarnings([]);
         try {
             let parsed: any = {};
             try {
@@ -242,11 +266,38 @@ export const ExamGenerator: React.FC = () => {
                 matrix_id: m.id,
                 matrix: rawMatrix,
                 settings: parsed.settings,
-                exam_title: m.name
+                exam_title: m.name,
+                exam_count: examCount,
+                start_code: startCode
             });
 
-            if (res?.tex) {
+            if (res?.exams && Array.isArray(res.exams) && res.exams.length > 0) {
+                setGeneratedExamsList(res.exams);
+                setActiveExamIndex(0);
+                setGeneratedExam(res.exams[0].tex);
+                setCombinedTex(res.combined_tex || res.tex || '');
+                setDistinctStatus(res.distinct_status || 'FULL_DISTINCT');
+                setOverlapCount(res.overlap_count || 0);
+                setGenerationWarnings(res.warnings || []);
+                setTimeout(() => {
+                    outputRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else if (res?.tex) {
+                const singleExam: GeneratedExamItem = {
+                    id: 1,
+                    code: startCode || '101',
+                    title: m.name || 'ĐỀ KIỂM TRA ĐỊNH KỲ',
+                    data: res.data || { TN: [], TF: [], KQ: [], TL: [] },
+                    tex: res.tex,
+                    total_questions: res.total_questions || 0
+                };
+                setGeneratedExamsList([singleExam]);
+                setActiveExamIndex(0);
                 setGeneratedExam(res.tex);
+                setCombinedTex(res.tex);
+                setDistinctStatus(res.distinct_status || 'FULL_DISTINCT');
+                setOverlapCount(0);
+                setGenerationWarnings([]);
                 setTimeout(() => {
                     outputRef.current?.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
@@ -279,6 +330,15 @@ export const ExamGenerator: React.FC = () => {
         setEditingMatrixId(null);
         setTabTotals({ TN: 0, TF: 0, KQ: 0, TL: 0 });
         setTotalQuestions(0);
+        setExamCount(1);
+        setStartCode('101');
+        setGeneratedExamsList([]);
+        setActiveExamIndex(0);
+        setGeneratedExam(null);
+        setCombinedTex('');
+        setDistinctStatus(null);
+        setOverlapCount(0);
+        setGenerationWarnings([]);
     };
 
     const handleExportDocx = async (mode: string) => {
@@ -409,6 +469,7 @@ export const ExamGenerator: React.FC = () => {
 
     const handleGenerate = async () => {
         setGenerating(true);
+        setGenerationWarnings([]);
         try {
             const req = {
                 matrix,
@@ -418,15 +479,44 @@ export const ExamGenerator: React.FC = () => {
                     grade_id: selectedGrade,
                     subject_id: selectedSubject,
                     duration: examDuration,
-                    points: { TN: pointsTN, TF: pointsTF, KQ: pointsKQ }
+                    points: { TN: pointsTN, TF: pointsTF, KQ: pointsKQ },
+                    exam_count: examCount,
+                    start_code: startCode
                 },
                 exam_title: matrixName || 'ĐỀ KIỂM TRA ĐỊNH KỲ',
                 duration: examDuration,
-                grade_id: selectedGrade
+                grade_id: selectedGrade,
+                exam_count: examCount,
+                start_code: startCode
             };
             const res: any = await apiService.generateExamMatrix(req);
-            if (res?.tex) {
+            if (res?.exams && Array.isArray(res.exams) && res.exams.length > 0) {
+                setGeneratedExamsList(res.exams);
+                setActiveExamIndex(0);
+                setGeneratedExam(res.exams[0].tex);
+                setCombinedTex(res.combined_tex || res.tex || '');
+                setDistinctStatus(res.distinct_status || 'FULL_DISTINCT');
+                setOverlapCount(res.overlap_count || 0);
+                setGenerationWarnings(res.warnings || []);
+                setTimeout(() => {
+                    outputRef.current?.scrollIntoView({ behavior: 'smooth' });
+                }, 100);
+            } else if (res?.tex) {
+                const singleExam: GeneratedExamItem = {
+                    id: 1,
+                    code: startCode || '101',
+                    title: matrixName || 'ĐỀ KIỂM TRA ĐỊNH KỲ',
+                    data: res.data || { TN: [], TF: [], KQ: [], TL: [] },
+                    tex: res.tex,
+                    total_questions: res.total_questions || 0
+                };
+                setGeneratedExamsList([singleExam]);
+                setActiveExamIndex(0);
                 setGeneratedExam(res.tex);
+                setCombinedTex(res.tex);
+                setDistinctStatus(res.distinct_status || 'FULL_DISTINCT');
+                setOverlapCount(0);
+                setGenerationWarnings([]);
                 setTimeout(() => {
                     outputRef.current?.scrollIntoView({ behavior: 'smooth' });
                 }, 100);
@@ -438,6 +528,31 @@ export const ExamGenerator: React.FC = () => {
             alert("Lỗi tạo đề: " + (e.message || "Vui lòng thử lại"));
         } finally {
             setGenerating(false);
+        }
+    };
+
+    const handleDownloadZip = () => {
+        if (!generatedExamsList.length) return;
+        const baseName = (matrixName || 'de_thi').replace(/\s+/g, '_');
+        const zipFiles = generatedExamsList.map(ex => ({
+            name: `${baseName}_ma_${ex.code}.tex`,
+            content: ex.tex
+        }));
+        if (combinedTex) {
+            zipFiles.push({
+                name: `${baseName}_tron_bo_${generatedExamsList.length}_de.tex`,
+                content: combinedTex
+            });
+        }
+        downloadZip(`${baseName}_${generatedExamsList.length}_de.zip`, zipFiles);
+    };
+
+    const handleSelectExamTab = (idx: number) => {
+        setActiveExamIndex(idx);
+        if (idx === -1) {
+            setGeneratedExam(combinedTex);
+        } else if (generatedExamsList[idx]) {
+            setGeneratedExam(generatedExamsList[idx].tex);
         }
     };
 
@@ -459,7 +574,8 @@ export const ExamGenerator: React.FC = () => {
                     catalog: { ...matrixCatalog, target_grade: matrixMultiGrade ? 'MULTI' : normalizeGrade(matrixGrade) },
                     settings: { ...matrixBaseline.settings, duration: examDuration, mode: examMode,
                         grade_id: matrixMultiGrade ? undefined : matrixGrade, points_tn: pointsTN, points_tf: pointsTF, points_kq: pointsKQ,
-                        total_points_tn: totalPointsTN, total_points_tf: totalPointsTF, total_points_kq: totalPointsKQ, tf_scoring_mode: tfScoringMode } }
+                        total_points_tn: totalPointsTN, total_points_tf: totalPointsTF, total_points_kq: totalPointsKQ, tf_scoring_mode: tfScoringMode,
+                        exam_count: examCount, start_code: startCode } }
             };
             if (editingMatrixId) {
                 const result = await apiService.updateSavedMatrix(editingMatrixId as number, matrixName, data.matrix_data) as { regraded?: number; skipped?: number };
@@ -936,58 +1052,212 @@ export const ExamGenerator: React.FC = () => {
                 </div>
 
                 {/* BOTTOM: OUTPUT ĐỀ THI TEX */}
-                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-3.5 shrink-0 flex flex-col gap-2.5" ref={outputRef}>
-                    <div className="flex flex-wrap justify-between items-center gap-3">
-                        <div className="flex items-center gap-2.5">
+                <div className="bg-white rounded-2xl border border-slate-200 shadow-sm p-4 shrink-0 flex flex-col gap-3" ref={outputRef}>
+                    {/* TOP CONTROLS: MULTI-EXAM CONFIGURATION & GENERATE BUTTON */}
+                    <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-100 pb-3">
+                        <div className="flex flex-wrap items-center gap-3">
+                            {/* EXAM COUNT STEPPER */}
+                            <div className="flex items-center gap-2 bg-slate-50 border border-slate-200/80 px-2.5 py-1.5 rounded-xl">
+                                <span className="text-xs font-bold text-slate-700">Số đề cần tạo:</span>
+                                <div className="flex items-center gap-1">
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setExamCount(prev => Math.max(1, prev - 1))}
+                                        className="w-6 h-6 rounded-lg bg-white border border-slate-300 flex items-center justify-center font-bold text-xs text-slate-700 hover:bg-slate-100 active:scale-95 transition-transform"
+                                        title="Giảm 1 đề"
+                                    >
+                                        -
+                                    </button>
+                                    <input 
+                                        type="number" 
+                                        min="1" 
+                                        max="50" 
+                                        value={examCount} 
+                                        onChange={e => setExamCount(Math.max(1, Math.min(50, parseInt(e.target.value) || 1)))}
+                                        className="w-10 text-center font-extrabold text-xs bg-white border border-slate-200 rounded-md py-0.5 outline-none focus:ring-1 focus:ring-indigo-500 text-indigo-900" 
+                                    />
+                                    <button 
+                                        type="button" 
+                                        onClick={() => setExamCount(prev => Math.min(50, prev + 1))}
+                                        className="w-6 h-6 rounded-lg bg-white border border-slate-300 flex items-center justify-center font-bold text-xs text-slate-700 hover:bg-slate-100 active:scale-95 transition-transform"
+                                        title="Tăng 1 đề"
+                                    >
+                                        +
+                                    </button>
+                                </div>
+                                <div className="flex items-center gap-1 ml-1">
+                                    {[1, 2, 4, 8].map(cnt => (
+                                        <button
+                                            key={cnt}
+                                            type="button"
+                                            onClick={() => setExamCount(cnt)}
+                                            className={`px-2 py-0.5 text-[11px] font-bold rounded-md transition-colors ${examCount === cnt ? 'bg-indigo-600 text-white' : 'bg-white border border-slate-200 text-slate-600 hover:bg-slate-100'}`}
+                                        >
+                                            {cnt}
+                                        </button>
+                                    ))}
+                                </div>
+                            </div>
+
+                            {/* START EXAM CODE */}
+                            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200/80 px-2.5 py-1.5 rounded-xl">
+                                <span className="text-xs font-bold text-slate-700">Mã đầu:</span>
+                                <input 
+                                    type="text" 
+                                    value={startCode} 
+                                    onChange={e => setStartCode(e.target.value)}
+                                    placeholder="101"
+                                    className="w-14 text-center font-bold text-xs bg-white border border-slate-200 rounded-md py-0.5 outline-none focus:ring-1 focus:ring-indigo-500 text-slate-800"
+                                    title="Mã đề đầu tiên, các đề tiếp theo sẽ tự động tăng số (101, 102, 103...)"
+                                />
+                            </div>
+
+                            {/* MAIN GENERATE BUTTON */}
                             <button 
                                 onClick={handleGenerate} 
                                 disabled={totalQuestions === 0 || generating} 
                                 className="bg-indigo-600 hover:bg-indigo-700 text-white px-4 py-2 rounded-xl font-bold shadow-md shadow-indigo-200 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50 text-xs"
+                                title="Sinh các đề thi ngẫu nhiên khác nhau từ ma trận này"
                             >
                                 {generating ? <Loader2 size={16} className="animate-spin"/> : <Sparkles size={16} className="text-amber-300"/>} 
-                                <span>{generating ? "Đang Sinh Đề..." : "Sinh Đề Ngẫu Nhiên"}</span>
+                                <span>{generating ? "Đang Sinh Đề..." : examCount > 1 ? `Sinh ${examCount} Đề Khác Nhau` : "Sinh Đề Ngẫu Nhiên"}</span>
                             </button>
-                            
                         </div>
 
+                        {/* EXPORT BUTTONS FOR GENERATED EXAMS */}
                         {generatedExam && (
                             <div className="flex items-center gap-2">
                                 <button 
                                     onClick={handleCopyTex} 
                                     className="px-3 py-1.5 text-xs font-bold rounded-xl border border-slate-200 hover:bg-slate-50 text-slate-700 flex items-center gap-1.5 transition-colors shadow-2xs"
-                                    title="Sao chép toàn bộ mã TeX"
+                                    title="Sao chép mã TeX của đề đang xem"
                                 >
                                     {copied ? <Check size={14} className="text-green-600" /> : <Copy size={14} />}
                                     <span>{copied ? "Đã chép!" : "Sao chép TeX"}</span>
                                 </button>
                                 <a 
                                     href={URL.createObjectURL(new Blob([generatedExam], { type: 'text/plain;charset=utf-8' }))} 
-                                    download={`${(matrixName || 'de_thi').replace(/\s+/g, '_')}.tex`} 
+                                    download={`${(matrixName || 'de_thi').replace(/\s+/g, '_')}${activeExamIndex === -1 ? '_tron_bo' : `_ma_${generatedExamsList[activeExamIndex]?.code || '101'}`}.tex`} 
                                     className="bg-emerald-600 hover:bg-emerald-700 text-white px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors"
                                     title="Tải file .tex để nhúng vào template/Main-Soan-2025.tex"
                                 >
-                                    <Download size={14}/> Tải file .TeX (Chuẩn Main)
+                                    <Download size={14}/> {activeExamIndex === -1 ? `Tải file .TeX (Gộp ${generatedExamsList.length} đề)` : `Tải .TeX (${generatedExamsList[activeExamIndex]?.code ? `Mã ${generatedExamsList[activeExamIndex].code}` : 'Chuẩn Main'})`}
                                 </a>
+                                {generatedExamsList.length > 1 && (
+                                    <button 
+                                        type="button"
+                                        onClick={handleDownloadZip}
+                                        className="bg-indigo-700 hover:bg-indigo-800 text-white px-3.5 py-1.5 rounded-xl font-bold text-xs flex items-center gap-1.5 shadow-sm transition-colors"
+                                        title="Tải file ZIP trọn bộ chứa các file .tex độc lập từng đề và file gộp"
+                                    >
+                                        <Archive size={14}/> Tải ZIP ({generatedExamsList.length} đề)
+                                    </button>
+                                )}
                             </div>
                         )}
                     </div>
 
+                    {/* STATUS & TABS WHEN EXAMS ARE GENERATED */}
                     {generatedExam ? (
-                        <div className="flex flex-col gap-1.5">
-                            <div className="flex justify-between items-center text-[11px] text-slate-500">
-                                <span className="flex items-center gap-1.5 font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-lg border border-emerald-200">
-                                    <CheckCircle2 size={13} className="text-emerald-600"/> Tương thích 100% template/Main-Soan-2025.tex và gói ex_test.sty (Chỉ cần \input&#123;...&#125; vào file main)
-                                </span>
-                                <button 
-                                    onClick={handleGenerate} 
-                                    disabled={generating}
-                                    className="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 hover:underline text-xs"
-                                    title="Bấm để sinh một bộ câu hỏi ngẫu nhiên khác theo ma trận này"
-                                >
-                                    <RefreshCw size={12} className={generating ? "animate-spin" : ""} /> Đổi sang đề ngẫu nhiên khác
-                                </button>
-                            </div>
-                            <div className="relative h-40 bg-slate-900 rounded-xl overflow-hidden group border border-slate-800 shadow-inner">
+                        <div className="flex flex-col gap-2">
+                            {/* DISTINCT GUARANTEE BANNER */}
+                            {distinctStatus && (
+                                <div className={`flex flex-wrap items-center justify-between gap-2 px-3 py-2 rounded-xl border text-xs font-semibold ${
+                                    distinctStatus === 'FULL_DISTINCT'
+                                        ? 'bg-emerald-50/90 border-emerald-200 text-emerald-800'
+                                        : 'bg-amber-50/90 border-amber-200 text-amber-800'
+                                }`}>
+                                    <div className="flex items-center gap-2">
+                                        {distinctStatus === 'FULL_DISTINCT' ? (
+                                            <>
+                                                <CheckCircle2 size={16} className="text-emerald-600 shrink-0"/>
+                                                <span>
+                                                    <strong>Tuyệt đối không trùng lặp:</strong> Đã tạo thành công {generatedExamsList.length} đề thi với câu hỏi <strong>hoàn toàn khác nhau 100%</strong> và tuân thủ chặt chẽ ma trận!
+                                                </span>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <AlertTriangle size={16} className="text-amber-600 shrink-0"/>
+                                                <span>
+                                                    <strong>Tối ưu khác biệt:</strong> Đã tạo {generatedExamsList.length} đề thi. Do ngân hàng câu hỏi ở một số dạng bài có số lượng hạn chế, có {overlapCount} lượt câu hỏi dùng chung giữa các đề.
+                                                </span>
+                                            </>
+                                        )}
+                                    </div>
+                                    <div className="flex items-center gap-3">
+                                        {generationWarnings.length > 0 && (
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setShowWarningDetails(prev => !prev)}
+                                                className="text-amber-900 underline text-[11px] font-bold"
+                                            >
+                                                {showWarningDetails ? "Ẩn chi tiết" : `Xem chi tiết (${generationWarnings.length})`}
+                                            </button>
+                                        )}
+                                        <button 
+                                            onClick={handleGenerate} 
+                                            disabled={generating}
+                                            className="text-indigo-600 hover:text-indigo-800 font-bold flex items-center gap-1 hover:underline text-xs"
+                                            title="Bấm để sinh một bộ các đề ngẫu nhiên khác theo ma trận này"
+                                        >
+                                            <RefreshCw size={12} className={generating ? "animate-spin" : ""} /> Đổi sang các đề khác
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* WARNING DETAILS ACCORDION */}
+                            {showWarningDetails && generationWarnings.length > 0 && (
+                                <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-900 space-y-1">
+                                    <p className="font-bold text-[11px] uppercase tracking-wide">Chi tiết các dạng bài ngân hàng thiếu câu hỏi phân bổ riêng:</p>
+                                    <ul className="list-disc pl-5 space-y-0.5 text-[11px]">
+                                        {generationWarnings.map((w, i) => (
+                                            <li key={i}>{w}</li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {/* EXAM TABS IF MULTIPLE EXAMS */}
+                            {generatedExamsList.length > 1 && (
+                                <div className="flex flex-wrap items-center gap-1.5 bg-slate-100 p-1.5 rounded-xl border border-slate-200">
+                                    <span className="text-[11px] font-extrabold text-slate-500 uppercase px-2">Danh sách đề:</span>
+                                    {generatedExamsList.map((ex, idx) => (
+                                        <button
+                                            key={ex.id}
+                                            type="button"
+                                            onClick={() => handleSelectExamTab(idx)}
+                                            className={`px-3 py-1 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                                                activeExamIndex === idx
+                                                    ? 'bg-white text-indigo-700 shadow-sm border border-slate-200'
+                                                    : 'text-slate-600 hover:bg-slate-200/70 hover:text-slate-800'
+                                            }`}
+                                        >
+                                            <span>Đề {idx + 1}</span>
+                                            <span className="text-[10px] px-1 py-0.2 rounded bg-indigo-50 text-indigo-600 font-mono">Mã {ex.code}</span>
+                                            <span className="text-[10px] text-slate-400">({ex.total_questions} câu)</span>
+                                        </button>
+                                    ))}
+                                    <div className="h-4 w-px bg-slate-300 mx-1" />
+                                    <button
+                                        type="button"
+                                        onClick={() => handleSelectExamTab(-1)}
+                                        className={`px-3 py-1 text-xs font-bold rounded-lg transition-all flex items-center gap-1.5 ${
+                                            activeExamIndex === -1
+                                                ? 'bg-indigo-600 text-white shadow-sm'
+                                                : 'text-indigo-700 hover:bg-indigo-50 hover:text-indigo-900'
+                                        }`}
+                                    >
+                                        <span>📑 Toàn bộ {generatedExamsList.length} đề (File gộp)</span>
+                                    </button>
+                                </div>
+                            )}
+
+                            {/* TEX PREVIEW CODE TEXTAREA */}
+                            <div className="relative h-44 bg-slate-900 rounded-xl overflow-hidden group border border-slate-800 shadow-inner">
+                                <div className="absolute top-2 right-3 text-[10px] font-mono text-slate-400 bg-slate-800/80 px-2 py-0.5 rounded z-10">
+                                    {activeExamIndex === -1 ? `File gộp trọn bộ ${generatedExamsList.length} đề` : `Đang xem: Đề ${activeExamIndex + 1} (Mã ${generatedExamsList[activeExamIndex]?.code || ''})`}
+                                </div>
                                 <textarea 
                                     readOnly 
                                     value={generatedExam} 
@@ -997,7 +1267,7 @@ export const ExamGenerator: React.FC = () => {
                         </div>
                     ) : (
                         <div className="text-center py-2 text-xs text-slate-400 flex items-center justify-center gap-2">
-                            <span>💡 Hãy nhập số câu hỏi vào các ô và bấm</span>
+                            <span>💡 Hãy nhập số câu hỏi vào các ô, chọn số lượng đề cần tạo (ví dụ: 1, 2, 4...) và bấm</span>
                             <strong className="text-indigo-600">"Sinh Đề Ngẫu Nhiên"</strong> 
                             <span>hoặc bấm</span> 
                             <strong className="text-emerald-600">"Xuất Ma Trận"</strong>
@@ -1065,6 +1335,14 @@ export const ExamGenerator: React.FC = () => {
                                         <option value="PRACTICE">{t('oe_mode_practice')}</option>
                                         <option value="REAL">{t('oe_mode_real')}</option>
                                     </select>
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-slate-500 uppercase mb-1 block">Số đề sinh mặc định</label>
+                                    <input type="number" min="1" max="50" value={examCount} onChange={e => setExamCount(Math.max(1, Math.min(50, parseInt(e.target.value) || 1)))} className="w-full border p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary-500 font-bold text-center text-lg text-slate-800"/>
+                                </div>
+                                <div>
+                                    <label className="text-xs font-bold text-slate-500 uppercase mb-1 block">Mã đề bắt đầu</label>
+                                    <input type="text" value={startCode} onChange={e => setStartCode(e.target.value)} placeholder="101" className="w-full border p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary-500 font-bold text-center text-lg text-slate-800"/>
                                 </div>
                             </div>
 
