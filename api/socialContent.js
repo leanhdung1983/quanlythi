@@ -5,9 +5,10 @@ export function buildSocialCaption(template, question, day) {
     const values = {
         NGAY: new Intl.DateTimeFormat('vi-VN', { timeZone: 'Asia/Ho_Chi_Minh', day: '2-digit', month: '2-digit', year: 'numeric' }).format(date),
         ID: String(question.id_full || ''),
-        CHUDE: String(question.description || 'Luyện tập Toán')
+        CHUDE: String(question.description || 'Luyện tập Toán'),
+        NOIDUNG: String(question.raw_latex || question.content_latex || '').slice(0, 500)
     };
-    const output = String(template || DEFAULT_SOCIAL_TEMPLATE).replace(/\{(NGAY|ID|CHUDE)\}/g, (_, key) => values[key]).trim();
+    const output = String(template || DEFAULT_SOCIAL_TEMPLATE).replace(/\{(NGAY|ID|CHUDE|NOIDUNG)\}/g, (_, key) => values[key] ?? '').trim();
     if (!output || output.length > 2000) throw new Error('Caption trống hoặc dài hơn 2.000 ký tự.');
     return output;
 }
