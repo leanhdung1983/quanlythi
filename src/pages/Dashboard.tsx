@@ -8,7 +8,7 @@ import {
     ArrowRight, Zap, Tag, GraduationCap, 
     Clock, BarChart3, BrainCircuit,
     Sigma, FunctionSquare, Target, Sparkles,
-    CheckCircle2
+    CheckCircle2, MonitorPlay, Wand2, FileCode, Flag, Users, HelpCircle
 } from 'lucide-react';
 import { NavLink } from 'react-router-dom';
 import { useLanguageStore } from '../services/languageStore';
@@ -284,6 +284,20 @@ export const Dashboard: React.FC = () => {
                         />
                     </div>
 
+                    {/* Lối tắt học tập & thi cử cho học sinh */}
+                    <div className="space-y-3">
+                        <div className="flex items-center gap-2 px-1 text-slate-700 font-bold text-sm">
+                            <span className="w-2.5 h-2.5 rounded-full bg-indigo-500"></span>
+                            <span className="uppercase tracking-wider text-xs font-black text-slate-500">Lối tắt học tập & thi cử</span>
+                        </div>
+                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+                            <QuickActionCard to="/online-exam" title="Thi trực tuyến" desc="Làm bài thi được giao hoặc tự luyện" icon={MonitorPlay} color="bg-emerald-600"/>
+                            <QuickActionCard to="/learning" title="Học trực tuyến" desc="Xem bài giảng lý thuyết & video" icon={BookOpen} color="bg-sky-600"/>
+                            <QuickActionCard to="/eduloop" title="EduLoop · Kỹ năng" desc="Luyện tập thích ứng Adaptive theo AI" icon={Zap} color="bg-amber-600"/>
+                            <QuickActionCard to="/classes" title="Lớp học của tôi" desc="Xem lớp, bảng xếp hạng và giáo viên" icon={Users} color="bg-purple-600"/>
+                        </div>
+                    </div>
+
                     <div className="bg-white p-6 rounded-2xl border border-slate-200/80 shadow-sm">
                         <div className="flex items-center gap-3 mb-6">
                             <div className="p-3 bg-rose-50 text-rose-600 rounded-2xl">
@@ -334,8 +348,34 @@ export const Dashboard: React.FC = () => {
                 <div className="home-date"><Clock size={16}/>{new Date().toLocaleDateString('vi-VN', { weekday: 'long', day: 'numeric', month: 'long' })}</div>
             </header>
             <section className="home-launch">
-                <div className="home-launch-copy"><span className="home-pill"><span/> EXAMHUB WORKSPACE</span><h2>Một nơi để chuẩn bị<br/>mọi bài kiểm tra.</h2><p>Từ ngân hàng câu hỏi đến ma trận đề thi, bắt đầu công việc hôm nay theo cách của bạn.</p><div className="home-launch-links"><NavLink to="/questions" className="home-primary"><Plus size={18}/>Thêm câu hỏi<ArrowRight size={17}/></NavLink><NavLink to="/assign-id" className="home-secondary">Gán ID tự động<ArrowRight size={17}/></NavLink></div></div>
-                <div className="home-launch-workflow"><p className="home-eyebrow">QUY TRÌNH CHUYÊN MÔN</p><NavLink to="/questions"><span className="home-workflow-icon"><FileQuestion size={22}/></span><div><strong>Tổ chức ngân hàng câu hỏi</strong><p>Tập hợp và quản lý nội dung theo bài, dạng.</p></div><ArrowRight size={18}/></NavLink><NavLink to="/exam"><span className="home-workflow-icon"><Layers size={22}/></span><div><strong>Xây dựng ma trận đề thi</strong><p>Chọn cấu trúc phù hợp với mục tiêu đánh giá.</p></div><ArrowRight size={18}/></NavLink><NavLink to="/irt"><span className="home-workflow-icon"><BarChart3 size={22}/></span><div><strong>Theo dõi chất lượng câu hỏi</strong><p>Phân tích dữ liệu sau mỗi lần tổ chức thi.</p></div><ArrowRight size={18}/></NavLink></div>
+                <div className="home-launch-copy">
+                    <span className="home-pill"><span/> EXAMHUB WORKSPACE</span>
+                    <h2>Một nơi để chuẩn bị<br/>mọi bài kiểm tra.</h2>
+                    <p>Từ ngân hàng câu hỏi chuẩn ID6, tạo ma trận sinh đề ngẫu nhiên đến tổ chức thi trực tuyến tự động chấm điểm.</p>
+                    <div className="home-launch-links">
+                        <NavLink to="/exam" className="home-primary"><Layers size={18}/>Tạo ma trận đề<ArrowRight size={17}/></NavLink>
+                        <NavLink to="/questions" className="home-secondary"><FileQuestion size={18}/>Ngân hàng câu hỏi<ArrowRight size={17}/></NavLink>
+                        <NavLink to="/online-exam" className="home-secondary"><MonitorPlay size={18}/>Thi trực tuyến<ArrowRight size={17}/></NavLink>
+                    </div>
+                </div>
+                <div className="home-launch-workflow">
+                    <p className="home-eyebrow">QUY TRÌNH CHUYÊN MÔN</p>
+                    <NavLink to="/questions">
+                        <span className="home-workflow-icon"><FileQuestion size={22}/></span>
+                        <div><strong>1. Tổ chức ngân hàng câu hỏi</strong><p>Tập hợp và phân loại nội dung theo mã dạng ID6.</p></div>
+                        <ArrowRight size={18}/>
+                    </NavLink>
+                    <NavLink to="/exam">
+                        <span className="home-workflow-icon"><Layers size={22}/></span>
+                        <div><strong>2. Xây dựng ma trận & sinh đề</strong><p>Sinh nhiều đề thi ngẫu nhiên khác biệt, xuất TeX & ZIP.</p></div>
+                        <ArrowRight size={18}/>
+                    </NavLink>
+                    <NavLink to="/online-exam">
+                        <span className="home-workflow-icon"><MonitorPlay size={22}/></span>
+                        <div><strong>3. Khảo thí & Đánh giá IRT</strong><p>Thi trực tuyến tự động chấm & đo lường chất lượng câu hỏi.</p></div>
+                        <ArrowRight size={18}/>
+                    </NavLink>
+                </div>
             </section>
             <div className="home-metrics">
                 <StatCard title="Tổng câu hỏi" value={stats.totalQuestions} icon={FileQuestion} color="blue" trend={'+' + (stats.recentQuestions?.length || 0) + ' mới'}/>
@@ -343,12 +383,59 @@ export const Dashboard: React.FC = () => {
                 <StatCard title="Chuyên đề & Bài" value={stats.totalUnits} icon={BookOpen} color="emerald" trend={stats.totalChapters + ' Chương'}/>
                 <StatCard title="Độ phủ trung bình" value={Math.round(stats.totalQuestions / (stats.totalMetadata || 1))} icon={Layers} color="amber" trend="Câu / Dạng"/>
             </div>
-            <section className="home-tools"><div className="home-section-heading"><div><p className="home-eyebrow">BẮT ĐẦU NHANH</p><h2>Công cụ của bạn</h2></div><span>Từ chuẩn bị nội dung đến đánh giá</span></div><div className="home-tool-grid">
-                <QuickActionCard to="/exam" title="Tạo Ma Trận Đề" desc="Sinh đề ngẫu nhiên từ cấu trúc" icon={Sigma} color="bg-purple-500"/>
-                <QuickActionCard to="/assign-id" title="Gán ID tự động" desc="Chuẩn hóa file LaTeX và dữ liệu" icon={FunctionSquare} color="bg-rose-500"/>
-                <QuickActionCard to="/adaptive" title="Ôn tập Adaptive" desc="Học tập cá nhân hóa với AI" icon={Zap} color="bg-amber-500"/>
-                <QuickActionCard to="/irt" title="Phân tích IRT" desc="Đánh giá độ khó thực tế" icon={Target} color="bg-indigo-500"/>
-            </div></section>
+
+            {/* DANH MỤC CHỨC NĂNG HỆ THỐNG */}
+            <section className="space-y-7 my-8">
+                <div className="home-section-heading">
+                    <div>
+                        <p className="home-eyebrow">DANH MỤC CHỨC NĂNG HỆ THỐNG</p>
+                        <h2>Trung tâm làm việc</h2>
+                    </div>
+                    <span>Phân nhóm chuyên môn đồng bộ với thanh điều hướng</span>
+                </div>
+
+                {/* Nhóm 1: Khảo thí & Đề thi */}
+                <div className="space-y-3">
+                    <div className="flex items-center gap-2 px-1 text-slate-700 font-bold text-sm">
+                        <span className="w-2.5 h-2.5 rounded-full bg-purple-500"></span>
+                        <span className="uppercase tracking-wider text-xs font-black text-slate-500">1. Khảo thí & Đề thi</span>
+                    </div>
+                    <div className="home-tool-grid">
+                        <QuickActionCard to="/exam" title="Ma trận & Tạo đề thi" desc="Sinh nhiều đề ngẫu nhiên, xuất TeX & ZIP" icon={Layers} color="bg-purple-600"/>
+                        <QuickActionCard to="/questions" title="Ngân hàng câu hỏi" desc="Tra cứu, lọc theo ID6, quản lý kho đề" icon={FileQuestion} color="bg-blue-600"/>
+                        <QuickActionCard to="/online-exam" title="Thi trực tuyến" desc="Tổ chức thi online & tự động chấm điểm" icon={MonitorPlay} color="bg-emerald-600"/>
+                        <QuickActionCard to="/irt" title="Phân tích IRT" desc="Đo lường độ khó thực tế & trắc lượng" icon={BarChart3} color="bg-indigo-600"/>
+                    </div>
+                </div>
+
+                {/* Nhóm 2: Biên soạn & Trợ lý AI */}
+                <div className="space-y-3">
+                    <div className="flex items-center gap-2 px-1 text-slate-700 font-bold text-sm">
+                        <span className="w-2.5 h-2.5 rounded-full bg-rose-500"></span>
+                        <span className="uppercase tracking-wider text-xs font-black text-slate-500">2. Biên soạn & Công cụ AI</span>
+                    </div>
+                    <div className="home-tool-grid">
+                        <QuickActionCard to="/assign-id" title="Gán ID tự động" desc="AI phân tích nhận diện mã dạng ID6" icon={Tag} color="bg-rose-600"/>
+                        <QuickActionCard to="/converter" title="Chuyển đổi tài liệu" desc="Chuyển file Word / PDF sang LaTeX chuẩn" icon={Wand2} color="bg-amber-600"/>
+                        <QuickActionCard to="/metadata" title="Dữ liệu ID6" desc="Cây chương trình, chuyên đề & dạng bài" icon={FileCode} color="bg-teal-600"/>
+                        <QuickActionCard to="/errors" title="Quản lý báo lỗi" desc="Tiếp nhận và xử lý phản ánh sai sót" icon={Flag} color="bg-orange-600"/>
+                    </div>
+                </div>
+
+                {/* Nhóm 3: Học tập & Lớp học */}
+                <div className="space-y-3">
+                    <div className="flex items-center gap-2 px-1 text-slate-700 font-bold text-sm">
+                        <span className="w-2.5 h-2.5 rounded-full bg-sky-500"></span>
+                        <span className="uppercase tracking-wider text-xs font-black text-slate-500">3. Học tập & Giảng dạy</span>
+                    </div>
+                    <div className="home-tool-grid">
+                        <QuickActionCard to="/learning" title="Học trực tuyến" desc="Bài giảng lý thuyết & giáo trình số" icon={BookOpen} color="bg-sky-600"/>
+                        <QuickActionCard to="/eduloop" title="EduLoop · Kỹ năng" desc="Luyện tập thích ứng Adaptive theo AI" icon={Zap} color="bg-yellow-600"/>
+                        <QuickActionCard to="/classes" title="Lớp học của tôi" desc="Quản lý học sinh, giao đề & theo dõi" icon={Users} color="bg-violet-600"/>
+                        <QuickActionCard to="/guide" title="Hướng dẫn sử dụng" desc="Cẩm nang thao tác từ A-Z cho hệ thống" icon={HelpCircle} color="bg-slate-700"/>
+                    </div>
+                </div>
+            </section>
             <div className="home-analytics">
                 <section className="home-panel"><div className="home-section-heading"><div><h2>Mức độ nhận thức</h2><p>Phân bố câu hỏi theo độ khó ID6</p></div><BrainCircuit size={20}/></div><div className="home-cognition"><div className="home-chart"><ResponsiveContainer width="100%" height="100%"><PieChart><Pie data={pieData} cx="50%" cy="50%" innerRadius={72} outerRadius={95} paddingAngle={4} dataKey="value" cornerRadius={5} stroke="none">{pieData.map((entry: any, index: number) => <Cell key={index} fill={entry.color}/>)}</Pie><Tooltip formatter={(value: number) => [value + ' câu', '']} contentStyle={{borderRadius:12,border:'1px solid #e7eceb'}}/></PieChart></ResponsiveContainer><div className="home-chart-center"><strong>{pieData.length}</strong><span>Mức độ</span></div></div><div className="home-legend">{pieData.map((item: any) => <div key={item.id}><span className="home-legend-dot" style={{background:item.color}}/><span>{item.name}</span><strong>{item.value.toLocaleString()}</strong><small>{Math.round(item.value / (stats.totalQuestions || 1) * 100)}%</small></div>)}</div></div></section>
                 <section className="home-panel home-grades"><div className="home-section-heading"><div><h2>Phân bố khối lớp</h2><p>Tỷ lệ câu hỏi theo chương trình</p></div><GraduationCap size={20}/></div><div className="home-grade-bars"><GradeProgressBar label="Lớp 12" count={getGradeCount('Lớp 12')} total={gradeTotal} colorClass="bg-emerald-600"/><GradeProgressBar label="Lớp 11" count={getGradeCount('Lớp 11')} total={gradeTotal} colorClass="bg-teal-400"/><GradeProgressBar label="Lớp 10" count={getGradeCount('Lớp 10')} total={gradeTotal} colorClass="bg-amber-400"/></div><p className="home-grade-total"><BookOpen size={16}/><strong>{gradeTotal.toLocaleString()}</strong> câu hỏi trong chương trình</p></section>

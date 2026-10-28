@@ -5,7 +5,7 @@ import {
     LayoutDashboard, FileText, GraduationCap, FileCode, Tag, 
     Wand2, MonitorPlay, ChevronDown, Menu, X, LogOut, 
     User, Shield, Copy, Flag, ChevronRight, Layers, Zap, Target,
-    MessageSquare, BookOpen, Users, Send, HelpCircle,
+    MessageSquare, BookOpen, Users, Send, HelpCircle, BarChart3,
     LucideIcon
 } from 'lucide-react';
 import { useLanguageStore } from '../services/languageStore';
@@ -178,60 +178,69 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     {user ? (
                         <>
                             <SidebarItem to="/" icon={LayoutDashboard} label={t('dashboard')} isCompact={isCompact} />
-                            <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} isCompact={isCompact} />
-                            <SidebarItem to="/eduloop" icon={Target} label="EduLoop · Kỹ năng" isCompact={isCompact} />
-                            <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" isCompact={isCompact} />
-                            <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" isCompact={isCompact} />
-                            <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" isCompact={isCompact} />
-                            
-                            {isTeacher && (
-                                <>
-                                    <SidebarGroup title={t('data_mgmt')} isCompact={isCompact}>
-                                        <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} isCompact={isCompact} />
-                                        <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} isCompact={isCompact} />
-                                        {isAdmin && <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" isCompact={isCompact} />}
-                                        <SidebarItem to="/irt" icon={Target} label="Phân tích IRT" isCompact={isCompact} />
-                                    </SidebarGroup>
 
-                                    <SidebarGroup title={t('tools')} isCompact={isCompact}>
-                                        <SidebarItem to="/exam" icon={Layers} label={t('exam_matrix')} isCompact={isCompact} />
-                                        <SidebarItem to="/assign-id" icon={Tag} label={t('ai_assigner')} isCompact={isCompact} />
-                                        <SidebarItem to="/converter" icon={Wand2} label={t('ai_converter')} isCompact={isCompact} />
-                                        <SidebarItem to="/errors" icon={Flag} label={t('error_manager')} isCompact={isCompact} />
-                                    </SidebarGroup>
-                                </>
+                            {/* 1. KHẢO THÍ & ĐỀ THI */}
+                            <SidebarGroup title={t('exam_management')} isCompact={isCompact}>
+                                {isTeacher && <SidebarItem to="/exam" icon={Layers} label={t('exam_matrix')} isCompact={isCompact} />}
+                                {isTeacher && <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} isCompact={isCompact} />}
+                                <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} isCompact={isCompact} />
+                                {isTeacher && <SidebarItem to="/irt" icon={BarChart3} label="Phân tích IRT" isCompact={isCompact} />}
+                            </SidebarGroup>
+
+                            {/* 2. BIÊN SOẠN & CÔNG CỤ AI */}
+                            {isTeacher && (
+                                <SidebarGroup title={t('authoring_tools')} isCompact={isCompact}>
+                                    <SidebarItem to="/assign-id" icon={Tag} label={t('ai_assigner')} isCompact={isCompact} />
+                                    <SidebarItem to="/converter" icon={Wand2} label={t('ai_converter')} isCompact={isCompact} />
+                                    <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} isCompact={isCompact} />
+                                    <SidebarItem to="/errors" icon={Flag} label={t('error_manager')} isCompact={isCompact} />
+                                    {isAdmin && <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" isCompact={isCompact} />}
+                                </SidebarGroup>
                             )}
 
+                            {/* 3. HỌC TẬP & LỚP HỌC */}
+                            <SidebarGroup title={t('learning_classroom')} isCompact={isCompact}>
+                                <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" isCompact={isCompact} />
+                                <SidebarItem to="/eduloop" icon={Zap} label="EduLoop · Kỹ năng" isCompact={isCompact} />
+                                <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" isCompact={isCompact} />
+                            </SidebarGroup>
+
+                            {/* 4. QUẢN TRỊ HỆ THỐNG */}
                             {isAdmin && (
-                                <SidebarGroup title="Admin" isCompact={isCompact}>
+                                <SidebarGroup title={t('system_admin')} isCompact={isCompact}>
                                     <SidebarItem to="/admin" icon={Shield} label="Quản trị User" isCompact={isCompact} />
                                     <SidebarItem to="/admin/source" icon={FileCode} label="Mã nguồn & SVG" isCompact={isCompact} />
                                     <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" isCompact={isCompact} />
                                     <button 
                                         onClick={() => setShowAdminFeedback(true)}
                                         className={`flex items-center gap-3 px-3 py-3 my-1 mx-2 rounded-xl transition-all duration-300 group relative overflow-hidden text-slate-500 hover:bg-slate-50 hover:text-indigo-600 w-[calc(100%-16px)]`}
+                                        title={isCompact ? "Góp ý người dùng" : ""}
                                     >
                                         <MessageSquare size={20} className={`shrink-0 z-10 transition-transform group-hover:scale-110 ${isCompact ? 'mx-auto' : ''}`} />
                                         {!isCompact && <span className="font-bold text-sm z-10 whitespace-nowrap tracking-wide">Góp ý người dùng</span>}
                                         {unreadFeedbackCount > 0 && (
                                             <span className={`absolute ${isCompact ? 'top-2 right-2' : 'right-3'} w-2 h-2 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse`} />
                                         )}
+                                        {isCompact && <div className="absolute left-full ml-2 bg-slate-900 text-white text-xs px-2.5 py-1.5 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[70] whitespace-nowrap shadow-lg">Góp ý người dùng</div>}
                                     </button>
                                 </SidebarGroup>
                             )}
-                            
-                            {/* Nút Góp ý cho người dùng bình thường */}
-                            {!isAdmin && (
-                                <div className="px-2 mt-4">
+
+                            {/* 5. HỖ TRỢ */}
+                            <SidebarGroup title={t('help_support')} isCompact={isCompact}>
+                                <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" isCompact={isCompact} />
+                                {!isAdmin && (
                                     <button 
                                         onClick={() => setShowFeedbackForm(true)}
-                                        className={`flex items-center gap-3 px-3 py-3 rounded-xl transition-all duration-300 group relative overflow-hidden bg-indigo-50 text-indigo-600 hover:bg-indigo-100 w-full`}
+                                        className={`flex items-center gap-3 px-3 py-2.5 my-0.5 mx-2 rounded-lg transition-all duration-200 group relative overflow-visible text-slate-500 hover:bg-slate-100 hover:text-indigo-700 w-[calc(100%-16px)]`}
+                                        title={isCompact ? "Gửi góp ý" : ""}
                                     >
                                         <MessageSquare size={20} className={`shrink-0 z-10 transition-transform group-hover:scale-110 ${isCompact ? 'mx-auto' : ''}`} />
                                         {!isCompact && <span className="font-bold text-sm z-10 whitespace-nowrap tracking-wide">Gửi góp ý</span>}
+                                        {isCompact && <div className="absolute left-full ml-2 bg-slate-900 text-white text-xs px-2.5 py-1.5 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[70] whitespace-nowrap shadow-lg">Gửi góp ý</div>}
                                     </button>
-                                </div>
-                            )}
+                                )}
+                            </SidebarGroup>
                         </>
                     ) : (
                         <div className="p-4 text-center text-slate-400 text-xs italic">Please Login</div>
@@ -272,35 +281,40 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                     </div>
                     <div className="flex-1 overflow-y-auto p-4 space-y-1">
                         <SidebarItem to="/" icon={LayoutDashboard} label={t('dashboard')} onClick={() => setIsMobileMenuOpen(false)}/>
+                        
+                        <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('exam_management')}</div>
+                        {isTeacher && <SidebarItem to="/exam" icon={Layers} label={t('exam_matrix')} onClick={() => setIsMobileMenuOpen(false)}/>}
+                        {isTeacher && <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} onClick={() => setIsMobileMenuOpen(false)}/>}
                         <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} onClick={() => setIsMobileMenuOpen(false)}/>
-                        <SidebarItem to="/eduloop" icon={Zap} label="EduLoop · Kỹ năng" onClick={() => setIsMobileMenuOpen(false)}/>
-                        <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" onClick={() => setIsMobileMenuOpen(false)}/>
-                        <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" onClick={() => setIsMobileMenuOpen(false)}/>
-                        <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" onClick={() => setIsMobileMenuOpen(false)}/>
+                        {isTeacher && <SidebarItem to="/irt" icon={BarChart3} label="Phân tích IRT" onClick={() => setIsMobileMenuOpen(false)}/>}
                         
                         {isTeacher && (
                             <>
-                                <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">Quản lý</div>
-                                <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} onClick={() => setIsMobileMenuOpen(false)}/>
-                                <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} onClick={() => setIsMobileMenuOpen(false)}/>
-                                {isAdmin && <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" onClick={() => setIsMobileMenuOpen(false)}/>}
-                                <SidebarItem to="/irt" icon={Target} label="Phân tích IRT" onClick={() => setIsMobileMenuOpen(false)}/>
-                                
-                                <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">Công cụ</div>
-                                <SidebarItem to="/exam" icon={Layers} label={t('exam_matrix')} onClick={() => setIsMobileMenuOpen(false)}/>
+                                <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('authoring_tools')}</div>
                                 <SidebarItem to="/assign-id" icon={Tag} label={t('ai_assigner')} onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/converter" icon={Wand2} label={t('ai_converter')} onClick={() => setIsMobileMenuOpen(false)}/>
+                                <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/errors" icon={Flag} label={t('error_manager')} onClick={() => setIsMobileMenuOpen(false)}/>
+                                {isAdmin && <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" onClick={() => setIsMobileMenuOpen(false)}/>}
                             </>
                         )}
                         
+                        <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('learning_classroom')}</div>
+                        <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" onClick={() => setIsMobileMenuOpen(false)}/>
+                        <SidebarItem to="/eduloop" icon={Zap} label="EduLoop · Kỹ năng" onClick={() => setIsMobileMenuOpen(false)}/>
+                        <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" onClick={() => setIsMobileMenuOpen(false)}/>
+                        
                         {isAdmin && (
                             <>
-                                <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">Hệ thống</div>
+                                <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('system_admin')}</div>
                                 <SidebarItem to="/admin" icon={Shield} label="Quản trị User" onClick={() => setIsMobileMenuOpen(false)}/>
+                                <SidebarItem to="/admin/source" icon={FileCode} label="Mã nguồn & SVG" onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" onClick={() => setIsMobileMenuOpen(false)}/>
                             </>
                         )}
+                        
+                        <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('help_support')}</div>
+                        <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" onClick={() => setIsMobileMenuOpen(false)}/>
                         
                         <div className="mt-8 pt-4 border-t border-slate-100">
                             <button onClick={handleLogout} className="flex items-center gap-3 w-full px-4 py-3 text-red-600 bg-red-50 rounded-xl font-bold"><LogOut size={20}/> Đăng xuất</button>

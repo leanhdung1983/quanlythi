@@ -21,6 +21,11 @@ const translations: Record<string, Record<Language, string>> = {
   'tools': { en: 'Tools', vi: 'Công cụ' },
   'data_mgmt': { en: 'Data Management', vi: 'Quản lý dữ liệu' },
   'error_manager': { en: 'Error Manager', vi: 'Quản lý báo lỗi' }, // NEW
+  'exam_management': { en: 'Exams & Assessment', vi: 'Khảo thí & Đề thi' },
+  'authoring_tools': { en: 'Authoring & AI', vi: 'Biên soạn & AI' },
+  'learning_classroom': { en: 'Learning & Class', vi: 'Học tập & Lớp học' },
+  'system_admin': { en: 'System Admin', vi: 'Quản trị hệ thống' },
+  'help_support': { en: 'Help & Support', vi: 'Hỗ trợ' },
 
   // Online Exam
   'oe_title': { en: 'Online Exam System', vi: 'Hệ thống Thi Trực Tuyến' },
