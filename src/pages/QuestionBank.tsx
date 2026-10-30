@@ -6,9 +6,10 @@ import { apiService } from '../services/api';
 import { useAuthStore } from '../services/authStore';
 import { Question, QuestionType, Chapter, Unit, ID6Metadata } from '../types';
 import { decodeID6, normalizeID } from '../utils/id6Helper';
-import { Plus, Trash2, Search, FileText, Loader2, UploadCloud, Database, X, Edit2, Tag, FileOutput, Sparkles, Info, CheckCircle2, Eye, Clock } from 'lucide-react';
+import { Plus, Trash2, Search, FileText, Loader2, UploadCloud, Database, X, Edit2, Tag, FileOutput, Sparkles, Info, CheckCircle2, Eye, Clock, Copy, Check } from 'lucide-react';
 import { useLanguageStore } from '../services/languageStore';
 import { MathRenderer } from '../components/MathRenderer';
+import { Sheet, SheetHeader, SheetTitle, SheetDescription, SheetContent, SheetFooter, Button, Badge } from '../components/ui';
 
 interface NormalizationPreview {
     id: number;
@@ -42,6 +43,8 @@ export const QuestionBank: React.FC = () => {
     // UI State
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedQ, setSelectedQ] = useState<Question | null>(null);
+    const [drawerQ, setDrawerQ] = useState<Question | null>(null);
+    const [copiedLatex, setCopiedLatex] = useState(false);
     const [isProcessing, setIsProcessing] = useState(false);
     const [showProcessingOverlay, setShowProcessingOverlay] = useState(true);
     const [processingProgress, setProcessingProgress] = useState(0);
@@ -923,6 +926,7 @@ export const QuestionBank: React.FC = () => {
                     <thead className="bg-slate-50 sticky top-0 z-10 border-b border-slate-200">
                         <tr className="text-xs font-bold text-slate-500 uppercase bg-slate-100">
                             <th className="border-r border-slate-200 px-2 py-1 text-center w-12">STT</th>
+                            <th className="border-r border-slate-200 px-2 py-1 text-center w-14">Xem</th>
                             <th className="border-r border-slate-200 px-4 py-1 text-left min-w-[300px]">Câu hỏi</th>
                             <th className="border-r border-slate-200 px-2 py-1 text-center w-24">ID</th>
                             <th className="px-4 py-1 text-left min-w-[200px]">Diễn giải ID</th>
@@ -930,9 +934,9 @@ export const QuestionBank: React.FC = () => {
                     </thead>
                     <tbody className="divide-y divide-slate-100">
                         {loading && questions.length === 0 ? (
-                            <tr><td colSpan={4} className="p-8 text-center bg-white"><Loader2 className="animate-spin inline-block mr-2 text-indigo-600" /> <span className="text-sm font-bold text-slate-400">Đang tải dữ liệu...</span></td></tr>
+                            <tr><td colSpan={5} className="p-8 text-center bg-white"><Loader2 className="animate-spin inline-block mr-2 text-indigo-600" /> <span className="text-sm font-bold text-slate-400">Đang tải dữ liệu...</span></td></tr>
                         ) : currentQuestions.length === 0 ? (
-                            <tr><td colSpan={4} className="p-8 text-center text-slate-400 bg-white italic font-medium">Không tìm thấy nội dung phù hợp với bộ lọc.</td></tr>
+                            <tr><td colSpan={5} className="p-8 text-center text-slate-400 bg-white italic font-medium">Không tìm thấy nội dung phù hợp với bộ lọc.</td></tr>
                         ) : (
                             currentQuestions.map((q, idx) => {
                                 const detail = getDetailedDescription(q.id_full);
@@ -945,6 +949,19 @@ export const QuestionBank: React.FC = () => {
                                         className={`hover:bg-indigo-50/30 cursor-pointer transition-colors border-b border-slate-50 ${selectedQ?.id === q.id ? 'bg-indigo-50/80 shadow-inner' : 'bg-white'}`}
                                     >
                                         <td className="border-r border-slate-100 px-3 py-4 text-center text-xs font-black text-slate-400 align-top">{stt}</td>
+                                        <td className="border-r border-slate-100 px-2 py-4 text-center align-top">
+                                            <button
+                                                type="button"
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    setDrawerQ(q);
+                                                }}
+                                                className="p-1.5 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-300 text-slate-400 hover:text-indigo-600 transition-all shadow-sm active:scale-95"
+                                                title="Xem trước kết quả định dạng công thức & lời giải"
+                                            >
+                                                <Eye size={15} />
+                                            </button>
+                                        </td>
                                         <td className="border-r border-slate-100 px-5 py-4 group/cell relative align-top">
                                             {inlineEditId === q.id ? (
                                                 <div className="flex flex-col gap-3 p-1">
@@ -1009,6 +1026,14 @@ export const QuestionBank: React.FC = () => {
                 <div className="question-bank-actions flex gap-2 max-w-full overflow-x-auto pb-1">
                     <button onClick={() => setShowUserGuide(true)} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-slate-600">
                         <Info size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">HDSD</span>
+                    </button>
+                    <button 
+                        onClick={() => { if (selectedQ) setDrawerQ(selectedQ); }} 
+                        disabled={!selectedQ}
+                        className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-indigo-600 disabled:opacity-40" 
+                        title="Xem trước định dạng câu đang chọn"
+                    >
+                        <Eye size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Xem</span>
                     </button>
                     <button onClick={handleOpenQuickAssign} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-slate-600">
                         <Tag size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Gán ID</span>
@@ -1566,6 +1591,127 @@ export const QuestionBank: React.FC = () => {
                         </div>
                     </div>
                 </div>
+            )}
+
+            {/* Slide-over Preview Drawer for Question */}
+            {drawerQ && (
+                <Sheet open={Boolean(drawerQ)} onOpenChange={(open) => !open && setDrawerQ(null)} side="right">
+                    <SheetHeader onClose={() => setDrawerQ(null)}>
+                        <div className="flex items-center gap-2 mb-1">
+                            <Badge variant={drawerQ.id_full ? "primary" : "destructive"}>
+                                {drawerQ.id_full || "CHƯA CÓ ID"}
+                            </Badge>
+                            <span className="text-[10px] text-slate-400 font-mono font-bold uppercase tracking-wider">
+                                ID #{drawerQ.id}
+                            </span>
+                        </div>
+                        <SheetTitle>Xem trước câu hỏi</SheetTitle>
+                        <SheetDescription>
+                            Hiển thị kết quả định dạng công thức Toán học, đồ thị và lời giải chi tiết
+                        </SheetDescription>
+                    </SheetHeader>
+
+                    <SheetContent className="space-y-6">
+                        {/* Formatted Math Preview */}
+                        <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-200/80 shadow-sm">
+                            <div className="flex items-center justify-between mb-3 pb-2 border-b border-slate-200/60">
+                                <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 flex items-center gap-1.5">
+                                    <Sparkles size={14} className="text-indigo-500" />
+                                    Định dạng đề bài & công thức
+                                </span>
+                                <span className="text-[9px] font-mono text-slate-400">MathRenderer</span>
+                            </div>
+                            <div className="text-slate-800 leading-relaxed font-sans text-sm">
+                                <MathRenderer
+                                    content={drawerQ.raw_latex || ''}
+                                    mode="all"
+                                    hideToolbar={false}
+                                    isExTest={false}
+                                />
+                            </div>
+                        </div>
+
+                        {/* ID6 Breakdown */}
+                        {(() => {
+                            const info = getDetailedDescription(drawerQ.id_full);
+                            return (
+                                <div className="bg-white p-4 rounded-2xl border border-slate-200/80 shadow-sm space-y-3">
+                                    <span className="text-[10px] font-black uppercase tracking-widest text-slate-400 block">
+                                        Thông tin phân loại ID6
+                                    </span>
+                                    {info.valid ? (
+                                        <div className="space-y-2">
+                                            <div className="text-xs text-slate-700 bg-indigo-50/60 p-3 rounded-xl border border-indigo-100/60 font-medium">
+                                                {info.full_summary}
+                                            </div>
+                                            <div className="grid grid-cols-2 gap-2 text-xs">
+                                                <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                                    <span className="text-[9px] text-slate-400 font-bold uppercase block">Lớp / Môn</span>
+                                                    <span className="font-semibold text-slate-800">{info.details?.grade || 'N/A'} - {info.details?.subject || 'N/A'}</span>
+                                                </div>
+                                                <div className="p-2.5 bg-slate-50 rounded-xl border border-slate-100">
+                                                    <span className="text-[9px] text-slate-400 font-bold uppercase block">Mức độ</span>
+                                                    <span className="font-semibold text-slate-800">{info.details?.level || 'N/A'}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <p className="text-xs text-rose-500 font-medium italic">
+                                            Câu hỏi chưa được gán mã ID6 hợp lệ theo danh mục hệ thống.
+                                        </p>
+                                    )}
+                                </div>
+                            );
+                        })()}
+
+                        {/* Raw LaTeX Source with Copy */}
+                        <div className="bg-slate-900 text-slate-100 p-4 rounded-2xl shadow-inner space-y-2">
+                            <div className="flex items-center justify-between pb-2 border-b border-slate-800">
+                                <span className="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-widest">
+                                    Mã nguồn LaTeX
+                                </span>
+                                <button
+                                    type="button"
+                                    onClick={() => {
+                                        if (drawerQ.raw_latex) {
+                                            navigator.clipboard.writeText(drawerQ.raw_latex);
+                                            setCopiedLatex(true);
+                                            setTimeout(() => setCopiedLatex(false), 2000);
+                                        }
+                                    }}
+                                    className="flex items-center gap-1 px-2.5 py-1 bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-semibold rounded-lg transition-colors"
+                                >
+                                    {copiedLatex ? <Check size={12} className="text-emerald-400" /> : <Copy size={12} />}
+                                    <span>{copiedLatex ? 'Đã chép' : 'Sao chép'}</span>
+                                </button>
+                            </div>
+                            <pre className="text-xs font-mono whitespace-pre-wrap break-words max-h-52 overflow-y-auto custom-scrollbar text-slate-300">
+                                {drawerQ.raw_latex || ''}
+                            </pre>
+                        </div>
+                    </SheetContent>
+
+                    <SheetFooter>
+                        <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => setDrawerQ(null)}
+                        >
+                            Đóng
+                        </Button>
+                        <Button
+                            variant="primary"
+                            size="sm"
+                            onClick={() => {
+                                setInlineEditId(drawerQ.id);
+                                setInlineEditText(drawerQ.raw_latex || '');
+                                setDrawerQ(null);
+                            }}
+                        >
+                            <Edit2 size={13} className="mr-1" /> Sửa nhanh
+                        </Button>
+                    </SheetFooter>
+                </Sheet>
             )}
 
         </div>

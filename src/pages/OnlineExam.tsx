@@ -18,7 +18,7 @@ import {
     X, Timer, Book, Layers, Layout, Plus, Minus,
     Download, FileSpreadsheet, Flag, ChevronDown, FileText,
     Target, Lock, ShieldCheck, Database, Folder, FolderOpen, Calendar, Award, Zap, Users,
-    PieChart as PieChartIcon, Info
+    PieChart as PieChartIcon, Info, Maximize2, Minimize2, Cloud, AlertCircle, CheckCircle2
 } from 'lucide-react';
 import { 
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -245,6 +245,31 @@ export const OnlineExam: React.FC = () => {
         onCancel?: () => void;
         isAlert?: boolean;
     }>({ isOpen: false, title: '', message: '' });
+
+    // Exam UX Modernization States
+    const [bubbleFilter, setBubbleFilter] = useState<'ALL' | 'UNANSWERED' | 'FLAGGED'>('ALL');
+    const [showSubmitConfirmModal, setShowSubmitConfirmModal] = useState(false);
+    const [isFullscreen, setIsFullscreen] = useState(false);
+
+    const toggleFullscreen = useCallback(() => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+            setIsFullscreen(true);
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+                setIsFullscreen(false);
+            }
+        }
+    }, []);
+
+    useEffect(() => {
+        const handleFsChange = () => {
+            setIsFullscreen(Boolean(document.fullscreenElement));
+        };
+        document.addEventListener('fullscreenchange', handleFsChange);
+        return () => document.removeEventListener('fullscreenchange', handleFsChange);
+    }, []);
 
     const showAlert = useCallback((title: string, message: string) => {
         setDialog({ isOpen: true, title, message, isAlert: true });
@@ -620,6 +645,21 @@ export const OnlineExam: React.FC = () => {
                     e.preventDefault();
                     e.stopPropagation();
                     return false;
+                }
+
+                // Keyboard Navigation: ArrowLeft / ArrowRight
+                if (!e.ctrlKey && !e.altKey && !e.metaKey) {
+                    const activeEl = document.activeElement;
+                    const isTyping = activeEl && (activeEl.tagName === 'INPUT' || activeEl.tagName === 'TEXTAREA' || (activeEl as HTMLElement).isContentEditable);
+                    if (!isTyping) {
+                        if (e.key === 'ArrowLeft') {
+                            e.preventDefault();
+                            setCurrentQIdx(prev => Math.max(0, prev - 1));
+                        } else if (e.key === 'ArrowRight') {
+                            e.preventDefault();
+                            setCurrentQIdx(prev => Math.min(questions.length - 1, prev + 1));
+                        }
+                    }
                 }
             }
         };
@@ -2000,15 +2040,35 @@ export const OnlineExam: React.FC = () => {
                 </div>
 
                 <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+                    {/* Autosave Indicator */}
+                    {!isReviewMode && (
+                        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 border border-emerald-200/80 rounded-xl text-emerald-700 text-[10px] font-bold shadow-sm">
+                            <Cloud size={14} className="text-emerald-500 shrink-0" />
+                            <span>Đã lưu tự động</span>
+                        </div>
+                    )}
+
+                    {/* Font Size Adjuster */}
                     <div className="hidden lg:flex items-center bg-slate-50 p-1 rounded-xl border border-slate-200 gap-1">
-                        <button onClick={() => handleFontSize(-2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-500 hover:text-slate-700 transition-all"><Minus size={14}/></button>
+                        <button onClick={() => handleFontSize(-2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-500 hover:text-slate-700 transition-all" title="Giảm cỡ chữ"><Minus size={14}/></button>
                         <div className="px-2 text-[10px] font-black text-slate-400 uppercase">Font</div>
-                        <button onClick={() => handleFontSize(2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-500 hover:text-slate-700 transition-all"><Plus size={14}/></button>
+                        <button onClick={() => handleFontSize(2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-500 hover:text-slate-700 transition-all" title="Tăng cỡ chữ"><Plus size={14}/></button>
                     </div>
+
+                    {/* Fullscreen Toggle */}
+                    <button
+                        type="button"
+                        onClick={toggleFullscreen}
+                        className="p-2 bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 rounded-xl transition-all"
+                        title={isFullscreen ? "Thoát toàn màn hình" : "Chế độ toàn màn hình"}
+                    >
+                        {isFullscreen ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}
+                    </button>
 
                     <button
                         className="lg:hidden p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 transition-all font-black flex items-center gap-1"
                         onClick={() => setShowSidebar(true)}
+                        title="Bảng trả lời"
                     >
                         <Layout size={14}/>
                     </button>
@@ -2020,6 +2080,7 @@ export const OnlineExam: React.FC = () => {
                                 setMarkedForReview(prev => ({ ...prev, [qId]: !prev[qId] }));
                             }}
                             className={`p-2 rounded-xl transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border ${markedForReview[questions[currentQIdx].id] ? 'bg-orange-50 text-orange-600 border-orange-200 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200 hover:text-slate-700 hover:bg-slate-100'}`}
+                            title="Đánh dấu câu hỏi cần xem lại"
                         >
                             <Flag size={14}/>
                             <span className="hidden sm:inline text-[8px]">Đánh dấu</span>
@@ -2036,16 +2097,11 @@ export const OnlineExam: React.FC = () => {
 
                     {!isReviewMode && (
                         <button 
-                            onClick={() => { 
-                                showConfirm(
-                                    "Nộp bài?", 
-                                    "Bạn còn " + formatTime(timeLeft) + " để kiểm tra lại. Bạn có chắc chắn muốn nộp bài thi ngay bây giờ?", 
-                                    () => finishExam()
-                                ); 
-                            }} 
-                            className="bg-orange-500 hover:bg-orange-600 text-white px-3 md:px-6 py-2 rounded-xl font-black text-[10px] md:text-[11px] shadow-lg shadow-orange-500/30 transition-all active:scale-95 uppercase tracking-widest border border-orange-400/50"
+                            onClick={() => setShowSubmitConfirmModal(true)} 
+                            className="bg-orange-500 hover:bg-orange-600 text-white px-3 md:px-6 py-2 rounded-xl font-black text-[10px] md:text-[11px] shadow-lg shadow-orange-500/30 transition-all active:scale-95 uppercase tracking-widest border border-orange-400/50 flex items-center gap-1.5"
                         >
-                            Nộp bài
+                            <ShieldCheck size={14}/>
+                            <span>Nộp bài</span>
                         </button>
                     )}
                 </div>
@@ -2177,14 +2233,51 @@ export const OnlineExam: React.FC = () => {
                             <div className="mt-2 text-xs text-slate-400">Số câu đã trả lời</div>
                         </div>
 
+                        {/* Question Bubble Filter Tabs */}
+                        <div className="px-6 pt-3 pb-2 border-b border-slate-100 bg-slate-50/50 shrink-0">
+                            <div className="flex bg-slate-200/70 p-1 rounded-xl text-[10px] font-black">
+                                <button
+                                    type="button"
+                                    onClick={() => setBubbleFilter('ALL')}
+                                    className={`flex-1 py-1.5 rounded-lg transition-all text-center ${bubbleFilter === 'ALL' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                                >
+                                    Tất cả ({questions.length})
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setBubbleFilter('UNANSWERED')}
+                                    className={`flex-1 py-1.5 rounded-lg transition-all text-center ${bubbleFilter === 'UNANSWERED' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                                >
+                                    Chưa làm ({questions.length - answeredCount})
+                                </button>
+                                <button
+                                    type="button"
+                                    onClick={() => setBubbleFilter('FLAGGED')}
+                                    className={`flex-1 py-1.5 rounded-lg transition-all text-center ${bubbleFilter === 'FLAGGED' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                                >
+                                    Cờ ({Object.values(markedForReview).filter(Boolean).length})
+                                </button>
+                            </div>
+                        </div>
+
                         <div className="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-6">
                             {['TN', 'TF', 'KQ', 'TL'].map(type => {
                                 const typeNames: Record<string, string> = { TN: 'Trắc nghiệm', TF: 'Đúng/Sai', KQ: 'Trả lời ngắn', TL: 'Tự luận' };
-                                const qsInType = questions.map((q, i) => ({ q, i })).filter(item => item.q.type === type);
+                                const qsInType = questions
+                                    .map((q, i) => ({ q, i }))
+                                    .filter(item => item.q.type === type)
+                                    .filter(item => {
+                                        if (bubbleFilter === 'UNANSWERED') return !isQuestionAnswered(item.q);
+                                        if (bubbleFilter === 'FLAGGED') return markedForReview[item.q.id];
+                                        return true;
+                                    });
                                 if (qsInType.length === 0) return null;
                                 return (
                                     <div key={type}>
-                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 leading-none">{typeNames[type]}</div>
+                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 leading-none flex items-center justify-between">
+                                            <span>{typeNames[type]}</span>
+                                            <span className="text-slate-300 text-[9px] font-semibold">{qsInType.length} câu</span>
+                                        </div>
                                         <div className="grid grid-cols-5 gap-2.5">
                                             {qsInType.map(({ q, i }) => {
                                                 const isAns = isQuestionAnswered(q);
@@ -2267,13 +2360,7 @@ export const OnlineExam: React.FC = () => {
                                     </div>
                                 </div>
                                 <button 
-                                    onClick={() => {
-                                        showConfirm(
-                                            "Nộp bài?", 
-                                            "Bạn còn " + formatTime(timeLeft) + " để kiểm tra lại. Bạn có chắc chắn muốn nộp bài thi ngay bây giờ?", 
-                                            () => finishExam()
-                                        ); 
-                                    }}
+                                    onClick={() => setShowSubmitConfirmModal(true)}
                                     className="w-full bg-orange-500 h-16 rounded-[1.5rem] text-white font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl shadow-orange-100/50 hover:-translate-y-1 active:translate-y-0 active:scale-95"
                                 >
                                     Hoàn thành & nộp bài <ShieldCheck size={20}/>
@@ -2283,6 +2370,71 @@ export const OnlineExam: React.FC = () => {
                     </div>
                 </aside>
             </div>
+
+            {/* Rich Submission Safety Confirmation Modal */}
+            {showSubmitConfirmModal && (
+                <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
+                    <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 animate-in zoom-in-95">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0">
+                                <ShieldCheck size={26} />
+                            </div>
+                            <div>
+                                <h3 className="text-lg font-black text-slate-900 leading-tight">Xác nhận nộp bài thi</h3>
+                                <p className="text-xs text-slate-500 mt-0.5">
+                                    Thời gian còn lại: <span className="font-mono font-bold text-orange-600">{formatTime(timeLeft)}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div className="grid grid-cols-3 gap-2.5 my-4">
+                            <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-100 text-center">
+                                <div className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">Đã làm</div>
+                                <div className="text-xl font-black text-emerald-700 mt-0.5">{answeredCount}/{questions.length}</div>
+                            </div>
+                            <div className={`p-3 rounded-2xl border text-center ${questions.length - answeredCount > 0 ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-slate-50 border-slate-100 text-slate-600'}`}>
+                                <div className="text-[9px] font-bold uppercase tracking-wider">Chưa làm</div>
+                                <div className="text-xl font-black mt-0.5">{questions.length - answeredCount}</div>
+                            </div>
+                            <div className="p-3 bg-amber-50 rounded-2xl border border-amber-100 text-center">
+                                <div className="text-[9px] font-bold text-amber-600 uppercase tracking-wider">Đánh dấu</div>
+                                <div className="text-xl font-black text-amber-700 mt-0.5">{Object.values(markedForReview).filter(Boolean).length}</div>
+                            </div>
+                        </div>
+
+                        {questions.length - answeredCount > 0 && (
+                            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 mb-4 text-rose-700 text-xs font-semibold">
+                                <AlertCircle size={16} className="shrink-0 text-rose-500" />
+                                <span>Bạn vẫn còn {questions.length - answeredCount} câu chưa trả lời!</span>
+                            </div>
+                        )}
+
+                        <p className="text-xs text-slate-500 leading-relaxed mb-6">
+                            Sau khi xác nhận nộp bài, hệ thống sẽ kết thúc lượt thi và ghi nhận kết quả. Bạn không thể quay lại để sửa đáp án.
+                        </p>
+
+                        <div className="flex gap-3 justify-end">
+                            <button
+                                type="button"
+                                onClick={() => setShowSubmitConfirmModal(false)}
+                                className="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider rounded-xl transition-colors"
+                            >
+                                Tiếp tục làm bài
+                            </button>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    setShowSubmitConfirmModal(false);
+                                    finishExam();
+                                }}
+                                className="flex-1 py-3 px-4 bg-orange-500 hover:bg-orange-600 text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-orange-500/20 transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                            >
+                                <ShieldCheck size={16} /> Nộp bài ngay
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* Report Modal */}
             {showReportModal && (
