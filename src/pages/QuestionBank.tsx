@@ -835,61 +835,80 @@ export const QuestionBank: React.FC = () => {
 
     return (
         <div className="question-bank-page page-panel h-full flex flex-col min-h-0 bg-white relative">
-            <div className="question-bank-heading flex items-center justify-between gap-4 px-5 py-4 shrink-0 border-b border-slate-100">
-                <div><p className="text-[10px] uppercase tracking-[0.18em] font-semibold text-indigo-500 mb-1">Thư viện nội dung</p><h1 className="text-xl font-bold tracking-tight text-slate-800">Ngân hàng câu hỏi</h1></div>
-                <div className="rounded-full bg-indigo-50 border border-indigo-100 px-3 py-1.5 text-xs font-semibold text-indigo-700">{questions.length.toLocaleString()} câu đã tải</div>
+            <div className="question-bank-heading flex items-center justify-between gap-4 px-6 py-4 shrink-0 border-b border-slate-200/80 bg-gradient-to-r from-white via-indigo-50/30 to-white">
+                <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-2xs">
+                        <Database size={20} />
+                    </div>
+                    <div>
+                        <div className="flex items-center gap-2">
+                            <h1 className="text-xl font-extrabold tracking-tight text-slate-900">Ngân hàng câu hỏi</h1>
+                            <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-indigo-100/80 text-indigo-700">
+                                ID6 Core
+                            </span>
+                        </div>
+                        <p className="text-xs text-slate-500 mt-0.5">Tra cứu, phân loại, biên soạn và chuẩn hóa toàn bộ câu hỏi</p>
+                    </div>
+                </div>
+                <div className="flex items-center gap-2">
+                    <div className="rounded-xl bg-white border border-slate-200/80 shadow-2xs px-3.5 py-1.5 text-xs font-bold text-indigo-700 flex items-center gap-2">
+                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                        <span>{questions.length.toLocaleString()} câu đã tải</span>
+                    </div>
+                </div>
             </div>
+
             {/* Top Bar: Filters */}
-            <div className="question-bank-filters shrink-0 bg-slate-50 p-4 border-b border-slate-100 grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-10 gap-3 items-end">
+            <div className="question-bank-filters shrink-0 bg-slate-50/90 backdrop-blur-sm p-4 border-b border-slate-200/80 grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-10 gap-2.5 items-end">
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lọc</label>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Tìm kiếm</label>
                     <div className="relative">
-                        <Search className="absolute left-2 top-1/2 -translate-y-1/2 text-slate-400" size={12} />
-                        <input className="w-full pl-6 pr-2 py-1 text-xs border border-slate-300 rounded bg-white shadow-sm focus:ring-1 ring-primary-500 outline-none" placeholder="Tìm..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
+                        <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" size={13} />
+                        <input className="w-full pl-7 pr-2.5 py-1.5 text-xs border border-slate-200 rounded-xl bg-white shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 outline-none transition-all" placeholder="Nội dung..." value={searchTerm} onChange={(e) => setSearchTerm(e.target.value)}/>
                     </div>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Lớp</label>
-                    <select value={filterGrade} onChange={e => setFilterGrade(e.target.value as any)} className="w-full text-xs border border-slate-300 rounded bg-white p-1 outline-none shadow-sm">
-                        <option value="ALL">Tất cả</option>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Lớp</label>
+                    <select value={filterGrade} onChange={e => setFilterGrade(e.target.value as any)} className="w-full text-xs border border-slate-200 rounded-xl bg-white py-1.5 px-2 outline-none shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all font-medium">
+                        <option value="ALL">Tất cả khối</option>
                         <option value="0">Lớp 10</option>
                         <option value="1">Lớp 11</option>
                         <option value="2">Lớp 12</option>
                     </select>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Môn</label>
-                    <select value={filterSubject} onChange={e => setFilterSubject(e.target.value as any)} className="w-full text-xs border border-slate-300 rounded bg-white p-1 outline-none shadow-sm">
-                        <option value="ALL">Tất cả</option>
-                        <option value="D">Toán ĐS</option>
-                        <option value="H">Toán HH</option>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Môn</label>
+                    <select value={filterSubject} onChange={e => setFilterSubject(e.target.value as any)} className="w-full text-xs border border-slate-200 rounded-xl bg-white py-1.5 px-2 outline-none shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all font-medium">
+                        <option value="ALL">Tất cả môn</option>
+                        <option value="D">Toán Đại số</option>
+                        <option value="H">Toán Hình học</option>
                         <option value="C">Chuyên đề</option>
                     </select>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Chương</label>
-                    <select value={filterChapterId} onChange={e => setFilterChapterId(e.target.value)} className="w-full text-xs border border-slate-300 rounded bg-white p-1 outline-none shadow-sm truncate">
-                        <option value="ALL">Tất cả</option>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Chương</label>
+                    <select value={filterChapterId} onChange={e => setFilterChapterId(e.target.value)} className="w-full text-xs border border-slate-200 rounded-xl bg-white py-1.5 px-2 outline-none shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all truncate font-medium">
+                        <option value="ALL">Tất cả chương</option>
                         {filteredChapters.map(c => (<option key={c.id} value={c.id} title={c.chapter_name}>Chương {c.id_chapter}: {c.chapter_name}</option>))}
                     </select>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Bài</label>
-                    <select value={filterUnit} onChange={e => setFilterUnit(e.target.value)} disabled={filterChapterId === 'ALL'} className="w-full text-xs border border-slate-300 rounded bg-white p-1 outline-none shadow-sm disabled:bg-slate-200">
-                        <option value="ALL">Tất cả</option>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Bài</label>
+                    <select value={filterUnit} onChange={e => setFilterUnit(e.target.value)} disabled={filterChapterId === 'ALL'} className="w-full text-xs border border-slate-200 rounded-xl bg-white py-1.5 px-2 outline-none shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all disabled:bg-slate-100 disabled:text-slate-400 font-medium">
+                        <option value="ALL">Tất cả bài</option>
                         {filteredUnits.map(u => (<option key={u.id} value={u.id_unit} title={u.unit_name}>Bài {u.id_unit}: {u.unit_name}</option>))}
                     </select>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Dạng</label>
-                    <select value={filterType} onChange={e => setFilterType(e.target.value)} disabled={filterChapterId === 'ALL'} className="w-full text-xs border border-slate-300 rounded bg-white p-1 outline-none shadow-sm disabled:bg-slate-200">
-                        <option value="ALL">Tất cả</option>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Dạng</label>
+                    <select value={filterType} onChange={e => setFilterType(e.target.value)} disabled={filterChapterId === 'ALL'} className="w-full text-xs border border-slate-200 rounded-xl bg-white py-1.5 px-2 outline-none shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all disabled:bg-slate-100 disabled:text-slate-400 font-medium">
+                        <option value="ALL">Tất cả dạng</option>
                         {availableTypes.map(item => (<option key={item.count} value={item.count} title={item.desc}>Dạng {item.count}: {item.desc}</option>))}
                     </select>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Mức độ</label>
-                    <select value={filterLevel} onChange={e => setFilterLevel(e.target.value as any)} className="w-full text-xs border border-slate-300 rounded bg-white p-1 outline-none shadow-sm">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Mức độ</label>
+                    <select value={filterLevel} onChange={e => setFilterLevel(e.target.value as any)} className="w-full text-xs border border-slate-200 rounded-xl bg-white py-1.5 px-2 outline-none shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all font-medium">
                         <option value="ALL">Tất cả</option>
                         <option value="N">Nhận biết</option>
                         <option value="H">Thông hiểu</option>
@@ -898,9 +917,9 @@ export const QuestionBank: React.FC = () => {
                     </select>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Loại</label>
-                    <select value={filterQType} onChange={e => setFilterQType(e.target.value)} className="w-full text-xs border border-slate-300 rounded bg-white p-1 outline-none shadow-sm">
-                        <option value="ALL">Tất cả</option>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Loại</label>
+                    <select value={filterQType} onChange={e => setFilterQType(e.target.value)} className="w-full text-xs border border-slate-200 rounded-xl bg-white py-1.5 px-2 outline-none shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all font-medium">
+                        <option value="ALL">Tất cả loại</option>
                         <option value="TN">Trắc nghiệm</option>
                         <option value="TF">Đúng sai</option>
                         <option value="KQ">Trả lời ngắn</option>
@@ -908,28 +927,28 @@ export const QuestionBank: React.FC = () => {
                     </select>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">Trạng thái ID</label>
-                    <select value={filterIdStatus} onChange={e => setFilterIdStatus(e.target.value)} className="w-full text-xs border border-slate-300 rounded bg-white p-1 outline-none shadow-sm">
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Trạng thái ID</label>
+                    <select value={filterIdStatus} onChange={e => setFilterIdStatus(e.target.value)} className="w-full text-xs border border-slate-200 rounded-xl bg-white py-1.5 px-2 outline-none shadow-2xs focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 transition-all font-medium">
                         <option value="ALL">Tất cả</option>
                         <option value="UNCLASSIFIED">Lỗi / Chưa gán</option>
                     </select>
                 </div>
                 <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-slate-500 uppercase mb-1">ID</label>
-                    <input className="w-full px-2 py-1 text-xs border border-slate-300 rounded bg-white shadow-sm outline-none" placeholder="Mã ID..."/>
+                    <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Mã ID</label>
+                    <input className="w-full px-2.5 py-1.5 text-xs border border-slate-200 rounded-xl bg-white shadow-2xs outline-none focus:border-indigo-500 focus:ring-2 focus:ring-indigo-100 font-mono transition-all" placeholder="VD: 2D1H1-1"/>
                 </div>
             </div>
 
             {/* Table Area */}
-            <div className="flex-1 overflow-auto bg-white">
+            <div className="flex-1 overflow-auto bg-white custom-scrollbar">
                 <table className="w-full border-collapse border-spacing-0">
-                    <thead className="bg-slate-50 sticky top-0 z-10 border-b border-slate-200">
-                        <tr className="text-xs font-bold text-slate-500 uppercase bg-slate-100">
-                            <th className="border-r border-slate-200 px-2 py-1 text-center w-12">STT</th>
-                            <th className="border-r border-slate-200 px-2 py-1 text-center w-14">Xem</th>
-                            <th className="border-r border-slate-200 px-4 py-1 text-left min-w-[300px]">Câu hỏi</th>
-                            <th className="border-r border-slate-200 px-2 py-1 text-center w-24">ID</th>
-                            <th className="px-4 py-1 text-left min-w-[200px]">Diễn giải ID</th>
+                    <thead className="bg-slate-50/95 backdrop-blur-sm sticky top-0 z-10 border-b border-slate-200 shadow-2xs">
+                        <tr className="text-xs font-bold text-slate-600 uppercase">
+                            <th className="border-r border-slate-200/80 px-2 py-3 text-center w-12 text-slate-400">STT</th>
+                            <th className="border-r border-slate-200/80 px-2 py-3 text-center w-16">Xem</th>
+                            <th className="border-r border-slate-200/80 px-4 py-3 text-left min-w-[320px]">Nội dung câu hỏi (LaTeX)</th>
+                            <th className="border-r border-slate-200/80 px-3 py-3 text-center w-28">Mã ID6</th>
+                            <th className="px-4 py-3 text-left min-w-[220px]">Phân loại chương / bài</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">

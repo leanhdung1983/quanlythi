@@ -1,18 +1,20 @@
-
 import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { 
     LayoutDashboard, FileText, GraduationCap, FileCode, Tag, 
     Wand2, MonitorPlay, ChevronDown, Menu, X, LogOut, 
-    User, Shield, Copy, Flag, ChevronRight, Layers, Zap, Target,
+    User, Shield, Copy, Flag, ChevronRight, Layers, Zap,
     MessageSquare, BookOpen, Users, Send, HelpCircle, BarChart3,
+    Sparkles, PlusCircle, ExternalLink,
     LucideIcon
 } from 'lucide-react';
 import { useLanguageStore } from '../services/languageStore';
 import { useAuthStore } from '../services/authStore';
+import { useUIStore } from '../services/uiStore';
 import { UserFeedbackForm, AdminFeedbackViewer } from './Feedback';
 import { apiService } from '../services/api';
 import { APP_NAME, APP_TAGLINE } from '../config/brand';
+import { cn } from '../utils/cn';
 
 interface SidebarItemProps {
     to: string;
@@ -20,38 +22,71 @@ interface SidebarItemProps {
     label: string;
     onClick?: () => void;
     isCompact?: boolean;
+    badge?: string;
+    isNew?: boolean;
 }
 
-const SidebarItem = ({ to, icon: Icon, label, onClick, isCompact }: SidebarItemProps) => (
+const SidebarItem = ({ to, icon: Icon, label, onClick, isCompact, badge, isNew }: SidebarItemProps) => (
   <NavLink
     to={to}
     onClick={onClick}
     className={({ isActive }) =>
-      `app-nav-item flex items-center gap-3 px-3 py-2.5 my-0.5 mx-2 rounded-lg transition-all duration-200 group relative overflow-visible ${
+      cn(
+        'app-nav-item flex items-center gap-3 px-3.5 py-2.5 my-0.5 mx-2.5 rounded-xl transition-all duration-200 group relative select-none',
         isActive
-          ? 'bg-indigo-600 text-white shadow-sm shadow-indigo-200 is-active'
-          : 'text-slate-500 hover:bg-slate-100 hover:text-indigo-700'
-      }`
+          ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-500/25 font-semibold is-active'
+          : 'text-slate-600 hover:bg-slate-100/90 hover:text-slate-900 font-medium'
+      )
     }
     title={isCompact ? label : ''}
   >
-    <Icon size={20} className={`shrink-0 z-10 transition-transform group-hover:scale-110 ${isCompact ? 'mx-auto' : ''}`} />
-    {!isCompact && <span className="font-bold text-sm z-10 whitespace-nowrap tracking-wide animate-in fade-in slide-in-from-left-2 duration-300">{label}</span>}
-    {isCompact && <div className="absolute left-full ml-2 bg-slate-900 text-white text-xs px-2.5 py-1.5 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[70] whitespace-nowrap shadow-lg">{label}</div>}
+    {({ isActive }) => (
+      <>
+        <div className={cn(
+          'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105',
+          isActive ? 'bg-white/15 text-white' : 'text-slate-500 group-hover:text-indigo-600',
+          isCompact && 'mx-auto'
+        )}>
+          <Icon size={18} />
+        </div>
+        
+        {!isCompact && (
+          <div className="flex-1 min-w-0 flex items-center justify-between">
+            <span className="text-xs tracking-tight truncate">{label}</span>
+            {badge && (
+              <span className={cn(
+                'text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider',
+                isActive ? 'bg-white/20 text-white' : 'bg-indigo-50 text-indigo-600'
+              )}>
+                {badge}
+              </span>
+            )}
+            {isNew && (
+              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+            )}
+          </div>
+        )}
+
+        {isCompact && (
+          <div className="absolute left-full ml-3 px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70] whitespace-nowrap shadow-xl border border-slate-800">
+            {label}
+            {badge && <span className="ml-1.5 text-[9px] text-indigo-300">({badge})</span>}
+          </div>
+        )}
+      </>
+    )}
   </NavLink>
 );
 
 const SidebarGroup = ({ title, children, isCompact }: { title: string; children: React.ReactNode; isCompact: boolean }) => {
     if (isCompact) return <div className="space-y-1 my-2 border-t border-slate-100 pt-2">{children}</div>;
     return (
-        <div className="mb-4 animate-in fade-in slide-in-from-left-1 duration-300">
-            <h3 className="px-6 text-[10px] font-black text-slate-400 uppercase tracking-widest mb-2 mt-4">{title}</h3>
+        <div className="mb-3">
+            <h3 className="px-5 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 mt-3">{title}</h3>
             <div className="space-y-0.5">{children}</div>
         </div>
     );
 };
-
-import { useUIStore } from '../services/uiStore';
 
 export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { t } = useLanguageStore();
@@ -62,14 +97,34 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const [showAdminFeedback, setShowAdminFeedback] = useState(false);
   const [unreadFeedbackCount, setUnreadFeedbackCount] = useState(0);
   
-  // Mặc định là thu gọn (true)
-  const [isCollapsed, setIsCollapsed] = useState(true);
+  // Default is collapsed for maximum workspace
+  const [isCollapsed, setIsCollapsed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
   
   const navigate = useNavigate();
   const location = useLocation();
-  const pageTitles: Record<string, string> = { '/': 'Tổng quan', '/questions': 'Ngân hàng câu hỏi', '/exam': 'Ma trận đề thi', '/online-exam': 'Thi trực tuyến', '/assign-id': 'Gán ID câu hỏi', '/metadata': 'Danh mục ID6', '/classes': 'Lớp học', '/learning': 'Học trực tuyến', '/eduloop': 'EduLoop · Kỹ năng', '/converter': 'Chuyển đổi tài liệu', '/duplicates': 'Câu hỏi trùng lặp', '/irt': 'Phân tích IRT', '/errors': 'Quản lý lỗi', '/profile': 'Hồ sơ cá nhân', '/guide': 'Hướng dẫn sử dụng', '/user-guide': 'Hướng dẫn sử dụng', '/admin': 'Quản trị người dùng', '/admin/source': 'Mã nguồn & SVG', '/admin/social': 'Nội dung Facebook' };
-  const pageTitle = pageTitles[location.pathname] || APP_NAME;
+  const pageTitles: Record<string, { title: string; category: string; icon: LucideIcon }> = { 
+    '/': { title: 'Tổng quan', category: 'Không gian làm việc', icon: LayoutDashboard }, 
+    '/questions': { title: 'Ngân hàng câu hỏi', category: 'Khảo thí & Đề thi', icon: FileText }, 
+    '/exam': { title: 'Ma trận đề thi', category: 'Khảo thí & Đề thi', icon: Layers }, 
+    '/online-exam': { title: 'Thi trực tuyến', category: 'Khảo thí & Đề thi', icon: MonitorPlay }, 
+    '/assign-id': { title: 'Gán ID câu hỏi', category: 'Biên soạn & AI', icon: Tag }, 
+    '/metadata': { title: 'Danh mục ID6', category: 'Biên soạn & AI', icon: FileCode }, 
+    '/classes': { title: 'Lớp học của tôi', category: 'Học tập & Lớp học', icon: Users }, 
+    '/learning': { title: 'Học trực tuyến', category: 'Học tập & Lớp học', icon: BookOpen }, 
+    '/eduloop': { title: 'EduLoop · Kỹ năng', category: 'Học tập & Lớp học', icon: Zap }, 
+    '/converter': { title: 'Chuyển đổi tài liệu AI', category: 'Biên soạn & AI', icon: Wand2 }, 
+    '/duplicates': { title: 'Câu hỏi trùng lặp', category: 'Biên soạn & AI', icon: Copy }, 
+    '/irt': { title: 'Phân tích IRT', category: 'Khảo thí & Đề thi', icon: BarChart3 }, 
+    '/errors': { title: 'Quản lý lỗi', category: 'Biên soạn & AI', icon: Flag }, 
+    '/profile': { title: 'Hồ sơ cá nhân', category: 'Cá nhân', icon: User }, 
+    '/guide': { title: 'Hướng dẫn sử dụng', category: 'Hỗ trợ', icon: HelpCircle }, 
+    '/user-guide': { title: 'Hướng dẫn sử dụng', category: 'Hỗ trợ', icon: HelpCircle }, 
+    '/admin': { title: 'Quản trị người dùng', category: 'Hệ thống', icon: Shield }, 
+    '/admin/source': { title: 'Mã nguồn & SVG', category: 'Hệ thống', icon: FileCode }, 
+    '/admin/social': { title: 'Nội dung Facebook', category: 'Hệ thống', icon: Send } 
+  };
+  const currentPageInfo = pageTitles[location.pathname] || { title: APP_NAME, category: 'ExamHub', icon: GraduationCap };
 
   const handleLogout = () => { 
     sessionStorage.removeItem('admin_feedback_notified');
@@ -80,7 +135,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   const isTeacher = user?.role === 'TEACHER' || user?.role === 'ADMIN';
   const isAdmin = user?.role === 'ADMIN';
 
-  // Kiểm tra góp ý chưa đọc khi admin đăng nhập
   useEffect(() => {
     if (isAdmin) {
       const checkFeedback = async () => {
@@ -89,7 +143,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
           const unread = data.filter(f => !f.is_read);
           setUnreadFeedbackCount(unread.length);
           
-          // Chỉ hiện thông báo tự động một lần mỗi phiên làm việc
           const hasShown = sessionStorage.getItem('admin_feedback_notified');
           if (unread.length > 0 && !hasShown) {
             setShowAdminFeedback(true);
@@ -103,27 +156,18 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     }
   }, [isAdmin]);
 
-  // Check if we should hide layout elements (e.g. during online exam)
-  // We now use the forceHide from UIStore for more granular control
   const hideLayout = forceHide;
-
-  // Logic hiển thị: Nếu đang pinned (không collapsed) HOẶC đang hover chuột thì mở rộng
   const isExpanded = !isCollapsed || isHovered;
-  // Logic gọn: Ngược lại của expanded
   const isCompact = !isExpanded;
 
-  // Trang xác thực cần một canvas riêng, không hiển thị điều hướng của ứng dụng.
   if (!user) {
-    return <main className="app-auth min-h-screen bg-slate-50 font-sans">{children}</main>;
+    return <main className="app-auth min-h-screen font-sans">{children}</main>;
   }
 
   return (
-    <div className="app-shell flex h-screen bg-[#f8fafc] overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-700">
+    <div className="app-shell flex h-screen bg-[#f8fafc] overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-800">
         
-        {/* --- PLACEHOLDER (Desktop only) --- 
-            Giữ chỗ khoảng trắng 80px (w-20) khi Sidebar ở chế độ Fixed/Collapsed 
-            để nội dung chính không bị che khuất bởi Sidebar.
-        */}
+        {/* Placeholder when collapsed & fixed on Desktop */}
         {isCollapsed && (
             <div className="hidden md:block w-[72px] shrink-0 transition-all duration-300 ease-in-out bg-transparent" />
         )}
@@ -133,136 +177,167 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             <aside 
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
-                className={`
-                    app-sidebar hidden md:flex flex-col bg-white border-r border-slate-200/80 shadow-lg shadow-slate-200/30 z-50
-                    transition-all duration-300 ease-in-out h-full
-                    ${isCollapsed ? 'fixed left-0 top-0 bottom-0' : 'relative'} 
-                    ${isExpanded ? 'w-64' : 'w-[72px]'}
-                `}
+                className={cn(
+                    'app-sidebar hidden md:flex flex-col bg-white border-r border-slate-200/90 shadow-sm z-50 transition-all duration-300 ease-in-out h-full',
+                    isCollapsed ? 'fixed left-0 top-0 bottom-0 shadow-xl shadow-slate-900/5' : 'relative',
+                    isExpanded ? 'w-64' : 'w-[72px]'
+                )}
             >
-                {/* Logo Area */}
-                <div className="h-[72px] flex items-center justify-center border-b border-slate-100 relative shrink-0 overflow-hidden">
-                    <div className={`flex items-center gap-2 transition-all duration-300 ${isCompact ? 'scale-0 w-0 opacity-0 absolute' : 'scale-100 w-auto opacity-100 relative'}`}>
-                            <div className="bg-indigo-600 text-white p-2.5 rounded-xl shadow-sm">
-                            <GraduationCap size={26} />
+                {/* Brand Header */}
+                <div className="h-16 flex items-center px-4 border-b border-slate-100 relative shrink-0 overflow-hidden bg-gradient-to-b from-white to-slate-50/50">
+                    <div className={cn(
+                        'flex items-center gap-3 transition-all duration-300',
+                        isCompact ? 'scale-0 w-0 opacity-0 absolute' : 'scale-100 w-auto opacity-100 relative'
+                    )}>
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/25 ring-2 ring-indigo-50 shrink-0">
+                            <GraduationCap size={22} className="stroke-[2.2]" />
                         </div>
-                        <div className="whitespace-nowrap">
-                            <span className="font-extrabold text-slate-800 text-xl tracking-tight block leading-none">{APP_NAME}</span>
-                            <span className="text-[10px] font-medium text-slate-400 block mt-1">Không gian giáo dục</span>
+                        <div className="whitespace-nowrap min-w-0">
+                            <div className="flex items-center gap-1.5">
+                                <span className="font-extrabold text-slate-900 text-base tracking-tight leading-none">{APP_NAME}</span>
+                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded-md border border-indigo-100/80">v2.1</span>
+                            </div>
+                            <span className="text-[11px] font-medium text-slate-400 block mt-0.5 truncate">Hệ thống khảo thí ID6</span>
                         </div>
                     </div>
                     
-                    {/* Logo rút gọn khi đóng */}
-                    <div className={`absolute transition-all duration-300 ${isCompact ? 'scale-100 opacity-100' : 'scale-0 opacity-0'}`}>
-                        <div className="bg-indigo-600 text-white p-2 rounded-xl shadow-lg">
-                            <GraduationCap size={24} />
+                    {/* Compact Logo */}
+                    <div className={cn(
+                        'absolute left-1/2 -translate-x-1/2 transition-all duration-300',
+                        isCompact ? 'scale-100 opacity-100' : 'scale-0 opacity-0'
+                    )}>
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/20 ring-2 ring-indigo-50">
+                            <GraduationCap size={20} />
                         </div>
                     </div>
                     
-                    {/* Nút Ghim (Pin) Sidebar */}
+                    {/* Pin/Toggle Button */}
                     {isExpanded && (
                         <button 
                             onClick={() => { setIsCollapsed(!isCollapsed); setIsHovered(false); }} 
-                            className={`absolute top-8 bg-white border border-slate-200 rounded-full p-1.5 text-slate-400 hover:text-indigo-600 shadow-sm z-50 hover:shadow-md transition-all duration-300 ${isCompact ? '-right-3' : 'right-4'}`}
-                            title={isCollapsed ? "Ghim menu (Luôn mở)" : "Bỏ ghim (Tự động thu gọn)"}
+                            className="absolute right-3 top-1/2 -translate-y-1/2 p-1.5 rounded-lg text-slate-400 hover:text-indigo-600 hover:bg-slate-100 transition-colors"
+                            title={isCollapsed ? "Ghim mở rộng menu" : "Thu gọn menu"}
                         >
-                            <div className={`transition-transform duration-300 ${isCollapsed ? 'rotate-180' : ''}`}>
-                                {isCollapsed ? <ChevronRight size={14}/> : <ChevronDown size={14} className="rotate-90"/>} 
+                            <div className={cn('transition-transform duration-200', isCollapsed ? 'rotate-180' : '')}>
+                                <ChevronRight size={16} />
                             </div>
                         </button>
                     )}
                 </div>
 
-                {/* Menu Items */}
-                <div className="flex-1 overflow-y-auto overflow-x-visible custom-scrollbar py-3 space-y-1">
-                    {user ? (
-                        <>
-                            <SidebarItem to="/" icon={LayoutDashboard} label={t('dashboard')} isCompact={isCompact} />
+                {/* Navigation Items */}
+                <div className="flex-1 overflow-y-auto overflow-x-hidden custom-scrollbar py-2.5 space-y-0.5">
+                    <SidebarItem to="/" icon={LayoutDashboard} label={t('dashboard')} isCompact={isCompact} />
 
-                            {/* 1. KHẢO THÍ & ĐỀ THI */}
-                            <SidebarGroup title={t('exam_management')} isCompact={isCompact}>
-                                {isTeacher && <SidebarItem to="/exam" icon={Layers} label={t('exam_matrix')} isCompact={isCompact} />}
-                                {isTeacher && <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} isCompact={isCompact} />}
-                                <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} isCompact={isCompact} />
-                                {isTeacher && <SidebarItem to="/irt" icon={BarChart3} label="Phân tích IRT" isCompact={isCompact} />}
-                            </SidebarGroup>
+                    {/* 1. KHẢO THÍ & ĐỀ THI */}
+                    <SidebarGroup title={t('exam_management')} isCompact={isCompact}>
+                        {isTeacher && <SidebarItem to="/exam" icon={Layers} label={t('exam_matrix')} isCompact={isCompact} badge="Hot" />}
+                        {isTeacher && <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} isCompact={isCompact} />}
+                        <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} isCompact={isCompact} />
+                        {isTeacher && <SidebarItem to="/irt" icon={BarChart3} label="Phân tích IRT" isCompact={isCompact} />}
+                    </SidebarGroup>
 
-                            {/* 2. BIÊN SOẠN & CÔNG CỤ AI */}
-                            {isTeacher && (
-                                <SidebarGroup title={t('authoring_tools')} isCompact={isCompact}>
-                                    <SidebarItem to="/assign-id" icon={Tag} label={t('ai_assigner')} isCompact={isCompact} />
-                                    <SidebarItem to="/converter" icon={Wand2} label={t('ai_converter')} isCompact={isCompact} />
-                                    <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} isCompact={isCompact} />
-                                    <SidebarItem to="/errors" icon={Flag} label={t('error_manager')} isCompact={isCompact} />
-                                    {isAdmin && <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" isCompact={isCompact} />}
-                                </SidebarGroup>
-                            )}
-
-                            {/* 3. HỌC TẬP & LỚP HỌC */}
-                            <SidebarGroup title={t('learning_classroom')} isCompact={isCompact}>
-                                <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" isCompact={isCompact} />
-                                <SidebarItem to="/eduloop" icon={Zap} label="EduLoop · Kỹ năng" isCompact={isCompact} />
-                                <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" isCompact={isCompact} />
-                            </SidebarGroup>
-
-                            {/* 4. QUẢN TRỊ HỆ THỐNG */}
-                            {isAdmin && (
-                                <SidebarGroup title={t('system_admin')} isCompact={isCompact}>
-                                    <SidebarItem to="/admin" icon={Shield} label="Quản trị User" isCompact={isCompact} />
-                                    <SidebarItem to="/admin/source" icon={FileCode} label="Mã nguồn & SVG" isCompact={isCompact} />
-                                    <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" isCompact={isCompact} />
-                                    <button 
-                                        onClick={() => setShowAdminFeedback(true)}
-                                        className={`flex items-center gap-3 px-3 py-3 my-1 mx-2 rounded-xl transition-all duration-300 group relative overflow-hidden text-slate-500 hover:bg-slate-50 hover:text-indigo-600 w-[calc(100%-16px)]`}
-                                        title={isCompact ? "Góp ý người dùng" : ""}
-                                    >
-                                        <MessageSquare size={20} className={`shrink-0 z-10 transition-transform group-hover:scale-110 ${isCompact ? 'mx-auto' : ''}`} />
-                                        {!isCompact && <span className="font-bold text-sm z-10 whitespace-nowrap tracking-wide">Góp ý người dùng</span>}
-                                        {unreadFeedbackCount > 0 && (
-                                            <span className={`absolute ${isCompact ? 'top-2 right-2' : 'right-3'} w-2 h-2 bg-red-500 rounded-full shadow-[0_0_8px_rgba(239,68,68,0.6)] animate-pulse`} />
-                                        )}
-                                        {isCompact && <div className="absolute left-full ml-2 bg-slate-900 text-white text-xs px-2.5 py-1.5 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[70] whitespace-nowrap shadow-lg">Góp ý người dùng</div>}
-                                    </button>
-                                </SidebarGroup>
-                            )}
-
-                            {/* 5. HỖ TRỢ */}
-                            <SidebarGroup title={t('help_support')} isCompact={isCompact}>
-                                <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" isCompact={isCompact} />
-                                {!isAdmin && (
-                                    <button 
-                                        onClick={() => setShowFeedbackForm(true)}
-                                        className={`flex items-center gap-3 px-3 py-2.5 my-0.5 mx-2 rounded-lg transition-all duration-200 group relative overflow-visible text-slate-500 hover:bg-slate-100 hover:text-indigo-700 w-[calc(100%-16px)]`}
-                                        title={isCompact ? "Gửi góp ý" : ""}
-                                    >
-                                        <MessageSquare size={20} className={`shrink-0 z-10 transition-transform group-hover:scale-110 ${isCompact ? 'mx-auto' : ''}`} />
-                                        {!isCompact && <span className="font-bold text-sm z-10 whitespace-nowrap tracking-wide">Gửi góp ý</span>}
-                                        {isCompact && <div className="absolute left-full ml-2 bg-slate-900 text-white text-xs px-2.5 py-1.5 rounded-md opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-[70] whitespace-nowrap shadow-lg">Gửi góp ý</div>}
-                                    </button>
-                                )}
-                            </SidebarGroup>
-                        </>
-                    ) : (
-                        <div className="p-4 text-center text-slate-400 text-xs italic">Please Login</div>
+                    {/* 2. BIÊN SOẠN & CÔNG CỤ AI */}
+                    {isTeacher && (
+                        <SidebarGroup title={t('authoring_tools')} isCompact={isCompact}>
+                            <SidebarItem to="/assign-id" icon={Tag} label={t('ai_assigner')} isCompact={isCompact} />
+                            <SidebarItem to="/converter" icon={Wand2} label={t('ai_converter')} isCompact={isCompact} />
+                            <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} isCompact={isCompact} />
+                            <SidebarItem to="/errors" icon={Flag} label={t('error_manager')} isCompact={isCompact} />
+                            {isAdmin && <SidebarItem to="/duplicates" icon={Copy} label="Xử lý Trùng lặp" isCompact={isCompact} />}
+                        </SidebarGroup>
                     )}
+
+                    {/* 3. HỌC TẬP & LỚP HỌC */}
+                    <SidebarGroup title={t('learning_classroom')} isCompact={isCompact}>
+                        <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" isCompact={isCompact} isNew />
+                        <SidebarItem to="/eduloop" icon={Zap} label="EduLoop · Kỹ năng" isCompact={isCompact} />
+                        <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" isCompact={isCompact} />
+                    </SidebarGroup>
+
+                    {/* 4. QUẢN TRỊ HỆ THỐNG */}
+                    {isAdmin && (
+                        <SidebarGroup title={t('system_admin')} isCompact={isCompact}>
+                            <SidebarItem to="/admin" icon={Shield} label="Quản trị User" isCompact={isCompact} />
+                            <SidebarItem to="/admin/source" icon={FileCode} label="Mã nguồn & SVG" isCompact={isCompact} />
+                            <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" isCompact={isCompact} />
+                            <button 
+                                onClick={() => setShowAdminFeedback(true)}
+                                className={cn(
+                                    'app-nav-item flex items-center gap-3 px-3.5 py-2 my-0.5 mx-2.5 rounded-xl transition-all duration-200 group relative text-slate-600 hover:bg-slate-100 hover:text-slate-900 w-[calc(100%-20px)]',
+                                    isCompact && 'justify-center'
+                                )}
+                                title={isCompact ? "Góp ý người dùng" : ""}
+                            >
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 group-hover:text-indigo-600 shrink-0">
+                                    <MessageSquare size={18} />
+                                </div>
+                                {!isCompact && <span className="text-xs font-semibold tracking-tight">Góp ý người dùng</span>}
+                                {unreadFeedbackCount > 0 && (
+                                    <span className={cn(
+                                        'w-2 h-2 bg-rose-500 rounded-full shadow-[0_0_8px_rgba(244,63,94,0.8)] animate-pulse',
+                                        isCompact ? 'absolute top-1 right-2' : 'ml-auto'
+                                    )} />
+                                )}
+                            </button>
+                        </SidebarGroup>
+                    )}
+
+                    {/* 5. HỖ TRỢ */}
+                    <SidebarGroup title={t('help_support')} isCompact={isCompact}>
+                        <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" isCompact={isCompact} />
+                        {!isAdmin && (
+                            <button 
+                                onClick={() => setShowFeedbackForm(true)}
+                                className={cn(
+                                    'app-nav-item flex items-center gap-3 px-3.5 py-2 my-0.5 mx-2.5 rounded-xl transition-all duration-200 group relative text-slate-600 hover:bg-slate-100 hover:text-slate-900 w-[calc(100%-20px)]',
+                                    isCompact && 'justify-center'
+                                )}
+                                title={isCompact ? "Gửi góp ý" : ""}
+                            >
+                                <div className="w-8 h-8 rounded-lg flex items-center justify-center text-slate-500 group-hover:text-indigo-600 shrink-0">
+                                    <MessageSquare size={18} />
+                                </div>
+                                {!isCompact && <span className="text-xs font-semibold tracking-tight">Gửi góp ý</span>}
+                            </button>
+                        )}
+                    </SidebarGroup>
                 </div>
 
-                {/* Footer User Profile */}
+                {/* Footer User Profile Card */}
                 {user && (
-                    <div className="p-3 border-t border-slate-100 bg-slate-50/50 shrink-0 overflow-hidden">
-                        <div className={`flex items-center gap-3 p-2 rounded-xl transition-all ${isCompact ? 'justify-center' : 'bg-white border border-slate-200/50 shadow-sm'}`}>
-                            <NavLink to="/profile" className="w-10 h-10 rounded-full bg-gradient-to-tr from-indigo-500 to-purple-500 flex items-center justify-center text-white shadow-md hover:scale-105 transition-transform shrink-0">
-                                <User size={20}/>
+                    <div className="p-3 border-t border-slate-100 bg-slate-50/70 shrink-0">
+                        <div className={cn(
+                            'flex items-center gap-3 p-2 rounded-xl transition-all',
+                            isCompact ? 'justify-center p-1' : 'bg-white border border-slate-200/80 shadow-xs'
+                        )}>
+                            <NavLink 
+                                to="/profile" 
+                                className="w-9 h-9 rounded-xl bg-gradient-to-tr from-indigo-600 to-purple-600 flex items-center justify-center text-white shadow-sm hover:ring-2 hover:ring-indigo-300 transition-all shrink-0 font-bold text-sm"
+                                title="Hồ sơ cá nhân"
+                            >
+                                {(user.full_name || user.username || 'U').charAt(0).toUpperCase()}
                             </NavLink>
+                            
                             {!isCompact && (
-                                <div className="flex-1 min-w-0 animate-in fade-in slide-in-from-left-2 duration-300">
-                                    <h4 className="font-bold text-slate-700 text-sm truncate">{user.full_name}</h4>
-                                    <p className="text-[10px] text-indigo-500 uppercase font-bold tracking-wider">{user.role}</p>
+                                <div className="flex-1 min-w-0">
+                                    <h4 className="font-bold text-slate-800 text-xs truncate leading-snug">{user.full_name || user.username}</h4>
+                                    <div className="flex items-center gap-1.5 mt-0.5">
+                                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+                                        <span className="text-[10px] text-slate-400 font-semibold uppercase tracking-wider">
+                                            {isAdmin ? 'Quản trị' : isTeacher ? 'Giáo viên' : 'Học sinh'}
+                                        </span>
+                                    </div>
                                 </div>
                             )}
+
                             {!isCompact && (
-                                <button onClick={handleLogout} className="text-slate-400 hover:text-red-500 transition-colors p-2 rounded-lg hover:bg-red-50" title="Đăng xuất">
-                                    <LogOut size={18}/>
+                                <button 
+                                    onClick={handleLogout} 
+                                    className="text-slate-400 hover:text-rose-600 hover:bg-rose-50 p-1.5 rounded-lg transition-colors" 
+                                    title="Đăng xuất"
+                                >
+                                    <LogOut size={16}/>
                                 </button>
                             )}
                         </div>
@@ -271,18 +346,26 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
             </aside>
         )}
 
-        {/* --- MOBILE OVERLAY --- */}
+        {/* --- MOBILE DRAWER OVERLAY --- */}
         {isMobileMenuOpen && (
-            <div className="fixed inset-0 z-50 md:hidden bg-slate-900/50 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
+            <div className="fixed inset-0 z-50 md:hidden bg-slate-900/60 backdrop-blur-sm transition-opacity" onClick={() => setIsMobileMenuOpen(false)}>
                 <div className="absolute left-0 top-0 h-full w-72 bg-white shadow-2xl flex flex-col animate-in slide-in-from-left duration-200" onClick={e => e.stopPropagation()}>
-                    <div className="h-16 flex items-center px-6 border-b border-slate-100 justify-between">
-                        <span className="font-extrabold text-slate-800 text-xl">{APP_NAME}</span>
-                        <button onClick={() => setIsMobileMenuOpen(false)} className="text-slate-400 hover:text-slate-600"><X size={24}/></button>
+                    <div className="h-16 flex items-center px-5 border-b border-slate-100 justify-between bg-slate-50">
+                        <div className="flex items-center gap-2.5">
+                            <div className="w-9 h-9 rounded-xl bg-indigo-600 text-white flex items-center justify-center shadow-sm">
+                                <GraduationCap size={20}/>
+                            </div>
+                            <span className="font-extrabold text-slate-900 text-lg tracking-tight">{APP_NAME}</span>
+                        </div>
+                        <button onClick={() => setIsMobileMenuOpen(false)} className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-200/50">
+                            <X size={20}/>
+                        </button>
                     </div>
-                    <div className="flex-1 overflow-y-auto p-4 space-y-1">
+
+                    <div className="flex-1 overflow-y-auto p-3 space-y-1">
                         <SidebarItem to="/" icon={LayoutDashboard} label={t('dashboard')} onClick={() => setIsMobileMenuOpen(false)}/>
                         
-                        <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('exam_management')}</div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-4 mb-1">{t('exam_management')}</div>
                         {isTeacher && <SidebarItem to="/exam" icon={Layers} label={t('exam_matrix')} onClick={() => setIsMobileMenuOpen(false)}/>}
                         {isTeacher && <SidebarItem to="/questions" icon={FileText} label={t('question_bank')} onClick={() => setIsMobileMenuOpen(false)}/>}
                         <SidebarItem to="/online-exam" icon={MonitorPlay} label={t('online_exam')} onClick={() => setIsMobileMenuOpen(false)}/>
@@ -290,7 +373,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         
                         {isTeacher && (
                             <>
-                                <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('authoring_tools')}</div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-4 mb-1">{t('authoring_tools')}</div>
                                 <SidebarItem to="/assign-id" icon={Tag} label={t('ai_assigner')} onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/converter" icon={Wand2} label={t('ai_converter')} onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/metadata" icon={FileCode} label={t('id6_metadata')} onClick={() => setIsMobileMenuOpen(false)}/>
@@ -299,61 +382,111 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                             </>
                         )}
                         
-                        <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('learning_classroom')}</div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-4 mb-1">{t('learning_classroom')}</div>
                         <SidebarItem to="/learning" icon={BookOpen} label="Học trực tuyến" onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/eduloop" icon={Zap} label="EduLoop · Kỹ năng" onClick={() => setIsMobileMenuOpen(false)}/>
                         <SidebarItem to="/classes" icon={Users} label="Lớp học của tôi" onClick={() => setIsMobileMenuOpen(false)}/>
                         
                         {isAdmin && (
                             <>
-                                <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('system_admin')}</div>
+                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-4 mb-1">{t('system_admin')}</div>
                                 <SidebarItem to="/admin" icon={Shield} label="Quản trị User" onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/admin/source" icon={FileCode} label="Mã nguồn & SVG" onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" onClick={() => setIsMobileMenuOpen(false)}/>
                             </>
                         )}
                         
-                        <div className="font-bold text-slate-400 text-xs uppercase mt-4 mb-2 px-2">{t('help_support')}</div>
+                        <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-4 mb-1">{t('help_support')}</div>
                         <SidebarItem to="/guide" icon={HelpCircle} label="Hướng dẫn sử dụng" onClick={() => setIsMobileMenuOpen(false)}/>
                         
-                        <div className="mt-8 pt-4 border-t border-slate-100">
-                            <button onClick={handleLogout} className="flex items-center gap-3 w-full px-4 py-3 text-red-600 bg-red-50 rounded-xl font-bold"><LogOut size={20}/> Đăng xuất</button>
+                        <div className="mt-6 pt-3 border-t border-slate-100">
+                            <button onClick={handleLogout} className="flex items-center gap-2.5 w-full px-4 py-2.5 text-rose-600 bg-rose-50 hover:bg-rose-100 rounded-xl font-bold text-xs transition-colors">
+                                <LogOut size={16}/> Đăng xuất
+                            </button>
                         </div>
                     </div>
                 </div>
             </div>
         )}
 
-        {/* --- MAIN CONTENT AREA --- */}
+        {/* --- MAIN APPLICATION AREA --- */}
         <main className="flex-1 flex flex-col min-w-0 overflow-hidden relative">
-            {/* Mobile Header */}
+            
+            {/* Mobile Header Bar */}
             {!hideLayout && (
-                <header className="md:hidden h-16 bg-white/95 backdrop-blur border-b border-slate-200 flex items-center px-4 justify-between shrink-0 z-20">
+                <header className="md:hidden h-14 bg-white/95 backdrop-blur-md border-b border-slate-200/80 flex items-center px-4 justify-between shrink-0 z-20">
                     <div className="flex items-center gap-2">
-                        <div className="bg-indigo-600 text-white p-1.5 rounded-lg"><GraduationCap size={20}/></div>
-                        <span className="font-bold text-slate-800 text-lg">{APP_NAME}</span>
+                        <div className="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center">
+                            <GraduationCap size={18}/>
+                        </div>
+                        <span className="font-bold text-slate-900 text-base">{APP_NAME}</span>
                     </div>
-                    <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg"><Menu size={24}/></button>
+                    <button onClick={() => setIsMobileMenuOpen(true)} className="p-2 text-slate-600 hover:bg-slate-100 rounded-lg">
+                        <Menu size={20}/>
+                    </button>
                 </header>
             )}
 
-            {!hideLayout && <header className="app-topbar hidden md:flex items-center justify-between gap-4 px-7 py-4 shrink-0">
-                <div className="min-w-0"><div className="flex items-center gap-2 text-xs text-slate-400"><span>{APP_NAME}</span><ChevronRight size={12}/><span className="text-slate-600">{pageTitle}</span></div><p className="text-xs text-slate-400 mt-1">{APP_TAGLINE}</p></div>
-                <div className="flex items-center gap-3">
-                    <NavLink to="/guide" className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-indigo-200 bg-indigo-50/80 text-indigo-700 hover:bg-indigo-100 transition-colors text-xs font-bold shadow-2xs" title="Xem hướng dẫn sử dụng">
-                        <HelpCircle size={15}/>
-                        <span>Hướng dẫn</span>
-                    </NavLink>
-                    <div className="text-right"><p className="text-sm font-semibold text-slate-700">{user.full_name || user.username}</p><p className="text-xs text-slate-400">{isAdmin ? 'Quản trị viên' : isTeacher ? 'Giáo viên' : 'Học sinh'}</p></div>
-                    <div className="h-10 w-10 flex items-center justify-center rounded-2xl bg-indigo-50 text-indigo-700 font-bold border border-indigo-100">{(user.full_name || user.username || 'E').charAt(0).toUpperCase()}</div>
-                </div>
-            </header>}
+            {/* Desktop Modern Topbar */}
+            {!hideLayout && (
+                <header className="app-topbar hidden md:flex items-center justify-between gap-4 px-6 py-3.5 shrink-0 z-10">
+                    {/* Breadcrumbs & Title */}
+                    <div className="flex items-center gap-3 min-w-0">
+                        <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 border border-slate-200/60">
+                            <currentPageInfo.icon size={18} />
+                        </div>
+                        <div className="min-w-0">
+                            <div className="flex items-center gap-1.5 text-xs text-slate-400 font-medium">
+                                <span>{currentPageInfo.category}</span>
+                                <ChevronRight size={12} className="text-slate-300" />
+                                <span className="text-slate-800 font-bold">{currentPageInfo.title}</span>
+                            </div>
+                            <p className="text-[11px] text-slate-400 mt-0.5 truncate hidden lg:block">{APP_TAGLINE}</p>
+                        </div>
+                    </div>
+
+                    {/* Right Action Bar */}
+                    <div className="flex items-center gap-3">
+                        {isTeacher && (
+                            <NavLink 
+                                to="/exam" 
+                                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-indigo-600 text-white hover:bg-indigo-700 transition-all text-xs font-bold shadow-sm shadow-indigo-500/20 active:scale-95"
+                            >
+                                <PlusCircle size={15} />
+                                <span>Tạo ma trận đề</span>
+                            </NavLink>
+                        )}
+
+                        <NavLink 
+                            to="/guide" 
+                            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-200 bg-white text-slate-600 hover:text-indigo-600 hover:border-indigo-200 transition-all text-xs font-semibold shadow-2xs" 
+                            title="Tài liệu & hướng dẫn sử dụng"
+                        >
+                            <HelpCircle size={14}/>
+                            <span>Tài liệu</span>
+                        </NavLink>
+
+                        <div className="h-6 w-px bg-slate-200 mx-1" />
+
+                        {/* User Badge */}
+                        <div className="flex items-center gap-2.5 pl-1">
+                            <div className="text-right hidden sm:block">
+                                <p className="text-xs font-bold text-slate-800 leading-tight">{user.full_name || user.username}</p>
+                                <span className="text-[10px] font-semibold text-indigo-600">
+                                    {isAdmin ? 'Quản trị viên' : isTeacher ? 'Giáo viên' : 'Học sinh'}
+                                </span>
+                            </div>
+                            <div className="w-8 h-8 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-600 text-white font-bold text-xs flex items-center justify-center shadow-sm ring-2 ring-indigo-50">
+                                {(user.full_name || user.username || 'E').charAt(0).toUpperCase()}
+                            </div>
+                        </div>
+                    </div>
+                </header>
+            )}
 
             {/* Content Container */}
             <div className="flex-1 overflow-hidden relative z-0">
-                {/* Background decorative elements */}
-                <div className="absolute top-0 left-0 w-full h-64 bg-gradient-to-b from-indigo-50/40 to-transparent pointer-events-none -z-10"></div>
-                <div className={`flex-1 h-full overflow-auto custom-scrollbar ${hideLayout ? 'p-0' : 'app-workspace p-4 md:p-7'}`}>
+                <div className={`flex-1 h-full overflow-auto custom-scrollbar ${hideLayout ? 'p-0' : 'app-workspace p-4 md:p-6'}`}>
                     <div className={`${hideLayout ? 'w-full' : 'max-w-[1800px] mx-auto'} h-full flex flex-col`}>
                         {children}
                     </div>
@@ -362,11 +495,12 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
             {/* Modals */}
             {showFeedbackForm && <UserFeedbackForm onClose={() => setShowFeedbackForm(false)} />}
-            {showAdminFeedback && <AdminFeedbackViewer onClose={() => {
-                setShowAdminFeedback(false);
-                // Cập nhật lại count sau khi đóng
-                apiService.fetchFeedback().then(data => setUnreadFeedbackCount(data.filter(f => !f.is_read).length));
-            }} />}
+            {showAdminFeedback && (
+                <AdminFeedbackViewer onClose={() => {
+                    setShowAdminFeedback(false);
+                    apiService.fetchFeedback().then(data => setUnreadFeedbackCount(data.filter(f => !f.is_read).length));
+                }} />
+            )}
         </main>
     </div>
   );
