@@ -256,6 +256,9 @@ export async function getGeminiApiKey(userId) {
 
 export function parseGeminiError(e) {
     const msg = String(e?.message || e || '');
+    if (e?.status === 503 || msg.includes("503") || msg.includes("high demand") || msg.includes("spikes in demand")) {
+        return "Máy chủ AI của Google đang có lượng truy cập đột biến (503 High Demand). Hệ thống đã tự động thử các key và model dự phòng; vui lòng thử lại sau giây lát.";
+    }
     if (e?.status === 429 || msg.includes("429") || msg.toLowerCase().includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
         return "Gemini đang giới hạn lượt dùng của project. Hệ thống đã tự chuyển model/key và làm nguội lựa chọn bị 429; vui lòng giữ cửa sổ mở để tự thử lại. Nhiều key chỉ tăng quota khi chúng thuộc các Google Cloud project khác nhau.";
     }
@@ -341,7 +344,13 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
             }
             if (failure.unavailableModel) {
                 disabledModels.add(attempt.model);
-                for (const key of keyValues) geminiCooldowns.set(`${key}\u0000${attempt.model}`, Date.now() + cooldown);
+                for (const key of keyValues) geminiCooldowns.set(`${attempt.key}\u0000${attempt.model}`, Date.now() + cooldown);
+            }
+            if (failure.highDemand) {
+                // Khi Google báo model quá tải (503), làm nguội model này trên TẤT CẢ các keys để các key sau chuyển sang model khác ngay lập tức
+                for (const key of keyValues) {
+                    geminiCooldowns.set(`${key}\u0000${attempt.model}`, Date.now() + Math.max(20_000, cooldown));
+                }
             }
             if (failure.quota) {
                 const failures = (quotaFailuresByKey.get(attempt.keyIndex) || 0) + 1;

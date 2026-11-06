@@ -2,6 +2,10 @@ const DISCOVERY_TTL_MS = 6 * 60 * 60 * 1000;
 
 const FALLBACK_MODELS = [
     'gemini-flash-latest',
+    'gemini-2.5-flash',
+    'gemini-2.0-flash',
+    'gemini-2.0-flash-lite',
+    'gemini-1.5-flash',
     'gemini-3.8-flash',
     'gemini-3.5-flash-lite',
     'gemini-3.5-flash'

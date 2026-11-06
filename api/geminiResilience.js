@@ -8,9 +8,10 @@ export function classifyGeminiFailure(error) {
     const daily = quota && /per day|requests per day|daily|rpd|quota metric.*day/.test(lower);
     const unavailable = status === 408 || status === 500 || status === 502 || status === 503 || status === 504
         || /unavailable|timeout|timed out|deadline_exceeded/.test(lower);
+    const highDemand = status === 503 || /503|high demand|temporarily unavailable|overloaded|spikes in demand/.test(lower);
     const retryMatch = message.match(/retry(?:Delay| after)?[^0-9]{0,20}(\d+(?:\.\d+)?)\s*s/i);
     const retryAfterMs = retryMatch ? Math.ceil(Number(retryMatch[1]) * 1000) : 0;
-    return { invalidKey, unavailableModel, quota, daily, unavailable, transient: quota || unavailable, retryAfterMs };
+    return { invalidKey, unavailableModel, quota, daily, unavailable, highDemand, transient: quota || unavailable || highDemand, retryAfterMs };
 }
 
 export function cooldownForFailure(failure) {
