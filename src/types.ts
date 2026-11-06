@@ -9,6 +9,17 @@ export interface User {
     is_pro: boolean;
     expiry_date: string | null;
     created_at: string;
+    grade_id?: number;
+    phone?: string;
+    parent_phone?: string;
+    date_of_birth?: string;
+    gender?: string;
+    class_name?: string;
+    student_code?: string;
+    address?: string;
+    api_key?: string;
+    bio?: string;
+    avatar_url?: string;
 }
 
 export enum QuestionType {

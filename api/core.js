@@ -114,7 +114,7 @@ export function readSession(req) {
 export async function sessionMiddleware(req, res, next) {
     // Only protect /api/*
     if (!req.path.startsWith('/api/')) return next();
-    const publicPaths = ['/api/login', '/api/logout', '/api/register', '/api/forgot-password', '/api/ping'];
+    const publicPaths = ['/api/login', '/api/logout', '/api/register', '/api/forgot-password', '/api/reset-password', '/api/ping'];
     if (publicPaths.includes(req.path) || (req.method === 'POST' && req.path === '/api/payments/sepay/webhook') || (req.method === 'GET' && /^\/api\/images\/[a-f0-9]{64}$/i.test(req.path))) return next();
     try {
         const session = readSession(req);
@@ -720,7 +720,16 @@ export async function seedDatabase() {
         await pool.query(`
             ALTER TABLE matrix_templates 
             ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE,
-            ADD COLUMN IF NOT EXISTS grade_id INT
+            ADD COLUMN IF NOT EXISTS grade_id INT,
+            ADD COLUMN IF NOT EXISTS phone VARCHAR(20),
+            ADD COLUMN IF NOT EXISTS parent_phone VARCHAR(20),
+            ADD COLUMN IF NOT EXISTS date_of_birth DATE,
+            ADD COLUMN IF NOT EXISTS gender VARCHAR(10),
+            ADD COLUMN IF NOT EXISTS class_name VARCHAR(50),
+            ADD COLUMN IF NOT EXISTS student_code VARCHAR(50),
+            ADD COLUMN IF NOT EXISTS address VARCHAR(255),
+            ADD COLUMN IF NOT EXISTS reset_password_otp VARCHAR(255),
+            ADD COLUMN IF NOT EXISTS reset_password_expires DATETIME
         `).catch(e => console.log("Migration notice (matrix_templates):", e.message));
 
         await pool.query(`

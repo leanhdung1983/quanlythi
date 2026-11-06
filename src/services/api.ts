@@ -300,6 +300,22 @@ export const apiService = {
         const response = await fetch(`${API_URL}/forgot-password`, { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ email }) }); 
         return await handleResponse(response, '/forgot-password');
     },
+    async resetPassword(data: { email: string; otp: string; new_password: string }) {
+        const response = await fetch(`${API_URL}/reset-password`, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify(data) 
+        }); 
+        return await handleResponse(response, '/reset-password');
+    },
+    async changePassword(current_password: string, new_password: string) {
+        const response = await fetch(`${API_URL}/change-password`, { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ current_password, new_password }) 
+        }); 
+        return await handleResponse(response, '/change-password');
+    },
     async fetchUsers() {
         const res = await fetch(`${API_URL}/users`); 
         const r = await handleResponse(res, '/users'); 

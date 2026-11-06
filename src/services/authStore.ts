@@ -15,6 +15,16 @@ export interface User {
     is_pro: boolean;
     expiry_date?: string; // ISO String
     grade_id?: number;
+    phone?: string;
+    parent_phone?: string;
+    date_of_birth?: string;
+    gender?: string;
+    class_name?: string;
+    student_code?: string;
+    address?: string;
+    bio?: string;
+    avatar_url?: string;
+    created_at?: string;
 }
 
 interface AuthState {

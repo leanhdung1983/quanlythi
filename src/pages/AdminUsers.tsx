@@ -31,7 +31,7 @@ export const AdminUsers: React.FC = () => {
     
     // Edit Modal State
     const [editingUser, setEditingUser] = useState<User | null>(null);
-    const [editForm, setEditForm] = useState({ full_name: '', email: '', school: '', role: 'TEACHER' as User['role'] });
+    const [editForm, setEditForm] = useState({ full_name: '', email: '', school: '', role: 'TEACHER' as User['role'], phone: '', parent_phone: '', class_name: '', grade_id: 0 });
 
     // Create Modal State
     const [showCreateModal, setShowCreateModal] = useState(false);
@@ -184,7 +184,11 @@ export const AdminUsers: React.FC = () => {
             full_name: user.full_name || '', 
             email: user.email || '', 
             school: user.school || '',
-            role: user.role
+            role: user.role,
+            phone: user.phone || '',
+            parent_phone: user.parent_phone || '',
+            class_name: user.class_name || '',
+            grade_id: user.grade_id || 0
         });
     };
 
@@ -390,9 +394,11 @@ export const AdminUsers: React.FC = () => {
                                             <div className="text-xs text-slate-500">{new Date(u.created_at).toLocaleDateString()}</div>
                                         </td>
                                         <td className="p-4">
-                                            <div className="font-bold text-sm">{u.full_name}</div>
+                                            <div className="font-bold text-sm text-slate-900">{u.full_name}</div>
                                             <div className="text-xs text-slate-500">{u.email}</div>
-                                            <div className="text-xs text-slate-400">{u.school}</div>
+                                            <div className="text-xs text-slate-400">{u.school} {u.class_name ? `• Lớp ${u.class_name}` : ''}</div>
+                                            {u.phone && <div className="text-[11px] text-slate-600 font-mono">📞 {u.phone}</div>}
+                                            {u.parent_phone && <div className="text-[11px] text-indigo-600 font-mono">👨‍👩‍👧 PH: {u.parent_phone}</div>}
                                         </td>
                                         <td className="p-4">
                                             {u.id === 1 ? (

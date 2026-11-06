@@ -4,17 +4,24 @@ import { useAuthStore } from '../services/authStore';
 // @ts-ignore
 import { useNavigate } from 'react-router-dom';
 import { 
-    Loader2, User, Lock, GraduationCap, CheckCircle2, 
+    User, Lock, GraduationCap, CheckCircle2, 
     Mail, School, ArrowLeft, AlertTriangle, Sparkles, 
-    Layers, ShieldCheck, Check, ArrowRight
+    Layers, ShieldCheck, Check, ArrowRight, Eye, EyeOff,
+    Phone, Users, KeyRound, RefreshCw, Calendar, MapPin
 } from 'lucide-react';
 import { APP_NAME } from '../config/brand';
 import { Button } from '../components/ui/Button';
 
 export const Login: React.FC = () => {
     const [view, setView] = useState<'LOGIN' | 'REGISTER' | 'FORGOT'>('LOGIN');
+    const [forgotStep, setForgotStep] = useState<1 | 2>(1); // 1: Nhập email gửi OTP, 2: Nhập OTP & mật khẩu mới
     
-    // Register Form State
+    // Show/Hide Password States
+    const [showLoginPass, setShowLoginPass] = useState(false);
+    const [showRegPass, setShowRegPass] = useState(false);
+    const [showNewPass, setShowNewPass] = useState(false);
+
+    // Register Form State (mở rộng đầy đủ thông tin học sinh)
     const [regData, setRegData] = useState({ 
         username: '', 
         password: '', 
@@ -22,14 +29,26 @@ export const Login: React.FC = () => {
         full_name: '', 
         email: '', 
         school: '', 
-        role: 'STUDENT' 
+        role: 'STUDENT',
+        phone: '',
+        parent_phone: '',
+        grade_id: 10,
+        class_name: '',
+        gender: 'Nam',
+        date_of_birth: '',
+        address: ''
     });
     
     // Login Form State
     const [loginData, setLoginData] = useState({ username: '', password: '' });
 
-    // Forgot Password State
+    // Forgot / Reset Password State
     const [forgotEmail, setForgotEmail] = useState('');
+    const [resetOtp, setResetOtp] = useState('');
+    const [newPassword, setNewPassword] = useState('');
+    const [confirmNewPassword, setConfirmNewPassword] = useState('');
+    const [maskedEmail, setMaskedEmail] = useState('');
+    const [debugOtpNotice, setDebugOtpNotice] = useState('');
 
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState('');
@@ -65,10 +84,10 @@ export const Login: React.FC = () => {
                 login(res.user, 'secure-cookie-session');
                 navigate('/');
             } else {
-                setError(res.message);
+                setError(res.message || 'Tên đăng nhập hoặc mật khẩu không chính xác.');
             }
         } catch (err: any) {
-            setError(err.message || 'Lỗi hệ thống');
+            setError(err.message || 'Lỗi hệ thống đăng nhập');
         } finally {
             setLoading(false);
         }
@@ -84,49 +103,112 @@ export const Login: React.FC = () => {
             return;
         }
 
+        if (regData.password.length < 8) {
+            setError("Mật khẩu phải có tối thiểu 8 ký tự.");
+            return;
+        }
+
         setLoading(true);
         try {
             await apiService.register({
                 username: regData.username,
                 password: regData.password,
                 full_name: regData.full_name,
-                email: regData.email,
+                email: regData.email || undefined,
                 school: regData.school,
-                role: regData.role
+                role: regData.role,
+                phone: regData.phone || undefined,
+                parent_phone: regData.parent_phone || undefined,
+                grade_id: regData.role === 'STUDENT' ? Number(regData.grade_id) : undefined,
+                class_name: regData.role === 'STUDENT' ? regData.class_name : undefined,
+                gender: regData.gender,
+                date_of_birth: regData.date_of_birth || undefined,
+                address: regData.address || undefined
             });
-            setSuccess('Đăng ký tài khoản thành công! Vui lòng đăng nhập.');
-            setTimeout(() => setView('LOGIN'), 1500);
+            setSuccess('Đăng ký tài khoản thành công! Bạn có thể đăng nhập ngay.');
+            setTimeout(() => {
+                setLoginData({ username: regData.username, password: '' });
+                setView('LOGIN');
+            }, 1200);
         } catch (err: any) {
-            setError(err.message || 'Lỗi hệ thống');
+            setError(err.message || 'Lỗi khi đăng ký tài khoản');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleForgotPassword = async (e: React.FormEvent) => {
+    // Bước 1 Quên mật khẩu: Gửi mã OTP về email
+    const handleSendForgotOtp = async (e: React.FormEvent) => {
         e.preventDefault();
         setError('');
         setSuccess('');
+        setDebugOtpNotice('');
         setLoading(true);
         try {
             const res = await apiService.forgotPassword(forgotEmail);
             if (res.success) {
                 setSuccess(res.message);
-                if (res.debug_password) {
-                    alert(`[TEST MODE] Mật khẩu mới của bạn là: ${res.debug_password}`);
+                setMaskedEmail(res.masked_email || forgotEmail);
+                if (res.debug_otp) {
+                    setDebugOtpNotice(res.debug_otp);
+                    setResetOtp(res.debug_otp);
                 }
+                setForgotStep(2);
             } else {
-                setError(res.message);
+                setError(res.message || 'Không thể gửi mã xác nhận');
             }
         } catch (err: any) {
-            setError(err.message);
+            setError(err.message || 'Lỗi khi gửi yêu cầu khôi phục');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    // Bước 2 Quên mật khẩu: Nhập OTP và đặt mật khẩu mới
+    const handleResetPassword = async (e: React.FormEvent) => {
+        e.preventDefault();
+        setError('');
+        setSuccess('');
+
+        if (newPassword !== confirmNewPassword) {
+            setError('Mật khẩu xác nhận không khớp.');
+            return;
+        }
+
+        if (newPassword.length < 8) {
+            setError('Mật khẩu mới phải có tối thiểu 8 ký tự.');
+            return;
+        }
+
+        setLoading(true);
+        try {
+            const res = await apiService.resetPassword({
+                email: forgotEmail,
+                otp: resetOtp,
+                new_password: newPassword
+            });
+            if (res.success) {
+                setSuccess(res.message || 'Đặt lại mật khẩu thành công!');
+                setTimeout(() => {
+                    setLoginData({ username: forgotEmail, password: '' });
+                    setView('LOGIN');
+                    setForgotStep(1);
+                    setResetOtp('');
+                    setNewPassword('');
+                    setConfirmNewPassword('');
+                }, 1500);
+            } else {
+                setError(res.message || 'Mã OTP không hợp lệ hoặc đã hết hạn.');
+            }
+        } catch (err: any) {
+            setError(err.message || 'Lỗi khi đặt lại mật khẩu.');
         } finally {
             setLoading(false);
         }
     };
 
     return (
-        <div className="min-h-screen bg-[#090d16] text-slate-100 flex items-center justify-center relative overflow-hidden font-sans selection:bg-indigo-500/30 selection:text-indigo-200">
+        <div className="min-h-screen bg-[#090d16] text-slate-100 flex items-center justify-center relative overflow-hidden font-sans selection:bg-indigo-500/30 selection:text-indigo-200 py-6 sm:py-10">
             {/* Ambient Background Glows */}
             <div className="absolute top-0 left-1/4 w-[500px] h-[500px] bg-indigo-600/15 rounded-full blur-[130px] pointer-events-none" />
             <div className="absolute bottom-0 right-1/4 w-[550px] h-[550px] bg-purple-600/15 rounded-full blur-[140px] pointer-events-none" />
@@ -136,10 +218,10 @@ export const Login: React.FC = () => {
             <div className="relative z-10 w-full max-w-6xl mx-auto p-4 sm:p-6 lg:p-8 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
                 
                 {/* Left Column: Visual Showcase (Desktop) */}
-                <div className="hidden lg:flex lg:col-span-6 flex-col justify-between py-6 pr-6">
+                <div className="hidden lg:flex lg:col-span-5 flex-col justify-between py-6 pr-6">
                     <div>
                         {/* Brand Badge */}
-                        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-6">
+                        <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-indigo-400 text-xs font-semibold mb-6">
                             <Sparkles size={14} className="text-indigo-400 animate-pulse" />
                             <span>Hệ sinh thái Khảo thí & Ngân hàng câu hỏi ID6</span>
                         </div>
@@ -152,7 +234,7 @@ export const Login: React.FC = () => {
                         </h1>
 
                         <p className="text-slate-400 text-sm leading-relaxed max-w-lg mb-8">
-                            Nền tảng all-in-one dành cho Giáo viên & Học sinh: ngân hàng câu hỏi chuẩn ID6, tự động sinh đề thi ngẫu nhiên chống trùng lặp, hỗ trợ LaTeX/TikZ trực tiếp và phân tích năng lực IRT hiện đại.
+                            Nền tảng thi và ôn tập thông minh dành cho Học sinh & Giáo viên: ngân hàng chuẩn hóa mã ID6, tự động sinh đề theo ma trận, phòng thi chống gian lận và giải thích công thức toán học chuyên sâu.
                         </p>
 
                         {/* Feature Cards Grid */}
@@ -162,8 +244,8 @@ export const Login: React.FC = () => {
                                     <Layers size={18} />
                                 </div>
                                 <div>
-                                    <h4 className="text-xs font-bold text-slate-200">Ngân hàng 50.000+ câu hỏi</h4>
-                                    <p className="text-[11px] text-slate-400 mt-0.5">Phân loại chuẩn hóa mã ID6 theo chương trình Giáo dục phổ thông mới.</p>
+                                    <h4 className="text-xs font-bold text-slate-200">Ngân hàng câu hỏi chuẩn hóa ID6</h4>
+                                    <p className="text-[11px] text-slate-400 mt-0.5">Phân cấp đầy đủ theo 4 mức độ nhận thức (NB-TH-VD-VDC) và chương trình GDPT mới.</p>
                                 </div>
                             </div>
 
@@ -172,8 +254,8 @@ export const Login: React.FC = () => {
                                     <Sparkles size={18} />
                                 </div>
                                 <div>
-                                    <h4 className="text-xs font-bold text-slate-200">Biên soạn LaTeX & Đồ thị TikZ</h4>
-                                    <p className="text-[11px] text-slate-400 mt-0.5">Hiển thị công thức Toán học chuẩn mực, xuất file Word và PDF tức thì.</p>
+                                    <h4 className="text-xs font-bold text-slate-200">Công thức Toán học & Hình vẽ TikZ</h4>
+                                    <p className="text-[11px] text-slate-400 mt-0.5">Render LaTeX sắc nét trên cả điện thoại và máy tính, chống vỡ dấu căn và ký hiệu khoa học.</p>
                                 </div>
                             </div>
 
@@ -182,8 +264,8 @@ export const Login: React.FC = () => {
                                     <ShieldCheck size={18} />
                                 </div>
                                 <div>
-                                    <h4 className="text-xs font-bold text-slate-200">Khảo thí trực tuyến & Trắc lượng IRT</h4>
-                                    <p className="text-[11px] text-slate-400 mt-0.5">Đánh giá độ khó câu hỏi, năng lực thí sinh và phòng thi an toàn.</p>
+                                    <h4 className="text-xs font-bold text-slate-200">Bảo mật tài khoản & Khôi phục dễ dàng</h4>
+                                    <p className="text-[11px] text-slate-400 mt-0.5">Xác thực OTP qua email, đổi mật khẩu chủ động và lưu trữ hồ sơ học tập an toàn.</p>
                                 </div>
                             </div>
                         </div>
@@ -200,8 +282,8 @@ export const Login: React.FC = () => {
                 </div>
 
                 {/* Right Column: Interactive Form Card */}
-                <div className="lg:col-span-6 w-full max-w-md mx-auto">
-                    <div className="rounded-3xl bg-white text-slate-900 p-7 sm:p-9 shadow-2xl border border-slate-100 relative overflow-hidden">
+                <div className="lg:col-span-7 w-full max-w-xl mx-auto">
+                    <div className="rounded-3xl bg-white text-slate-900 p-6 sm:p-8 shadow-2xl border border-slate-100 relative overflow-hidden">
                         
                         {/* Top decorative accent */}
                         <div className="absolute top-0 left-0 right-0 h-1.5 bg-gradient-to-r from-indigo-600 via-sky-500 to-purple-600" />
@@ -213,13 +295,13 @@ export const Login: React.FC = () => {
                             </div>
                             <h2 className="text-2xl font-black text-slate-900 tracking-tight">
                                 {view === 'LOGIN' && `Đăng nhập ${APP_NAME}`}
-                                {view === 'REGISTER' && 'Tạo tài khoản mới'}
-                                {view === 'FORGOT' && 'Khôi phục mật khẩu'}
+                                {view === 'REGISTER' && 'Đăng ký tài khoản'}
+                                {view === 'FORGOT' && (forgotStep === 1 ? 'Quên mật khẩu' : 'Đặt lại mật khẩu')}
                             </h2>
                             <p className="text-xs text-slate-500 mt-1">
-                                {view === 'LOGIN' && 'Chào mừng bạn quay lại! Nhập thông tin để tiếp tục.'}
-                                {view === 'REGISTER' && 'Đăng ký nhanh chóng để truy cập đầy đủ tính năng.'}
-                                {view === 'FORGOT' && 'Nhập email đã đăng ký để thiết lập lại mật khẩu.'}
+                                {view === 'LOGIN' && 'Học sinh & Giáo viên đăng nhập bằng Tên đăng nhập hoặc Email.'}
+                                {view === 'REGISTER' && 'Điền thông tin bên dưới để tạo hồ sơ học tập / giảng dạy mới.'}
+                                {view === 'FORGOT' && (forgotStep === 1 ? 'Nhập email hoặc tên đăng nhập để nhận mã OTP xác nhận.' : `Nhập mã xác nhận đã gửi đến ${maskedEmail || 'email của bạn'}.`)}
                             </p>
                         </div>
 
@@ -231,7 +313,7 @@ export const Login: React.FC = () => {
                                     onClick={() => { setView('LOGIN'); setError(''); setSuccess(''); }}
                                     className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
                                         view === 'LOGIN' 
-                                            ? 'bg-white text-indigo-700 shadow-xs' 
+                                            ? 'bg-white text-indigo-700 shadow-sm' 
                                             : 'text-slate-500 hover:text-slate-800'
                                     }`}
                                 >
@@ -242,7 +324,7 @@ export const Login: React.FC = () => {
                                     onClick={() => { setView('REGISTER'); setError(''); setSuccess(''); }}
                                     className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
                                         view === 'REGISTER' 
-                                            ? 'bg-white text-indigo-700 shadow-xs' 
+                                            ? 'bg-white text-indigo-700 shadow-sm' 
                                             : 'text-slate-500 hover:text-slate-800'
                                     }`}
                                 >
@@ -253,25 +335,25 @@ export const Login: React.FC = () => {
 
                         {/* Alert Notifications */}
                         {error && (
-                            <div className="p-3 rounded-xl bg-rose-50 text-rose-700 text-xs font-medium mb-4 border border-rose-100 flex items-center gap-2.5 animate-in fade-in slide-in-from-top-1">
+                            <div className="p-3.5 rounded-xl bg-rose-50 text-rose-700 text-xs font-medium mb-4 border border-rose-200 flex items-center gap-2.5 animate-in fade-in slide-in-from-top-1">
                                 <AlertTriangle size={16} className="shrink-0 text-rose-500" />
                                 <span className="flex-1">{error}</span>
                             </div>
                         )}
                         
                         {success && (
-                            <div className="p-3 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-medium mb-4 border border-emerald-100 flex items-center gap-2.5 animate-in fade-in slide-in-from-top-1">
+                            <div className="p-3.5 rounded-xl bg-emerald-50 text-emerald-700 text-xs font-medium mb-4 border border-emerald-200 flex items-center gap-2.5 animate-in fade-in slide-in-from-top-1">
                                 <CheckCircle2 size={16} className="shrink-0 text-emerald-500" />
                                 <span className="flex-1">{success}</span>
                             </div>
                         )}
 
-                        {/* 1. LOGIN FORM */}
+                        {/* ================= 1. LOGIN FORM ================= */}
                         {view === 'LOGIN' && (
                             <form onSubmit={handleLogin} className="space-y-4">
                                 <div>
                                     <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
-                                        Tên đăng nhập
+                                        Tên đăng nhập hoặc Email
                                     </label>
                                     <div className="relative">
                                         <User size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
@@ -279,7 +361,7 @@ export const Login: React.FC = () => {
                                             required 
                                             autoComplete="username" 
                                             className="w-full py-2.5 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100/60 transition-all" 
-                                            placeholder="Nhập tên đăng nhập" 
+                                            placeholder="Nhập username hoặc địa chỉ email" 
                                             value={loginData.username} 
                                             onChange={e => setLoginData({...loginData, username: e.target.value})}
                                         />
@@ -293,8 +375,8 @@ export const Login: React.FC = () => {
                                         </label>
                                         <button 
                                             type="button" 
-                                            onClick={() => setView('FORGOT')} 
-                                            className="text-[11px] text-indigo-600 font-semibold hover:underline"
+                                            onClick={() => { setView('FORGOT'); setForgotStep(1); setError(''); setSuccess(''); }} 
+                                            className="text-[11px] text-indigo-600 font-bold hover:underline"
                                         >
                                             Quên mật khẩu?
                                         </button>
@@ -302,14 +384,22 @@ export const Login: React.FC = () => {
                                     <div className="relative">
                                         <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
                                         <input 
-                                            type="password" 
+                                            type={showLoginPass ? 'text' : 'password'} 
                                             required 
                                             autoComplete="current-password" 
-                                            className="w-full py-2.5 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100/60 transition-all" 
+                                            className="w-full py-2.5 pl-10 pr-11 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none focus:bg-white focus:border-indigo-500 focus:ring-4 focus:ring-indigo-100/60 transition-all" 
                                             placeholder="••••••••" 
                                             value={loginData.password} 
                                             onChange={e => setLoginData({...loginData, password: e.target.value})}
                                         />
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setShowLoginPass(!showLoginPass)}
+                                            className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                                            aria-label={showLoginPass ? "Ẩn mật khẩu" : "Hiện mật khẩu"}
+                                        >
+                                            {showLoginPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                                        </button>
                                     </div>
                                 </div>
 
@@ -326,26 +416,61 @@ export const Login: React.FC = () => {
                             </form>
                         )}
 
-                        {/* 2. REGISTER FORM */}
+                        {/* ================= 2. REGISTER FORM ================= */}
                         {view === 'REGISTER' && (
-                            <form onSubmit={handleRegister} className="space-y-3.5">
+                            <form onSubmit={handleRegister} className="space-y-3.5 max-h-[65vh] overflow-y-auto pr-1 custom-scrollbar">
+                                {/* Vai trò */}
                                 <div>
-                                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
-                                        Họ và Tên
+                                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                                        Bạn là:
                                     </label>
-                                    <input 
-                                        required 
-                                        className="w-full py-2 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-sm text-slate-900 outline-none focus:bg-white focus:border-indigo-500 text-xs" 
-                                        placeholder="Nguyễn Văn A" 
-                                        value={regData.full_name} 
-                                        onChange={e => setRegData({...regData, full_name: e.target.value})}
-                                    />
+                                    <div className="grid grid-cols-2 gap-2">
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setRegData({...regData, role: 'STUDENT'})} 
+                                            className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                                                regData.role === 'STUDENT' 
+                                                    ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-xs' 
+                                                    : 'border-slate-200 text-slate-500 bg-white hover:bg-slate-50'
+                                            }`}
+                                        >
+                                            <GraduationCap size={15} />
+                                            <span>Học sinh</span>
+                                            {regData.role === 'STUDENT' && <Check size={14} className="text-indigo-600 ml-auto" />}
+                                        </button>
+                                        <button 
+                                            type="button" 
+                                            onClick={() => setRegData({...regData, role: 'TEACHER'})} 
+                                            className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                                                regData.role === 'TEACHER' 
+                                                    ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-xs' 
+                                                    : 'border-slate-200 text-slate-500 bg-white hover:bg-slate-50'
+                                            }`}
+                                        >
+                                            <Users size={15} />
+                                            <span>Giáo viên</span>
+                                            {regData.role === 'TEACHER' && <Check size={14} className="text-indigo-600 ml-auto" />}
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-2.5">
+                                {/* Họ tên & Email */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div>
                                         <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
-                                            Email
+                                            Họ và Tên *
+                                        </label>
+                                        <input 
+                                            required 
+                                            className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
+                                            placeholder="Nguyễn Văn A" 
+                                            value={regData.full_name} 
+                                            onChange={e => setRegData({...regData, full_name: e.target.value})}
+                                        />
+                                    </div>
+                                    <div>
+                                        <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
+                                            Email (để nhận mật khẩu) *
                                         </label>
                                         <input 
                                             type="email" 
@@ -356,91 +481,179 @@ export const Login: React.FC = () => {
                                             onChange={e => setRegData({...regData, email: e.target.value})}
                                         />
                                     </div>
+                                </div>
+
+                                {/* Khối & Lớp (Dành riêng cho Học sinh) */}
+                                {regData.role === 'STUDENT' && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 bg-indigo-50/50 p-3 rounded-2xl border border-indigo-100">
+                                        <div>
+                                            <label className="text-[11px] font-bold text-indigo-900 uppercase tracking-wider mb-1 block">
+                                                Khối lớp *
+                                            </label>
+                                            <select 
+                                                className="w-full py-2 px-2.5 bg-white border border-indigo-200 rounded-xl text-xs text-slate-900 outline-none focus:border-indigo-500"
+                                                value={regData.grade_id}
+                                                onChange={e => setRegData({...regData, grade_id: Number(e.target.value)})}
+                                            >
+                                                <option value={6}>Khối 6</option>
+                                                <option value={7}>Khối 7</option>
+                                                <option value={8}>Khối 8</option>
+                                                <option value={9}>Khối 9</option>
+                                                <option value={10}>Khối 10</option>
+                                                <option value={11}>Khối 11</option>
+                                                <option value={12}>Khối 12</option>
+                                            </select>
+                                        </div>
+                                        <div>
+                                            <label className="text-[11px] font-bold text-indigo-900 uppercase tracking-wider mb-1 block">
+                                                Tên lớp (vd: 10A1)
+                                            </label>
+                                            <input 
+                                                className="w-full py-2 px-3 bg-white border border-indigo-200 rounded-xl text-xs text-slate-900 outline-none focus:border-indigo-500" 
+                                                placeholder="10A1" 
+                                                value={regData.class_name} 
+                                                onChange={e => setRegData({...regData, class_name: e.target.value})}
+                                            />
+                                        </div>
+                                        <div>
+                                            <label className="text-[11px] font-bold text-indigo-900 uppercase tracking-wider mb-1 block">
+                                                Giới tính
+                                            </label>
+                                            <select 
+                                                className="w-full py-2 px-2.5 bg-white border border-indigo-200 rounded-xl text-xs text-slate-900 outline-none focus:border-indigo-500"
+                                                value={regData.gender}
+                                                onChange={e => setRegData({...regData, gender: e.target.value})}
+                                            >
+                                                <option value="Nam">Nam</option>
+                                                <option value="Nữ">Nữ</option>
+                                                <option value="Khác">Khác</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Trường học & Số điện thoại */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div>
                                         <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
-                                            Trường / Đơn vị
+                                            Trường học / Đơn vị *
                                         </label>
-                                        <input 
-                                            required 
-                                            className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
-                                            placeholder="THPT..." 
-                                            value={regData.school} 
-                                            onChange={e => setRegData({...regData, school: e.target.value})}
-                                        />
+                                        <div className="relative">
+                                            <School size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <input 
+                                                required 
+                                                className="w-full py-2 pl-9 pr-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
+                                                placeholder="THPT Chuyên..." 
+                                                value={regData.school} 
+                                                onChange={e => setRegData({...regData, school: e.target.value})}
+                                            />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
+                                            Số điện thoại học sinh
+                                        </label>
+                                        <div className="relative">
+                                            <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                            <input 
+                                                type="tel"
+                                                className="w-full py-2 pl-9 pr-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
+                                                placeholder="0912..." 
+                                                value={regData.phone} 
+                                                onChange={e => setRegData({...regData, phone: e.target.value})}
+                                            />
+                                        </div>
                                     </div>
                                 </div>
 
+                                {/* SĐT phụ huynh & Ngày sinh (Cho học sinh) */}
+                                {regData.role === 'STUDENT' && (
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                        <div>
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
+                                                SĐT Phụ huynh (để gửi điểm)
+                                            </label>
+                                            <div className="relative">
+                                                <Phone size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input 
+                                                    type="tel"
+                                                    className="w-full py-2 pl-9 pr-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
+                                                    placeholder="0988..." 
+                                                    value={regData.parent_phone} 
+                                                    onChange={e => setRegData({...regData, parent_phone: e.target.value})}
+                                                />
+                                            </div>
+                                        </div>
+                                        <div>
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
+                                                Ngày sinh
+                                            </label>
+                                            <div className="relative">
+                                                <Calendar size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input 
+                                                    type="date"
+                                                    className="w-full py-2 pl-9 pr-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
+                                                    value={regData.date_of_birth} 
+                                                    onChange={e => setRegData({...regData, date_of_birth: e.target.value})}
+                                                />
+                                            </div>
+                                        </div>
+                                    </div>
+                                )}
+
+                                {/* Tên đăng nhập */}
                                 <div>
                                     <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
-                                        Tên đăng nhập
+                                        Tên đăng nhập (Username) *
                                     </label>
-                                    <input 
-                                        required 
-                                        className="w-full py-2 px-3.5 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
-                                        placeholder="username" 
-                                        value={regData.username} 
-                                        onChange={e => setRegData({...regData, username: e.target.value})}
-                                    />
+                                    <div className="relative">
+                                        <User size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                                        <input 
+                                            required 
+                                            className="w-full py-2 pl-9 pr-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
+                                            placeholder="username (viết liền không dấu)" 
+                                            value={regData.username} 
+                                            onChange={e => setRegData({...regData, username: e.target.value})}
+                                        />
+                                    </div>
                                 </div>
 
-                                <div className="grid grid-cols-2 gap-2.5">
+                                {/* Mật khẩu & Xác nhận */}
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                     <div>
                                         <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
-                                            Mật khẩu
+                                            Mật khẩu (≥ 8 ký tự) *
                                         </label>
-                                        <input 
-                                            type="password" 
-                                            required 
-                                            className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
-                                            placeholder="••••••" 
-                                            value={regData.password} 
-                                            onChange={e => setRegData({...regData, password: e.target.value})}
-                                        />
+                                        <div className="relative">
+                                            <input 
+                                                type={showRegPass ? 'text' : 'password'} 
+                                                required 
+                                                className="w-full py-2 pl-3 pr-9 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
+                                                placeholder="••••••••" 
+                                                value={regData.password} 
+                                                onChange={e => setRegData({...regData, password: e.target.value})}
+                                            />
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setShowRegPass(!showRegPass)}
+                                                className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600"
+                                            >
+                                                {showRegPass ? <EyeOff size={14} /> : <Eye size={14} />}
+                                            </button>
+                                        </div>
                                     </div>
                                     <div>
                                         <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1 block">
-                                            Xác nhận MK
+                                            Xác nhận Mật khẩu *
                                         </label>
                                         <input 
                                             type="password" 
                                             required 
                                             className="w-full py-2 px-3 bg-slate-50 border border-slate-200 rounded-xl text-xs text-slate-900 outline-none focus:bg-white focus:border-indigo-500" 
-                                            placeholder="••••••" 
+                                            placeholder="••••••••" 
                                             value={regData.confirmPassword} 
                                             onChange={e => setRegData({...regData, confirmPassword: e.target.value})}
                                         />
-                                    </div>
-                                </div>
-                                
-                                <div>
-                                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
-                                        Vai trò tài khoản
-                                    </label>
-                                    <div className="grid grid-cols-2 gap-2">
-                                        <button 
-                                            type="button" 
-                                            onClick={() => setRegData({...regData, role: 'STUDENT'})} 
-                                            className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                                                regData.role === 'STUDENT' 
-                                                    ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-2xs' 
-                                                    : 'border-slate-200 text-slate-500 bg-white hover:bg-slate-50'
-                                            }`}
-                                        >
-                                            {regData.role === 'STUDENT' && <Check size={14} className="text-indigo-600" />}
-                                            <span>Học sinh</span>
-                                        </button>
-                                        <button 
-                                            type="button" 
-                                            onClick={() => setRegData({...regData, role: 'TEACHER'})} 
-                                            className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
-                                                regData.role === 'TEACHER' 
-                                                    ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-2xs' 
-                                                    : 'border-slate-200 text-slate-500 bg-white hover:bg-slate-50'
-                                            }`}
-                                        >
-                                            {regData.role === 'TEACHER' && <Check size={14} className="text-indigo-600" />}
-                                            <span>Giáo viên</span>
-                                        </button>
                                     </div>
                                 </div>
 
@@ -451,51 +664,160 @@ export const Login: React.FC = () => {
                                     loading={loading}
                                     className="w-full font-bold shadow-md shadow-indigo-500/20 mt-3"
                                 >
-                                    Đăng ký tài khoản
+                                    Đăng ký tài khoản ngay
                                 </Button>
                             </form>
                         )}
 
-                        {/* 3. FORGOT PASSWORD FORM */}
+                        {/* ================= 3. FORGOT / RESET PASSWORD FLOW ================= */}
                         {view === 'FORGOT' && (
-                            <form onSubmit={handleForgotPassword} className="space-y-4">
-                                <div>
-                                    <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
-                                        Email đăng ký của bạn
-                                    </label>
-                                    <div className="relative">
-                                        <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
-                                        <input 
-                                            type="email" 
-                                            required 
-                                            className="w-full py-2.5 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none focus:bg-white focus:border-indigo-500 transition-all" 
-                                            placeholder="email@example.com" 
-                                            value={forgotEmail} 
-                                            onChange={e => setForgotEmail(e.target.value)}
-                                        />
-                                    </div>
-                                </div>
-                                
-                                <Button 
-                                    type="submit" 
-                                    variant="primary" 
-                                    size="lg" 
-                                    loading={loading}
-                                    className="w-full font-bold shadow-md shadow-indigo-500/20"
-                                >
-                                    Gửi liên kết khôi phục
-                                </Button>
+                            <div>
+                                {forgotStep === 1 ? (
+                                    /* BƯỚC 1: NHẬP EMAIL / USERNAME ĐỂ GỬI MÃ OTP */
+                                    <form onSubmit={handleSendForgotOtp} className="space-y-4">
+                                        <div>
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                                                Email hoặc Tên đăng nhập của bạn
+                                            </label>
+                                            <div className="relative">
+                                                <Mail size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input 
+                                                    required 
+                                                    className="w-full py-2.5 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none focus:bg-white focus:border-indigo-500 transition-all" 
+                                                    placeholder="Nhập email hoặc username" 
+                                                    value={forgotEmail} 
+                                                    onChange={e => setForgotEmail(e.target.value)}
+                                                />
+                                            </div>
+                                            <p className="text-[11px] text-slate-500 mt-1.5">
+                                                Hệ thống sẽ gửi mã xác thực 6 số (OTP) tới hòm thư email liên kết với tài khoản này.
+                                            </p>
+                                        </div>
+                                        
+                                        <Button 
+                                            type="submit" 
+                                            variant="primary" 
+                                            size="lg" 
+                                            loading={loading}
+                                            className="w-full font-bold shadow-md shadow-indigo-500/20"
+                                        >
+                                            Gửi mã xác nhận qua Email
+                                            <ArrowRight size={16} className="ml-1" />
+                                        </Button>
 
-                                <div className="pt-2 text-center">
-                                    <button 
-                                        type="button" 
-                                        onClick={() => setView('LOGIN')} 
-                                        className="text-slate-500 hover:text-slate-800 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
-                                    >
-                                        <ArrowLeft size={14}/> Quay lại đăng nhập
-                                    </button>
-                                </div>
-                            </form>
+                                        <div className="pt-2 text-center">
+                                            <button 
+                                                type="button" 
+                                                onClick={() => { setView('LOGIN'); setError(''); setSuccess(''); }} 
+                                                className="text-slate-500 hover:text-slate-800 text-xs font-semibold inline-flex items-center gap-1.5 transition-colors"
+                                            >
+                                                <ArrowLeft size={14}/> Quay lại đăng nhập
+                                            </button>
+                                        </div>
+                                    </form>
+                                ) : (
+                                    /* BƯỚC 2: NHẬP MÃ OTP VÀ THIẾT LẬP MẬT KHẨU MỚI */
+                                    <form onSubmit={handleResetPassword} className="space-y-4">
+                                        {debugOtpNotice && (
+                                            <div className="p-3 bg-amber-50 border border-amber-200 rounded-xl text-xs text-amber-800 flex items-center justify-between">
+                                                <span>Mã xác thực thử nghiệm: <strong className="font-mono text-sm tracking-widest text-amber-900">{debugOtpNotice}</strong></span>
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => setResetOtp(debugOtpNotice)}
+                                                    className="text-[10px] font-bold bg-amber-200/80 hover:bg-amber-300 px-2 py-1 rounded-lg"
+                                                >
+                                                    Tự điền mã
+                                                </button>
+                                            </div>
+                                        )}
+
+                                        <div>
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                                                Mã OTP xác thực 6 chữ số
+                                            </label>
+                                            <div className="relative">
+                                                <KeyRound size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input 
+                                                    required 
+                                                    maxLength={6}
+                                                    className="w-full py-2.5 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-xl text-base font-mono font-bold tracking-widest text-slate-900 outline-none focus:bg-white focus:border-indigo-500 transition-all text-center" 
+                                                    placeholder="123456" 
+                                                    value={resetOtp} 
+                                                    onChange={e => setResetOtp(e.target.value.replace(/\D/g, ''))}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                                                Mật khẩu mới (≥ 8 ký tự)
+                                            </label>
+                                            <div className="relative">
+                                                <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input 
+                                                    type={showNewPass ? 'text' : 'password'}
+                                                    required 
+                                                    className="w-full py-2.5 pl-10 pr-11 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none focus:bg-white focus:border-indigo-500 transition-all" 
+                                                    placeholder="Nhập mật khẩu mới" 
+                                                    value={newPassword} 
+                                                    onChange={e => setNewPassword(e.target.value)}
+                                                />
+                                                <button 
+                                                    type="button" 
+                                                    onClick={() => setShowNewPass(!showNewPass)}
+                                                    className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1"
+                                                >
+                                                    {showNewPass ? <EyeOff size={16} /> : <Eye size={16} />}
+                                                </button>
+                                            </div>
+                                        </div>
+
+                                        <div>
+                                            <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
+                                                Xác nhận Mật khẩu mới
+                                            </label>
+                                            <div className="relative">
+                                                <Lock size={18} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+                                                <input 
+                                                    type="password"
+                                                    required 
+                                                    className="w-full py-2.5 pl-10 pr-4 bg-slate-50 border border-slate-200 rounded-xl text-sm font-medium text-slate-900 outline-none focus:bg-white focus:border-indigo-500 transition-all" 
+                                                    placeholder="Nhập lại mật khẩu mới" 
+                                                    value={confirmNewPassword} 
+                                                    onChange={e => setConfirmNewPassword(e.target.value)}
+                                                />
+                                            </div>
+                                        </div>
+
+                                        <Button 
+                                            type="submit" 
+                                            variant="primary" 
+                                            size="lg" 
+                                            loading={loading}
+                                            className="w-full font-bold shadow-md shadow-indigo-500/20"
+                                        >
+                                            Kích hoạt & Đặt lại mật khẩu
+                                        </Button>
+
+                                        <div className="flex items-center justify-between pt-2">
+                                            <button 
+                                                type="button" 
+                                                onClick={() => setForgotStep(1)} 
+                                                className="text-slate-500 hover:text-slate-800 text-xs font-semibold inline-flex items-center gap-1 transition-colors"
+                                            >
+                                                <ArrowLeft size={14}/> Gửi lại mã khác
+                                            </button>
+                                            <button 
+                                                type="button" 
+                                                onClick={() => { setView('LOGIN'); setError(''); setSuccess(''); }} 
+                                                className="text-indigo-600 hover:underline text-xs font-bold"
+                                            >
+                                                Quay lại đăng nhập
+                                            </button>
+                                        </div>
+                                    </form>
+                                )}
+                            </div>
                         )}
                     </div>
                 </div>

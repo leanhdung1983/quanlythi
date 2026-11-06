@@ -1,3 +1,4 @@
+import bcrypt from 'bcryptjs';
 import express from 'express';
 import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 
@@ -164,4 +165,121 @@ describe('Auth routes role handling', () => {
         const updateCall = calls.find(c => c.sql.includes('UPDATE users SET'));
         expect(updateCall.sql).not.toContain('role = ?');
     });
+
+
+
+    it('forgot-password generates OTP and returns debug OTP in simulation', async () => {
+        queryResults = [
+            [{ id: 10, username: 'hocsinh_a', full_name: 'Nguyễn Văn A', email: 'hocsinha@gmail.com' }],
+            { affectedRows: 1 }
+        ];
+
+        const res = await fetch(`${baseUrl}/forgot-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: 'hocsinha@gmail.com' })
+        });
+
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.success).toBe(true);
+        expect(data.debug_otp).toBeDefined();
+        expect(data.debug_otp).toMatch(/^\d{6}$/);
+
+        const updateCall = calls.find(c => c.sql.includes('UPDATE users SET reset_password_otp = ?'));
+        expect(updateCall).toBeDefined();
+        expect(updateCall.params[0]).toBe(data.debug_otp);
+    });
+
+    it('reset-password validates OTP and updates password hash', async () => {
+        const futureDate = new Date(Date.now() + 10 * 60 * 1000);
+        queryResults = [
+            [{ id: 10, username: 'hocsinh_a', reset_password_otp: '654321', reset_password_expires: futureDate }],
+            { affectedRows: 1 }
+        ];
+
+        const res = await fetch(`${baseUrl}/reset-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                email: 'hocsinha@gmail.com',
+                otp: '654321',
+                new_password: 'new_password_2026'
+            })
+        });
+
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.success).toBe(true);
+
+        const updateCall = calls.find(c => c.sql.includes('UPDATE users SET password_hash = ?'));
+        expect(updateCall).toBeDefined();
+        expect(updateCall.params[1]).toBe(10);
+    });
+
+    it('change-password verifies current password and updates password hash', async () => {
+        currentUser = { id: 10, role: 'STUDENT' };
+        const currentHash = await bcrypt.hash('old_pass_123', 10);
+        queryResults = [
+            [{ id: 10, password_hash: currentHash }],
+            { affectedRows: 1 }
+        ];
+
+        const res = await fetch(`${baseUrl}/change-password`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                current_password: 'old_pass_123',
+                new_password: 'new_secure_password_456'
+            })
+        });
+
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.success).toBe(true);
+
+        const updateCall = calls.find(c => c.sql.includes('UPDATE users SET password_hash = ? WHERE id = ?'));
+        expect(updateCall).toBeDefined();
+        expect(updateCall.params[1]).toBe(10);
+    });
+
+    it('student registration stores extended student fields', async () => {
+        queryResults = [
+            [], // username exists check
+            [], // email exists check
+            { insertId: 105 }
+        ];
+
+        const res = await fetch(`${baseUrl}/register`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                username: 'em_linh_10a1',
+                password: 'password2026',
+                full_name: 'Trần Thị Linh',
+                email: 'linh@gmail.com',
+                school: 'THPT Chu Văn An',
+                role: 'STUDENT',
+                phone: '0912345678',
+                parent_phone: '0987654321',
+                class_name: '10A1',
+                grade_id: 10,
+                gender: 'Nữ'
+            })
+        });
+
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.success).toBe(true);
+
+        const insertCall = calls.find(c => c.sql.includes('INSERT INTO users'));
+        expect(insertCall).toBeDefined();
+        // check phone, parent_phone, class_name
+        expect(insertCall.params).toContain('0912345678');
+        expect(insertCall.params).toContain('0987654321');
+        expect(insertCall.params).toContain('10A1');
+        expect(insertCall.params).toContain(10);
+        expect(insertCall.params).toContain('Nữ');
+    });
+
 });
