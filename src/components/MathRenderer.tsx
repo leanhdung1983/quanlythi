@@ -396,8 +396,12 @@ const renderMathText = (text: string) => {
                     throwOnError: false, 
                     strict: false,
                     trust: false,
+                    minRuleThickness: 0.05,
                     macros: KATEX_MACROS
                 });
+                if (isDisplay) {
+                    return <div key={i} className="katex-display-wrapper" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />;
+                }
                 return <span key={i} className="katex-wrapper" dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }} />;
             } catch { 
                 return <span key={i} className="text-rose-500 font-mono text-[10px] bg-rose-50 px-1 rounded">{part}</span>; 

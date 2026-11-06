@@ -1326,28 +1326,34 @@ export const OnlineExam: React.FC = () => {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: idx * 0.05 }}
-                                    className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-xl border transition-all group ${containerStyle}`}
+                                    className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 rounded-2xl border transition-all group ${containerStyle}`}
                                 >
-                                    <div className="flex items-start gap-2 flex-1 min-w-0">
-                                        <div className="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center font-black text-slate-400 group-hover:text-exam-indigo group-hover:border-exam-indigo/30 transition-all shrink-0 mt-0.5 text-[9px]">
+                                    <div className="flex items-start gap-2.5 flex-1 min-w-0">
+                                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center font-bold text-slate-500 group-hover:text-indigo-600 group-hover:border-indigo-300 transition-all shrink-0 mt-0.5 text-xs">
                                             {label})
                                         </div>
-                                        <div className="flex-1 text-slate-700 leading-relaxed font-sans font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
+                                        <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar text-slate-700 leading-relaxed font-sans font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
                                             <MathRenderer content={opt.content} mode="question" hideToolbar={true} />
                                         </div>
                                     </div>
-                                    <div className="flex gap-1 shrink-0">
+                                    <div className="flex gap-2 shrink-0 self-end sm:self-center pt-2 sm:pt-0">
                                         <button 
+                                            type="button"
+                                            aria-pressed={userChoice === true}
+                                            aria-label={`Chọn phương án ${label} là Đúng`}
                                             onClick={() => !isReviewMode && handleTFAnswer(opt.id, true)}
-                                            className={`min-w-[56px] h-7 rounded-lg font-black text-[9px] transition-all border flex items-center justify-center gap-1 ${trueBtnStyle}`}
+                                            className={`min-w-[68px] sm:min-w-[76px] h-9 sm:h-10 px-3 rounded-xl font-bold text-xs transition-all border flex items-center justify-center gap-1.5 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 ${trueBtnStyle}`}
                                         >
-                                            {userChoice === true && <ShieldCheck size={10}/>} ĐÚNG
+                                            {userChoice === true && <ShieldCheck size={12}/>} ĐÚNG
                                         </button>
                                         <button 
+                                            type="button"
+                                            aria-pressed={userChoice === false}
+                                            aria-label={`Chọn phương án ${label} là Sai`}
                                             onClick={() => !isReviewMode && handleTFAnswer(opt.id, false)}
-                                            className={`min-w-[56px] h-7 rounded-lg font-black text-[9px] transition-all border flex items-center justify-center gap-1 ${falseBtnStyle}`}
+                                            className={`min-w-[68px] sm:min-w-[76px] h-9 sm:h-10 px-3 rounded-xl font-bold text-xs transition-all border flex items-center justify-center gap-1.5 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 ${falseBtnStyle}`}
                                         >
-                                            {userChoice === false && <ShieldCheck size={10}/>} SAI
+                                            {userChoice === false && <ShieldCheck size={12}/>} SAI
                                         </button>
                                     </div>
                                 </motion.div>
@@ -1360,38 +1366,42 @@ export const OnlineExam: React.FC = () => {
 
         if (currentQ.type === 'TN' && currentQ.options) {
             return (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3" role="radiogroup" aria-label="Các phương án lựa chọn">
                     {currentQ.options.map((opt, idx) => {
                         const isSelected = answers[currentQ.id] === opt.id;
-                        let btnStyle = "bg-white border-slate-300 shadow-sm text-slate-800 hover:border-indigo-400 hover:bg-indigo-50";
-                        let labelStyle = "bg-slate-100 text-slate-600 border-slate-300 font-bold";
+                        let btnStyle = "bg-white border-slate-200/90 shadow-sm text-slate-800 hover:border-indigo-400 hover:bg-indigo-50/40";
+                        let labelStyle = "bg-slate-100 text-slate-700 border-slate-200 font-bold";
                         
                         if (isReviewMode) {
                             if (opt.isCorrect) {
-                                btnStyle = "bg-exam-green/10 border-exam-green text-exam-green shadow-xl shadow-exam-green/10";
-                                labelStyle = "bg-exam-green text-white border-exam-green";
+                                btnStyle = "bg-emerald-50 border-emerald-500 text-emerald-900 shadow-md shadow-emerald-500/10";
+                                labelStyle = "bg-emerald-600 text-white border-emerald-600";
                             } else if (isSelected) {
-                                btnStyle = "bg-exam-red/10 border-exam-red text-exam-red opacity-80";
-                                labelStyle = "bg-exam-red text-white border-red-200";
+                                btnStyle = "bg-rose-50 border-rose-400 text-rose-900 opacity-90";
+                                labelStyle = "bg-rose-600 text-white border-rose-600";
                             }
                         } else if (isSelected) {
-                            btnStyle = "bg-exam-indigo text-white border-exam-indigo shadow-lg shadow-exam-indigo/20 scale-[1.005]";
+                            btnStyle = "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/20";
                             labelStyle = "bg-white/20 text-white border-white/30";
                         }
                         
                         return (
                             <motion.button 
                                 key={opt.id} 
+                                type="button"
+                                role="radio"
+                                aria-checked={isSelected}
+                                aria-label={`Đáp án ${opt.id}`}
                                 initial={{ opacity: 0, y: 15 }}
                                 animate={{ opacity: 1, y: 0 }}
-                                transition={{ delay: idx * 0.05 }}
+                                transition={{ delay: idx * 0.04 }}
                                 onClick={() => !isReviewMode && handleAnswer(opt.id)}
-                                className={`w-full p-2 rounded-xl border flex items-center gap-2.5 text-left transition-all active:scale-[0.99] group relative ${btnStyle}`}
+                                className={`w-full min-h-[52px] p-2.5 sm:p-3 rounded-2xl border flex items-center gap-3 text-left transition-all active:scale-[0.99] group relative cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${btnStyle}`}
                             >
-                                <div className={`w-7 h-7 rounded-lg border flex-shrink-0 flex items-center justify-center font-black text-sm transition-all ${labelStyle}`}>
+                                <div className={`w-8 h-8 rounded-xl border flex-shrink-0 flex items-center justify-center font-black text-sm transition-all ${labelStyle}`}>
                                     {opt.id}
                                 </div>
-                                <div className="flex-1 font-bold leading-relaxed font-sans" style={{ fontSize: `${fontSize - 1}px` }}>
+                                <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar font-semibold leading-relaxed font-sans" style={{ fontSize: `${fontSize - 1}px` }}>
                                     <MathRenderer 
                                         content={opt.content && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(opt.content.toLowerCase()) 
                                             ? opt.content.charAt(0).toUpperCase() + opt.content.slice(1) 
@@ -1401,7 +1411,7 @@ export const OnlineExam: React.FC = () => {
                                     />
                                 </div>
                                 {isSelected && !isReviewMode && (
-                                    <div className="absolute right-2 top-2 text-white/50"><ShieldCheck size={12}/></div>
+                                    <div className="absolute right-3 top-3 text-white/70" aria-hidden="true"><ShieldCheck size={14}/></div>
                                 )}
                             </motion.button>
                         );
@@ -2008,12 +2018,14 @@ export const OnlineExam: React.FC = () => {
             <header className="bg-white border-b border-slate-200 px-3 md:px-5 py-2 shrink-0 flex justify-between items-center gap-2 shadow-sm z-30 sticky top-0">
                 <div className="flex items-center gap-2 md:gap-4 min-w-0">
                     <button 
+                        type="button"
+                        aria-label="Thoát bài thi"
                         onClick={() => { 
                             showConfirm("Thoát bài thi?", "Tiến trình của bạn sẽ được lưu lại (nếu là bài tự luyện). Bạn có chắc chắn muốn quay lại?", () => { setMode('DASHBOARD'); clearSvgCache(); });
                         }} 
-                        className="p-1.5 bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-500 transition-all border border-slate-200 active:scale-95"
+                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-600 transition-all border border-slate-200 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
                     >
-                        <ArrowLeft size={16}/>
+                        <ArrowLeft size={18}/>
                     </button>
                     <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
                     <div className="min-w-0">
@@ -2022,16 +2034,16 @@ export const OnlineExam: React.FC = () => {
                             <span className="truncate">{currentExamTitle}</span>
                         </h2>
                         <div className="flex items-center gap-3 mt-0.5">
-                            <div className="px-2 py-0.5 bg-slate-100 text-[9px] font-black text-slate-500 uppercase tracking-widest rounded-lg border border-slate-200">
+                            <div className="px-2 py-0.5 bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wider rounded-lg border border-slate-200">
                                 {currentQIdx + 1} / {questions.length}
                             </div>
                             {isReviewMode ? (
-                                <div className="flex items-center gap-1 text-green-600 font-black text-[11px] uppercase tracking-wider">
-                                    <Award size={12}/> {Number(score || 0).toFixed(2)} ĐIỂM
+                                <div className="flex items-center gap-1 text-emerald-600 font-bold text-xs uppercase tracking-wider">
+                                    <Award size={14}/> {Number(score || 0).toFixed(2)} ĐIỂM
                                 </div>
                             ) : (
-                                <div className={`flex items-center gap-1.5 font-mono font-black text-sm transition-colors ${timeLeft < 300 ? 'text-red-500 animate-pulse' : 'text-slate-500'}`}>
-                                    <Clock size={16} className={timeLeft < 300 ? 'text-red-500' : 'text-orange-500'}/> 
+                                <div className={`flex items-center gap-1.5 font-mono font-bold text-sm transition-colors ${timeLeft < 300 ? 'text-rose-600 animate-pulse font-black' : 'text-slate-700'}`}>
+                                    <Clock size={16} className={timeLeft < 300 ? 'text-rose-600' : 'text-orange-500'}/> 
                                     {formatTime(timeLeft)}
                                 </div>
                             )}
@@ -2039,7 +2051,7 @@ export const OnlineExam: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 md:gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
                     {/* Autosave Indicator */}
                     {!isReviewMode && (
                         <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 border border-emerald-200/80 rounded-xl text-emerald-700 text-[10px] font-bold shadow-sm">
@@ -2050,46 +2062,53 @@ export const OnlineExam: React.FC = () => {
 
                     {/* Font Size Adjuster */}
                     <div className="hidden lg:flex items-center bg-slate-50 p-1 rounded-xl border border-slate-200 gap-1">
-                        <button onClick={() => handleFontSize(-2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-500 hover:text-slate-700 transition-all" title="Giảm cỡ chữ"><Minus size={14}/></button>
-                        <div className="px-2 text-[10px] font-black text-slate-400 uppercase">Font</div>
-                        <button onClick={() => handleFontSize(2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-500 hover:text-slate-700 transition-all" title="Tăng cỡ chữ"><Plus size={14}/></button>
+                        <button type="button" aria-label="Giảm cỡ chữ" onClick={() => handleFontSize(-2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-600 hover:text-slate-800 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500" title="Giảm cỡ chữ"><Minus size={14}/></button>
+                        <div className="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Font</div>
+                        <button type="button" aria-label="Tăng cỡ chữ" onClick={() => handleFontSize(2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-600 hover:text-slate-800 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500" title="Tăng cỡ chữ"><Plus size={14}/></button>
                     </div>
 
                     {/* Fullscreen Toggle */}
                     <button
                         type="button"
+                        aria-label={isFullscreen ? "Thoát toàn màn hình" : "Chế độ toàn màn hình"}
                         onClick={toggleFullscreen}
-                        className="p-2 bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 rounded-xl transition-all"
+                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
                         title={isFullscreen ? "Thoát toàn màn hình" : "Chế độ toàn màn hình"}
                     >
                         {isFullscreen ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}
                     </button>
 
                     <button
-                        className="lg:hidden p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 transition-all font-black flex items-center gap-1"
+                        type="button"
+                        aria-label="Mở phiếu trả lời"
+                        className="lg:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all font-bold flex items-center justify-center active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
                         onClick={() => setShowSidebar(true)}
                         title="Bảng trả lời"
                     >
-                        <Layout size={14}/>
+                        <Layout size={16}/>
                     </button>
 
                     {!isReviewMode && (
                         <button 
+                            type="button"
+                            aria-label="Đánh dấu câu hỏi cần xem lại"
                             onClick={() => {
                                 const qId = questions[currentQIdx].id;
                                 setMarkedForReview(prev => ({ ...prev, [qId]: !prev[qId] }));
                             }}
-                            className={`p-2 rounded-xl transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border ${markedForReview[questions[currentQIdx].id] ? 'bg-orange-50 text-orange-600 border-orange-200 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200 hover:text-slate-700 hover:bg-slate-100'}`}
+                            className={`min-h-[36px] sm:min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 font-bold text-xs uppercase tracking-wider border active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500 ${markedForReview[questions[currentQIdx].id] ? 'bg-amber-50 text-amber-700 border-amber-300 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-800 hover:bg-slate-100'}`}
                             title="Đánh dấu câu hỏi cần xem lại"
                         >
-                            <Flag size={14}/>
-                            <span className="hidden sm:inline text-[8px]">Đánh dấu</span>
+                            <Flag size={15}/>
+                            <span className="hidden sm:inline text-xs">Đánh dấu</span>
                         </button>
                     )}
 
                     <button 
+                        type="button"
+                        aria-label="Báo lỗi câu hỏi"
                         onClick={() => setShowReportModal(true)} 
-                        className="p-2 bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 rounded-xl transition-all"
+                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500"
                         title="Báo lỗi câu hỏi"
                     >
                         <AlertTriangle size={16}/>
@@ -2097,10 +2116,12 @@ export const OnlineExam: React.FC = () => {
 
                     {!isReviewMode && (
                         <button 
+                            type="button"
+                            aria-label="Nộp bài thi"
                             onClick={() => setShowSubmitConfirmModal(true)} 
-                            className="bg-orange-500 hover:bg-orange-600 text-white px-3 md:px-6 py-2 rounded-xl font-black text-[10px] md:text-[11px] shadow-lg shadow-orange-500/30 transition-all active:scale-95 uppercase tracking-widest border border-orange-400/50 flex items-center gap-1.5"
+                            className="bg-orange-500 hover:bg-orange-600 text-white min-h-[36px] sm:min-h-[40px] px-3.5 sm:px-5 py-2 rounded-xl font-bold text-xs sm:text-sm shadow-md shadow-orange-500/25 transition-all active:scale-95 uppercase tracking-wider border border-orange-400/50 flex items-center gap-1.5 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500"
                         >
-                            <ShieldCheck size={14}/>
+                            <ShieldCheck size={16}/>
                             <span>Nộp bài</span>
                         </button>
                     )}
@@ -2125,12 +2146,12 @@ export const OnlineExam: React.FC = () => {
                         {currentQ && (
                             <div className="space-y-3">
                                 {/* Section Header */}
-                                <div className="flex items-center gap-2">
-                                    <div className="bg-exam-indigo/10 text-exam-indigo px-2.5 py-1 rounded-lg text-[9px] font-black uppercase tracking-widest border border-exam-indigo/20 flex items-center gap-1.5">
-                                        <Layers size={10}/>
+                                <div className="flex items-center gap-2.5">
+                                    <div className="bg-indigo-50 text-indigo-700 px-3 py-1 rounded-xl text-xs font-bold uppercase tracking-wider border border-indigo-200/70 flex items-center gap-1.5 shadow-xs">
+                                        <Layers size={13} className="text-indigo-600"/>
                                         {getSectionInfo(currentQ).title}
                                     </div>
-                                    <span className="text-[11px] font-semibold text-slate-500">Câu {currentQIdx + 1} / {questions.length}</span>
+                                    <span className="text-xs font-bold text-slate-600">Câu {currentQIdx + 1} / {questions.length}</span>
                                     <div className="flex-1 h-px bg-slate-200"></div>
                                 </div>
 
@@ -2139,7 +2160,7 @@ export const OnlineExam: React.FC = () => {
                                     <div className="p-4 md:p-6">
                                         {/* Question Text */}
                                         <div 
-                                            className="text-slate-800 leading-[1.5] font-medium"
+                                            className="text-slate-800 leading-[1.5] font-medium overflow-x-auto custom-scrollbar max-w-full"
                                             style={{ fontSize: `${fontSize - 1}px` }}
                                         >
                                             <MathRenderer 
@@ -2180,27 +2201,31 @@ export const OnlineExam: React.FC = () => {
                                 </div>
 
                                 {/* Bottom Navigation */}
-                                <div className="flex items-center justify-between pb-2">
+                                <div className="flex items-center justify-between pb-3 pt-1">
                                     <button 
+                                        type="button"
+                                        aria-label="Chuyển đến câu hỏi trước"
                                         onClick={() => setCurrentQIdx(Math.max(0, currentQIdx - 1))} 
                                         disabled={currentQIdx === 0} 
-                                        className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed border border-slate-200 rounded-xl font-black text-[9px] text-slate-600 uppercase tracking-widest transition-all hover:shadow-sm active:scale-95"
+                                        className="min-h-[44px] flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed border border-slate-200 rounded-xl font-bold text-xs text-slate-700 uppercase tracking-wider transition-all hover:shadow-sm active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
                                     >
-                                        <ChevronRight className="rotate-180" size={14}/> Câu trước
+                                        <ChevronRight className="rotate-180" size={16}/> Câu trước
                                     </button>
                                     
-                                    <div className="hidden sm:flex items-center gap-1">
+                                    <div className="hidden sm:flex items-center gap-1.5" aria-hidden="true">
                                         {questions.slice(Math.max(0, currentQIdx - 1), Math.min(questions.length, currentQIdx + 2)).map((_, i) => (
-                                            <div key={i} className={`h-0.5 rounded-full transition-all duration-300 ${i === (currentQIdx <= 0 ? 0 : 1) ? 'w-4 bg-exam-indigo' : 'w-1 bg-slate-200'}`}></div>
+                                            <div key={i} className={`h-1 rounded-full transition-all duration-300 ${i === (currentQIdx <= 0 ? 0 : 1) ? 'w-6 bg-indigo-600' : 'w-1.5 bg-slate-200'}`}></div>
                                         ))}
                                     </div>
 
                                     <button 
+                                        type="button"
+                                        aria-label="Chuyển đến câu hỏi tiếp theo"
                                         onClick={() => setCurrentQIdx(Math.min(questions.length - 1, currentQIdx + 1))} 
                                         disabled={currentQIdx === questions.length - 1} 
-                                        className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed border border-slate-200 rounded-xl font-black text-[9px] text-slate-600 uppercase tracking-widest transition-all hover:shadow-sm active:scale-95"
+                                        className="min-h-[44px] flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed border border-indigo-600 disabled:border-slate-200 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
                                     >
-                                        Câu sau <ChevronRight size={14}/>
+                                        Câu sau <ChevronRight size={16}/>
                                     </button>
                                 </div>
                             </div>

@@ -28,15 +28,23 @@ describe('math LaTeX preparation', () => {
 
     it.each([
         '\\parallel', '\\perp', '\\nparallel', '\\not\\parallel', '\\angle ABC',
-        '\\triangle ABC', '\\overrightarrow{AB}', '\\wideparen{MN}', '\\subseteq', '\\Rightarrow'
+        '\\triangle ABC', '\\overrightarrow{AB}', '\\wideparen{MN}', '\\subseteq', '\\Rightarrow',
+        '\\sqrt{2}', '\\sqrt{x^2+1}', '\\sqrt[3]{8}', '\\sqrt{\\frac{a}{b}}'
     ])('is accepted by the real KaTeX renderer: %s', expression => {
         const html = katex.renderToString(expression, {
             macros: KATEX_MACROS,
             strict: false,
             throwOnError: true,
-            trust: false
+            trust: false,
+            minRuleThickness: 0.05
         });
         expect(html).toContain('katex');
         expect(html).not.toContain('katex-error');
+    });
+
+    it('wraps naked sqrt with or without index parameter', () => {
+        expect(prepareLatexForRendering('Căn bậc hai \\sqrt{x+1}')).toContain('\\(\\sqrt{x+1}\\)');
+        expect(prepareLatexForRendering('Căn bậc ba \\sqrt[3]{x}')).toContain('\\(\\sqrt[3]{x}\\)');
+        expect(prepareLatexForRendering('Phân thức trong căn \\sqrt{\\frac{a}{b}}')).toContain('\\(\\sqrt{\\frac{a}{b}}\\)');
     });
 });

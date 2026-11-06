@@ -425,23 +425,23 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                     className={`flex flex-col sm:flex-row items-center gap-2 p-2 rounded-xl border transition-all group ${containerStyle}`}
                                 >
                                     <div className="flex items-start gap-2 flex-1 min-w-0">
-                                        <div className="w-6 h-6 rounded-lg bg-white border border-slate-200 flex items-center justify-center font-black text-slate-400 group-hover:text-exam-indigo group-hover:border-exam-indigo/30 transition-all shrink-0 mt-0.5 text-[9px]">
+                                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center font-bold text-slate-500 group-hover:text-indigo-600 group-hover:border-indigo-300 transition-all shrink-0 mt-0.5 text-xs">
                                             {label})
                                         </div>
-                                        <div className="flex-1 text-slate-700 leading-relaxed font-sans font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
+                                        <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar text-slate-700 leading-relaxed font-sans font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
                                             <MathRenderer content={opt.content} mode="question" hideToolbar={true} />
                                         </div>
                                     </div>
                                     <div className="flex gap-1 shrink-0">
                                         <button 
                                             onClick={() => !isReview && handleTFAnswer(opt.id, true)}
-                                            className={`min-w-[56px] h-7 rounded-lg font-black text-[9px] transition-all border flex items-center justify-center gap-1 ${trueBtnStyle}`}
+                                            className={`min-w-[68px] sm:min-w-[76px] h-9 sm:h-10 px-3 rounded-xl font-bold text-xs transition-all border flex items-center justify-center gap-1.5 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 ${trueBtnStyle}`}
                                         >
                                             {userChoice === true && <ShieldCheck size={10}/>} ĐÚNG
                                         </button>
                                         <button 
                                             onClick={() => !isReview && handleTFAnswer(opt.id, false)}
-                                            className={`min-w-[56px] h-7 rounded-lg font-black text-[9px] transition-all border flex items-center justify-center gap-1 ${falseBtnStyle}`}
+                                            className={`min-w-[68px] sm:min-w-[76px] h-9 sm:h-10 px-3 rounded-xl font-bold text-xs transition-all border flex items-center justify-center gap-1.5 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 ${falseBtnStyle}`}
                                         >
                                             {userChoice === false && <ShieldCheck size={10}/>} SAI
                                         </button>
@@ -482,12 +482,12 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.05 }}
                                 onClick={() => !isReview && handleAnswer(opt.id)}
-                                className={`w-full p-2 rounded-xl border flex items-center gap-2.5 text-left transition-all active:scale-[0.99] group relative ${btnStyle}`}
+                                className={`w-full min-h-[52px] p-2.5 sm:p-3 rounded-2xl border flex items-center gap-3 text-left transition-all active:scale-[0.99] group relative cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${btnStyle}`}
                             >
-                                <div className={`w-7 h-7 rounded-lg border flex-shrink-0 flex items-center justify-center font-black text-sm transition-all ${labelStyle}`}>
+                                <div className={`w-8 h-8 rounded-xl border flex-shrink-0 flex items-center justify-center font-black text-sm transition-all ${labelStyle}`}>
                                     {opt.id}
                                 </div>
-                                <div className="flex-1 font-bold leading-relaxed font-sans" style={{ fontSize: `${fontSize - 1}px` }}>
+                                <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar font-bold leading-relaxed font-sans" style={{ fontSize: `${fontSize - 1}px` }}>
                                     <MathRenderer 
                                         content={opt.content && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(opt.content.toLowerCase()) 
                                             ? opt.content.charAt(0).toUpperCase() + opt.content.slice(1) 
@@ -603,10 +603,11 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                     </div>
 
                     <button
-                        className="lg:hidden p-2 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 transition-all font-black flex items-center gap-1"
+                        className="lg:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-500 hover:bg-slate-100 transition-all font-black flex items-center justify-center touch-manipulation"
                         onClick={() => setShowSidebar(true)}
+                        aria-label="Mở phiếu trả lời"
                     >
-                        <Layout size={14}/>
+                        <Layout size={16}/>
                     </button>
 
                     {!isReview && (
@@ -615,10 +616,12 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                 const qId = questions[currentQIdx].id;
                                 setMarkedForReview(prev => ({ ...prev, [qId]: !prev[qId] }));
                             }}
-                            className={`p-2 rounded-xl transition-all flex items-center gap-2 font-black text-[9px] uppercase tracking-widest border ${markedForReview[questions[currentQIdx].id] ? 'bg-orange-50 text-orange-600 border-orange-200 shadow-sm' : 'bg-slate-50 text-slate-500 border-slate-200 hover:text-slate-700 hover:bg-slate-100'}`}
+                            className={`min-h-[36px] sm:min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 font-bold text-xs uppercase tracking-wider border touch-manipulation ${markedForReview[questions[currentQIdx].id] ? 'bg-orange-50 text-orange-600 border-orange-200 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-800 hover:bg-slate-100'}`}
+                            aria-label={markedForReview[questions[currentQIdx].id] ? "Bỏ đánh dấu câu hỏi" : "Đánh dấu câu hỏi"}
+                            aria-pressed={!!markedForReview[questions[currentQIdx].id]}
                         >
-                            <Flag size={14}/>
-                            <span className="hidden sm:inline text-[8px]">Đánh dấu</span>
+                            <Flag size={15}/>
+                            <span className="hidden sm:inline">Đánh dấu</span>
                         </button>
                     )}
 
@@ -656,7 +659,7 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                     <div className="p-4 md:p-5">
                                         {/* Question Text */}
                                         <div 
-                                            className="text-slate-800 leading-[1.5] font-medium"
+                                            className="text-slate-800 leading-[1.5] font-medium overflow-x-auto custom-scrollbar max-w-full"
                                             style={{ fontSize: `${fontSize - 1}px` }}
                                         >
                                             <MathRenderer 
@@ -701,9 +704,10 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                     <button 
                                         onClick={() => setCurrentQIdx(Math.max(0, currentQIdx - 1))} 
                                         disabled={currentQIdx === 0} 
-                                        className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed border border-slate-200 rounded-xl font-black text-[9px] text-slate-600 uppercase tracking-widest transition-all hover:shadow-sm active:scale-95"
+                                        className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-white hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed border border-slate-200 rounded-xl font-bold text-xs text-slate-700 uppercase tracking-wider transition-all hover:shadow-sm active:scale-95 touch-manipulation"
+                                        aria-label="Chuyển đến câu hỏi trước"
                                     >
-                                        <ChevronRight className="rotate-180" size={14}/> Câu trước
+                                        <ChevronRight className="rotate-180" size={16}/> Câu trước
                                     </button>
                                     
                                     <div className="hidden sm:flex items-center gap-1">
@@ -715,9 +719,10 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                     <button 
                                         onClick={() => setCurrentQIdx(Math.min(questions.length - 1, currentQIdx + 1))} 
                                         disabled={currentQIdx === questions.length - 1} 
-                                        className="flex items-center gap-2 px-3 py-2 bg-white hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed border border-slate-200 rounded-xl font-black text-[9px] text-slate-600 uppercase tracking-widest transition-all hover:shadow-sm active:scale-95"
+                                        className="flex items-center gap-2 px-4 py-2.5 min-h-[44px] bg-white hover:bg-slate-50 disabled:opacity-30 disabled:cursor-not-allowed border border-slate-200 rounded-xl font-bold text-xs text-slate-700 uppercase tracking-wider transition-all hover:shadow-sm active:scale-95 touch-manipulation"
+                                        aria-label="Chuyển đến câu hỏi tiếp theo"
                                     >
-                                        Câu sau <ChevronRight size={14}/>
+                                        Câu sau <ChevronRight size={16}/>
                                     </button>
                                 </div>
                             </div>
