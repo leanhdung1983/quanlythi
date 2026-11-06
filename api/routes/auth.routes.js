@@ -240,8 +240,8 @@ router.post('/forgot-password', async (req, res) => {
             message: `Mã xác nhận 6 số đã được gửi đến email ${masked}. Vui lòng kiểm tra hộp thư (cả mục Spam/Rác) và nhập mã để đặt mật khẩu mới.`,
             email: user.email,
             masked_email: masked,
-            // Trả về OTP trong chế độ thử nghiệm nội bộ để người dùng có thể test tức thì
-            debug_otp: (mailResult.simulated || mailResult.delivered === false) ? otp : undefined
+            // Chỉ trả về debug_otp khi KHÔNG ở production và email chưa được cấu hình
+            debug_otp: (process.env.NODE_ENV !== 'production' && (mailResult.simulated || mailResult.delivered === false)) ? otp : undefined
         });
     } catch (e) { 
         res.status(500).json({ success: false, message: e.message }); 
