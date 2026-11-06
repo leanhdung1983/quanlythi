@@ -729,25 +729,35 @@ export async function seedDatabase() {
         await pool.query(`
             ALTER TABLE matrix_templates 
             ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE,
-            ADD COLUMN IF NOT EXISTS grade_id INT,
-            ADD COLUMN IF NOT EXISTS phone VARCHAR(20),
-            ADD COLUMN IF NOT EXISTS parent_phone VARCHAR(20),
-            ADD COLUMN IF NOT EXISTS date_of_birth DATE,
-            ADD COLUMN IF NOT EXISTS gender VARCHAR(10),
-            ADD COLUMN IF NOT EXISTS class_name VARCHAR(50),
-            ADD COLUMN IF NOT EXISTS student_code VARCHAR(50),
-            ADD COLUMN IF NOT EXISTS address VARCHAR(255),
-            ADD COLUMN IF NOT EXISTS reset_password_otp VARCHAR(255),
-            ADD COLUMN IF NOT EXISTS reset_password_expires DATETIME
+            ADD COLUMN IF NOT EXISTS grade_id INT
         `).catch(e => console.log("Migration notice (matrix_templates):", e.message));
 
-        await pool.query(`
-            ALTER TABLE users
-            ADD COLUMN IF NOT EXISTS is_pro BOOLEAN DEFAULT FALSE,
-            ADD COLUMN IF NOT EXISTS avatar_url TEXT,
-            ADD COLUMN IF NOT EXISTS bio TEXT,
-            ADD COLUMN IF NOT EXISTS grade_id INT
-        `).catch(e => console.log("Migration notice (users):", e.message));
+        try {
+            const [uCols] = await pool.query('DESCRIBE users');
+            const colNames = (uCols || []).map(c => c.Field);
+            const userMigrations = [
+                { name: 'is_pro', def: 'BOOLEAN DEFAULT FALSE' },
+                { name: 'avatar_url', def: 'TEXT' },
+                { name: 'bio', def: 'TEXT' },
+                { name: 'grade_id', def: 'INT' },
+                { name: 'phone', def: 'VARCHAR(20)' },
+                { name: 'parent_phone', def: 'VARCHAR(20)' },
+                { name: 'date_of_birth', def: 'DATE' },
+                { name: 'gender', def: 'VARCHAR(10)' },
+                { name: 'class_name', def: 'VARCHAR(50)' },
+                { name: 'student_code', def: 'VARCHAR(50)' },
+                { name: 'address', def: 'VARCHAR(255)' },
+                { name: 'reset_password_otp', def: 'VARCHAR(255)' },
+                { name: 'reset_password_expires', def: 'DATETIME' }
+            ];
+            for (const col of userMigrations) {
+                if (!colNames.includes(col.name)) {
+                    await pool.query('ALTER TABLE users ADD COLUMN ' + col.name + ' ' + col.def).catch(() => undefined);
+                }
+            }
+        } catch (e) {
+            console.log("Migration notice (users):", e.message);
+        };
 
         await pool.query(`
             ALTER TABLE questions 
