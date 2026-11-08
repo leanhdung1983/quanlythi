@@ -1,4 +1,4 @@
-﻿import mysql from 'mysql2/promise';
+import mysql from 'mysql2/promise';
 import { seedDatabase as runSeedDatabase } from './dbSchema.js';
 import { processBackgroundJobs as runBackgroundJobs } from './backgroundJobs.js';
 import crypto from 'crypto';
@@ -60,7 +60,7 @@ export async function initializeDatabase() {
         const conn = await pool.getConnection();
         console.log("âœ… [DB] Database connected successfully!");
         conn.release();
-        if (process.env.SOCIAL_CRON_ONLY !== '1') await seedDatabase();
+        await seedDatabase();
     } catch (err) {
         console.error("âŒ [DB] Connection Failed:", err.message);
         if (err.message.includes('ECONNREFUSED')) {

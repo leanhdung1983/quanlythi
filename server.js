@@ -5,7 +5,6 @@ import path from 'path';
 import cors from 'cors';
 import fs from 'fs';
 import apiRouter from './api/index.js';
-import { startSocialPublisher } from './api/socialPublisher.js';
 import { createServer as createViteServer } from 'vite';
 
 async function startServer() {
@@ -99,7 +98,6 @@ async function startServer() {
 
     app.listen(PORT, '0.0.0.0', () => {
         console.log(`\n🚀 [SERVER] Application is running on port ${PORT}`);
-        startSocialPublisher();
     });
 }
 startServer();
