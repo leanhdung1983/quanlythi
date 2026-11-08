@@ -835,31 +835,31 @@ export const QuestionBank: React.FC = () => {
 
     return (
         <div className="question-bank-page page-panel h-full flex flex-col min-h-0 bg-white relative">
-            <div className="question-bank-heading flex items-center justify-between gap-4 px-6 py-4 shrink-0 border-b border-slate-200/80 bg-gradient-to-r from-white via-indigo-50/30 to-white">
-                <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100 shadow-2xs">
-                        <Database size={20} />
+            <div className="question-bank-heading flex items-center justify-between gap-4 px-4 py-2.5 shrink-0 border-b border-slate-200/80 bg-gradient-to-r from-white via-blue-50/30 to-white">
+                <div className="flex items-center gap-2.5">
+                    <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-600 flex items-center justify-center border border-blue-100 shadow-2xs">
+                        <Database size={16} />
                     </div>
                     <div>
                         <div className="flex items-center gap-2">
-                            <h1 className="text-xl font-extrabold tracking-tight text-slate-900">Ngân hàng câu hỏi</h1>
-                            <span className="text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded-full bg-indigo-100/80 text-indigo-700">
+                            <h1 className="text-base font-bold tracking-tight text-slate-900">Ngân hàng câu hỏi</h1>
+                            <span className="text-[9px] uppercase tracking-wider font-extrabold px-1.5 py-0.2 rounded-full bg-blue-100 text-blue-700">
                                 ID6 Core
                             </span>
                         </div>
-                        <p className="text-xs text-slate-500 mt-0.5">Tra cứu, phân loại, biên soạn và chuẩn hóa toàn bộ câu hỏi</p>
+                        <p className="text-[11px] text-slate-500">Tra cứu, phân loại, biên soạn và chuẩn hóa toàn bộ câu hỏi</p>
                     </div>
                 </div>
                 <div className="flex items-center gap-2">
-                    <div className="rounded-xl bg-white border border-slate-200/80 shadow-2xs px-3.5 py-1.5 text-xs font-bold text-indigo-700 flex items-center gap-2">
-                        <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                    <div className="rounded-lg bg-white border border-slate-200/80 shadow-2xs px-2.5 py-1 text-xs font-bold text-blue-700 flex items-center gap-1.5">
+                        <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                         <span>{questions.length.toLocaleString()} câu đã tải</span>
                     </div>
                 </div>
             </div>
 
             {/* Top Bar: Filters */}
-            <div className="question-bank-filters shrink-0 bg-slate-50/90 backdrop-blur-sm p-4 border-b border-slate-200/80 grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-10 gap-2.5 items-end">
+            <div className="question-bank-filters shrink-0 bg-slate-50/90 backdrop-blur-sm px-3.5 py-2 border-b border-slate-200/80 grid grid-cols-2 sm:grid-cols-4 xl:grid-cols-10 gap-2 items-end">
                 <div className="col-span-1">
                     <label className="block text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-1">Tìm kiếm</label>
                     <div className="relative">
@@ -944,11 +944,11 @@ export const QuestionBank: React.FC = () => {
                 <table className="w-full border-collapse border-spacing-0">
                     <thead className="bg-slate-50/95 backdrop-blur-sm sticky top-0 z-10 border-b border-slate-200 shadow-2xs">
                         <tr className="text-xs font-bold text-slate-600 uppercase">
-                            <th className="border-r border-slate-200/80 px-2 py-3 text-center w-12 text-slate-400">STT</th>
-                            <th className="border-r border-slate-200/80 px-2 py-3 text-center w-16">Xem</th>
-                            <th className="border-r border-slate-200/80 px-4 py-3 text-left min-w-[320px]">Nội dung câu hỏi (LaTeX)</th>
-                            <th className="border-r border-slate-200/80 px-3 py-3 text-center w-28">Mã ID6</th>
-                            <th className="px-4 py-3 text-left min-w-[220px]">Phân loại chương / bài</th>
+                            <th className="border-r border-slate-200/80 px-2 py-2 text-center w-12 text-slate-400">STT</th>
+                            <th className="border-r border-slate-200/80 px-2 py-2 text-center w-14">Xem</th>
+                            <th className="border-r border-slate-200/80 px-3.5 py-2 text-left min-w-[320px]">Nội dung câu hỏi (LaTeX)</th>
+                            <th className="border-r border-slate-200/80 px-2.5 py-2 text-center w-28">Mã ID6</th>
+                            <th className="px-3 py-2 text-left min-w-[200px]">Phân loại chương / bài</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100">
@@ -967,38 +967,38 @@ export const QuestionBank: React.FC = () => {
                                         onClick={() => setSelectedQ(q)}
                                         className={`hover:bg-indigo-50/30 cursor-pointer transition-colors border-b border-slate-50 ${selectedQ?.id === q.id ? 'bg-indigo-50/80 shadow-inner' : 'bg-white'}`}
                                     >
-                                        <td className="border-r border-slate-100 px-3 py-4 text-center text-xs font-black text-slate-400 align-top">{stt}</td>
-                                        <td className="border-r border-slate-100 px-2 py-4 text-center align-top">
+                                        <td className="border-r border-slate-100 px-2 py-2 text-center text-xs font-black text-slate-400 align-top">{stt}</td>
+                                        <td className="border-r border-slate-100 px-1.5 py-2 text-center align-top">
                                             <button
                                                 type="button"
                                                 onClick={(e) => {
                                                     e.stopPropagation();
                                                     setDrawerQ(q);
                                                 }}
-                                                className="p-1.5 rounded-xl border border-slate-200 bg-white hover:bg-indigo-50 hover:border-indigo-300 text-slate-400 hover:text-indigo-600 transition-all shadow-sm active:scale-95"
+                                                className="p-1 rounded-lg border border-slate-200 bg-white hover:bg-blue-50 hover:border-blue-300 text-slate-400 hover:text-blue-600 transition-all shadow-2xs active:scale-95"
                                                 title="Xem trước kết quả định dạng công thức & lời giải"
                                             >
-                                                <Eye size={15} />
+                                                <Eye size={13} />
                                             </button>
                                         </td>
-                                        <td className="border-r border-slate-100 px-5 py-4 group/cell relative align-top">
+                                        <td className="border-r border-slate-100 px-3.5 py-2 group/cell relative align-top">
                                             {inlineEditId === q.id ? (
-                                                <div className="flex flex-col gap-3 p-1">
+                                                <div className="flex flex-col gap-2 p-1">
                                                     <textarea 
                                                         autoFocus
-                                                        className="w-full border-2 border-indigo-200 p-4 rounded-xl shadow-inner font-mono text-[12px] focus:border-indigo-500 outline-none transition-all"
+                                                        className="w-full border-2 border-blue-200 p-3 rounded-lg shadow-inner font-mono text-[12px] focus:border-blue-500 outline-none transition-all"
                                                         value={inlineEditText} 
                                                         onChange={e => setInlineEditText(e.target.value)} 
-                                                        rows={Math.max(6, (q.raw_latex?.match(/\n/g)?.length || 0) + 1)} 
+                                                        rows={Math.max(5, (q.raw_latex?.match(/\n/g)?.length || 0) + 1)} 
                                                     />
-                                                    <div className="flex justify-end gap-3">
-                                                        <button onClick={(e) => { e.stopPropagation(); setInlineEditId(null); }} className="px-5 py-2 bg-slate-100 hover:bg-slate-200 rounded-xl text-slate-500 text-xs font-bold transition-all">Hủy</button>
+                                                    <div className="flex justify-end gap-2">
+                                                        <button onClick={(e) => { e.stopPropagation(); setInlineEditId(null); }} className="px-3 py-1 bg-slate-100 hover:bg-slate-200 rounded-lg text-slate-600 text-xs font-semibold transition-all">Hủy</button>
                                                         <button 
                                                             onClick={(e) => { e.stopPropagation(); handleInlineSave(q.id); }} 
                                                             disabled={inlineEditSaving}
-                                                            className="px-6 py-2 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl text-xs font-black shadow-lg shadow-indigo-100 transition-all flex items-center gap-2"
+                                                            className="px-4 py-1 bg-blue-600 hover:bg-blue-700 text-white rounded-lg text-xs font-bold shadow-sm shadow-blue-200 transition-all flex items-center gap-1.5"
                                                         >
-                                                            {inlineEditSaving ? <Loader2 size={14} className="animate-spin" /> : <CheckCircle2 size={14} />}
+                                                            {inlineEditSaving ? <Loader2 size={13} className="animate-spin" /> : <CheckCircle2 size={13} />}
                                                             {inlineEditSaving ? 'Đang lưu...' : 'Lưu thay đổi'}
                                                         </button>
                                                     </div>
@@ -1008,28 +1008,28 @@ export const QuestionBank: React.FC = () => {
                                                     className="relative cursor-pointer group" 
                                                     onClick={(e) => { e.stopPropagation(); setInlineEditId(q.id); setInlineEditText(q.raw_latex || ''); }}
                                                 >
-                                                    <div className="text-[15px] leading-relaxed text-slate-800 whitespace-pre-wrap font-sans">
+                                                    <div className="text-[14px] leading-relaxed text-slate-800 whitespace-pre-wrap font-sans">
                                                         {q.raw_latex || <span className="italic text-slate-300">(Nội dung trống)</span>}
                                                     </div>
-                                                    <div className="absolute -inset-2 rounded-lg border-2 border-dashed border-indigo-200 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
+                                                    <div className="absolute -inset-1.5 rounded-lg border border-dashed border-blue-300 opacity-0 group-hover:opacity-100 transition-opacity pointer-events-none"></div>
                                                     <div className="absolute top-0 right-0 p-1 opacity-0 group-hover:opacity-100 transition-opacity">
-                                                        <span className="bg-indigo-500 text-white p-1.5 rounded-lg shadow-lg"><Edit2 size={12}/></span>
+                                                        <span className="bg-blue-600 text-white p-1 rounded-md shadow"><Edit2 size={11}/></span>
                                                     </div>
                                                 </div>
                                             )}
                                         </td>
-                                        <td className="border-r border-slate-100 px-3 py-4 text-center align-top">
-                                            <span className={`text-xs font-black px-2 py-1.5 rounded-lg border tracking-tight ${q.id_full ? 'bg-indigo-50 text-indigo-700 border-indigo-100' : 'bg-red-50 text-red-500 border-red-100'}`}>
+                                        <td className="border-r border-slate-100 px-2 py-2 text-center align-top">
+                                            <span className={`text-xs font-extrabold px-2 py-1 rounded-md border tracking-tight ${q.id_full ? 'bg-blue-50 text-blue-700 border-blue-200' : 'bg-red-50 text-red-500 border-red-200'}`}>
                                                 {q.id_full || 'N/A'}
                                             </span>
                                         </td>
-                                        <td className="px-5 py-4 text-xs text-slate-600 align-top leading-[1.6] font-medium">
+                                        <td className="px-3.5 py-2 text-xs text-slate-600 align-top leading-normal font-medium">
                                             {detail.valid ? (
-                                                <div className="bg-slate-50/50 p-3 rounded-lg border border-slate-100/50 whitespace-pre-wrap">
+                                                <div className="bg-slate-50/80 p-2 rounded-lg border border-slate-100 whitespace-pre-wrap text-[11.5px]">
                                                     {detail.full_summary}
                                                 </div>
                                             ) : (
-                                                <span className="text-red-300 italic">ID không xác định</span>
+                                                <span className="text-red-400 italic text-xs">ID không xác định</span>
                                             )}
                                         </td>
                                     </tr>
@@ -1041,60 +1041,60 @@ export const QuestionBank: React.FC = () => {
             </div>
 
             {/* Bottom Bar */}
-            <div className="shrink-0 bg-slate-100 p-2 border-t border-slate-200 flex flex-wrap items-center justify-between gap-4">
-                <div className="question-bank-actions flex gap-2 max-w-full overflow-x-auto pb-1">
-                    <button onClick={() => setShowUserGuide(true)} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-slate-600">
-                        <Info size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">HDSD</span>
+            <div className="shrink-0 bg-slate-100/90 px-3 py-1.5 border-t border-slate-200 flex flex-wrap items-center justify-between gap-3">
+                <div className="question-bank-actions flex gap-1.5 max-w-full overflow-x-auto pb-0.5">
+                    <button onClick={() => setShowUserGuide(true)} className="flex flex-col items-center justify-center w-10 h-8 bg-white border border-slate-300 rounded shadow-2xs hover:bg-slate-50 text-slate-700">
+                        <Info size={13} /><span className="text-[8px] font-bold uppercase mt-0.5">HDSD</span>
                     </button>
                     <button 
                         onClick={() => { if (selectedQ) setDrawerQ(selectedQ); }} 
                         disabled={!selectedQ}
-                        className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-indigo-600 disabled:opacity-40" 
+                        className="flex flex-col items-center justify-center w-10 h-8 bg-white border border-slate-300 rounded shadow-2xs hover:bg-slate-50 text-blue-600 disabled:opacity-40" 
                         title="Xem trước định dạng câu đang chọn"
                     >
-                        <Eye size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Xem</span>
+                        <Eye size={13} /><span className="text-[8px] font-bold uppercase mt-0.5">Xem</span>
                     </button>
-                    <button onClick={handleOpenQuickAssign} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-slate-600">
-                        <Tag size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Gán ID</span>
+                    <button onClick={handleOpenQuickAssign} className="flex flex-col items-center justify-center w-10 h-8 bg-white border border-slate-300 rounded shadow-2xs hover:bg-slate-50 text-slate-700">
+                        <Tag size={13} /><span className="text-[8px] font-bold uppercase mt-0.5">Gán ID</span>
                     </button>
-                    <button className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-indigo-600">
-                        <Sparkles size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">AI ID</span>
+                    <button className="flex flex-col items-center justify-center w-10 h-8 bg-white border border-slate-300 rounded shadow-2xs hover:bg-slate-50 text-blue-600">
+                        <Sparkles size={13} /><span className="text-[8px] font-bold uppercase mt-0.5">AI ID</span>
                     </button>
                     {(user?.role === 'ADMIN' || user?.role === 'TEACHER') && (
-                        <button onClick={normalizeDatabase} disabled={loading || inlineEditId !== null || normalizing || bulkRunning} className="flex items-center gap-2 px-3 h-10 bg-emerald-600 text-white rounded-lg font-semibold text-xs shadow-sm hover:bg-emerald-700 disabled:opacity-50" title={user?.role === 'ADMIN' ? 'Tự động chuẩn hoá toàn bộ câu hỏi trong database' : 'Tự động chuẩn hoá toàn bộ câu hỏi thuộc quyền quản lý'}>
-                            {bulkRunning ? <Loader2 size={16} className="animate-spin"/> : <Database size={16}/>} Chuẩn hoá toàn bộ
+                        <button onClick={normalizeDatabase} disabled={loading || inlineEditId !== null || normalizing || bulkRunning} className="flex items-center gap-1.5 px-2.5 h-8 bg-emerald-600 text-white rounded-md font-semibold text-xs shadow-2xs hover:bg-emerald-700 disabled:opacity-50" title={user?.role === 'ADMIN' ? 'Tự động chuẩn hoá toàn bộ câu hỏi trong database' : 'Tự động chuẩn hoá toàn bộ câu hỏi thuộc quyền quản lý'}>
+                            {bulkRunning ? <Loader2 size={13} className="animate-spin"/> : <Database size={13}/>} <span>Chuẩn hoá toàn bộ</span>
                         </button>
                     )}
                     {(user?.role === 'ADMIN' || user?.role === 'TEACHER') && (
-                        <button onClick={() => { setNormalizationScope(selectedQ ? 'selected' : 'page'); setNormalizationPreview(null); setShowNormalization(true); }} disabled={loading || inlineEditId !== null || inlineEditSaving || bulkRunning} className="flex flex-col items-center justify-center min-w-16 h-10 px-2 bg-emerald-50 border border-emerald-200 rounded shadow-sm hover:bg-emerald-100 text-emerald-700 disabled:opacity-50" title={inlineEditId !== null ? 'Lưu hoặc huỷ chỉnh sửa câu hỏi trước khi chuẩn hoá' : 'Chuẩn hoá mã nguồn câu hỏi và xem trước khi lưu'}>
-                            <CheckCircle2 size={14}/><span className="text-[8px] font-bold uppercase mt-0.5">Chuẩn hoá</span>
+                        <button onClick={() => { setNormalizationScope(selectedQ ? 'selected' : 'page'); setNormalizationPreview(null); setShowNormalization(true); }} disabled={loading || inlineEditId !== null || inlineEditSaving || bulkRunning} className="flex flex-col items-center justify-center min-w-14 h-8 px-2 bg-emerald-50 border border-emerald-200 rounded shadow-2xs hover:bg-emerald-100 text-emerald-700 disabled:opacity-50" title={inlineEditId !== null ? 'Lưu hoặc huỷ chỉnh sửa câu hỏi trước khi chuẩn hoá' : 'Chuẩn hoá mã nguồn câu hỏi và xem trước khi lưu'}>
+                            <CheckCircle2 size={13}/><span className="text-[8px] font-bold uppercase mt-0.5">Chuẩn hoá</span>
                         </button>
                     )}
-                    <div className="w-px bg-slate-300 mx-1 h-8 self-center"></div>
-                    <button onClick={() => setIsAdding(true)} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-emerald-600">
-                        <Plus size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Nhập</span>
+                    <div className="w-px bg-slate-300 mx-0.5 h-6 self-center"></div>
+                    <button onClick={() => setIsAdding(true)} className="flex flex-col items-center justify-center w-10 h-8 bg-white border border-slate-300 rounded shadow-2xs hover:bg-slate-50 text-emerald-600">
+                        <Plus size={13} /><span className="text-[8px] font-bold uppercase mt-0.5">Nhập</span>
                     </button>
-                    <button onClick={() => { if(selectedQ) handleDelete(selectedQ.id); }} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-red-600">
-                        <Trash2 size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Xoá</span>
+                    <button onClick={() => { if(selectedQ) handleDelete(selectedQ.id); }} className="flex flex-col items-center justify-center w-10 h-8 bg-white border border-slate-300 rounded shadow-2xs hover:bg-slate-50 text-red-600">
+                        <Trash2 size={13} /><span className="text-[8px] font-bold uppercase mt-0.5">Xoá</span>
                     </button>
-                    <button onClick={handleExportFiltered} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-slate-600" title="Xuất danh sách đang lọc">
-                        <FileOutput size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Xuất Lọc</span>
+                    <button onClick={handleExportFiltered} className="flex flex-col items-center justify-center w-10 h-8 bg-white border border-slate-300 rounded shadow-2xs hover:bg-slate-50 text-slate-700" title="Xuất danh sách đang lọc">
+                        <FileOutput size={13} /><span className="text-[8px] font-bold uppercase mt-0.5">Xuất Lọc</span>
                     </button>
-                    <button onClick={handleExportAllDB} className="flex flex-col items-center justify-center w-12 h-10 bg-white border border-slate-300 rounded shadow-sm hover:bg-slate-50 text-indigo-700" title="Xuất toàn bộ database">
-                        <Database size={14} /><span className="text-[8px] font-bold uppercase mt-0.5">Xuất All</span>
+                    <button onClick={handleExportAllDB} className="flex flex-col items-center justify-center w-10 h-8 bg-white border border-slate-300 rounded shadow-2xs hover:bg-slate-50 text-blue-700" title="Xuất toàn bộ database">
+                        <Database size={13} /><span className="text-[8px] font-bold uppercase mt-0.5">Xuất All</span>
                     </button>
                 </div>
 
-                <div className="flex items-center gap-4">
+                <div className="flex items-center gap-3">
                     <span className="text-[10px] font-bold text-slate-500 uppercase">Số câu: <span className="text-blue-600 font-black">{questions.length}</span></span>
                     <div className="flex items-center gap-1">
-                        <button onClick={() => setCurrentPage(1)} className="px-2 py-1 border border-slate-300 rounded bg-white text-[10px] font-bold uppercase hover:bg-slate-50 disabled:opacity-50" disabled={currentPage === 1}>Đầu</button>
-                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="px-2 py-1 border border-slate-300 rounded bg-white text-[10px] font-bold uppercase hover:bg-slate-50 disabled:opacity-50" disabled={currentPage === 1}>Trước</button>
+                        <button onClick={() => setCurrentPage(1)} className="px-2 py-1 h-7 border border-slate-300 rounded bg-white text-[10px] font-bold uppercase hover:bg-slate-50 disabled:opacity-50" disabled={currentPage === 1}>Đầu</button>
+                        <button onClick={() => setCurrentPage(p => Math.max(1, p - 1))} className="px-2 py-1 h-7 border border-slate-300 rounded bg-white text-[10px] font-bold uppercase hover:bg-slate-50 disabled:opacity-50" disabled={currentPage === 1}>Trước</button>
                         <div className="flex items-center bg-white border border-slate-300 rounded px-2 h-7 text-[11px] font-bold">
                             {currentPage} / {totalPages}
                         </div>
-                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="px-2 py-1 border border-slate-300 rounded bg-white text-[10px] font-bold uppercase hover:bg-slate-50 disabled:opacity-50" disabled={currentPage === totalPages}>Sau</button>
-                        <button onClick={() => setCurrentPage(totalPages)} className="px-2 py-1 border border-slate-300 rounded bg-white text-[10px] font-bold uppercase hover:bg-slate-50 disabled:opacity-50" disabled={currentPage === totalPages}>Cuối</button>
+                        <button onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} className="px-2 py-1 h-7 border border-slate-300 rounded bg-white text-[10px] font-bold uppercase hover:bg-slate-50 disabled:opacity-50" disabled={currentPage === totalPages}>Sau</button>
+                        <button onClick={() => setCurrentPage(totalPages)} className="px-2 py-1 h-7 border border-slate-300 rounded bg-white text-[10px] font-bold uppercase hover:bg-slate-50 disabled:opacity-50" disabled={currentPage === totalPages}>Cuối</button>
                     </div>
                 </div>
             </div>

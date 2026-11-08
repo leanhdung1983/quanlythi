@@ -24,7 +24,6 @@ const IRTAnalysis = lazy(() => import('./pages/IRTAnalysis').then(module => ({ d
 const EduLoop = lazy(() => import('./pages/EduLoop').then(module => ({ default: module.EduLoop })));
 const Learning = lazy(() => import('./pages/Learning').then(module => ({ default: module.Learning })));
 const ClassManagement = lazy(() => import('./pages/ClassManagement').then(module => ({ default: module.ClassManagement })));
-const ManualSocialPlanner = lazy(() => import('./pages/ManualSocialPlanner').then(module => ({ default: module.ManualSocialPlanner })));
 const UserGuide = lazy(() => import('./pages/UserGuide').then(module => ({ default: module.UserGuide })));
 
 const PageLoader = () => (
@@ -183,7 +182,6 @@ const App: React.FC = () => {
             
             <Route path="/admin" element={<AdminGuard><AdminUsers /></AdminGuard>} />
             <Route path="/admin/source" element={<AdminGuard><AdminSourceViewer /></AdminGuard>} />
-            <Route path="/admin/social" element={<AdminGuard><ManualSocialPlanner /></AdminGuard>} />
             
             <Route path="*" element={<Navigate to="/" replace />} />
           </Routes>

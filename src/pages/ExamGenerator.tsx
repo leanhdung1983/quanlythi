@@ -774,12 +774,12 @@ export const ExamGenerator: React.FC = () => {
                                     <button 
                                         onClick={() => setShowExportMenu(!showExportMenu)} 
                                         disabled={isExporting}
-                                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-4.5 py-2 rounded-xl text-xs font-extrabold shadow-sm shadow-emerald-200 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                                        className="bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
                                         title="Xuất bảng ma trận và bản đặc tả theo chuẩn mới nhất của Bộ GD&ĐT"
                                     >
-                                        {isExporting ? <Loader2 size={16} className="animate-spin"/> : <FileSpreadsheet size={16}/>} 
+                                        {isExporting ? <Loader2 size={14} className="animate-spin"/> : <FileSpreadsheet size={14}/>} 
                                         <span>Xuất Ma Trận</span>
-                                        <ChevronDown size={14} className={`transition-transform duration-200 ${showExportMenu ? 'rotate-180' : ''}`}/>
+                                        <ChevronDown size={13} className={`transition-transform duration-200 ${showExportMenu ? 'rotate-180' : ''}`}/>
                                     </button>
 
                                     {/* Dropdown Menu Xuất Ma Trận */}
@@ -851,36 +851,36 @@ export const ExamGenerator: React.FC = () => {
                                 <button 
                                     onClick={handleGenerate} 
                                     disabled={totalQuestions === 0 || generating} 
-                                    className="bg-gradient-to-r from-indigo-600 via-indigo-700 to-violet-700 hover:from-indigo-700 hover:to-violet-800 text-white px-4.5 py-2 rounded-xl text-xs font-extrabold shadow-sm shadow-indigo-200 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-indigo-700 hover:from-blue-700 hover:to-indigo-800 text-white px-3 py-1.5 rounded-lg text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
                                     title="Sinh một bộ đề thi ngẫu nhiên không trùng lặp từ ngân hàng câu hỏi TiDB"
                                 >
-                                    {generating ? <Loader2 size={16} className="animate-spin"/> : <Sparkles size={16} className="text-amber-300"/>} 
+                                    {generating ? <Loader2 size={14} className="animate-spin"/> : <Sparkles size={14} className="text-amber-300"/>} 
                                     <span>{generating ? "Đang Sinh Đề..." : "Sinh Đề Ngẫu Nhiên (.tex)"}</span>
                                 </button>
                             </div>
 
                             {/* Cụm Nút Phụ (Lưu, Reset, Nhập File) */}
-                            <div className="flex items-center gap-2">
+                            <div className="flex items-center gap-1.5">
                                 <button 
                                     onClick={() => setShowSaveModal(true)} 
-                                    className="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 px-3 py-2 rounded-xl text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-colors"
+                                    className="bg-white hover:bg-slate-50 border border-slate-300 text-slate-700 px-2.5 py-1.5 rounded-lg text-xs font-bold shadow-2xs flex items-center gap-1 transition-colors"
                                     title="Lưu cấu hình ma trận này vào CSDL"
                                 >
-                                    <Save size={15} className="text-slate-600"/> Lưu Ma Trận
+                                    <Save size={13} className="text-slate-600"/> Lưu Ma Trận
                                 </button>
                                 <button 
                                     onClick={handleResetMatrix} 
-                                    className="bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 text-slate-600 hover:text-red-600 px-3 py-2 rounded-xl text-xs font-semibold shadow-2xs flex items-center gap-1.5 transition-colors"
+                                    className="bg-white hover:bg-red-50 border border-slate-200 hover:border-red-200 text-slate-600 hover:text-red-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow-2xs flex items-center gap-1 transition-colors"
                                     title="Xóa trắng các ô nhập ma trận hiện tại"
                                 >
-                                    <Trash2 size={14}/> Làm mới
+                                    <Trash2 size={13}/> Làm mới
                                 </button>
                                 <button 
                                     onClick={() => importFileRef.current?.click()} 
-                                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 px-3 py-2 rounded-xl text-xs font-semibold shadow-2xs flex items-center gap-1.5 transition-colors"
+                                    className="bg-white hover:bg-slate-50 border border-slate-200 text-slate-600 px-2.5 py-1.5 rounded-lg text-xs font-semibold shadow-2xs flex items-center gap-1 transition-colors"
                                     title="Nhập cấu trúc ma trận từ file JSON hoặc TeX"
                                 >
-                                    {importing ? <Loader2 size={14} className="animate-spin"/> : <FolderOpen size={14}/>} Nhập File
+                                    {importing ? <Loader2 size={13} className="animate-spin"/> : <FolderOpen size={13}/>} Nhập File
                                 </button>
                                 <input type="file" ref={importFileRef} onChange={handleImportMatrixFromFile} accept=".tex,.txt,.json" className="hidden" />
                             </div>
@@ -888,7 +888,7 @@ export const ExamGenerator: React.FC = () => {
                     </div>
 
                     {/* TABS: Phân loại câu hỏi */}
-                    <div className="flex border-b border-slate-200 bg-white px-4 pt-1 shrink-0 overflow-x-auto">
+                    <div className="flex border-b border-slate-200 bg-white px-3 pt-1 shrink-0 overflow-x-auto">
                         {[
                             { id: 'TN', label: 'Phần I: TN 4 Phương Án', icon: ListChecks, color: 'blue' },
                             { id: 'TF', label: 'Phần II: TN Đúng / Sai', icon: CheckSquare, color: 'emerald' },
@@ -901,16 +901,16 @@ export const ExamGenerator: React.FC = () => {
                                 <button 
                                     key={tab.id} 
                                     onClick={() => setActiveTab(tab.id as QuestionType)} 
-                                    className={`flex shrink-0 items-center gap-2 px-5 py-2.5 text-sm font-bold border-b-2 transition-all ${
+                                    className={`flex shrink-0 items-center gap-1.5 px-3 py-1.5 text-xs font-bold border-b-2 transition-all ${
                                         isActive 
                                             ? `border-${tab.color}-600 text-${tab.color}-700 bg-${tab.color}-50/40` 
                                             : 'border-transparent text-slate-500 hover:text-slate-800 hover:bg-slate-50'
                                     }`}
                                 >
-                                    <tab.icon size={15}/> 
+                                    <tab.icon size={13}/> 
                                     <span>{tab.label}</span>
                                     {count > 0 && (
-                                        <span className={`ml-1 text-[10px] font-extrabold px-2 py-0.5 rounded-full ${
+                                        <span className={`ml-1 text-[9px] font-extrabold px-1.5 py-0.2 rounded-full ${
                                             isActive 
                                                 ? `bg-${tab.color}-600 text-white` 
                                                 : 'bg-slate-100 text-slate-600'
@@ -923,9 +923,9 @@ export const ExamGenerator: React.FC = () => {
                         })}
                     </div>
 
-                    <div className="p-3 bg-indigo-50/50 border-b space-y-2">
-                        <div className="flex gap-2">
-                            {(['LESSON', 'FORM'] as const).map(scope => <button key={scope} onClick={() => setMatrixScope(scope)} className={`px-3 py-2 rounded-lg text-xs font-semibold ${matrixScope === scope ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600'}`}>{scope === 'LESSON' ? 'Theo bài · Ngẫu nhiên dạng' : 'Theo từng dạng'}</button>)}
+                    <div className="p-2.5 bg-indigo-50/50 border-b space-y-1.5">
+                        <div className="flex gap-1.5">
+                            {(['LESSON', 'FORM'] as const).map(scope => <button key={scope} onClick={() => setMatrixScope(scope)} className={`px-2.5 py-1 rounded-md text-xs font-semibold ${matrixScope === scope ? 'bg-indigo-600 text-white' : 'bg-white text-slate-600 border border-slate-200'}`}>{scope === 'LESSON' ? 'Theo bài · Ngẫu nhiên dạng' : 'Theo từng dạng'}</button>)}
                         </div>
                         <p className="text-xs text-slate-600">Nhập số câu ở mỗi mức độ cho từng bài. Hệ thống ưu tiên các dạng khác nhau; chỉ lặp dạng khi số câu vượt số dạng có sẵn. Hai cách cấu hình được lưu riêng và cộng vào tổng số câu.</p>
                     </div>

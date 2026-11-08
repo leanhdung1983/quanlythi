@@ -1114,15 +1114,15 @@ export const IdAssigner: React.FC = () => {
                     </h1>
                     <p className="text-xs text-slate-500 hidden md:block">Công cụ gán mã ID tự động cho tài liệu LaTeX & CSDL.</p>
                 </div>
-                <div className="flex items-center gap-2">
-                    <button onClick={() => setShowManualModal(true)} className="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-slate-50 shadow-sm flex items-center gap-2">
-                        <ClipboardPaste size={16}/> Dán Text
+                <div className="flex items-center gap-1.5">
+                    <button onClick={() => setShowManualModal(true)} className="bg-white border border-slate-300 text-slate-700 px-2.5 py-1.5 rounded-md text-xs font-semibold hover:bg-slate-50 shadow-2xs flex items-center gap-1.5">
+                        <ClipboardPaste size={14}/> Dán Text
                     </button>
-                    <button onClick={() => setShowDbLoadModal(true)} className="bg-indigo-50 border border-indigo-200 text-indigo-700 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-indigo-100 shadow-sm flex items-center gap-2">
-                        <Database size={16}/> Tải từ CSDL
+                    <button onClick={() => setShowDbLoadModal(true)} className="bg-blue-50 border border-blue-200 text-blue-700 px-2.5 py-1.5 rounded-md text-xs font-semibold hover:bg-blue-100 shadow-2xs flex items-center gap-1.5">
+                        <Database size={14}/> Tải từ CSDL
                     </button>
-                    <button onClick={handleOpenFile} className="bg-white border border-slate-200 text-slate-700 px-3 py-1.5 rounded-lg text-sm font-bold hover:bg-slate-50 shadow-sm flex items-center gap-2">
-                        <FolderOpen size={16}/> Mở File
+                    <button onClick={handleOpenFile} className="bg-white border border-slate-300 text-slate-700 px-2.5 py-1.5 rounded-md text-xs font-semibold hover:bg-slate-50 shadow-2xs flex items-center gap-1.5">
+                        <FolderOpen size={14}/> Mở File
                     </button>
                     <input type="file" ref={fileInputRef} className="hidden" accept=".tex,.txt" multiple onChange={handleFileUpload}/>
 
@@ -1130,29 +1130,29 @@ export const IdAssigner: React.FC = () => {
                         <button 
                             onClick={() => handleBatchAiSuggest()} 
                             disabled={isAiBatchRunning || isProcessing || isSavingDb} 
-                            className="bg-purple-50 border border-purple-200 text-purple-700 hover:bg-purple-100 px-3 py-1.5 rounded-lg text-sm font-bold shadow-sm flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
+                            className="bg-purple-50 border border-purple-200 text-purple-700 hover:bg-purple-100 px-2.5 py-1.5 rounded-md text-xs font-semibold shadow-2xs flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
                             title="Sử dụng AI tự động phân tích và gán mã ID cho tất cả câu chưa có ID"
                         >
-                            {isAiBatchRunning ? <Loader2 size={15} className="animate-spin text-purple-600"/> : <Sparkles size={15} className="text-purple-600"/>}
+                            {isAiBatchRunning ? <Loader2 size={13} className="animate-spin text-purple-600"/> : <Sparkles size={13} className="text-purple-600"/>}
                             <span>AI Đề xuất ID {unassignedCount > 0 ? `(${unassignedCount})` : ''}</span>
                         </button>
                     )}
                     
                     {files.length > 0 && activeFile && !activeFile.isDbSource && (
                         <>
-                            <div className="h-6 w-px bg-slate-200 mx-0.5"></div>
-                            <button onClick={handleSaveToBank} disabled={isSavingDb} className="px-4 py-1.5 rounded-lg text-sm font-bold flex items-center gap-2 shadow-sm bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-all">
-                                {isSavingDb ? <Loader2 size={16} className="animate-spin"/> : <Database size={16}/>} Lưu DB
+                            <div className="h-5 w-px bg-slate-300 mx-0.5"></div>
+                            <button onClick={handleSaveToBank} disabled={isSavingDb} className="px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 shadow-2xs bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all">
+                                {isSavingDb ? <Loader2 size={13} className="animate-spin"/> : <Database size={13}/>} Lưu DB
                             </button>
                         </>
                     )}
                     {activeFile?.isDbSource && (
                         <>
-                            <div className="h-6 w-px bg-slate-200 mx-0.5"></div>
+                            <div className="h-5 w-px bg-slate-300 mx-0.5"></div>
                             <button 
                                 onClick={() => handleSaveDbChanges(activeFile.uniqueId)} 
                                 disabled={isSavingDb || isProcessing || isAiBatchRunning} 
-                                className="px-3.5 py-1.5 rounded-lg text-sm font-bold flex items-center gap-1.5 shadow-sm bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-50 transition-all active:scale-95"
+                                className="px-3 py-1.5 rounded-md text-xs font-bold flex items-center gap-1.5 shadow-2xs bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-50 transition-all active:scale-95"
                                 title="Xác nhận lưu toàn bộ thay đổi vào CSDL"
                             >
                                 {isSavingDb ? <Loader2 size={15} className="animate-spin"/> : <Save size={15}/>}

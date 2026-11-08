@@ -4,7 +4,7 @@ import {
     LayoutDashboard, FileText, GraduationCap, FileCode, Tag, 
     Wand2, MonitorPlay, Menu, X, LogOut, 
     User, Shield, Copy, Flag, ChevronRight, Layers, Zap,
-    MessageSquare, BookOpen, Users, Send, HelpCircle, BarChart3,
+    MessageSquare, BookOpen, Users, HelpCircle, BarChart3,
     PlusCircle,
     LucideIcon
 } from 'lucide-react';
@@ -121,8 +121,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
     '/guide': { title: 'Hướng dẫn sử dụng', category: 'Hỗ trợ', icon: HelpCircle }, 
     '/user-guide': { title: 'Hướng dẫn sử dụng', category: 'Hỗ trợ', icon: HelpCircle }, 
     '/admin': { title: 'Quản trị người dùng', category: 'Hệ thống', icon: Shield }, 
-    '/admin/source': { title: 'Mã nguồn & SVG', category: 'Hệ thống', icon: FileCode }, 
-    '/admin/social': { title: 'Nội dung Facebook', category: 'Hệ thống', icon: Send } 
+    '/admin/source': { title: 'Mã nguồn & SVG', category: 'Hệ thống', icon: FileCode } 
   };
   const currentPageInfo = pageTitles[location.pathname] || { title: APP_NAME, category: 'ExamHub', icon: GraduationCap };
 
@@ -260,7 +259,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                         <SidebarGroup title={t('system_admin')} isCompact={isCompact}>
                             <SidebarItem to="/admin" icon={Shield} label="Quản trị User" isCompact={isCompact} />
                             <SidebarItem to="/admin/source" icon={FileCode} label="Mã nguồn & SVG" isCompact={isCompact} />
-                            <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" isCompact={isCompact} />
                             <button 
                                 onClick={() => setShowAdminFeedback(true)}
                                 className={cn(
@@ -392,7 +390,6 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                                 <div className="text-[10px] font-bold text-slate-400 uppercase tracking-wider px-3 mt-4 mb-1">{t('system_admin')}</div>
                                 <SidebarItem to="/admin" icon={Shield} label="Quản trị User" onClick={() => setIsMobileMenuOpen(false)}/>
                                 <SidebarItem to="/admin/source" icon={FileCode} label="Mã nguồn & SVG" onClick={() => setIsMobileMenuOpen(false)}/>
-                                <SidebarItem to="/admin/social" icon={Send} label="Nội dung Facebook" onClick={() => setIsMobileMenuOpen(false)}/>
                             </>
                         )}
                         
@@ -429,7 +426,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
 
             {/* Desktop Modern Topbar */}
             {!hideLayout && (
-                <header className="app-topbar hidden md:flex items-center justify-between gap-4 px-6 py-3.5 shrink-0 z-10">
+                <header className="app-topbar hidden md:flex items-center justify-between gap-4 px-5 py-2 shrink-0 z-10">
                     {/* Breadcrumbs & Title */}
                     <div className="flex items-center gap-3 min-w-0">
                         <div className="w-9 h-9 rounded-xl bg-slate-100 text-slate-600 flex items-center justify-center shrink-0 border border-slate-200/60">

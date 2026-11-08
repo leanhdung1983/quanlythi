@@ -219,11 +219,11 @@
 .home-page .home-page__hero {
   display: grid;
   grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: clamp(24px, 3.5vw, 48px);
-  padding: clamp(28px, 3.5vw, 44px);
+  gap: clamp(16px, 2.5vw, 32px);
+  padding: clamp(20px, 2.5vw, 32px);
   background: linear-gradient(135deg, #ffffff 0%, #f7f8ff 45%, #eff4ff 100%);
   border: 1px solid rgba(199, 210, 254, 0.7);
-  border-radius: var(--hp-radius-xl);
+  border-radius: var(--hp-radius-lg);
   box-shadow: 0 4px 20px -8px rgba(79, 70, 229, 0.12), 0 1px 3px rgba(15, 23, 42, 0.04);
   position: relative;
   overflow: hidden;
@@ -291,18 +291,18 @@
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 14px;
+  gap: 10px;
 }
 
 .home-page .home-page__btn-primary {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 9px;
-  font-size: 14px;
+  gap: 8px;
+  font-size: 13px;
   font-weight: 700;
-  padding: 12px 22px;
-  border-radius: var(--hp-radius-md);
+  padding: 9px 18px;
+  border-radius: var(--hp-radius-sm);
   background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   color: #ffffff !important;
   text-decoration: none;
@@ -326,11 +326,11 @@
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  font-size: 14px;
+  gap: 7px;
+  font-size: 13px;
   font-weight: 600;
-  padding: 11px 18px;
-  border-radius: var(--hp-radius-md);
+  padding: 8px 15px;
+  border-radius: var(--hp-radius-sm);
   background: rgba(255, 255, 255, 0.95);
   color: #0f172a !important;
   text-decoration: none;
@@ -489,14 +489,14 @@
 .home-page .home-page__stats-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
-  gap: 20px;
+  gap: 14px;
 }
 
 .home-page .home-page__stat-card {
   background: var(--hp-surface);
   border: 1px solid var(--hp-border);
-  border-radius: var(--hp-radius-lg);
-  padding: 22px 24px;
+  border-radius: var(--hp-radius-md);
+  padding: 16px 18px;
   box-shadow: var(--hp-shadow-card);
   position: relative;
   overflow: hidden;
@@ -516,7 +516,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 16px;
+  margin-bottom: 10px;
 }
 
 .home-page .home-page__stat-icon-wrap {

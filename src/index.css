@@ -44,8 +44,8 @@ body {
 }
 
 .app-nav-item {
-  min-height: 40px;
-  border-radius: 12px;
+  min-height: 36px;
+  border-radius: 10px;
   transition: all 0.18s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -68,7 +68,7 @@ body {
 }
 
 .app-workspace {
-  padding: clamp(16px, 2.2vw, 34px);
+  padding: clamp(10px, 1.4vw, 20px);
   background-image: 
     radial-gradient(ellipse 65% 45% at 90% 0%, rgba(37, 99, 235, 0.08), transparent 70%),
     radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.06), transparent 50%);
@@ -136,28 +136,29 @@ body {
 }
 
 .question-bank-filters :where(input, select) { 
-  min-height: 38px; 
-  font-size: 13px; 
+  min-height: 32px; 
+  font-size: 12px; 
   box-shadow: none; 
 }
 
 .question-bank-actions > button { 
-  min-height: 42px; 
-  min-width: 54px; 
+  min-height: 32px; 
+  min-width: 38px; 
+  padding: 4px 8px;
   flex-shrink: 0; 
-  border-radius: 12px; 
+  border-radius: 8px; 
   transition: all 0.15s ease;
 }
 
 .question-bank-actions > button span { 
-  font-size: 10px; 
+  font-size: 9px; 
   font-weight: 700; 
-  letter-spacing: 0.02em; 
+  letter-spacing: 0.01em; 
 }
 
 .question-bank-actions > button svg { 
-  width: 16px; 
-  height: 16px; 
+  width: 14px; 
+  height: 14px; 
 }
 
 .dashboard-hero {
@@ -188,8 +189,8 @@ body {
 }
 
 .dashboard-stat { 
-  min-height: 160px; 
-  border-radius: 20px;
+  min-height: 120px; 
+  border-radius: 16px;
   border: 1px solid rgba(226, 232, 240, 0.9);
   background: #ffffff;
   box-shadow: var(--hub-shadow);
@@ -204,7 +205,7 @@ body {
 
 .dashboard-stat h3 { 
   font-weight: 800; 
-  font-size: 32px; 
+  font-size: 28px; 
   letter-spacing: -0.03em;
 }
 
@@ -214,8 +215,8 @@ body {
 }
 
 .dashboard-action { 
-  min-height: 96px; 
-  border-radius: 18px;
+  min-height: 68px; 
+  border-radius: 14px;
   transition: all 0.2s ease;
 }
 

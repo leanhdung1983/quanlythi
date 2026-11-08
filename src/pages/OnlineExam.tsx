@@ -1147,88 +1147,88 @@ export const OnlineExam: React.FC = () => {
 
         return (
             <div className="max-w-4xl mx-auto py-2 md:py-4 animate-in fade-in slide-in-from-bottom-8 duration-700">
-                <div className="bg-white rounded-3xl md:rounded-[3rem] shadow-2xl shadow-indigo-100/40 border border-slate-100 overflow-hidden">
-                    <div className="bg-gradient-to-br from-indigo-600 to-indigo-800 p-6 md:p-12 text-white relative overflow-hidden">
+                <div className="bg-white rounded-2xl shadow-xl shadow-blue-100/40 border border-slate-200 overflow-hidden">
+                    <div className="bg-gradient-to-br from-blue-600 via-indigo-600 to-indigo-800 p-5 md:p-8 text-white relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-96 h-96 bg-white/10 rounded-full -mr-32 -mt-32 blur-3xl animate-pulse"></div>
                         <div className="absolute bottom-0 left-0 w-64 h-64 bg-white/5 rounded-full -ml-32 -mb-32 blur-3xl"></div>
                         
                         <div className="relative z-10">
-                            <button onClick={() => setSelectedExam(null)} className="md:hidden mb-4 md:mb-6 flex items-center gap-2 text-white/80 hover:text-white transition-colors text-xs font-black uppercase tracking-widest">
+                            <button onClick={() => setSelectedExam(null)} className="md:hidden mb-3 flex items-center gap-2 text-white/80 hover:text-white transition-colors text-xs font-black uppercase tracking-widest">
                                 <ArrowLeft size={16}/> Quay lại
                             </button>
-                            <div className="flex flex-wrap items-center gap-2 md:gap-3 mb-4 md:mb-6">
+                            <div className="flex flex-wrap items-center gap-2 mb-3">
                                 {isReal ? (
-                                    <span className="bg-red-400/20 border border-red-400/30 text-red-100 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                                        <ShieldCheck size={14}/> {t('oe_mode_real')}
+                                    <span className="bg-red-400/25 border border-red-300/40 text-white px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
+                                        <ShieldCheck size={13}/> {t('oe_mode_real')}
                                     </span>
                                 ) : (
-                                    <span className="bg-white/20 border border-white/30 text-white px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2">
-                                        <Target size={14}/> {t('oe_mode_practice')}
+                                    <span className="bg-white/20 border border-white/30 text-white px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5 shadow-2xs">
+                                        <Target size={13}/> {t('oe_mode_practice')}
                                     </span>
                                 )}
-                                <span className="bg-white/5 border border-white/10 text-white/40 px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em]">ID: {m.id}</span>
+                                <span className="bg-white/10 border border-white/20 text-white/80 px-2.5 py-1 rounded-lg text-[10px] font-bold">ID: {m.id}</span>
                                 <button 
                                     onClick={() => handleViewActiveParticipants(m.id)}
-                                    className="bg-emerald-500/20 border border-emerald-500/30 text-emerald-100 hover:bg-emerald-500/40 transition-colors px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-[0.2em] flex items-center gap-2"
+                                    className="bg-emerald-500/25 border border-emerald-400/40 text-white hover:bg-emerald-500/40 transition-colors px-3 py-1 rounded-lg text-[10px] font-extrabold uppercase tracking-wider flex items-center gap-1.5"
                                 >
-                                    <Users size={14} /> Xem người đang thi
+                                    <Users size={13} /> Xem người đang thi
                                 </button>
                             </div>
-                            <h2 className="text-2xl md:text-4xl font-black mb-3 md:mb-4 leading-[1.1] tracking-tight max-w-2xl">{m.name}</h2>
-                            <p className="text-indigo-100/60 text-xs md:text-sm font-medium flex items-center gap-2">
-                                <Info size={16} className="text-orange-300"/>
+                            <h2 className="text-xl md:text-3xl font-black mb-2 leading-tight tracking-tight max-w-2xl">{m.name}</h2>
+                            <p className="text-blue-100/80 text-xs md:text-sm font-medium flex items-center gap-2">
+                                <Info size={15} className="text-amber-300"/>
                                 Đảm bảo kết nối internet ổn định trước khi nhấn nút Bắt đầu.
                             </p>
                         </div>
                     </div>
 
-                    <div className="p-4 md:p-10">
-                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-6 mb-6 md:mb-10">
-                            <div className="flex items-center gap-4 md:gap-5 p-4 md:p-6 bg-slate-50/50 rounded-2xl md:rounded-3xl border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-100 group">
-                                <div className="w-12 h-12 md:w-14 md:h-14 bg-indigo-50 rounded-2xl shadow-sm text-indigo-600 flex items-center justify-center group-hover:scale-110 transition-transform"><Clock size={24} className="md:w-7 md:h-7"/></div>
+                    <div className="p-4 md:p-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-5">
+                            <div className="flex items-center gap-3.5 p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80 transition-all hover:bg-white hover:shadow-md group">
+                                <div className="w-10 h-10 bg-blue-50 rounded-lg shadow-2xs text-blue-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"><Clock size={20}/></div>
                                 <div>
-                                    <div className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Thời gian</div>
-                                    <div className="text-lg md:text-xl font-black text-slate-800">{settings.duration} phút</div>
+                                    <div className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">Thời gian</div>
+                                    <div className="text-base font-extrabold text-slate-800">{settings.duration} phút</div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-4 md:gap-5 p-4 md:p-6 bg-slate-50/50 rounded-2xl md:rounded-3xl border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-100 group">
-                                <div className="w-12 h-12 md:w-14 md:h-14 bg-orange-50 rounded-2xl shadow-sm text-orange-500 flex items-center justify-center group-hover:scale-110 transition-transform"><Target size={24} className="md:w-7 md:h-7"/></div>
+                            <div className="flex items-center gap-3.5 p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80 transition-all hover:bg-white hover:shadow-md group">
+                                <div className="w-10 h-10 bg-amber-50 rounded-lg shadow-2xs text-amber-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"><Target size={20}/></div>
                                 <div>
-                                    <div className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Số lượt cho phép</div>
-                                    <div className="text-lg md:text-xl font-black text-slate-800">{maxAttempts === 0 ? 'Tự do' : `${maxAttempts} lượt`}</div>
+                                    <div className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">Số lượt cho phép</div>
+                                    <div className="text-base font-extrabold text-slate-800">{maxAttempts === 0 ? 'Tự do' : `${maxAttempts} lượt`}</div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-4 md:gap-5 p-4 md:p-6 bg-slate-50/50 rounded-2xl md:rounded-3xl border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-100 group">
-                                <div className="w-12 h-12 md:w-14 md:h-14 bg-green-50 rounded-2xl shadow-sm text-green-500 flex items-center justify-center group-hover:scale-110 transition-transform"><Calendar size={24} className="md:w-7 md:h-7"/></div>
+                            <div className="flex items-center gap-3.5 p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80 transition-all hover:bg-white hover:shadow-md group">
+                                <div className="w-10 h-10 bg-emerald-50 rounded-lg shadow-2xs text-emerald-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"><Calendar size={20}/></div>
                                 <div>
-                                    <div className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Thời hạn mở đề</div>
-                                    <div className="text-[10px] md:text-xs font-bold text-slate-700 leading-tight">
+                                    <div className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">Thời hạn mở đề</div>
+                                    <div className="text-xs font-bold text-slate-700 leading-tight">
                                         {startTime ? startTime.toLocaleString('vi-VN') : 'Đang mở'} - {endTime ? endTime.toLocaleString('vi-VN') : 'Mãi mãi'}
                                     </div>
                                 </div>
                             </div>
-                            <div className="flex items-center gap-4 md:gap-5 p-4 md:p-6 bg-slate-50/50 rounded-2xl md:rounded-3xl border border-slate-100 transition-all hover:bg-white hover:shadow-xl hover:shadow-slate-100 group">
-                                <div className="w-12 h-12 md:w-14 md:h-14 bg-blue-50 rounded-2xl shadow-sm text-blue-500 flex items-center justify-center group-hover:scale-110 transition-transform"><Zap size={24} className="md:w-7 md:h-7"/></div>
+                            <div className="flex items-center gap-3.5 p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80 transition-all hover:bg-white hover:shadow-md group">
+                                <div className="w-10 h-10 bg-indigo-50 rounded-lg shadow-2xs text-indigo-600 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform"><Zap size={20}/></div>
                                 <div>
-                                    <div className="text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Tiến độ của bạn</div>
-                                    <div className="text-lg md:text-xl font-black text-slate-800">Đã thi {myAttempts} lần</div>
+                                    <div className="text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-0.5">Tiến độ của bạn</div>
+                                    <div className="text-base font-extrabold text-slate-800">Đã thi {myAttempts} lần</div>
                                 </div>
                             </div>
                         </div>
 
                         {/* Live active participants inside test dashboard */}
-                        <div className="mb-6 p-4 bg-slate-50/50 rounded-2xl md:rounded-3xl border border-slate-100">
-                            <div className="flex items-center gap-2 mb-3">
+                        <div className="mb-5 p-3.5 bg-slate-50/70 rounded-xl border border-slate-200/80">
+                            <div className="flex items-center gap-2 mb-2.5">
                                 <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                <span className="text-xs font-bold text-slate-500 uppercase tracking-widest">Đang trong phòng thi ({activeParticipants.length})</span>
+                                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider">Đang trong phòng thi ({activeParticipants.length})</span>
                             </div>
                             {loadingParticipants && activeParticipants.length === 0 ? (
                                 <div className="text-xs text-slate-400 font-medium italic animate-pulse">Đang kiểm tra phòng thi...</div>
                             ) : activeParticipants.length > 0 ? (
-                                <div className="flex flex-wrap gap-2">
+                                <div className="flex flex-wrap gap-1.5">
                                     {activeParticipants.map(hs => (
-                                        <div key={hs.id} className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-full text-[10px] font-bold shadow-sm">
-                                            <div className="w-4 h-4 bg-emerald-200 text-emerald-800 rounded-full flex items-center justify-center text-[8px]">{hs.full_name?.charAt(0) || 'U'}</div>
+                                        <div key={hs.id} className="flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 text-emerald-800 border border-emerald-200 rounded-md text-[10px] font-bold shadow-2xs">
+                                            <div className="w-3.5 h-3.5 bg-emerald-200 text-emerald-900 rounded-full flex items-center justify-center text-[7.5px] font-black">{hs.full_name?.charAt(0) || 'U'}</div>
                                             {hs.full_name}
                                         </div>
                                     ))}
@@ -1239,11 +1239,11 @@ export const OnlineExam: React.FC = () => {
                         </div>
 
                         {!canTake && (
-                            <div className="p-6 bg-red-50 border border-red-100 rounded-3xl flex items-start gap-4 mb-8">
-                                <AlertTriangle size={24} className="text-red-500 shrink-0"/>
+                            <div className="p-4 bg-red-50 border border-red-200 rounded-xl flex items-start gap-3 mb-5">
+                                <AlertTriangle size={20} className="text-red-500 shrink-0"/>
                                 <div>
-                                    <h4 className="font-black text-red-600 uppercase tracking-widest text-[10px] mb-1">Cảnh báo hệ thống</h4>
-                                    <p className="text-slate-600 text-xs font-bold opacity-80">
+                                    <h4 className="font-extrabold text-red-600 uppercase tracking-wider text-[10px] mb-0.5">Cảnh báo hệ thống</h4>
+                                    <p className="text-slate-700 text-xs font-medium">
                                         {!isStarted ? `Đề chưa đến thời điểm bắt đầu (${startTime?.toLocaleString('vi-VN')}).` : 
                                          isEnded ? 'Đề thi đã hết hạn tham gia.' : 
                                          attemptsExhausted ? 'Bạn đã hết lượt tham gia cho bài kiểm tra này.' : 'Vui lòng quay lại sau.'}
@@ -1255,9 +1255,9 @@ export const OnlineExam: React.FC = () => {
                         <button 
                             onClick={() => handleStartExam(m)} 
                             disabled={!canTake || isStartingExam}
-                            className={`w-full py-4 md:py-6 rounded-2xl md:rounded-[2rem] text-sm font-black uppercase tracking-[0.3em] flex items-center justify-center gap-3 md:gap-4 transition-all shadow-xl ${canTake ? 'bg-orange-500 text-white shadow-orange-200/50 hover:bg-orange-600 hover:-translate-y-1 active:scale-[0.98]' : 'bg-slate-100 text-slate-300 cursor-not-allowed'}`}
+                            className={`w-full py-3 md:py-3.5 rounded-xl text-xs md:text-sm font-extrabold uppercase tracking-wider flex items-center justify-center gap-2.5 transition-all shadow-md ${canTake ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-blue-500/25 hover:from-blue-700 hover:to-indigo-700 hover:-translate-y-0.5 active:scale-[0.98]' : 'bg-slate-100 text-slate-400 border border-slate-200 cursor-not-allowed'}`}
                         >
-                            {isStartingExam ? <Loader2 size={24} className="animate-spin" /> : (canTake ? <PlayCircle size={24}/> : <Lock size={24}/>)}
+                            {isStartingExam ? <Loader2 size={18} className="animate-spin" /> : (canTake ? <PlayCircle size={18}/> : <Lock size={18}/>)}
                             {isStartingExam ? 'Đang chuẩn bị đề...' : (canTake ? 'Vào phòng thi ngay' : 'Đang bị khoá')}
                         </button>
                     </div>
@@ -1300,13 +1300,13 @@ export const OnlineExam: React.FC = () => {
                             const userChoice = (answers[currentQ.id] as Record<string, boolean>)?.[opt.id];
                             const label = String.fromCharCode(97 + idx); // a, b, c, d
                             
-                            const containerStyle = "bg-slate-50/50 border-slate-100 hover:border-slate-200";
-                            let trueBtnStyle = "bg-white border-slate-300 shadow-sm text-slate-600 font-bold hover:border-emerald-500 hover:text-emerald-600 hover:bg-emerald-50";
-                            let falseBtnStyle = "bg-white border-slate-300 shadow-sm text-slate-600 font-bold hover:border-rose-500 hover:text-rose-600 hover:bg-rose-50";
+                            const containerStyle = "bg-slate-50/70 border-slate-200 hover:border-blue-300";
+                            let trueBtnStyle = "bg-white border-slate-300 shadow-2xs text-slate-700 font-bold hover:border-emerald-500 hover:text-emerald-700 hover:bg-emerald-50";
+                            let falseBtnStyle = "bg-white border-slate-300 shadow-2xs text-slate-700 font-bold hover:border-rose-500 hover:text-rose-700 hover:bg-rose-50";
 
                             if (isReviewMode) {
                                 if (opt.isCorrect) {
-                                    if (userChoice === true) trueBtnStyle = "bg-exam-green border-exam-green text-white shadow-lg shadow-exam-green/20";
+                                    if (userChoice === true) trueBtnStyle = "bg-exam-green border-exam-green text-white shadow-md shadow-exam-green/20";
                                     else trueBtnStyle = "border-exam-green text-exam-green font-black";
                                 } else {
                                     if (userChoice === false) falseBtnStyle = "bg-exam-green border-exam-green text-white shadow-lg shadow-exam-green/20";
@@ -1318,8 +1318,8 @@ export const OnlineExam: React.FC = () => {
                                     else falseBtnStyle = "bg-exam-red border-exam-red text-white shadow-lg shadow-exam-red/20";
                                 }
                             } else {
-                                if (userChoice === true) trueBtnStyle = "bg-exam-green border-exam-green text-white shadow-lg shadow-exam-green/30";
-                                if (userChoice === false) falseBtnStyle = "bg-exam-red border-exam-red text-white shadow-lg shadow-exam-red/30";
+                                if (userChoice === true) trueBtnStyle = "bg-emerald-600 border-emerald-600 text-white shadow-md shadow-emerald-500/25";
+                                if (userChoice === false) falseBtnStyle = "bg-rose-600 border-rose-600 text-white shadow-md shadow-rose-500/25";
                             }
 
                             return (
@@ -1328,23 +1328,23 @@ export const OnlineExam: React.FC = () => {
                                     initial={{ opacity: 0, x: -20 }}
                                     animate={{ opacity: 1, x: 0 }}
                                     transition={{ delay: idx * 0.05 }}
-                                    className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-3 p-3 rounded-2xl border transition-all group ${containerStyle}`}
+                                    className={`flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5 p-2 sm:p-2.5 rounded-xl border transition-all group ${containerStyle}`}
                                 >
-                                    <div className="flex items-start gap-2.5 flex-1 min-w-0">
-                                        <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-xl bg-slate-100 border border-slate-200/80 flex items-center justify-center font-bold text-slate-500 group-hover:text-indigo-600 group-hover:border-indigo-300 transition-all shrink-0 mt-0.5 text-xs">
+                                    <div className="flex items-start gap-2 flex-1 min-w-0">
+                                        <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-lg bg-slate-100 border border-slate-200 flex items-center justify-center font-bold text-slate-700 group-hover:text-blue-700 group-hover:border-blue-300 transition-all shrink-0 mt-0.5 text-xs">
                                             {label})
                                         </div>
-                                        <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar text-slate-700 leading-relaxed font-sans font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
+                                        <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar text-slate-800 leading-relaxed font-sans font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
                                             <MathRenderer content={opt.content} mode="question" hideToolbar={true} />
                                         </div>
                                     </div>
-                                    <div className="flex gap-2 shrink-0 self-end sm:self-center pt-2 sm:pt-0">
+                                    <div className="flex gap-1.5 shrink-0 self-end sm:self-center pt-1.5 sm:pt-0">
                                         <button 
                                             type="button"
                                             aria-pressed={userChoice === true}
                                             aria-label={`Chọn phương án ${label} là Đúng`}
                                             onClick={() => !isReviewMode && handleTFAnswer(opt.id, true)}
-                                            className={`min-w-[68px] sm:min-w-[76px] h-9 sm:h-10 px-3 rounded-xl font-bold text-xs transition-all border flex items-center justify-center gap-1.5 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 ${trueBtnStyle}`}
+                                            className={`min-w-[62px] h-8 px-2.5 rounded-lg font-bold text-xs transition-all border flex items-center justify-center gap-1 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500 ${trueBtnStyle}`}
                                         >
                                             {userChoice === true && <ShieldCheck size={12}/>} ĐÚNG
                                         </button>
@@ -1353,7 +1353,7 @@ export const OnlineExam: React.FC = () => {
                                             aria-pressed={userChoice === false}
                                             aria-label={`Chọn phương án ${label} là Sai`}
                                             onClick={() => !isReviewMode && handleTFAnswer(opt.id, false)}
-                                            className={`min-w-[68px] sm:min-w-[76px] h-9 sm:h-10 px-3 rounded-xl font-bold text-xs transition-all border flex items-center justify-center gap-1.5 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 ${falseBtnStyle}`}
+                                            className={`min-w-[62px] h-8 px-2.5 rounded-lg font-bold text-xs transition-all border flex items-center justify-center gap-1 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-rose-500 ${falseBtnStyle}`}
                                         >
                                             {userChoice === false && <ShieldCheck size={12}/>} SAI
                                         </button>
@@ -1368,11 +1368,11 @@ export const OnlineExam: React.FC = () => {
 
         if (currentQ.type === 'TN' && currentQ.options) {
             return (
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-2.5 sm:gap-3" role="radiogroup" aria-label="Các phương án lựa chọn">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-2 sm:gap-2.5" role="radiogroup" aria-label="Các phương án lựa chọn">
                     {currentQ.options.map((opt, idx) => {
                         const isSelected = answers[currentQ.id] === opt.id;
-                        let btnStyle = "bg-white border-slate-200/90 shadow-sm text-slate-800 hover:border-indigo-400 hover:bg-indigo-50/40";
-                        let labelStyle = "bg-slate-100 text-slate-700 border-slate-200 font-bold";
+                        let btnStyle = "bg-white border-slate-300 shadow-2xs text-slate-900 hover:border-blue-400 hover:bg-blue-50/40";
+                        let labelStyle = "bg-slate-100 text-slate-800 border-slate-200 font-bold";
                         
                         if (isReviewMode) {
                             if (opt.isCorrect) {
@@ -1383,7 +1383,7 @@ export const OnlineExam: React.FC = () => {
                                 labelStyle = "bg-rose-600 text-white border-rose-600";
                             }
                         } else if (isSelected) {
-                            btnStyle = "bg-indigo-600 text-white border-indigo-600 shadow-md shadow-indigo-600/20";
+                            btnStyle = "bg-blue-600 text-white border-blue-600 shadow-md shadow-blue-500/25";
                             labelStyle = "bg-white/20 text-white border-white/30";
                         }
                         
@@ -1398,12 +1398,12 @@ export const OnlineExam: React.FC = () => {
                                 animate={{ opacity: 1, y: 0 }}
                                 transition={{ delay: idx * 0.04 }}
                                 onClick={() => !isReviewMode && handleAnswer(opt.id)}
-                                className={`w-full min-h-[52px] p-2.5 sm:p-3 rounded-2xl border flex items-center gap-3 text-left transition-all active:scale-[0.99] group relative cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 ${btnStyle}`}
+                                className={`w-full min-h-[44px] p-2 sm:p-2.5 rounded-xl border flex items-center gap-2.5 text-left transition-all active:scale-[0.99] group relative cursor-pointer touch-manipulation focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 ${btnStyle}`}
                             >
-                                <div className={`w-8 h-8 rounded-xl border flex-shrink-0 flex items-center justify-center font-black text-sm transition-all ${labelStyle}`}>
+                                <div className={`w-7 h-7 rounded-lg border flex-shrink-0 flex items-center justify-center font-bold text-xs transition-all ${labelStyle}`}>
                                     {opt.id}
                                 </div>
-                                <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar font-semibold leading-relaxed font-sans" style={{ fontSize: `${fontSize - 1}px` }}>
+                                <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar font-medium leading-relaxed font-sans" style={{ fontSize: `${fontSize - 1}px` }}>
                                     <MathRenderer 
                                         content={opt.content && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(opt.content.toLowerCase()) 
                                             ? opt.content.charAt(0).toUpperCase() + opt.content.slice(1) 
@@ -1413,7 +1413,7 @@ export const OnlineExam: React.FC = () => {
                                     />
                                 </div>
                                 {isSelected && !isReviewMode && (
-                                    <div className="absolute right-3 top-3 text-white/70" aria-hidden="true"><ShieldCheck size={14}/></div>
+                                    <div className="absolute right-3 top-3 text-white/80" aria-hidden="true"><ShieldCheck size={14}/></div>
                                 )}
                             </motion.button>
                         );
@@ -1424,29 +1424,29 @@ export const OnlineExam: React.FC = () => {
 
         if (currentQ.type === 'KQ') {
             return (
-                <div className="p-6 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 relative overflow-hidden group">
-                    <div className="absolute top-0 right-0 w-32 h-32 bg-exam-orange/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+                <div className="p-4 bg-slate-50/60 rounded-2xl border border-slate-200 relative overflow-hidden group">
+                    <div className="absolute top-0 right-0 w-32 h-32 bg-blue-500/5 rounded-full -mr-16 -mt-16 blur-2xl"></div>
                     <div className="flex flex-col items-center max-w-md mx-auto text-center relative z-10">
-                        <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center text-exam-orange mb-4">
-                            <Target size={24}/>
+                        <div className="w-9 h-9 bg-white rounded-lg shadow-2xs border border-slate-200 flex items-center justify-center text-blue-600 mb-2">
+                            <Target size={18}/>
                         </div>
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3">Kết quả tính toán của bạn</label>
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2">Kết quả tính toán của bạn</label>
                         <input 
-                            className="w-full text-center p-4 bg-white border-2 border-slate-200 rounded-2xl outline-none focus:border-exam-orange focus:ring-8 focus:ring-exam-orange/10 font-black text-2xl text-slate-800 shadow-inner group-hover:shadow-2xl transition-all" 
+                            className="w-full text-center py-2.5 px-4 bg-white border border-slate-300 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-black text-xl text-slate-800 shadow-2xs group-hover:shadow-md transition-all" 
                             placeholder="???" 
                             value={(answers[currentQ.id] as string) || ''} 
                             onChange={(e) => !isReviewMode && handleAnswer(e.target.value)} 
                             disabled={isReviewMode}
                         />
                         {!isReviewMode && (
-                            <p className="mt-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest leading-relaxed">
+                            <p className="mt-3 text-[10px] font-bold text-slate-500 uppercase tracking-widest leading-relaxed">
                                 Hãy nhập chính xác giá trị số hoặc biểu thức rút gọn
                             </p>
                         )}
                         {isReviewMode && (
-                            <div className="mt-8 flex flex-col items-center">
-                                <div className="text-[10px] font-black text-exam-green uppercase tracking-widest mb-2">Đáp án chính xác</div>
-                                <div className="bg-exam-green text-white px-8 py-3 rounded-2xl font-black text-2xl shadow-lg shadow-exam-green/20">
+                            <div className="mt-4 flex flex-col items-center">
+                                <div className="text-[10px] font-black text-emerald-600 uppercase tracking-widest mb-1.5">Đáp án chính xác</div>
+                                <div className="bg-emerald-600 text-white px-5 py-2 rounded-xl font-black text-lg shadow-sm">
                                     <MathRenderer content={currentQ.correctAnswer?.includes(',') || currentQ.correctAnswer?.includes('{') || currentQ.correctAnswer?.includes('\\') ? `$${currentQ.correctAnswer}$` : currentQ.correctAnswer || ''} mode="all" hideToolbar={true} isExTest={false} />
                                 </div>
                             </div>
@@ -1458,11 +1458,11 @@ export const OnlineExam: React.FC = () => {
 
         if (currentQ.type === 'TL') {
             return (
-                <div className="p-6 bg-slate-50/50 rounded-3xl border-2 border-dashed border-slate-200 relative overflow-hidden group">
+                <div className="p-4 bg-slate-50/60 rounded-2xl border border-slate-200 relative overflow-hidden group">
                     <div className="flex flex-col max-w-2xl mx-auto relative z-10">
-                        <label className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 text-center">Trình bày bài giải của bạn</label>
+                        <label className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em] mb-2 text-center">Trình bày bài giải của bạn</label>
                         <textarea 
-                            className="w-full min-h-[160px] p-4 bg-white border-2 border-slate-200 rounded-2xl outline-none focus:border-exam-indigo focus:ring-8 focus:ring-exam-indigo/10 font-medium text-slate-700 shadow-inner group-hover:shadow-xl transition-all resize-y" 
+                            className="w-full min-h-[140px] p-3 bg-white border border-slate-300 rounded-xl outline-none focus:border-blue-500 focus:ring-4 focus:ring-blue-500/10 font-medium text-slate-800 shadow-2xs group-hover:shadow-md transition-all resize-y text-sm" 
                             placeholder="Nhập bài giải..." 
                             value={(answers[currentQ.id] as string) || ''} 
                             onChange={(e) => !isReviewMode && handleAnswer(e.target.value)} 
@@ -1473,7 +1473,7 @@ export const OnlineExam: React.FC = () => {
             );
         }
 
-        return <div className="p-10 text-center text-slate-400 italic font-medium bg-slate-50 rounded-3xl border-2 border-dashed border-slate-100">Dạng câu hỏi này chỉ hỗ trợ hiển thị, chưa hỗ trợ tương tác trực tuyến.</div>;
+        return <div className="p-6 text-center text-slate-500 italic font-medium bg-slate-50 rounded-2xl border border-dashed border-slate-200 text-xs">Dạng câu hỏi này chỉ hỗ trợ hiển thị, chưa hỗ trợ tương tác trực tuyến.</div>;
     };
 
     const dialogComponent = (
@@ -1488,51 +1488,51 @@ export const OnlineExam: React.FC = () => {
                     className="fixed inset-0 z-[9999] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm"
                 >
                     <motion.div 
-                        key="dialog-content"
-                        initial={{ opacity: 0, scale: 0.95, y: 20 }}
-                        animate={{ opacity: 1, scale: 1, y: 0 }}
-                        exit={{ opacity: 0, scale: 0.95, y: 20 }}
-                        className="bg-white rounded-3xl shadow-2xl w-full max-w-md overflow-hidden border border-slate-100"
-                    >
-                        <div className="p-6">
-                            <div className="flex items-center gap-3 mb-4">
-                                <div className={`w-10 h-10 rounded-full flex items-center justify-center ${dialog.isAlert ? 'bg-amber-100 text-amber-600' : 'bg-primary-100 text-primary-600'}`}>
-                                    {dialog.isAlert ? <AlertTriangle size={20} /> : <Info size={20} />}
-                                </div>
-                                <h3 className="text-lg font-bold text-slate-900">{dialog.title}</h3>
+                    key="dialog-content"
+                    initial={{ opacity: 0, scale: 0.95, y: 20 }}
+                    animate={{ opacity: 1, scale: 1, y: 0 }}
+                    exit={{ opacity: 0, scale: 0.95, y: 20 }}
+                    className="bg-white rounded-2xl shadow-xl w-full max-w-md overflow-hidden border border-slate-100"
+                >
+                    <div className="p-5">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className={`w-9 h-9 rounded-xl flex items-center justify-center ${dialog.isAlert ? 'bg-amber-100 text-amber-600' : 'bg-blue-100 text-blue-600'}`}>
+                                {dialog.isAlert ? <AlertTriangle size={18} /> : <Info size={18} />}
                             </div>
-                            <p className="text-slate-600 leading-relaxed mb-8">{dialog.message}</p>
-                            
-                            <div className="flex gap-3 justify-end">
-                                {!dialog.isAlert && (
-                                    <button 
-                                        type="button"
-                                        onClick={() => {
-                                            setDialog(prev => ({ ...prev, isOpen: false }));
-                                            if (dialog.onCancel) dialog.onCancel();
-                                        }}
-                                        className="px-5 py-2.5 text-sm font-bold text-slate-500 hover:bg-slate-50 rounded-xl transition-colors"
-                                    >
-                                        Hủy bỏ
-                                    </button>
-                                )}
+                            <h3 className="text-base font-bold text-slate-900">{dialog.title}</h3>
+                        </div>
+                        <p className="text-slate-600 text-xs leading-relaxed mb-6">{dialog.message}</p>
+                        
+                        <div className="flex gap-2 justify-end">
+                            {!dialog.isAlert && (
                                 <button 
                                     type="button"
                                     onClick={() => {
                                         setDialog(prev => ({ ...prev, isOpen: false }));
-                                        if (dialog.onConfirm) dialog.onConfirm();
+                                        if (dialog.onCancel) dialog.onCancel();
                                     }}
-                                    className="px-6 py-2.5 text-sm font-bold bg-primary-600 text-white hover:bg-primary-700 rounded-xl shadow-lg shadow-primary-200 transition-all active:scale-95"
+                                    className="h-8.5 px-3.5 text-xs font-bold text-slate-600 hover:bg-slate-100 rounded-lg transition-colors"
                                 >
-                                    {dialog.isAlert ? 'Đóng' : 'Đồng ý'}
+                                    Hủy bỏ
                                 </button>
-                            </div>
+                            )}
+                            <button 
+                                type="button"
+                                onClick={() => {
+                                    setDialog(prev => ({ ...prev, isOpen: false }));
+                                    if (dialog.onConfirm) dialog.onConfirm();
+                                }}
+                                className="h-8.5 px-4 text-xs font-bold bg-blue-600 text-white hover:bg-blue-700 rounded-lg shadow-sm transition-all active:scale-95"
+                            >
+                                {dialog.isAlert ? 'Đóng' : 'Đồng ý'}
+                            </button>
                         </div>
-                    </motion.div>
+                    </div>
                 </motion.div>
-            )}
-        </AnimatePresence>
-    );
+            </motion.div>
+        )}
+    </AnimatePresence>
+);
 
     const activeParticipantsModal = (
         <AnimatePresence>
@@ -1673,61 +1673,61 @@ export const OnlineExam: React.FC = () => {
             {activeParticipantsModal}
             {allActiveParticipantsModal}
             <div className="flex-1 flex flex-col space-y-0 w-full bg-[#f8fafc] overflow-hidden md:rounded-2xl border border-slate-200 shadow-sm relative min-h-[calc(100vh-8rem)]">
-                    <header className="flex justify-between items-center px-4 py-3 md:px-8 md:py-5 bg-white border-b border-slate-200 shrink-0 shadow-sm z-20">
-                        <div className="flex items-center gap-2 md:gap-4">
-                            <div className="w-8 h-8 md:w-12 md:h-12 bg-exam-orange rounded-xl md:rounded-2xl flex items-center justify-center text-white shadow-lg shadow-exam-orange/20 rotate-3 shrink-0">
-                                <Award size={20} className="md:w-6 md:h-6" />
+                    <header className="flex justify-between items-center px-4 py-2.5 md:px-6 md:py-3 bg-white border-b border-slate-200 shrink-0 shadow-sm z-20">
+                        <div className="flex items-center gap-2 md:gap-3">
+                            <div className="w-8 h-8 md:w-9 md:h-9 bg-exam-orange rounded-xl flex items-center justify-center text-white shadow-md shadow-exam-orange/20 rotate-3 shrink-0">
+                                <Award size={18} className="md:w-5 md:h-5" />
                             </div>
                             <div>
-                                <h1 className="text-lg md:text-2xl font-black text-slate-800 tracking-tight leading-none uppercase">{t('oe_title')}</h1>
-                                <p className="text-[8px] md:text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-1 md:mt-1.5 flex items-center gap-1 md:gap-2 line-clamp-1">
-                                    <ShieldCheck size={12} className="text-exam-green shrink-0"/> Hệ thống thi trực tuyến bảo mật
+                                <h1 className="text-base md:text-xl font-black text-slate-800 tracking-tight leading-none uppercase">{t('oe_title')}</h1>
+                                <p className="text-[8px] md:text-[10px] font-bold text-slate-500 uppercase tracking-[0.2em] mt-0.5 md:mt-1 flex items-center gap-1 md:gap-1.5 line-clamp-1">
+                                    <ShieldCheck size={12} className="text-emerald-600 shrink-0"/> Hệ thống thi trực tuyến bảo mật
                                 </p>
                             </div>
                             {['SUPER_ADMIN', 'ADMIN', 'TEACHER'].includes(user?.role || '') && (
-                                <div className="hidden md:flex ml-4 items-center gap-2">
+                                <div className="hidden md:flex ml-3 items-center gap-2">
                                     <button 
                                         onClick={handleExportAllSystemStats}
-                                        className="flex items-center gap-2 px-3 py-1.5 bg-blue-50 hover:bg-blue-100 text-blue-600 text-sm font-bold rounded-xl border border-blue-100 transition-colors shadow-sm whitespace-nowrap"
+                                        className="flex items-center gap-1.5 h-8 px-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 text-xs font-bold rounded-lg border border-blue-200 transition-colors shadow-2xs whitespace-nowrap"
                                     >
-                                        <FileText size={16} className="text-blue-500" />
+                                        <FileText size={14} className="text-blue-600" />
                                         Xuất tổng hợp
                                     </button>
                                     <button 
                                         onClick={handleViewAllActiveParticipants}
-                                        className="flex items-center gap-2 px-3 py-1.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-600 text-sm font-bold rounded-xl border border-emerald-100 transition-colors shadow-sm whitespace-nowrap"
+                                        className="flex items-center gap-1.5 h-8 px-2.5 bg-emerald-50 hover:bg-emerald-100 text-emerald-700 text-xs font-bold rounded-lg border border-emerald-200 transition-colors shadow-2xs whitespace-nowrap"
                                     >
-                                        <Users size={16} className="text-emerald-500" />
+                                        <Users size={14} className="text-emerald-600" />
                                         Theo dõi hệ thống
                                     </button>
                                 </div>
                             )}
                         </div>
 
-                        <div className="flex items-center gap-2 md:gap-6">
-                            <nav className="flex bg-slate-100/50 p-1 rounded-xl border border-slate-200">
+                        <div className="flex items-center gap-2 md:gap-4">
+                            <nav className="flex bg-slate-100/80 p-0.5 rounded-lg border border-slate-200">
                                 <button 
                                     onClick={() => setDashTab('EXAMS')} 
-                                    className={`flex items-center gap-1 md:gap-2 px-2 py-1 md:px-6 md:py-2.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${dashTab === 'EXAMS' ? 'bg-white text-exam-orange shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`flex items-center gap-1 md:gap-1.5 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${dashTab === 'EXAMS' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
                                 >
-                                    <Book size={14} className="md:w-4 md:h-4" /> <span className="hidden sm:inline">Đề thi</span>
+                                    <Book size={13} className="md:w-3.5 md:h-3.5" /> <span className="hidden sm:inline">Đề thi</span>
                                 </button>
                                 <button 
                                     onClick={() => setDashTab('STATS')} 
-                                    className={`flex items-center gap-1 md:gap-2 px-2 py-1 md:px-6 md:py-2.5 rounded-lg text-[10px] md:text-xs font-black uppercase tracking-widest transition-all ${dashTab === 'STATS' ? 'bg-white text-exam-orange shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`flex items-center gap-1 md:gap-1.5 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${dashTab === 'STATS' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
                                 >
-                                    <BarChart3 size={14} className="md:w-4 md:h-4" /> <span className="hidden sm:inline">Lịch sử</span>
+                                    <BarChart3 size={13} className="md:w-3.5 md:h-3.5" /> <span className="hidden sm:inline">Lịch sử</span>
                                 </button>
                             </nav>
                             
-                            <div className="h-6 w-px bg-slate-200 hidden md:block"></div>
+                            <div className="h-5 w-px bg-slate-200 hidden md:block"></div>
                             
-                            <div className="items-center gap-3 hidden md:flex">
+                            <div className="items-center gap-2.5 hidden md:flex">
                                 <div className="text-right hidden xl:block">
-                                    <div className="text-sm font-black text-slate-800">{user?.full_name}</div>
-                                    <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{user?.role}</div>
+                                    <div className="text-xs font-black text-slate-800">{user?.full_name}</div>
+                                    <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider">{user?.role}</div>
                                 </div>
-                                <div className="w-8 h-8 md:w-10 md:h-10 rounded-full bg-slate-100 border-2 border-white shadow-inner flex items-center justify-center font-black text-slate-400">
+                                <div className="w-8 h-8 rounded-full bg-slate-100 border border-slate-200 shadow-inner flex items-center justify-center font-bold text-xs text-slate-600">
                                     {user?.full_name?.charAt(0)}
                                 </div>
                             </div>
@@ -1738,28 +1738,28 @@ export const OnlineExam: React.FC = () => {
                         {dashTab === 'EXAMS' ? (
                             <div className="flex-1 flex max-md:flex-col min-h-0">
                                 {/* SIDEBAR TREE */}
-                                <div className={`w-full md:w-[340px] bg-white border-r border-slate-200 flex-col shrink-0 shadow-sm z-10 ${selectedExam ? 'hidden md:flex' : 'flex'} flex-1 md:flex-initial min-h-0`}>
-                                    <div className="p-6 border-b border-slate-100 bg-slate-50/30">
-                                        <div className="flex items-center justify-between mb-4">
-                                            <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Kho học liệu số</h3>
-                                            <div className="p-2 bg-exam-indigo/10 text-exam-indigo rounded-xl"><Database size={16}/></div>
+                                <div className={`w-full md:w-[280px] lg:w-[300px] bg-white border-r border-slate-200 flex-col shrink-0 shadow-sm z-10 ${selectedExam ? 'hidden md:flex' : 'flex'} flex-1 md:flex-initial min-h-0`}>
+                                    <div className="p-3.5 border-b border-slate-100 bg-slate-50/30">
+                                        <div className="flex items-center justify-between mb-2.5">
+                                            <h3 className="text-[10px] font-black text-slate-500 uppercase tracking-[0.2em]">Kho học liệu số</h3>
+                                            <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg"><Database size={14}/></div>
                                         </div>
                                         <div className="relative">
                                             <input 
                                                 type="text" 
                                                 placeholder="Tìm kiếm bài thi..." 
-                                                className="w-full pl-10 pr-4 py-3 bg-slate-100 border border-transparent rounded-2xl text-xs font-medium focus:bg-white focus:border-exam-orange/30 focus:ring-4 focus:ring-exam-orange/5 outline-none transition-all"
+                                                className="w-full pl-9 pr-3 py-1.5 bg-slate-100 border border-slate-200 rounded-xl text-xs font-medium focus:bg-white focus:border-blue-500 focus:ring-2 focus:ring-blue-500/10 outline-none transition-all"
                                             />
-                                            <Info className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-300" size={16}/>
+                                            <Info className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" size={14}/>
                                         </div>
                                     </div>
-                                    <div className="flex-1 overflow-y-auto px-4 py-6 custom-scrollbar">
+                                    <div className="flex-1 overflow-y-auto px-3 py-3 custom-scrollbar">
                                         {renderExamTree()}
                                     </div>
                                 </div>
 
                                 {/* MAIN CONTENT */}
-                                <main className={`flex-1 overflow-y-auto p-4 md:p-10 bg-[#f8fafc] exam-grid-pattern custom-scrollbar ${selectedExam ? 'block' : 'hidden md:block'}`}>
+                                <main className={`flex-1 overflow-y-auto p-4 md:p-8 bg-[#f8fafc] exam-grid-pattern custom-scrollbar ${selectedExam ? 'block' : 'hidden md:block'}`}>
                                     <AnimatePresence mode="wait">
                                         {selectedExam ? (
                                             <motion.div 
@@ -1772,17 +1772,17 @@ export const OnlineExam: React.FC = () => {
                                                 {renderExamDetails(selectedExam)}
                                             </motion.div>
                                         ) : (
-                                            <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-8 animate-in fade-in duration-1000">
-                                                <div className="p-12 bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-50 relative group">
-                                                    <div className="absolute inset-0 bg-exam-orange/5 rounded-[3rem] scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
-                                                    <div className="w-32 h-32 bg-slate-50 rounded-[2rem] flex items-center justify-center text-slate-100 relative z-10 transition-transform group-hover:scale-110 group-hover:rotate-6">
-                                                        <BookOpen size={64} className="opacity-10"/>
+                                            <div className="h-full flex flex-col items-center justify-center text-slate-400 gap-6 animate-in fade-in duration-700">
+                                                <div className="p-8 bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-100 relative group">
+                                                    <div className="absolute inset-0 bg-blue-500/5 rounded-3xl scale-110 blur-xl opacity-0 group-hover:opacity-100 transition-all duration-500"></div>
+                                                    <div className="w-20 h-20 bg-slate-50 rounded-2xl flex items-center justify-center text-slate-300 relative z-10 transition-transform group-hover:scale-110">
+                                                        <BookOpen size={40} className="opacity-20"/>
                                                     </div>
                                                 </div>
                                                 <div className="text-center max-w-sm">
-                                                    <h3 className="text-2xl font-black text-slate-800 mb-3 tracking-tight">Cổng Học Liệu Pro</h3>
-                                                    <p className="text-sm font-medium text-slate-400 leading-relaxed px-6">
-                                                        Chào mừng <span className="text-exam-orange font-bold font-sans tracking-normal">{user?.full_name}</span>. Hãy chọn một chuyên đề bên trái để bắt đầu đo lường năng lực ngay.
+                                                    <h3 className="text-xl font-black text-slate-800 mb-2 tracking-tight">Cổng Học Liệu Pro</h3>
+                                                    <p className="text-xs font-medium text-slate-500 leading-relaxed px-4">
+                                                        Chào mừng <span className="text-blue-600 font-bold font-sans tracking-normal">{user?.full_name}</span>. Hãy chọn một chuyên đề bên trái để bắt đầu đo lường năng lực ngay.
                                                     </p>
                                                 </div>
                                             </div>
@@ -1791,21 +1791,21 @@ export const OnlineExam: React.FC = () => {
                                 </main>
                             </div>
                         ) : (
-                            <div className="flex-1 flex flex-col min-h-0 bg-[#f8fafc] p-8 overflow-y-auto custom-scrollbar">
-                               <div className="max-w-6xl mx-auto w-full space-y-8">
-                                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                            <div className="flex-1 flex flex-col min-h-0 bg-[#f8fafc] p-4 md:p-6 overflow-y-auto custom-scrollbar">
+                               <div className="max-w-6xl mx-auto w-full space-y-6">
+                                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
                                         <div>
-                                            <h2 className="text-3xl font-black text-slate-800 tracking-tight uppercase">Thống kê Năng lực</h2>
-                                            <p className="text-slate-400 text-sm font-bold mt-1 uppercase tracking-widest">Xem lại tiến trình & kết quả học tập</p>
+                                            <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">Thống kê Năng lực</h2>
+                                            <p className="text-slate-500 text-xs font-bold mt-0.5 uppercase tracking-wider">Xem lại tiến trình & kết quả học tập</p>
                                         </div>
                                         
-                                        <div className="flex items-center gap-3">
-                                            <div className="bg-white p-1.5 rounded-2xl shadow-sm border border-slate-200 flex items-center gap-2 pr-4">
-                                                <div className="p-2.5 bg-exam-indigo/10 text-exam-indigo rounded-xl"><Layers size={20}/></div>
+                                        <div className="flex items-center gap-2">
+                                            <div className="bg-white p-1 rounded-xl shadow-2xs border border-slate-200 flex items-center gap-2 pr-3">
+                                                <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg"><Layers size={16}/></div>
                                                 <div>
-                                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Số liệu của</div>
+                                                    <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider leading-none mb-0.5">Số liệu của</div>
                                                     <select 
-                                                        className="bg-transparent border-none p-0 text-sm font-black text-slate-700 outline-none cursor-pointer focus:ring-0"
+                                                        className="bg-transparent border-none p-0 text-xs font-bold text-slate-700 outline-none cursor-pointer focus:ring-0"
                                                         value={selectedMatrixId}
                                                         onChange={(e) => handleMatrixSelect(e.target.value)}
                                                     >
@@ -1836,35 +1836,35 @@ export const OnlineExam: React.FC = () => {
                                                 <button 
                                                     onClick={handleExportMatrixStats}
                                                     disabled={matrixResults.length === 0}
-                                                    className="h-[60px] bg-exam-indigo hover:bg-indigo-700 text-white px-8 rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-indigo-100 flex items-center gap-3 transition-all active:scale-95 disabled:opacity-30"
+                                                    className="h-8.5 bg-blue-600 hover:bg-blue-700 text-white px-3.5 rounded-lg font-bold text-xs uppercase tracking-wider shadow-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-40"
                                                 >
-                                                    <FileText size={20}/> Xuất Kết Quả (Word)
+                                                    <FileText size={15}/> Xuất Kết Quả (Word)
                                                 </button>
                                             ) : (
-                                                <div className="flex items-center gap-3">
+                                                <div className="flex items-center gap-2">
                                                     {history.length > 0 && (
                                                         <button 
                                                             type="button"
                                                             onClick={handleDeleteAllHistory}
-                                                            className="h-[60px] bg-red-50 text-red-600 border border-red-100 px-6 rounded-2xl font-black text-xs uppercase tracking-widest flex items-center gap-3 hover:bg-red-100 transition-all shadow-sm"
+                                                            className="h-8.5 bg-rose-50 text-rose-700 border border-rose-200 px-3 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 hover:bg-rose-100 transition-all shadow-2xs"
                                                             title="Xoá toàn bộ lịch sử"
                                                         >
-                                                            <Trash2 size={20}/> Xoá hết
+                                                            <Trash2 size={15}/> Xoá hết
                                                         </button>
                                                     )}
                                                     <div className="relative group/export">
                                                         <button 
                                                             onClick={() => setShowExportMenu(!showExportMenu)}
-                                                            className="h-[60px] bg-white border border-slate-200 text-slate-700 px-8 rounded-2xl font-black text-xs uppercase tracking-widest shadow-lg shadow-slate-100 flex items-center gap-3 hover:bg-slate-50 transition-all"
+                                                            className="h-8.5 bg-white border border-slate-200 text-slate-700 px-3.5 rounded-lg font-bold text-xs uppercase tracking-wider shadow-2xs flex items-center gap-1.5 hover:bg-slate-50 transition-all"
                                                         >
-                                                            <Download size={20}/> Tải Bảng Điểm <ChevronDown size={14}/>
+                                                            <Download size={15}/> Tải Bảng Điểm <ChevronDown size={13}/>
                                                         </button>
                                                         {showExportMenu && (
-                                                            <div className="absolute right-0 mt-3 w-64 bg-white rounded-[2rem] shadow-2xl border border-slate-100 z-50 overflow-hidden animate-in fade-in slide-in-from-top-4 duration-300 ring-1 ring-slate-200/50">
-                                                                <div className="p-4 bg-slate-50 border-b border-slate-100 text-[10px] font-black text-slate-400 uppercase tracking-widest">Tải về theo định dạng Excel</div>
-                                                                <button onClick={() => { handleExport('LATEST'); setShowExportMenu(false); }} className="w-full text-left px-6 py-4 text-xs font-black text-slate-600 hover:bg-exam-indigo/5 hover:text-exam-indigo transition-all flex items-center gap-3 border-b border-slate-50"><div className="w-2 h-2 rounded-full bg-exam-indigo"></div> Lần thi mới nhất</button>
-                                                                <button onClick={() => { handleExport('BEST'); setShowExportMenu(false); }} className="w-full text-left px-6 py-4 text-xs font-black text-slate-600 hover:bg-exam-indigo/5 hover:text-exam-indigo transition-all flex items-center gap-3 border-b border-slate-50"><div className="w-2 h-2 rounded-full bg-exam-green"></div> Điểm cao nhất</button>
-                                                                <button onClick={() => { handleExport('ALL'); setShowExportMenu(false); }} className="w-full text-left px-6 py-4 text-xs font-black text-slate-600 hover:bg-exam-indigo/5 hover:text-exam-indigo transition-all flex items-center gap-3"><div className="w-2 h-2 rounded-full bg-exam-orange"></div> Tất cả lịch sử</button>
+                                                            <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-slate-200/50">
+                                                                <div className="p-2.5 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tải về theo định dạng Excel</div>
+                                                                <button onClick={() => { handleExport('LATEST'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2 border-b border-slate-50"><div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div> Lần thi mới nhất</button>
+                                                                <button onClick={() => { handleExport('BEST'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2 border-b border-slate-50"><div className="w-1.5 h-1.5 rounded-full bg-emerald-600"></div> Điểm cao nhất</button>
+                                                                <button onClick={() => { handleExport('ALL'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div> Tất cả lịch sử</button>
                                                             </div>
                                                         )}
                                                     </div>
@@ -1873,60 +1873,60 @@ export const OnlineExam: React.FC = () => {
                                         </div>
                                     </div>
 
-                                    <div className="bg-white rounded-[2.5rem] shadow-2xl shadow-slate-200/40 border border-slate-100 overflow-hidden transition-all">
+                                    <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all">
                                         {selectedMatrixId ? (
                                             <div className="overflow-x-auto custom-scrollbar">
                                                 <table className="w-full text-left border-collapse">
                                                     <thead>
-                                                        <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
-                                                            <th className="px-8 py-6">Thí Sinh</th>
-                                                            <th className="px-8 py-6">Đơn vị / Lớp</th>
-                                                            <th className="px-8 py-6 text-center">Điểm số</th>
-                                                            <th className="px-8 py-6 text-center">Thời lượng</th>
-                                                            <th className="px-8 py-6 text-right">Ngày thực hiện</th>
-                                                            <th className="px-8 py-6 text-right">Hành động</th>
+                                                        <tr className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                                                            <th className="px-4 py-3">Thí Sinh</th>
+                                                            <th className="px-4 py-3">Đơn vị / Lớp</th>
+                                                            <th className="px-4 py-3 text-center">Điểm số</th>
+                                                            <th className="px-4 py-3 text-center">Thời lượng</th>
+                                                            <th className="px-4 py-3 text-right">Ngày thực hiện</th>
+                                                            <th className="px-4 py-3 text-right">Hành động</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody className="divide-y divide-slate-50">
+                                                    <tbody className="divide-y divide-slate-100">
                                                         {loadingMatrixStats ? (
-                                                            <tr><td colSpan={6} className="p-20 text-center"><Loader2 className="animate-spin inline text-exam-orange" size={32}/></td></tr>
+                                                            <tr><td colSpan={6} className="p-12 text-center"><Loader2 className="animate-spin inline text-blue-600" size={24}/></td></tr>
                                                         ) : matrixResults.map((r: any) => (
                                                             <tr key={r.id || Math.random()} className="group hover:bg-slate-50/80 transition-all">
-                                                                <td className="px-8 py-5">
-                                                                    <div className="flex items-center gap-3">
-                                                                        <div className="w-10 h-10 rounded-xl bg-exam-indigo/10 flex items-center justify-center text-exam-indigo font-black text-xs uppercase tracking-tighter">
+                                                                <td className="px-4 py-3">
+                                                                    <div className="flex items-center gap-2.5">
+                                                                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xs uppercase">
                                                                             {r.full_name?.charAt(0)}
                                                                         </div>
-                                                                        <div className="font-extrabold text-slate-800 text-sm">{r.full_name || 'Học viên ẩn danh'}</div>
+                                                                        <div className="font-bold text-slate-800 text-xs">{r.full_name || 'Học viên ẩn danh'}</div>
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-8 py-5 text-slate-400 text-xs font-bold font-sans tracking-normal uppercase">{r.school || 'Chưa cập nhật'}</td>
-                                                                <td className="px-8 py-5 text-center">
-                                                                    <div className={`text-xl font-black ${Number(r.score) >= 8 ? 'text-exam-green' : Number(r.score) >= 5 ? 'text-exam-blue' : 'text-exam-red'}`}>
+                                                                <td className="px-4 py-3 text-slate-500 text-xs font-semibold font-sans tracking-normal">{r.school || 'Chưa cập nhật'}</td>
+                                                                <td className="px-4 py-3 text-center">
+                                                                    <div className={`text-base font-black ${Number(r.score) >= 8 ? 'text-emerald-600' : Number(r.score) >= 5 ? 'text-blue-600' : 'text-rose-600'}`}>
                                                                         {Number(r.score).toFixed(2)}
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-8 py-5 text-center">
-                                                                    <div className="text-[10px] font-black text-slate-400 bg-slate-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 uppercase font-mono">
-                                                                        <Timer size={12}/> {Math.floor(r.duration_seconds/60)}p {r.duration_seconds%60}s
+                                                                <td className="px-4 py-3 text-center">
+                                                                    <div className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md inline-flex items-center gap-1 font-mono">
+                                                                        <Timer size={11}/> {Math.floor(r.duration_seconds/60)}p {r.duration_seconds%60}s
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-8 py-5 text-right font-mono text-[10px] text-slate-400 uppercase tracking-widest">{new Date(r.created_at).toLocaleString('vi-VN')}</td>
-                                                                <td className="px-8 py-5 text-right">
-                                                                    <div className="flex justify-end gap-2">
+                                                                <td className="px-4 py-3 text-right font-mono text-[10px] text-slate-500">{new Date(r.created_at).toLocaleString('vi-VN')}</td>
+                                                                <td className="px-4 py-3 text-right">
+                                                                    <div className="flex justify-end gap-1.5">
                                                                         <button 
                                                                             onClick={() => handleViewHistory(r)} 
-                                                                            className="w-10 h-10 bg-white border border-slate-200 text-slate-400 hover:text-exam-orange hover:border-exam-orange hover:bg-exam-orange/5 rounded-xl shadow-sm transition-all flex items-center justify-center group/btn"
+                                                                            className="w-8 h-8 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50/50 rounded-lg shadow-2xs transition-all flex items-center justify-center group/btn"
                                                                         >
-                                                                            <Eye size={18} className="group-hover/btn:scale-110 transition-transform"/>
+                                                                            <Eye size={15} className="group-hover/btn:scale-110 transition-transform"/>
                                                                         </button>
                                                                         {(user?.role === 'ADMIN' || user?.role === 'TEACHER') && (
                                                                             <button 
                                                                                 onClick={() => handleDeleteHistory(r.id)} 
-                                                                                className="w-10 h-10 bg-white border border-slate-200 text-slate-400 hover:text-exam-red hover:border-exam-red rounded-xl p-2 font-black text-[10px] uppercase tracking-widest shadow-sm transition-all flex items-center justify-center group/btn"
+                                                                                className="w-8 h-8 bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-300 rounded-lg font-bold shadow-2xs transition-all flex items-center justify-center group/btn"
                                                                                 title="Xoá kết quả của học sinh"
                                                                             >
-                                                                                <Trash2 size={16}/>
+                                                                                <Trash2 size={14}/>
                                                                             </button>
                                                                         )}
                                                                     </div>
@@ -1934,7 +1934,7 @@ export const OnlineExam: React.FC = () => {
                                                             </tr>
                                                         ))}
                                                         {matrixResults.length === 0 && !loadingMatrixStats && (
-                                                            <tr><td colSpan={6} className="p-32 text-center text-slate-300 font-black uppercase text-xs tracking-[0.2em] italic">Chưa có bản ghi kết quả nào</td></tr>
+                                                            <tr><td colSpan={6} className="p-16 text-center text-slate-400 font-bold uppercase text-xs tracking-wider italic">Chưa có bản ghi kết quả nào</td></tr>
                                                         )}
                                                     </tbody>
                                                 </table>
@@ -1943,48 +1943,48 @@ export const OnlineExam: React.FC = () => {
                                             <div className="overflow-x-auto custom-scrollbar">
                                                 <table className="w-full text-left border-collapse">
                                                     <thead>
-                                                        <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
-                                                            <th className="px-8 py-6 font-mono">TÊN BÀI THI</th>
-                                                            <th className="px-8 py-6 text-center">ĐIỂM</th>
-                                                            <th className="px-8 py-6 text-center">THỜI GIAN</th>
-                                                            <th className="px-8 py-6 text-right">NGÀY THỰC HIỆN</th>
-                                                            <th className="px-8 py-6 text-right">CHI TIẾT</th>
+                                                        <tr className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                                                            <th className="px-4 py-3 font-mono">TÊN BÀI THI</th>
+                                                            <th className="px-4 py-3 text-center">ĐIỂM</th>
+                                                            <th className="px-4 py-3 text-center">THỜI GIAN</th>
+                                                            <th className="px-4 py-3 text-right">NGÀY THỰC HIỆN</th>
+                                                            <th className="px-4 py-3 text-right">CHI TIẾT</th>
                                                         </tr>
                                                     </thead>
-                                                    <tbody className="divide-y divide-slate-50">
+                                                    <tbody className="divide-y divide-slate-100">
                                                         {history.map((h: any) => (
                                                             <tr key={h.id} className="group hover:bg-slate-50/80 transition-all">
-                                                                <td className="px-8 py-5">
-                                                                    <div className="flex items-center gap-3">
-                                                                        <div className="p-2.5 bg-exam-indigo/5 text-exam-indigo rounded-xl group-hover:bg-exam-indigo group-hover:text-white transition-all"><Book size={18}/></div>
-                                                                        <div className="font-extrabold text-slate-700 text-sm tracking-tight">{h.exam_title}</div>
+                                                                <td className="px-4 py-3">
+                                                                    <div className="flex items-center gap-2.5">
+                                                                        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all"><Book size={15}/></div>
+                                                                        <div className="font-bold text-slate-800 text-xs tracking-tight">{h.exam_title}</div>
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-8 py-5 text-center">
-                                                                    <div className={`text-2xl font-black ${Number(h.score) >= 8 ? 'text-exam-green' : Number(h.score) >= 5 ? 'text-exam-blue' : 'text-exam-red'}`}>
+                                                                <td className="px-4 py-3 text-center">
+                                                                    <div className={`text-base font-black ${Number(h.score) >= 8 ? 'text-emerald-600' : Number(h.score) >= 5 ? 'text-blue-600' : 'text-rose-600'}`}>
                                                                         {Number(h.score).toFixed(2)}
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-8 py-5 text-center">
-                                                                    <div className="text-[10px] font-black text-slate-400 bg-slate-100 px-3 py-1.5 rounded-lg inline-flex items-center gap-1.5 uppercase font-mono tracking-widest">
-                                                                        <Timer size={12}/> {Math.floor(h.duration_seconds/60)}p {h.duration_seconds%60}s
+                                                                <td className="px-4 py-3 text-center">
+                                                                    <div className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md inline-flex items-center gap-1 font-mono tracking-wider">
+                                                                        <Timer size={11}/> {Math.floor(h.duration_seconds/60)}p {h.duration_seconds%60}s
                                                                     </div>
                                                                 </td>
-                                                                <td className="px-8 py-5 text-right font-mono text-[10px] text-slate-400 uppercase tracking-widest">{new Date(h.created_at).toLocaleString('vi-VN')}</td>
-                                                                <td className="px-8 py-5 text-right">
-                                                                    <div className="flex justify-end gap-2">
+                                                                <td className="px-4 py-3 text-right font-mono text-[10px] text-slate-500">{new Date(h.created_at).toLocaleString('vi-VN')}</td>
+                                                                <td className="px-4 py-3 text-right">
+                                                                    <div className="flex justify-end gap-1.5">
                                                                         <button 
                                                                             onClick={() => handleViewHistory(h)} 
-                                                                            className="bg-white border border-slate-200 text-slate-400 hover:text-exam-orange hover:border-exam-orange rounded-xl px-4 py-2 font-black text-[10px] uppercase tracking-widest shadow-sm transition-all inline-flex items-center gap-2 group/btn"
+                                                                            className="h-8 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-300 rounded-lg px-2.5 font-bold text-xs shadow-2xs transition-all inline-flex items-center gap-1.5 group/btn"
                                                                         >
-                                                                            <Eye size={16}/> Xem lại
+                                                                            <Eye size={14}/> Xem lại
                                                                         </button>
                                                                         <button 
                                                                             onClick={() => handleDeleteHistory(h.id)} 
-                                                                            className="bg-white border border-slate-200 text-slate-400 hover:text-exam-red hover:border-exam-red rounded-xl p-2 font-black text-[10px] uppercase tracking-widest shadow-sm transition-all inline-flex items-center group/btn"
+                                                                            className="w-8 h-8 bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-300 rounded-lg font-bold shadow-2xs transition-all inline-flex items-center justify-center group/btn"
                                                                             title="Xoá lịch sử"
                                                                         >
-                                                                            <Trash2 size={16}/>
+                                                                            <Trash2 size={14}/>
                                                                         </button>
                                                                     </div>
                                                                 </td>
@@ -2018,34 +2018,34 @@ export const OnlineExam: React.FC = () => {
                 </div>
             )}
             <header className="bg-white border-b border-slate-200 px-3 md:px-5 py-2 shrink-0 flex justify-between items-center gap-2 shadow-sm z-30 sticky top-0">
-                <div className="flex items-center gap-2 md:gap-4 min-w-0">
+                <div className="flex items-center gap-2 md:gap-3 min-w-0">
                     <button 
                         type="button"
                         aria-label="Thoát bài thi"
                         onClick={() => { 
                             showConfirm("Thoát bài thi?", "Tiến trình của bạn sẽ được lưu lại (nếu là bài tự luyện). Bạn có chắc chắn muốn quay lại?", () => { setMode('DASHBOARD'); clearSvgCache(); });
                         }} 
-                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 hover:bg-slate-100 rounded-xl text-slate-600 transition-all border border-slate-200 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
+                        className="w-8 h-8 flex items-center justify-center bg-slate-50 hover:bg-slate-100 rounded-lg text-slate-700 transition-all border border-slate-200 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
                     >
-                        <ArrowLeft size={18}/>
+                        <ArrowLeft size={16}/>
                     </button>
-                    <div className="h-8 w-px bg-slate-200 hidden md:block"></div>
+                    <div className="h-6 w-px bg-slate-200 hidden md:block"></div>
                     <div className="min-w-0">
-                        <h2 className="font-extrabold text-sm text-slate-800 line-clamp-1 tracking-tight flex items-center gap-2">
-                            <BookOpen className="text-orange-500 shrink-0" size={14}/>
+                        <h2 className="font-extrabold text-xs sm:text-sm text-slate-800 line-clamp-1 tracking-tight flex items-center gap-1.5">
+                            <BookOpen className="text-blue-600 shrink-0" size={14}/>
                             <span className="truncate">{currentExamTitle}</span>
                         </h2>
-                        <div className="flex items-center gap-3 mt-0.5">
-                            <div className="px-2 py-0.5 bg-slate-100 text-[10px] font-bold text-slate-600 uppercase tracking-wider rounded-lg border border-slate-200">
+                        <div className="flex items-center gap-2 mt-0.5">
+                            <div className="px-2 py-0.5 bg-slate-100 text-[10px] font-bold text-slate-700 uppercase tracking-wider rounded-md border border-slate-200">
                                 {currentQIdx + 1} / {questions.length}
                             </div>
                             {isReviewMode ? (
                                 <div className="flex items-center gap-1 text-emerald-600 font-bold text-xs uppercase tracking-wider">
-                                    <Award size={14}/> {Number(score || 0).toFixed(2)} ĐIỂM
+                                    <Award size={13}/> {Number(score || 0).toFixed(2)} ĐIỂM
                                 </div>
                             ) : (
-                                <div className={`flex items-center gap-1.5 font-mono font-bold text-sm transition-colors ${timeLeft < 300 ? 'text-rose-600 animate-pulse font-black' : 'text-slate-700'}`}>
-                                    <Clock size={16} className={timeLeft < 300 ? 'text-rose-600' : 'text-orange-500'}/> 
+                                <div className={`flex items-center gap-1.5 font-mono font-bold text-xs sm:text-sm transition-colors px-2 py-0.5 rounded-md border ${timeLeft < 300 ? 'text-rose-600 bg-rose-50 border-rose-200 animate-pulse font-black' : 'text-slate-800 bg-slate-50 border-slate-200'}`}>
+                                    <Clock size={14} className={timeLeft < 300 ? 'text-rose-600' : 'text-blue-600'}/> 
                                     {formatTime(timeLeft)}
                                 </div>
                             )}
@@ -2053,20 +2053,20 @@ export const OnlineExam: React.FC = () => {
                     </div>
                 </div>
 
-                <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                     {/* Autosave Indicator */}
                     {!isReviewMode && (
-                        <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 bg-emerald-50 border border-emerald-200/80 rounded-xl text-emerald-700 text-[10px] font-bold shadow-sm">
-                            <Cloud size={14} className="text-emerald-500 shrink-0" />
+                        <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 bg-emerald-50 border border-emerald-200 rounded-md text-emerald-700 text-[10px] font-bold shadow-2xs">
+                            <Cloud size={13} className="text-emerald-500 shrink-0" />
                             <span>Đã lưu tự động</span>
                         </div>
                     )}
 
                     {/* Font Size Adjuster */}
-                    <div className="hidden lg:flex items-center bg-slate-50 p-1 rounded-xl border border-slate-200 gap-1">
-                        <button type="button" aria-label="Giảm cỡ chữ" onClick={() => handleFontSize(-2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-600 hover:text-slate-800 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500" title="Giảm cỡ chữ"><Minus size={14}/></button>
-                        <div className="px-2 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Font</div>
-                        <button type="button" aria-label="Tăng cỡ chữ" onClick={() => handleFontSize(2)} className="w-8 h-8 flex items-center justify-center hover:bg-slate-200 rounded-lg text-slate-600 hover:text-slate-800 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500" title="Tăng cỡ chữ"><Plus size={14}/></button>
+                    <div className="hidden lg:flex items-center bg-slate-50 p-0.5 rounded-lg border border-slate-200 gap-0.5">
+                        <button type="button" aria-label="Giảm cỡ chữ" onClick={() => handleFontSize(-2)} className="w-7 h-7 flex items-center justify-center hover:bg-slate-200 rounded-md text-slate-600 hover:text-slate-800 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500" title="Giảm cỡ chữ"><Minus size={13}/></button>
+                        <div className="px-1.5 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Font</div>
+                        <button type="button" aria-label="Tăng cỡ chữ" onClick={() => handleFontSize(2)} className="w-7 h-7 flex items-center justify-center hover:bg-slate-200 rounded-md text-slate-600 hover:text-slate-800 transition-all cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500" title="Tăng cỡ chữ"><Plus size={13}/></button>
                     </div>
 
                     {/* Fullscreen Toggle */}
@@ -2074,20 +2074,20 @@ export const OnlineExam: React.FC = () => {
                         type="button"
                         aria-label={isFullscreen ? "Thoát toàn màn hình" : "Chế độ toàn màn hình"}
                         onClick={toggleFullscreen}
-                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
+                        className="w-8 h-8 flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-lg transition-all active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
                         title={isFullscreen ? "Thoát toàn màn hình" : "Chế độ toàn màn hình"}
                     >
-                        {isFullscreen ? <Minimize2 size={16}/> : <Maximize2 size={16}/>}
+                        {isFullscreen ? <Minimize2 size={15}/> : <Maximize2 size={15}/>}
                     </button>
 
                     <button
                         type="button"
                         aria-label="Mở phiếu trả lời"
-                        className="lg:hidden w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all font-bold flex items-center justify-center active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
+                        className="lg:hidden w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 transition-all font-bold flex items-center justify-center active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
                         onClick={() => setShowSidebar(true)}
                         title="Bảng trả lời"
                     >
-                        <Layout size={16}/>
+                        <Layout size={15}/>
                     </button>
 
                     {!isReviewMode && (
@@ -2098,10 +2098,10 @@ export const OnlineExam: React.FC = () => {
                                 const qId = questions[currentQIdx].id;
                                 setMarkedForReview(prev => ({ ...prev, [qId]: !prev[qId] }));
                             }}
-                            className={`min-h-[36px] sm:min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-xl transition-all flex items-center gap-1.5 font-bold text-xs uppercase tracking-wider border active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500 ${markedForReview[questions[currentQIdx].id] ? 'bg-amber-50 text-amber-700 border-amber-300 shadow-sm' : 'bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-800 hover:bg-slate-100'}`}
+                            className={`h-8 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1.5 font-bold text-xs uppercase tracking-wider border active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500 ${markedForReview[questions[currentQIdx].id] ? 'bg-amber-50 text-amber-700 border-amber-300 shadow-2xs' : 'bg-slate-50 text-slate-600 border-slate-200 hover:text-slate-800 hover:bg-slate-100'}`}
                             title="Đánh dấu câu hỏi cần xem lại"
                         >
-                            <Flag size={15}/>
+                            <Flag size={14}/>
                             <span className="hidden sm:inline text-xs">Đánh dấu</span>
                         </button>
                     )}
@@ -2110,10 +2110,10 @@ export const OnlineExam: React.FC = () => {
                         type="button"
                         aria-label="Báo lỗi câu hỏi"
                         onClick={() => setShowReportModal(true)} 
-                        className="w-9 h-9 sm:w-10 sm:h-10 flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-xl transition-all active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500"
+                        className="w-8 h-8 flex items-center justify-center bg-slate-50 border border-slate-200 text-slate-600 hover:bg-slate-100 rounded-lg transition-all active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-amber-500"
                         title="Báo lỗi câu hỏi"
                     >
-                        <AlertTriangle size={16}/>
+                        <AlertTriangle size={15}/>
                     </button>
 
                     {!isReviewMode && (
@@ -2121,9 +2121,9 @@ export const OnlineExam: React.FC = () => {
                             type="button"
                             aria-label="Nộp bài thi"
                             onClick={() => setShowSubmitConfirmModal(true)} 
-                            className="bg-orange-500 hover:bg-orange-600 text-white min-h-[36px] sm:min-h-[40px] px-3.5 sm:px-5 py-2 rounded-xl font-bold text-xs sm:text-sm shadow-md shadow-orange-500/25 transition-all active:scale-95 uppercase tracking-wider border border-orange-400/50 flex items-center gap-1.5 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-orange-500"
+                            className="bg-emerald-600 hover:bg-emerald-700 text-white h-8 px-3.5 rounded-lg font-bold text-xs shadow-sm shadow-emerald-500/20 transition-all active:scale-95 uppercase tracking-wider border border-emerald-500 flex items-center gap-1.5 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-emerald-500"
                         >
-                            <ShieldCheck size={16}/>
+                            <ShieldCheck size={15}/>
                             <span>Nộp bài</span>
                         </button>
                     )}
@@ -2209,14 +2209,14 @@ export const OnlineExam: React.FC = () => {
                                         aria-label="Chuyển đến câu hỏi trước"
                                         onClick={() => setCurrentQIdx(Math.max(0, currentQIdx - 1))} 
                                         disabled={currentQIdx === 0} 
-                                        className="min-h-[44px] flex items-center gap-2 px-4 py-2.5 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed border border-slate-200 rounded-xl font-bold text-xs text-slate-700 uppercase tracking-wider transition-all hover:shadow-sm active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
+                                        className="h-8.5 flex items-center gap-1.5 px-3.5 py-1.5 bg-white hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed border border-slate-300 rounded-lg font-bold text-xs text-slate-700 uppercase tracking-wider transition-all hover:shadow-2xs active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
                                     >
-                                        <ChevronRight className="rotate-180" size={16}/> Câu trước
+                                        <ChevronRight className="rotate-180" size={15}/> Câu trước
                                     </button>
                                     
                                     <div className="hidden sm:flex items-center gap-1.5" aria-hidden="true">
                                         {questions.slice(Math.max(0, currentQIdx - 1), Math.min(questions.length, currentQIdx + 2)).map((_, i) => (
-                                            <div key={i} className={`h-1 rounded-full transition-all duration-300 ${i === (currentQIdx <= 0 ? 0 : 1) ? 'w-6 bg-indigo-600' : 'w-1.5 bg-slate-200'}`}></div>
+                                            <div key={i} className={`h-1 rounded-full transition-all duration-300 ${i === (currentQIdx <= 0 ? 0 : 1) ? 'w-6 bg-blue-600' : 'w-1.5 bg-slate-200'}`}></div>
                                         ))}
                                     </div>
 
@@ -2225,9 +2225,9 @@ export const OnlineExam: React.FC = () => {
                                         aria-label="Chuyển đến câu hỏi tiếp theo"
                                         onClick={() => setCurrentQIdx(Math.min(questions.length - 1, currentQIdx + 1))} 
                                         disabled={currentQIdx === questions.length - 1} 
-                                        className="min-h-[44px] flex items-center gap-2 px-5 py-2.5 bg-indigo-600 text-white hover:bg-indigo-700 disabled:opacity-40 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed border border-indigo-600 disabled:border-slate-200 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-md shadow-indigo-600/20 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-indigo-500"
+                                        className="h-8.5 flex items-center gap-1.5 px-4 py-1.5 bg-blue-600 text-white hover:bg-blue-700 disabled:opacity-40 disabled:bg-slate-200 disabled:text-slate-400 disabled:cursor-not-allowed border border-blue-600 disabled:border-slate-200 rounded-lg font-bold text-xs uppercase tracking-wider transition-all shadow-sm shadow-blue-600/20 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
                                     >
-                                        Câu sau <ChevronRight size={16}/>
+                                        Câu sau <ChevronRight size={15}/>
                                     </button>
                                 </div>
                             </div>
@@ -2236,58 +2236,58 @@ export const OnlineExam: React.FC = () => {
                 </main>
 
                 {/* Question Navigator Sidebar */}
-                <aside className={`fixed inset-y-0 right-0 z-40 w-80 bg-white border-l border-slate-200 shadow-2xl transition-transform duration-500 lg:static lg:translate-x-0 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
+                <aside className={`fixed inset-y-0 right-0 z-40 w-72 bg-white border-l border-slate-200 shadow-xl transition-transform duration-500 lg:static lg:translate-x-0 ${showSidebar ? 'translate-x-0' : 'translate-x-full'}`}>
                     <div className="h-full flex flex-col">
-                        <div className="p-6 border-b border-slate-100">
-                            <div className="flex items-center justify-between mb-2">
-                                <h3 className="font-black text-sm uppercase tracking-widest text-slate-400 flex items-center gap-2">
-                                    <Layout size={14}/> Phiếu Trả Lời
+                        <div className="p-3.5 border-b border-slate-100">
+                            <div className="flex items-center justify-between mb-1.5">
+                                <h3 className="font-bold text-xs uppercase tracking-wider text-slate-500 flex items-center gap-1.5">
+                                    <Layout size={13}/> Phiếu Trả Lời
                                 </h3>
-                                <button onClick={() => setShowSidebar(false)} className="lg:hidden p-1.5 hover:bg-slate-100 rounded-lg text-slate-400 transition-all"><X size={18}/></button>
+                                <button onClick={() => setShowSidebar(false)} className="lg:hidden p-1 hover:bg-slate-100 rounded-lg text-slate-400 transition-all"><X size={16}/></button>
                             </div>
                             <div className="flex items-center gap-2">
-                                <div className="text-2xl font-black text-slate-800">
+                                <div className="text-xl font-black text-slate-800">
                                     {answeredCount}
-                                    <span className="text-sm font-bold text-slate-300 ml-1">/ {questions.length}</span>
+                                    <span className="text-xs font-bold text-slate-400 ml-1">/ {questions.length}</span>
                                 </div>
-                                <div className="flex-1 h-2 bg-slate-100 rounded-full overflow-hidden">
+                                <div className="flex-1 h-1.5 bg-slate-100 rounded-full overflow-hidden">
                                     <div 
-                                        className="h-full bg-exam-orange transition-all duration-1000 ease-out"
+                                        className="h-full bg-blue-600 transition-all duration-700 ease-out"
                                         style={{ width: `${questions.length ? (answeredCount / questions.length) * 100 : 0}%` }}
                                     ></div>
                                 </div>
                             </div>
-                            <div className="mt-2 text-xs text-slate-400">Số câu đã trả lời</div>
+                            <div className="mt-1 text-[11px] text-slate-500 font-medium">Số câu đã trả lời</div>
                         </div>
 
                         {/* Question Bubble Filter Tabs */}
-                        <div className="px-6 pt-3 pb-2 border-b border-slate-100 bg-slate-50/50 shrink-0">
-                            <div className="flex bg-slate-200/70 p-1 rounded-xl text-[10px] font-black">
+                        <div className="px-3 pt-2 pb-1.5 border-b border-slate-100 bg-slate-50/50 shrink-0">
+                            <div className="flex bg-slate-200/70 p-0.5 rounded-lg text-[10px] font-bold">
                                 <button
                                     type="button"
                                     onClick={() => setBubbleFilter('ALL')}
-                                    className={`flex-1 py-1.5 rounded-lg transition-all text-center ${bubbleFilter === 'ALL' ? 'bg-white text-slate-800 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                                    className={`flex-1 py-1 rounded-md transition-all text-center ${bubbleFilter === 'ALL' ? 'bg-white text-slate-800 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'}`}
                                 >
                                     Tất cả ({questions.length})
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setBubbleFilter('UNANSWERED')}
-                                    className={`flex-1 py-1.5 rounded-lg transition-all text-center ${bubbleFilter === 'UNANSWERED' ? 'bg-white text-rose-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                                    className={`flex-1 py-1 rounded-md transition-all text-center ${bubbleFilter === 'UNANSWERED' ? 'bg-white text-rose-600 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'}`}
                                 >
                                     Chưa làm ({questions.length - answeredCount})
                                 </button>
                                 <button
                                     type="button"
                                     onClick={() => setBubbleFilter('FLAGGED')}
-                                    className={`flex-1 py-1.5 rounded-lg transition-all text-center ${bubbleFilter === 'FLAGGED' ? 'bg-white text-amber-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
+                                    className={`flex-1 py-1 rounded-md transition-all text-center ${bubbleFilter === 'FLAGGED' ? 'bg-white text-amber-600 shadow-2xs font-extrabold' : 'text-slate-600 hover:text-slate-900'}`}
                                 >
                                     Cờ ({Object.values(markedForReview).filter(Boolean).length})
                                 </button>
                             </div>
                         </div>
 
-                        <div className="flex-1 overflow-y-auto p-6 custom-scrollbar space-y-6">
+                        <div className="flex-1 overflow-y-auto px-3 py-2.5 custom-scrollbar space-y-4">
                             {['TN', 'TF', 'KQ', 'TL'].map(type => {
                                 const typeNames: Record<string, string> = { TN: 'Trắc nghiệm', TF: 'Đúng/Sai', KQ: 'Trả lời ngắn', TL: 'Tự luận' };
                                 const qsInType = questions
@@ -2301,17 +2301,17 @@ export const OnlineExam: React.FC = () => {
                                 if (qsInType.length === 0) return null;
                                 return (
                                     <div key={type}>
-                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-3 leading-none flex items-center justify-between">
+                                        <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider mb-2 leading-none flex items-center justify-between">
                                             <span>{typeNames[type]}</span>
-                                            <span className="text-slate-300 text-[9px] font-semibold">{qsInType.length} câu</span>
+                                            <span className="text-slate-400 text-[9px] font-semibold">{qsInType.length} câu</span>
                                         </div>
-                                        <div className="grid grid-cols-5 gap-2.5">
+                                        <div className="grid grid-cols-5 gap-1.5">
                                             {qsInType.map(({ q, i }) => {
                                                 const isAns = isQuestionAnswered(q);
                                                 const isActive = i === currentQIdx;
                                                 const isMarked = markedForReview[q.id];
                                                 
-                                                let btnCls = "h-11 rounded-xl font-black text-xs border-2 transition-all flex items-center justify-center relative ";
+                                                let btnCls = "h-8.5 rounded-lg font-bold text-xs border transition-all flex items-center justify-center relative ";
                                                 
                                                 if (isReviewMode) {
                                                     let correct = false;
@@ -2334,21 +2334,21 @@ export const OnlineExam: React.FC = () => {
                                                     
                                                     if (!isAutoGradable) {
                                                         btnCls += isAns 
-                                                            ? "bg-indigo-50 border-indigo-200 text-indigo-600" 
-                                                            : "bg-slate-50 border-slate-100 text-slate-300";
+                                                            ? "bg-blue-50 border-blue-200 text-blue-700 font-bold" 
+                                                            : "bg-slate-50 border-slate-200 text-slate-400";
                                                     } else {
                                                         btnCls += correct 
-                                                            ? "bg-exam-green/10 border-exam-green text-exam-green" 
+                                                            ? "bg-emerald-50 border-emerald-500 text-emerald-700 font-extrabold" 
                                                             : isAns 
-                                                                ? "bg-exam-red/10 border-exam-red text-exam-red" 
-                                                                : "bg-slate-50 border-slate-100 text-slate-300";
+                                                                ? "bg-rose-50 border-rose-400 text-rose-700 font-extrabold" 
+                                                                : "bg-slate-50 border-slate-200 text-slate-400";
                                                     }
                                                 } else {
-                                                    if (isActive) btnCls += "bg-indigo-600 border-indigo-600 text-white shadow-xl ring-4 ring-indigo-50";
-                                                    else if (isAns) btnCls += "bg-indigo-50 border-indigo-200 text-indigo-600 font-black";
-                                                    else btnCls += "bg-white border-slate-100 text-slate-300 hover:border-slate-300 hover:text-slate-500";
+                                                    if (isActive) btnCls += "bg-blue-600 border-blue-600 text-white shadow-md ring-2 ring-blue-100";
+                                                    else if (isAns) btnCls += "bg-blue-50 border-blue-300 text-blue-700 font-extrabold";
+                                                    else btnCls += "bg-white border-slate-300 text-slate-700 hover:border-blue-400 hover:text-blue-600 hover:bg-blue-50/40";
                                                     
-                                                    if (isMarked) btnCls += " !border-orange-500 !text-orange-500 shadow-sm shadow-orange-100";
+                                                    if (isMarked) btnCls += " !border-amber-500 !text-amber-700 !bg-amber-50 shadow-2xs";
                                                 }
                                                 
                                                 return (
@@ -2360,8 +2360,8 @@ export const OnlineExam: React.FC = () => {
                                                         aria-current={isActive ? 'step' : undefined}
                                                     >
                                                         {isMarked && !isActive && (
-                                                            <div className="absolute -top-1.5 -right-1.5 w-4 h-4 bg-exam-orange text-white rounded-full flex items-center justify-center border-2 border-white">
-                                                                <Flag size={8} fill="currentColor"/>
+                                                            <div className="absolute -top-1 -right-1 w-3.5 h-3.5 bg-amber-500 text-white rounded-full flex items-center justify-center border border-white">
+                                                                <Flag size={7} fill="currentColor"/>
                                                             </div>
                                                         )}
                                                         {i + 1}
@@ -2375,22 +2375,22 @@ export const OnlineExam: React.FC = () => {
                         </div>
 
                         {!isReviewMode && (
-                            <div className="p-6 border-t border-slate-100">
-                                <div className="grid grid-cols-2 gap-3 mb-6">
-                                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">Hoàn thành</div>
-                                        <div className="text-xl font-black text-slate-800">{answeredCount}</div>
+                            <div className="p-3 border-t border-slate-100">
+                                <div className="grid grid-cols-2 gap-2 mb-2.5">
+                                    <div className="p-2 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                                        <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-0.5 leading-none">Hoàn thành</div>
+                                        <div className="text-lg font-black text-slate-800">{answeredCount}</div>
                                     </div>
-                                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
-                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1 leading-none">Cần xem lại</div>
-                                        <div className="text-xl font-black text-exam-orange">{Object.keys(markedForReview).filter(k => markedForReview[k]).length}</div>
+                                    <div className="p-2 bg-slate-50 rounded-xl border border-slate-100 text-center">
+                                        <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider mb-0.5 leading-none">Cần xem lại</div>
+                                        <div className="text-lg font-black text-amber-600">{Object.keys(markedForReview).filter(k => markedForReview[k]).length}</div>
                                     </div>
                                 </div>
                                 <button 
                                     onClick={() => setShowSubmitConfirmModal(true)}
-                                    className="w-full bg-orange-500 h-16 rounded-[1.5rem] text-white font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-3 hover:bg-orange-600 transition-all shadow-xl shadow-orange-100/50 hover:-translate-y-1 active:translate-y-0 active:scale-95"
+                                    className="w-full bg-emerald-600 hover:bg-emerald-700 h-9 rounded-xl text-white font-bold uppercase tracking-wider text-xs flex items-center justify-center gap-2 shadow-sm transition-all active:scale-95"
                                 >
-                                    Hoàn thành & nộp bài <ShieldCheck size={20}/>
+                                    Hoàn thành & nộp bài <ShieldCheck size={16}/>
                                 </button>
                             </div>
                         )}
@@ -2401,50 +2401,50 @@ export const OnlineExam: React.FC = () => {
             {/* Rich Submission Safety Confirmation Modal */}
             {showSubmitConfirmModal && (
                 <div className="fixed inset-0 z-[1000] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in">
-                    <div className="relative w-full max-w-md overflow-hidden rounded-3xl bg-white p-6 shadow-2xl border border-slate-200 animate-in zoom-in-95">
-                        <div className="flex items-center gap-3 mb-4">
-                            <div className="w-12 h-12 rounded-2xl bg-orange-100 text-orange-600 flex items-center justify-center font-bold shrink-0">
-                                <ShieldCheck size={26} />
+                    <div className="relative w-full max-w-md overflow-hidden rounded-2xl bg-white p-5 shadow-2xl border border-slate-200 animate-in zoom-in-95">
+                        <div className="flex items-center gap-3 mb-3">
+                            <div className="w-10 h-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold shrink-0">
+                                <ShieldCheck size={22} />
                             </div>
                             <div>
-                                <h3 className="text-lg font-black text-slate-900 leading-tight">Xác nhận nộp bài thi</h3>
+                                <h3 className="text-base font-black text-slate-900 leading-tight">Xác nhận nộp bài thi</h3>
                                 <p className="text-xs text-slate-500 mt-0.5">
-                                    Thời gian còn lại: <span className="font-mono font-bold text-orange-600">{formatTime(timeLeft)}</span>
+                                    Thời gian còn lại: <span className="font-mono font-bold text-blue-600">{formatTime(timeLeft)}</span>
                                 </p>
                             </div>
                         </div>
 
-                        <div className="grid grid-cols-3 gap-2.5 my-4">
-                            <div className="p-3 bg-emerald-50 rounded-2xl border border-emerald-100 text-center">
+                        <div className="grid grid-cols-3 gap-2 my-3">
+                            <div className="p-2 bg-emerald-50 rounded-xl border border-emerald-100 text-center">
                                 <div className="text-[9px] font-bold text-emerald-600 uppercase tracking-wider">Đã làm</div>
-                                <div className="text-xl font-black text-emerald-700 mt-0.5">{answeredCount}/{questions.length}</div>
+                                <div className="text-lg font-black text-emerald-700 mt-0.5">{answeredCount}/{questions.length}</div>
                             </div>
-                            <div className={`p-3 rounded-2xl border text-center ${questions.length - answeredCount > 0 ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-slate-50 border-slate-100 text-slate-600'}`}>
+                            <div className={`p-2 rounded-xl border text-center ${questions.length - answeredCount > 0 ? 'bg-rose-50 border-rose-200 text-rose-700' : 'bg-slate-50 border-slate-100 text-slate-600'}`}>
                                 <div className="text-[9px] font-bold uppercase tracking-wider">Chưa làm</div>
-                                <div className="text-xl font-black mt-0.5">{questions.length - answeredCount}</div>
+                                <div className="text-lg font-black mt-0.5">{questions.length - answeredCount}</div>
                             </div>
-                            <div className="p-3 bg-amber-50 rounded-2xl border border-amber-100 text-center">
+                            <div className="p-2 bg-amber-50 rounded-xl border border-amber-100 text-center">
                                 <div className="text-[9px] font-bold text-amber-600 uppercase tracking-wider">Đánh dấu</div>
-                                <div className="text-xl font-black text-amber-700 mt-0.5">{Object.values(markedForReview).filter(Boolean).length}</div>
+                                <div className="text-lg font-black text-amber-700 mt-0.5">{Object.values(markedForReview).filter(Boolean).length}</div>
                             </div>
                         </div>
 
                         {questions.length - answeredCount > 0 && (
-                            <div className="p-3 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 mb-4 text-rose-700 text-xs font-semibold">
-                                <AlertCircle size={16} className="shrink-0 text-rose-500" />
+                            <div className="p-2.5 bg-rose-50 border border-rose-200 rounded-xl flex items-center gap-2 mb-3 text-rose-700 text-xs font-semibold">
+                                <AlertCircle size={15} className="shrink-0 text-rose-500" />
                                 <span>Bạn vẫn còn {questions.length - answeredCount} câu chưa trả lời!</span>
                             </div>
                         )}
 
-                        <p className="text-xs text-slate-500 leading-relaxed mb-6">
+                        <p className="text-xs text-slate-500 leading-relaxed mb-4">
                             Sau khi xác nhận nộp bài, hệ thống sẽ kết thúc lượt thi và ghi nhận kết quả. Bạn không thể quay lại để sửa đáp án.
                         </p>
 
-                        <div className="flex gap-3 justify-end">
+                        <div className="flex gap-2.5 justify-end">
                             <button
                                 type="button"
                                 onClick={() => setShowSubmitConfirmModal(false)}
-                                className="flex-1 py-3 px-4 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black uppercase tracking-wider rounded-xl transition-colors"
+                                className="flex-1 h-8.5 px-3 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold uppercase tracking-wider rounded-lg transition-colors flex items-center justify-center"
                             >
                                 Tiếp tục làm bài
                             </button>
@@ -2454,9 +2454,9 @@ export const OnlineExam: React.FC = () => {
                                     setShowSubmitConfirmModal(false);
                                     finishExam();
                                 }}
-                                className="flex-1 py-3 px-4 bg-orange-500 hover:bg-orange-600 text-white text-xs font-black uppercase tracking-wider rounded-xl shadow-lg shadow-orange-500/20 transition-all active:scale-95 flex items-center justify-center gap-1.5"
+                                className="flex-1 h-8.5 px-3 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold uppercase tracking-wider rounded-lg shadow-sm transition-all active:scale-95 flex items-center justify-center gap-1.5"
                             >
-                                <ShieldCheck size={16} /> Nộp bài ngay
+                                <ShieldCheck size={15} /> Nộp bài ngay
                             </button>
                         </div>
                     </div>

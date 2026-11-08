@@ -341,53 +341,6 @@ export async function seedDatabase(pool) {
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
         `).catch(e => console.log("Migration notice (question_images):", e.message));
 
-        await pool.query(`CREATE TABLE IF NOT EXISTS social_post_queue (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY,
-            question_id INT NOT NULL,
-            caption TEXT NOT NULL,
-            scheduled_at DATETIME NOT NULL,
-            image_mime VARCHAR(20) NULL,
-            image_blob LONGBLOB NULL,
-            status ENUM('DRAFT','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT',
-            created_by INT NOT NULL,
-            approved_by INT NULL,
-            attempt_count INT NOT NULL DEFAULT 0,
-            claim_token CHAR(36) NULL,
-            publish_started_at DATETIME NULL,
-            posted_at DATETIME NULL,
-            fb_photo_id VARCHAR(100) NULL,
-            fb_post_id VARCHAR(100) NULL,
-            last_error VARCHAR(1000) NULL,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            INDEX idx_social_due(status,scheduled_at,id),
-            UNIQUE KEY uq_social_claim(claim_token),
-            INDEX idx_social_question(question_id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
-        // CREATE TABLE IF NOT EXISTS does not upgrade an older table. Keep every
-        // column used by both manual planning and the optional publisher in sync.
-        await pool.query(`ALTER TABLE social_post_queue
-            ADD COLUMN IF NOT EXISTS image_mime VARCHAR(20) NULL,
-            ADD COLUMN IF NOT EXISTS image_blob LONGBLOB NULL,
-            ADD COLUMN IF NOT EXISTS approved_by INT NULL,
-            ADD COLUMN IF NOT EXISTS attempt_count INT NOT NULL DEFAULT 0,
-            ADD COLUMN IF NOT EXISTS claim_token CHAR(36) NULL,
-            ADD COLUMN IF NOT EXISTS publish_started_at DATETIME NULL,
-            ADD COLUMN IF NOT EXISTS posted_at DATETIME NULL,
-            ADD COLUMN IF NOT EXISTS fb_photo_id VARCHAR(100) NULL,
-            ADD COLUMN IF NOT EXISTS fb_post_id VARCHAR(100) NULL,
-            ADD COLUMN IF NOT EXISTS last_error VARCHAR(1000) NULL,
-            ADD COLUMN IF NOT EXISTS created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            ADD COLUMN IF NOT EXISTS updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`);
-        await pool.query(`ALTER TABLE social_post_queue
-            MODIFY COLUMN status ENUM('DRAFT','READY','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT'`);
-        // Old manual queues used READY. Preserve those rows before normalizing.
-        await pool.query("UPDATE social_post_queue SET status='DRAFT' WHERE status='READY'");
-        const [socialImageColumns] = await pool.query("SHOW COLUMNS FROM social_post_queue WHERE Field IN ('image_mime','image_blob')");
-        if (socialImageColumns.some(column => column.Null === 'NO')) {
-            await pool.query('ALTER TABLE social_post_queue MODIFY COLUMN image_mime VARCHAR(20) NULL, MODIFY COLUMN image_blob LONGBLOB NULL');
-        }
-
         await pool.query(`
             CREATE TABLE IF NOT EXISTS tikz_render_failures (
                 question_id INT NOT NULL,
