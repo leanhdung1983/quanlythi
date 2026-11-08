@@ -1,4 +1,4 @@
-export const checkKQAnswer = (userAns: any, correctAns: any): boolean => {
+export const checkKQAnswer = (userAns: unknown, correctAns: unknown): boolean => {
     if (!userAns || !correctAns) return false;
     const normU = userAns.toString().trim().replace(/\s+/g, '').replace(/,/g, '.').toLowerCase();
     const corrects = correctAns.toString().trim().replace(/[\{\}]/g, '').toLowerCase().split(';');
@@ -26,8 +26,8 @@ export interface ExamScoringSettings {
 }
 
 export const calculateExamScore = (
-    questions: any[],
-    answers: Record<string, any>,
+    questions: Array<{ id: string | number; type?: string; options?: Array<{ id: string; isCorrect: boolean }>; correctAnswer?: string }>,
+    answers: Record<string, unknown>,
     settings?: ExamScoringSettings
 ): number => {
     const countTN = questions.filter(q => q.type === 'TN').length;
@@ -61,12 +61,13 @@ export const calculateExamScore = (
         const userAns = answers[q.id];
         
         if (q.type === 'TN') {
-            if (userAns === q.options?.find((o: any) => o.isCorrect)?.id) totalPoints += pTN;
+            if (userAns === q.options?.find(o => o.isCorrect)?.id) totalPoints += pTN;
         } else if (q.type === 'TF' && userAns && typeof userAns === 'object') {
             let correctCount = 0; 
             const options = Array.isArray(q.options) ? q.options : [];
-            options.forEach((o: any, idx: number) => {
-                const val = userAns[o.id] ?? userAns[String(idx + 1)] ?? userAns[idx] ?? userAns[String.fromCharCode(97 + idx)] ?? userAns[String.fromCharCode(65 + idx)];
+            const userAnsMap = userAns as Record<string, unknown>;
+            options.forEach((o, idx: number) => {
+                const val = userAnsMap[o.id] ?? userAnsMap[String(idx + 1)] ?? userAnsMap[idx] ?? userAnsMap[String.fromCharCode(97 + idx)] ?? userAnsMap[String.fromCharCode(65 + idx)];
                 const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
                 const boolVal = val === true || val === 'true' || val === 1;
                 if (isValid && boolVal === Boolean(o.isCorrect)) correctCount++;

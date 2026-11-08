@@ -1,12 +1,11 @@
-import mysql from 'mysql2/promise';
-import { paymentSchema } from './payments.js';
+﻿import mysql from 'mysql2/promise';
+import { seedDatabase as runSeedDatabase } from './dbSchema.js';
+import { processBackgroundJobs as runBackgroundJobs } from './backgroundJobs.js';
 import crypto from 'crypto';
-import { readFile } from 'node:fs/promises';
 import { GoogleGenAI } from "@google/genai";
 import { sanitizeCompiledSvg } from './svgImage.js';
 import { classifyGeminiFailure, cooldownForFailure, orderAvailableAttempts } from './geminiResilience.js';
 import { resolveGeminiModels } from './geminiModels.js';
-import { pendingDuplicateSql, updateDuplicateFingerprint } from './duplicateFingerprint.js';
 import { cacheMiddleware, clearCache } from '../redis.js';
 
 // Re-export cache helpers
@@ -45,11 +44,11 @@ export async function initializeDatabase() {
         const tempConn = await mysql.createConnection(configWithoutDB);
         await tempConn.query(`CREATE DATABASE IF NOT EXISTS \`${database}\``);
         await tempConn.end();
-        console.log(`✅ [DB] Database \`${database}\` ensured.`);
+        console.log(`âœ… [DB] Database \`${database}\` ensured.`);
     } catch (err) {
-        console.warn("⚠️ [DB] Could not ensure database exists (might already exist or no permission):", err.message);
+        console.warn("âš ï¸ [DB] Could not ensure database exists (might already exist or no permission):", err.message);
         if (err.message.includes('ECONNREFUSED')) {
-            console.error("❌ [DB] CRITICAL: MySQL server is not reachable at " + dbConfig.host + ":" + dbConfig.port);
+            console.error("âŒ [DB] CRITICAL: MySQL server is not reachable at " + dbConfig.host + ":" + dbConfig.port);
             console.error("   Please ensure MySQL is running and DB_HOST/DB_PORT are correct in your environment.");
         }
     }
@@ -59,11 +58,11 @@ export async function initializeDatabase() {
 
     try {
         const conn = await pool.getConnection();
-        console.log("✅ [DB] Database connected successfully!");
+        console.log("âœ… [DB] Database connected successfully!");
         conn.release();
         if (process.env.SOCIAL_CRON_ONLY !== '1') await seedDatabase();
     } catch (err) {
-        console.error("❌ [DB] Connection Failed:", err.message);
+        console.error("âŒ [DB] Connection Failed:", err.message);
         if (err.message.includes('ECONNREFUSED')) {
             console.error("   TIP: Check if your database server is running.");
         }
@@ -81,16 +80,16 @@ export async function query(sql, params) {
         const [results] = await pool.query(sql, params);
         return results;
     } catch (error) {
-        console.error("❌ DB Query Error:", error.message, "\nSQL:", sql);
+        console.error("âŒ DB Query Error:", error.message, "\nSQL:", sql);
         throw error;
     }
 }
 
 // --- AUTH & SESSION CONFIGURATION ---
 const authSecret = process.env.AUTH_SECRET || crypto.randomBytes(32).toString('hex');
-if (!process.env.AUTH_SECRET) console.warn('⚠️ [AUTH] AUTH_SECRET chưa được cấu hình; phiên đăng nhập sẽ hết hạn khi server khởi động lại.');
+if (!process.env.AUTH_SECRET) console.warn('âš ï¸ [AUTH] AUTH_SECRET chÆ°a Ä‘Æ°á»£c cáº¥u hÃ¬nh; phiÃªn Ä‘Äƒng nháº­p sáº½ háº¿t háº¡n khi server khá»Ÿi Ä‘á»™ng láº¡i.');
 export const loginAttempts = new Map();
-export const SESSION_DURATION_MS = 24 * 60 * 60 * 1000; // 24 giờ
+export const SESSION_DURATION_MS = 24 * 60 * 60 * 1000; // 24 giá»
 
 export function signSession(user) {
     const payload = Buffer.from(JSON.stringify({ id: user.id, role: user.role, exp: Date.now() + SESSION_DURATION_MS })).toString('base64url');
@@ -110,7 +109,7 @@ export function readSession(req) {
     return session.exp > Date.now() ? session : null;
 }
 
-// Middleware xác thực phiên người dùng cho API
+// Middleware xÃ¡c thá»±c phiÃªn ngÆ°á»i dÃ¹ng cho API
 export async function sessionMiddleware(req, res, next) {
     // Only protect /api/*
     if (!req.path.startsWith('/api/')) return next();
@@ -118,12 +117,12 @@ export async function sessionMiddleware(req, res, next) {
     if (publicPaths.includes(req.path) || (req.method === 'POST' && req.path === '/api/payments/sepay/webhook') || (req.method === 'GET' && /^\/api\/images\/[a-f0-9]{64}$/i.test(req.path))) return next();
     try {
         const session = readSession(req);
-        if (!session) return res.status(401).json({ error: 'Phiên đăng nhập không hợp lệ hoặc đã hết hạn.' });
+        if (!session) return res.status(401).json({ error: 'PhiÃªn Ä‘Äƒng nháº­p khÃ´ng há»£p lá»‡ hoáº·c Ä‘Ã£ háº¿t háº¡n.' });
         const [currentUser] = await query('SELECT id, role FROM users WHERE id = ?', [session.id]);
-        if (!currentUser) return res.status(401).json({ error: 'Tài khoản không còn hoạt động.' });
+        if (!currentUser) return res.status(401).json({ error: 'TÃ i khoáº£n khÃ´ng cÃ²n hoáº¡t Ä‘á»™ng.' });
         req.user = { ...session, role: currentUser.role };
 
-        // Sliding session: Tự động gia hạn cookie khi phiên còn dưới 12 giờ
+        // Sliding session: Tá»± Ä‘á»™ng gia háº¡n cookie khi phiÃªn cÃ²n dÆ°á»›i 12 giá»
         if (session.exp - Date.now() < 12 * 60 * 60 * 1000) {
             const secure = process.env.NODE_ENV === 'production';
             res.cookie('id6_session', signSession(currentUser), { 
@@ -136,11 +135,11 @@ export async function sessionMiddleware(req, res, next) {
         }
 
         if ((req.path.startsWith('/api/admin') || req.path === '/api/users' || /^\/api\/users\/\d+\/(toggle-pro|renew-pro|reset-password)$/.test(req.path)) && req.user.role !== 'ADMIN') {
-            return res.status(403).json({ error: 'Bạn không có quyền thực hiện thao tác này.' });
+            return res.status(403).json({ error: 'Báº¡n khÃ´ng cÃ³ quyá»n thá»±c hiá»‡n thao tÃ¡c nÃ y.' });
         }
         next();
     } catch {
-        return res.status(401).json({ error: 'Phiên đăng nhập không hợp lệ.' });
+        return res.status(401).json({ error: 'PhiÃªn Ä‘Äƒng nháº­p khÃ´ng há»£p lá»‡.' });
     }
 }
 
@@ -155,7 +154,7 @@ export function isSelfOrAdmin(req, userId) {
 
 export function requireAdmin(req, res) {
     if (!isAdmin(req)) {
-        res.status(403).json({ error: 'Chỉ Quản trị viên mới được phép thực hiện thao tác này.' });
+        res.status(403).json({ error: 'Chá»‰ Quáº£n trá»‹ viÃªn má»›i Ä‘Æ°á»£c phÃ©p thá»±c hiá»‡n thao tÃ¡c nÃ y.' });
         return false;
     }
     return true;
@@ -163,7 +162,7 @@ export function requireAdmin(req, res) {
 
 export function requireTeacherOrAdmin(req, res) {
     if (!['ADMIN', 'TEACHER'].includes(req.user?.role)) {
-        res.status(403).json({ error: 'Chỉ Giáo viên hoặc Quản trị viên mới được phép thực hiện thao tác này.' });
+        res.status(403).json({ error: 'Chá»‰ GiÃ¡o viÃªn hoáº·c Quáº£n trá»‹ viÃªn má»›i Ä‘Æ°á»£c phÃ©p thá»±c hiá»‡n thao tÃ¡c nÃ y.' });
         return false;
     }
     return true;
@@ -185,7 +184,7 @@ export async function canManageClass(req, classId) {
 export async function canAccessClass(req, classId) {
     if (await canManageClass(req, classId)) return true;
     const [classroom] = await query('SELECT code, name FROM classes WHERE id = ?', [classId]);
-    if (classroom && (['THY6TO', 'WWHXNV', 'W0DBUX'].includes(classroom.code) || (classroom.name && classroom.name.includes('Tự do')))) {
+    if (classroom && (['THY6TO', 'WWHXNV', 'W0DBUX'].includes(classroom.code) || (classroom.name && classroom.name.includes('Tá»± do')))) {
         return true;
     }
     const [membership] = await query('SELECT 1 FROM class_students WHERE class_id = ? AND student_id = ?', [classId, req.user?.id]);
@@ -257,26 +256,26 @@ export async function getGeminiApiKey(userId) {
 export function parseGeminiError(e) {
     const msg = String(e?.message || e || '');
     if (e?.status === 503 || msg.includes("503") || msg.includes("high demand") || msg.includes("spikes in demand")) {
-        return "Máy chủ AI của Google đang có lượng truy cập đột biến (503 High Demand). Hệ thống đã tự động thử các key và model dự phòng; vui lòng thử lại sau giây lát.";
+        return "MÃ¡y chá»§ AI cá»§a Google Ä‘ang cÃ³ lÆ°á»£ng truy cáº­p Ä‘á»™t biáº¿n (503 High Demand). Há»‡ thá»‘ng Ä‘Ã£ tá»± Ä‘á»™ng thá»­ cÃ¡c key vÃ  model dá»± phÃ²ng; vui lÃ²ng thá»­ láº¡i sau giÃ¢y lÃ¡t.";
     }
     if (e?.status === 429 || msg.includes("429") || msg.toLowerCase().includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
-        return "Gemini đang giới hạn lượt dùng của project. Hệ thống đã tự chuyển model/key và làm nguội lựa chọn bị 429; vui lòng giữ cửa sổ mở để tự thử lại. Nhiều key chỉ tăng quota khi chúng thuộc các Google Cloud project khác nhau.";
+        return "Gemini Ä‘ang giá»›i háº¡n lÆ°á»£t dÃ¹ng cá»§a project. Há»‡ thá»‘ng Ä‘Ã£ tá»± chuyá»ƒn model/key vÃ  lÃ m nguá»™i lá»±a chá»n bá»‹ 429; vui lÃ²ng giá»¯ cá»­a sá»• má»Ÿ Ä‘á»ƒ tá»± thá»­ láº¡i. Nhiá»u key chá»‰ tÄƒng quota khi chÃºng thuá»™c cÃ¡c Google Cloud project khÃ¡c nhau.";
     }
     if (msg.includes("API key not valid") || msg.includes("API_KEY_INVALID")) {
-        return "Lỗi: API Key không hợp lệ. Vui lòng thiết lập API Key đúng từ Google AI Studio.";
+        return "Lá»—i: API Key khÃ´ng há»£p lá»‡. Vui lÃ²ng thiáº¿t láº­p API Key Ä‘Ãºng tá»« Google AI Studio.";
     }
     try {
         if (typeof e.message === 'string' && e.message.startsWith('{')) {
             const parsed = JSON.parse(e.message);
             if (parsed.error && parsed.error.message) {
                 if (parsed.error.code === 429) {
-                    return "Gemini đã hết quota của project. Hệ thống sẽ tự thử lại sau thời gian làm nguội; key dự phòng chỉ hữu ích nếu thuộc project khác.";
+                    return "Gemini Ä‘Ã£ háº¿t quota cá»§a project. Há»‡ thá»‘ng sáº½ tá»± thá»­ láº¡i sau thá»i gian lÃ m nguá»™i; key dá»± phÃ²ng chá»‰ há»¯u Ã­ch náº¿u thuá»™c project khÃ¡c.";
                 }
-                return "Lỗi từ Gemini: " + parsed.error.message;
+                return "Lá»—i tá»« Gemini: " + parsed.error.message;
             }
         }
     } catch {}
-    return "Lỗi trong quá trình tạo: " + (e.message || String(e));
+    return "Lá»—i trong quÃ¡ trÃ¬nh táº¡o: " + (e.message || String(e));
 }
 
 const geminiCooldowns = new Map();
@@ -299,7 +298,7 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
     }
 
     if (aiInstances.length === 0) {
-        throw new Error('Chưa cấu hình Gemini API Key.');
+        throw new Error('ChÆ°a cáº¥u hÃ¬nh Gemini API Key.');
     }
 
     const candidateModels = await resolveGeminiModels(aiInstances[0], requestedModels, modelPreference);
@@ -312,7 +311,7 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
     if (!ordered.attempts.length) {
         const seconds = Number.isFinite(ordered.earliestRetryAt)
             ? Math.max(1, Math.ceil((ordered.earliestRetryAt - Date.now()) / 1000)) : 60;
-        const error = new Error(`Các model/API key đang tạm nghỉ sau lỗi quota. Hệ thống sẽ thử lại sau khoảng ${seconds} giây.`);
+        const error = new Error(`CÃ¡c model/API key Ä‘ang táº¡m nghá»‰ sau lá»—i quota. Há»‡ thá»‘ng sáº½ thá»­ láº¡i sau khoáº£ng ${seconds} giÃ¢y.`);
         error.status = 429;
         error.retryAfterMs = seconds * 1000;
         throw error;
@@ -325,13 +324,13 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
     const quotaFailuresByKey = new Map();
     const exhaustedKeys = new Set();
     for (const attempt of ordered.attempts) {
-        if (requestConfig.abortSignal?.aborted) throw Object.assign(new Error('Đã dừng yêu cầu AI.'), { status: 504 });
+        if (requestConfig.abortSignal?.aborted) throw Object.assign(new Error('ÄÃ£ dá»«ng yÃªu cáº§u AI.'), { status: 504 });
         if (disabledKeys.has(attempt.keyIndex) || disabledModels.has(attempt.model)) continue;
         const client = aiInstances[attempt.keyIndex];
         try {
             return await client.models.generateContent({ model: attempt.model, contents, config: requestConfig });
         } catch (error) {
-            if (requestConfig.abortSignal?.aborted) throw Object.assign(new Error('Đã dừng yêu cầu AI.'), { status: 504 });
+            if (requestConfig.abortSignal?.aborted) throw Object.assign(new Error('ÄÃ£ dá»«ng yÃªu cáº§u AI.'), { status: 504 });
             lastError = error;
             const failure = classifyGeminiFailure(error);
             const cooldown = cooldownForFailure(failure);
@@ -347,7 +346,7 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
                 for (const key of keyValues) geminiCooldowns.set(`${attempt.key}\u0000${attempt.model}`, Date.now() + cooldown);
             }
             if (failure.highDemand) {
-                // Khi Google báo model quá tải (503), làm nguội model này trên TẤT CẢ các keys để các key sau chuyển sang model khác ngay lập tức
+                // Khi Google bÃ¡o model quÃ¡ táº£i (503), lÃ m nguá»™i model nÃ y trÃªn Táº¤T Cáº¢ cÃ¡c keys Ä‘á»ƒ cÃ¡c key sau chuyá»ƒn sang model khÃ¡c ngay láº­p tá»©c
                 for (const key of keyValues) {
                     geminiCooldowns.set(`${key}\u0000${attempt.model}`, Date.now() + Math.max(20_000, cooldown));
                 }
@@ -361,7 +360,7 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
             if (!failure.transient && !failure.invalidKey && !failure.unavailableModel) throw error;
         }
     }
-    throw quotaError || lastError || new Error('Tất cả các mô hình Gemini và API Key dự phòng đều không thể phản hồi.');
+    throw quotaError || lastError || new Error('Táº¥t cáº£ cÃ¡c mÃ´ hÃ¬nh Gemini vÃ  API Key dá»± phÃ²ng Ä‘á»u khÃ´ng thá»ƒ pháº£n há»“i.');
 }
 
 // --- LATEX, SVG, CRYPTO & HIERARCHY HELPERS ---
@@ -423,12 +422,12 @@ export async function resolveHierarchyIds(conn, id_class, id_subject, id_chapter
     
     if (cRows.length > 0) {
         chapterId = cRows[0].id;
-        const genericName = `Chương ${id_chapter}`;
+        const genericName = `ChÆ°Æ¡ng ${id_chapter}`;
         if (chapter_name_hint && chapter_name_hint.trim() !== '' && chapter_name_hint !== genericName) {
              await conn.query("UPDATE chapters SET name = ? WHERE id = ?", [chapter_name_hint, chapterId]);
         }
     } else {
-        const cName = chapter_name_hint || `Chương ${id_chapter}`;
+        const cName = chapter_name_hint || `ChÆ°Æ¡ng ${id_chapter}`;
         const [res] = await conn.query(
             "INSERT INTO chapters (grade_id, subject_id, chapter_number, name) VALUES (?, ?, ?, ?)",
             [gradeId, subjectId, id_chapter, cName]
@@ -445,12 +444,12 @@ export async function resolveHierarchyIds(conn, id_class, id_subject, id_chapter
 
     if (uRows.length > 0) {
         unitId = uRows[0].id;
-        const genericUName = `Bài ${id_unit}`;
+        const genericUName = `BÃ i ${id_unit}`;
         if (unit_name_hint && unit_name_hint.trim() !== '' && unit_name_hint !== genericUName) {
              await conn.query("UPDATE units SET name = ? WHERE id = ?", [unit_name_hint, unitId]);
         }
     } else {
-        const uName = unit_name_hint || `Bài ${id_unit}`;
+        const uName = unit_name_hint || `BÃ i ${id_unit}`;
         const [res] = await conn.query(
             "INSERT INTO units (chapter_id, unit_number, name) VALUES (?, ?, ?)",
             [chapterId, id_unit, uName]
@@ -462,821 +461,16 @@ export async function resolveHierarchyIds(conn, id_class, id_subject, id_chapter
     return { gradeId, subjectId, chapterId, unitId };
 }
 
-// --- SEED DATABASE FUNCTION ---
-export async function seedDatabase() {
-    try {
-        if (!pool) return;
-        console.log("[SEED] Checking core tables...");
-        
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(50) UNIQUE NOT NULL,
-                password_hash VARCHAR(255) NOT NULL,
-                full_name VARCHAR(100),
-                email VARCHAR(100),
-                school VARCHAR(100),
-                role ENUM('ADMIN', 'TEACHER', 'STUDENT') DEFAULT 'STUDENT',
-                is_pro BOOLEAN DEFAULT FALSE,
-                avatar_url TEXT,
-                bio TEXT,
-                expiry_date DATETIME,
-                api_key TEXT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        for (const sql of paymentSchema) await pool.query(sql);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS grades (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                code VARCHAR(10) NOT NULL UNIQUE,
-                name VARCHAR(50) NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS subjects (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                code CHAR(1) NOT NULL UNIQUE,
-                name VARCHAR(50) NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS levels (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                code CHAR(1) NOT NULL UNIQUE,
-                name VARCHAR(50) NOT NULL,
-                weight INT DEFAULT 1
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS question_types (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                code VARCHAR(10) NOT NULL UNIQUE,
-                name VARCHAR(50) NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS chapters (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                grade_id INT NOT NULL,
-                subject_id INT NOT NULL,
-                chapter_number INT NOT NULL,
-                name VARCHAR(255) NOT NULL,
-                UNIQUE KEY unique_chap_structure (grade_id, subject_id, chapter_number),
-                CONSTRAINT fk_chapters_grade FOREIGN KEY (grade_id) REFERENCES grades(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-                CONSTRAINT fk_chapters_subject FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE RESTRICT ON UPDATE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS units (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                chapter_id INT NOT NULL,
-                unit_number INT NOT NULL,
-                name VARCHAR(255) NOT NULL,
-                UNIQUE KEY unique_unit_structure (chapter_id, unit_number),
-                CONSTRAINT fk_units_chapter FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE CASCADE ON UPDATE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS id6_metadata (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                id_full VARCHAR(50) UNIQUE NOT NULL,
-                description TEXT,
-                grade_id INT, 
-                subject_id INT,
-                chapter_id INT,
-                unit_id INT,
-                level_id INT,
-                count_id INT,
-                competencies JSON,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT fk_meta_grade FOREIGN KEY (grade_id) REFERENCES grades(id) ON DELETE SET NULL,
-                CONSTRAINT fk_meta_subject FOREIGN KEY (subject_id) REFERENCES subjects(id) ON DELETE SET NULL,
-                CONSTRAINT fk_meta_chapter FOREIGN KEY (chapter_id) REFERENCES chapters(id) ON DELETE SET NULL,
-                CONSTRAINT fk_meta_unit FOREIGN KEY (unit_id) REFERENCES units(id) ON DELETE SET NULL,
-                CONSTRAINT fk_meta_level FOREIGN KEY (level_id) REFERENCES levels(id) ON DELETE RESTRICT
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS questions (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                unit_id INT,                      
-                level_id INT NOT NULL,            
-                type_id INT NOT NULL,             
-                content_latex LONGTEXT NOT NULL,
-                content_latex_original LONGTEXT,
-                legacy_full_id VARCHAR(50),       
-                used_count INT DEFAULT 0,
-                created_by INT,
-                created_by_name VARCHAR(100),
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                difficulty_index DECIMAL(5,2) DEFAULT 0.5,
-                discrimination_index DECIMAL(5,2) DEFAULT 0.3,
-                competencies JSON,
-                choices JSON,
-                is_public BOOLEAN DEFAULT FALSE,
-                content_hash VARCHAR(64),
-                is_duplicate_checked BOOLEAN DEFAULT FALSE,
-                is_tikz_rendered TINYINT DEFAULT 0,
-                id_status TINYINT DEFAULT 0,
-                CONSTRAINT fk_questions_unit FOREIGN KEY (unit_id) REFERENCES units(id) ON DELETE SET NULL ON UPDATE CASCADE,
-                CONSTRAINT fk_questions_level FOREIGN KEY (level_id) REFERENCES levels(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-                CONSTRAINT fk_questions_type FOREIGN KEY (type_id) REFERENCES question_types(id) ON DELETE RESTRICT ON UPDATE CASCADE,
-                CONSTRAINT fk_questions_user FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE SET NULL ON UPDATE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        try {
-            await pool.query("ALTER TABLE questions DROP COLUMN IF EXISTS normalized_latex");
-            await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS content_latex_original LONGTEXT");
-            await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS created_by_name VARCHAR(100)");
-            
-            const [cols] = await pool.query("SHOW COLUMNS FROM questions LIKE 'original_latex'");
-            if (cols.length > 0) {
-                await pool.query("UPDATE questions SET content_latex_original = original_latex WHERE content_latex_original IS NULL AND original_latex IS NOT NULL");
-                await pool.query("ALTER TABLE questions DROP COLUMN original_latex");
-            }
-            
-            await pool.query("ALTER TABLE questions MODIFY COLUMN is_tikz_rendered TINYINT DEFAULT 0");
-            await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS id_status TINYINT DEFAULT 0");
-            await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS normalization_version INT DEFAULT 0");
-            await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS normalized_at DATETIME NULL");
-            await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS id_review_status VARCHAR(20) DEFAULT 'PENDING'");
-            await pool.query("ALTER TABLE questions ADD COLUMN IF NOT EXISTS updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP");
-            try { await pool.query("CREATE INDEX idx_questions_id_status ON questions(id_status)"); } catch {}
-            try { await pool.query("ALTER TABLE users MODIFY COLUMN api_key TEXT"); } catch {}
-        } catch (e) {
-            console.log("Migration notice (questions refactor):", e.message);
-        }
-
-        for (const column of ['layout_normalization_version INT NOT NULL DEFAULT 0', 'layout_normalization_hash CHAR(64) NULL', 'duplicate_hash_version INT NOT NULL DEFAULT 0']) {
-            try { await pool.query(`ALTER TABLE questions ADD COLUMN ${column}`); }
-            catch (error) { if (error.code !== 'ER_DUP_FIELDNAME' && error.errno !== 1060) throw error; }
-        }
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS question_revisions (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                question_id INT NOT NULL,
-                content_latex LONGTEXT NOT NULL,
-                legacy_full_id VARCHAR(50),
-                unit_id INT,
-                level_id INT,
-                type_id INT,
-                change_type VARCHAR(40) NOT NULL,
-                changed_by INT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_revision_question (question_id, created_at),
-                CONSTRAINT fk_revision_question FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,
-                CONSTRAINT fk_revision_user FOREIGN KEY (changed_by) REFERENCES users(id) ON DELETE SET NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS question_id_suggestions (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                question_id INT NOT NULL,
-                current_id VARCHAR(50),
-                suggested_id VARCHAR(50),
-                issue_codes JSON,
-                confidence DECIMAL(5,4) DEFAULT 0,
-                reason TEXT,
-                source VARCHAR(10) DEFAULT 'RULE',
-                status VARCHAR(20) DEFAULT 'PENDING',
-                reviewed_by INT,
-                reviewed_at DATETIME NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_suggestion_question (question_id, status),
-                CONSTRAINT fk_suggestion_question FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE,
-                CONSTRAINT fk_suggestion_reviewer FOREIGN KEY (reviewed_by) REFERENCES users(id) ON DELETE SET NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-        await pool.query("ALTER TABLE question_id_suggestions ADD COLUMN IF NOT EXISTS content_hash VARCHAR(64)")
-            .catch(e => console.log('Migration notice (suggestion content hash):', e.message));
-        try { await pool.query("CREATE INDEX idx_suggestion_fingerprint ON question_id_suggestions(question_id, content_hash, current_id, status)"); } catch {}
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS matrix_templates (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                name VARCHAR(255) NOT NULL,
-                matrix_data JSON, 
-                created_by INT,
-                is_public BOOLEAN DEFAULT FALSE,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT fk_matrix_user FOREIGN KEY (created_by) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS exam_results (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                matrix_id INT,
-                exam_title VARCHAR(255),
-                score DECIMAL(5, 2) DEFAULT 0,
-                duration_seconds INT DEFAULT 0,
-                result_detail JSON,
-                status ENUM('IN_PROGRESS', 'COMPLETED') DEFAULT 'COMPLETED',
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                last_updated DATETIME DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT fk_result_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
-                CONSTRAINT fk_result_matrix FOREIGN KEY (matrix_id) REFERENCES matrix_templates(id) ON DELETE SET NULL ON UPDATE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS question_reports (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                question_id INT NOT NULL,
-                user_id INT NOT NULL,
-                report_reason TEXT,
-                status ENUM('PENDING', 'RESOLVED', 'IGNORED') DEFAULT 'PENDING',
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT fk_report_question FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE ON UPDATE CASCADE,
-                CONSTRAINT fk_report_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `);
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS background_jobs (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                job_type VARCHAR(50) NOT NULL,
-                status ENUM('PENDING', 'PROCESSING', 'COMPLETED', 'FAILED') DEFAULT 'PENDING',
-                progress INT DEFAULT 0,
-                result_data JSON,
-                error_message TEXT,
-                user_id INT,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                CONSTRAINT fk_job_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (background_jobs):", e.message));
-
-        await pool.query(`
-            ALTER TABLE id6_metadata 
-            ADD COLUMN IF NOT EXISTS competencies JSON
-        `).catch(e => console.log("Migration notice (id6_metadata competencies):", e.message));
-
-        await pool.query(`
-            ALTER TABLE matrix_templates 
-            ADD COLUMN IF NOT EXISTS is_public BOOLEAN DEFAULT FALSE,
-            ADD COLUMN IF NOT EXISTS grade_id INT
-        `).catch(e => console.log("Migration notice (matrix_templates):", e.message));
-
-        try {
-            const [uCols] = await pool.query('DESCRIBE users');
-            const colNames = (uCols || []).map(c => c.Field);
-            const userMigrations = [
-                { name: 'is_pro', def: 'BOOLEAN DEFAULT FALSE' },
-                { name: 'avatar_url', def: 'TEXT' },
-                { name: 'bio', def: 'TEXT' },
-                { name: 'grade_id', def: 'INT' },
-                { name: 'phone', def: 'VARCHAR(20)' },
-                { name: 'parent_phone', def: 'VARCHAR(20)' },
-                { name: 'date_of_birth', def: 'DATE' },
-                { name: 'gender', def: 'VARCHAR(10)' },
-                { name: 'class_name', def: 'VARCHAR(50)' },
-                { name: 'student_code', def: 'VARCHAR(50)' },
-                { name: 'address', def: 'VARCHAR(255)' },
-                { name: 'reset_password_otp', def: 'VARCHAR(255)' },
-                { name: 'reset_password_expires', def: 'DATETIME' }
-            ];
-            for (const col of userMigrations) {
-                if (!colNames.includes(col.name)) {
-                    await pool.query('ALTER TABLE users ADD COLUMN ' + col.name + ' ' + col.def).catch(() => undefined);
-                }
-            }
-        } catch (e) {
-            console.log("Migration notice (users):", e.message);
-        };
-
-        await pool.query(`
-            ALTER TABLE questions 
-            ADD COLUMN IF NOT EXISTS content_hash VARCHAR(64),
-            ADD COLUMN IF NOT EXISTS is_duplicate_checked BOOLEAN DEFAULT FALSE
-        `).catch(e => console.log("Migration notice (questions hashing):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS duplicate_pairs (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                question_id_1 INT NOT NULL,
-                question_id_2 INT NOT NULL,
-                similarity_score DECIMAL(5,4) DEFAULT 1.0000,
-                status ENUM('PENDING', 'RESOLVED', 'IGNORED') DEFAULT 'PENDING',
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                UNIQUE KEY unique_pair (question_id_1, question_id_2),
-                CONSTRAINT fk_dup_q1 FOREIGN KEY (question_id_1) REFERENCES questions(id) ON DELETE CASCADE,
-                CONSTRAINT fk_dup_q2 FOREIGN KEY (question_id_2) REFERENCES questions(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (duplicate_pairs):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS user_feedback (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                content TEXT NOT NULL,
-                is_read BOOLEAN DEFAULT FALSE,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT fk_feedback_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (user_feedback):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS question_images (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                tikz_hash VARCHAR(64) UNIQUE NOT NULL,
-                svg_content LONGTEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (question_images):", e.message));
-
-        await pool.query(`CREATE TABLE IF NOT EXISTS social_post_queue (
-            id BIGINT AUTO_INCREMENT PRIMARY KEY,
-            question_id INT NOT NULL,
-            caption TEXT NOT NULL,
-            scheduled_at DATETIME NOT NULL,
-            image_mime VARCHAR(20) NULL,
-            image_blob LONGBLOB NULL,
-            status ENUM('DRAFT','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT',
-            created_by INT NOT NULL,
-            approved_by INT NULL,
-            attempt_count INT NOT NULL DEFAULT 0,
-            claim_token CHAR(36) NULL,
-            publish_started_at DATETIME NULL,
-            posted_at DATETIME NULL,
-            fb_photo_id VARCHAR(100) NULL,
-            fb_post_id VARCHAR(100) NULL,
-            last_error VARCHAR(1000) NULL,
-            created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-            INDEX idx_social_due(status,scheduled_at,id),
-            UNIQUE KEY uq_social_claim(claim_token),
-            INDEX idx_social_question(question_id)
-        ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci`);
-        // CREATE TABLE IF NOT EXISTS does not upgrade an older table. Keep every
-        // column used by both manual planning and the optional publisher in sync.
-        await pool.query(`ALTER TABLE social_post_queue
-            ADD COLUMN IF NOT EXISTS image_mime VARCHAR(20) NULL,
-            ADD COLUMN IF NOT EXISTS image_blob LONGBLOB NULL,
-            ADD COLUMN IF NOT EXISTS approved_by INT NULL,
-            ADD COLUMN IF NOT EXISTS attempt_count INT NOT NULL DEFAULT 0,
-            ADD COLUMN IF NOT EXISTS claim_token CHAR(36) NULL,
-            ADD COLUMN IF NOT EXISTS publish_started_at DATETIME NULL,
-            ADD COLUMN IF NOT EXISTS posted_at DATETIME NULL,
-            ADD COLUMN IF NOT EXISTS fb_photo_id VARCHAR(100) NULL,
-            ADD COLUMN IF NOT EXISTS fb_post_id VARCHAR(100) NULL,
-            ADD COLUMN IF NOT EXISTS last_error VARCHAR(1000) NULL,
-            ADD COLUMN IF NOT EXISTS created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
-            ADD COLUMN IF NOT EXISTS updated_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP`);
-        await pool.query(`ALTER TABLE social_post_queue
-            MODIFY COLUMN status ENUM('DRAFT','READY','APPROVED','PUBLISHING','POSTED','FAILED','UNCERTAIN','CANCELLED') NOT NULL DEFAULT 'DRAFT'`);
-        // Old manual queues used READY. Preserve those rows before normalizing.
-        await pool.query("UPDATE social_post_queue SET status='DRAFT' WHERE status='READY'");
-        const [socialImageColumns] = await pool.query("SHOW COLUMNS FROM social_post_queue WHERE Field IN ('image_mime','image_blob')");
-        if (socialImageColumns.some(column => column.Null === 'NO')) {
-            await pool.query('ALTER TABLE social_post_queue MODIFY COLUMN image_mime VARCHAR(20) NULL, MODIFY COLUMN image_blob LONGBLOB NULL');
-        }
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS tikz_render_failures (
-                question_id INT NOT NULL,
-                tikz_hash VARCHAR(64) NOT NULL,
-                error_message VARCHAR(1000) NOT NULL,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (question_id, tikz_hash),
-                CONSTRAINT fk_tikz_failure_question FOREIGN KEY (question_id) REFERENCES questions(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (tikz_render_failures):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS tikz_render_jobs (
-                id BIGINT AUTO_INCREMENT PRIMARY KEY,
-                status VARCHAR(24) NOT NULL DEFAULT 'QUEUED',
-                requested_by INT NOT NULL,
-                after_id INT NOT NULL DEFAULT 0,
-                scanned INT NOT NULL DEFAULT 0,
-                synced INT NOT NULL DEFAULT 0,
-                failed INT NOT NULL DEFAULT 0,
-                worker_id VARCHAR(64) NULL,
-                lease_token CHAR(64) NULL,
-                heartbeat_at DATETIME NULL,
-                error_message VARCHAR(1000) NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (tikz_render_jobs):", e.message));
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS tikz_render_control (
-                id TINYINT PRIMARY KEY,
-                active_job_id BIGINT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (tikz_render_control):", e.message));
-        await pool.query('INSERT IGNORE INTO tikz_render_control (id, active_job_id) VALUES (1, NULL)')
-            .catch(e => console.log("Migration notice (tikz_render_control row):", e.message));
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS tikz_worker_presence (
-                worker_id VARCHAR(64) PRIMARY KEY,
-                last_seen DATETIME NOT NULL
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (tikz_worker_presence):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS lesson_sections (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                unit_id INT NOT NULL,
-                title VARCHAR(255) NOT NULL,
-                content LONGTEXT,
-                video_url VARCHAR(255),
-                interactive_html LONGTEXT,
-                order_index INT DEFAULT 0,
-                matrix_id INT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                CONSTRAINT fk_lesson_unit FOREIGN KEY (unit_id) REFERENCES units(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (lesson_sections):", e.message));
-        await pool.query(await readFile(new URL('../migrations/20261006_lesson_authoring.sql', import.meta.url), 'utf8'));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS user_lesson_progress (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                section_id INT NOT NULL,
-                is_completed BOOLEAN DEFAULT FALSE,
-                score DECIMAL(5,2) DEFAULT 0,
-                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                UNIQUE KEY unique_user_section (user_id, section_id),
-                CONSTRAINT fk_ulp_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-                CONSTRAINT fk_ulp_section FOREIGN KEY (section_id) REFERENCES lesson_sections(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (user_lesson_progress):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS student_lesson_history (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                username VARCHAR(50) NOT NULL,
-                lesson_id VARCHAR(100) NOT NULL,
-                lesson_title VARCHAR(255) NOT NULL,
-                grade VARCHAR(10) NOT NULL,
-                score DECIMAL(5,2) DEFAULT 0,
-                completed BOOLEAN DEFAULT FALSE,
-                attempts INT DEFAULT 1,
-                last_studied_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-                UNIQUE KEY unique_student_lesson (username, lesson_id),
-                INDEX idx_slh_user (user_id),
-                INDEX idx_slh_username (username),
-                INDEX idx_slh_grade (grade),
-                CONSTRAINT fk_slh_user FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (student_lesson_history):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS student_learning_logs (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id INT NOT NULL,
-                username VARCHAR(50) NOT NULL,
-                lesson_id VARCHAR(100) NOT NULL,
-                lesson_title VARCHAR(255) NOT NULL,
-                grade VARCHAR(10) NOT NULL,
-                score DECIMAL(5,2) DEFAULT 0,
-                completed BOOLEAN DEFAULT FALSE,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                INDEX idx_sll_username (username),
-                INDEX idx_sll_lesson (lesson_id)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (student_learning_logs):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS system_settings (
-                setting_key VARCHAR(50) PRIMARY KEY,
-                setting_value TEXT
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
-        `).catch(e => console.log("Migration notice (system_settings):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS activity_limits (
-                user_id INT NOT NULL,
-                activity_date DATE NOT NULL,
-                exam_count INT DEFAULT 0,
-                review_count INT DEFAULT 0,
-                PRIMARY KEY (user_id, activity_date)
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        `).catch(e => console.log("Migration notice (activity_limits):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS classes (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                teacher_id INT NOT NULL,
-                name VARCHAR(100) NOT NULL,
-                code VARCHAR(20) UNIQUE NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (teacher_id) REFERENCES users(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        `).catch(e => console.log("Migration notice (classes):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS class_students (
-                class_id INT NOT NULL,
-                student_id INT NOT NULL,
-                status VARCHAR(20) DEFAULT 'APPROVED',
-                joined_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                PRIMARY KEY (class_id, student_id),
-                FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE,
-                FOREIGN KEY (student_id) REFERENCES users(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        `).catch(e => console.log("Migration notice (class_students):", e.message));
-
-        await pool.query(`
-            CREATE TABLE IF NOT EXISTS class_assignments (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                class_id INT NOT NULL,
-                matrix_id INT NOT NULL,
-                open_time DATETIME NULL,
-                deadline DATETIME NULL,
-                max_attempts INT DEFAULT 0,
-                allow_review BOOLEAN DEFAULT TRUE,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (class_id) REFERENCES classes(id) ON DELETE CASCADE,
-                FOREIGN KEY (matrix_id) REFERENCES matrix_templates(id) ON DELETE CASCADE
-            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-        `).catch(e => console.log("Migration notice (class_assignments):", e.message));
-
-        await pool.query(`
-            ALTER TABLE class_assignments
-            ADD COLUMN IF NOT EXISTS open_time DATETIME NULL,
-            ADD COLUMN IF NOT EXISTS deadline DATETIME NULL,
-            ADD COLUMN IF NOT EXISTS max_attempts INT DEFAULT 0,
-            ADD COLUMN IF NOT EXISTS allow_review BOOLEAN DEFAULT TRUE
-        `).catch(e => console.log("Migration notice (class_assignments columns):", e.message));
-
-        // Create initial Admin User if empty
-        const [users] = await pool.query("SELECT id FROM users WHERE role = 'ADMIN' LIMIT 1");
-        const initialAdminPassword = process.env.ADMIN_INITIAL_PASSWORD;
-        if (users.length === 0 && initialAdminPassword?.length >= 12) {
-            console.log("[SEED] Creating initial Admin User from environment configuration...");
-            const bcryptMod = await import('bcryptjs');
-            const hash = await bcryptMod.default.hash(initialAdminPassword, 12);
-            await pool.query("INSERT IGNORE INTO users (username, password_hash, full_name, role, is_pro) VALUES (?, ?, ?, ?, ?)", ['admin', hash, 'Quản trị viên', 'ADMIN', 1]);
-        } else if (users.length === 0) {
-            console.warn('[SEED] Chưa có quản trị viên. Hãy đặt ADMIN_INITIAL_PASSWORD (ít nhất 12 ký tự) rồi khởi động lại một lần.');
-        }
-        
-        const grades = [
-            {code: '6', name: 'Lớp 6'}, {code: '7', name: 'Lớp 7'}, {code: '8', name: 'Lớp 8'}, {code: '9', name: 'Lớp 9'},
-            {code: '0', name: 'Lớp 10'}, {code: '1', name: 'Lớp 11'}, {code: '2', name: 'Lớp 12'}
-        ];
-        for (const g of grades) await pool.query("INSERT IGNORE INTO grades (code, name) VALUES (?, ?)", [g.code, g.name]);
-
-        const subjects = [{code: 'D', name: 'Đại số / Giải tích'}, {code: 'H', name: 'Hình học'}, {code: 'C', name: 'Chuyên đề'}];
-        for (const s of subjects) await pool.query("INSERT IGNORE INTO subjects (code, name) VALUES (?, ?)", [s.code, s.name]);
-
-        const levels = [{code: 'N', name: 'Nhận biết', w: 1}, {code: 'H', name: 'Thông hiểu', w: 2}, {code: 'V', name: 'Vận dụng', w: 3}, {code: 'C', name: 'Vận dụng cao', w: 4}];
-        for (const l of levels) await pool.query("INSERT IGNORE INTO levels (code, name, weight) VALUES (?, ?, ?)", [l.code, l.name, l.w]);
-
-        const types = [{code: 'TN', name: 'Trắc nghiệm'}, {code: 'TF', name: 'Đúng Sai'}, {code: 'KQ', name: 'Trả lời ngắn'}, {code: 'TL', name: 'Tự luận'}];
-        for (const t of types) await pool.query("INSERT IGNORE INTO question_types (code, name) VALUES (?, ?)", [t.code, t.name]);
-
-        // Indexes for faster queries
-        try { await pool.query("CREATE INDEX idx_questions_legacy_full_id ON questions(legacy_full_id)"); } catch {}
-        try { await pool.query("CREATE INDEX idx_id6_metadata_id_full ON id6_metadata(id_full)"); } catch {}
-        try { await pool.query("CREATE INDEX idx_chapters_grade_subject_num ON chapters(grade_id, subject_id, chapter_number)"); } catch {}
-        try { await pool.query("CREATE INDEX idx_units_chapter_num ON units(chapter_id, unit_number)"); } catch {}
-
-        // Repair stale flags created by older automatic ID assignment flows.
-        // Do not mark semantic review as confirmed here; only acknowledge that
-        // the stored canonical ID exists in the current ID6 catalog.
-        await pool.query(`
-            UPDATE questions q
-            INNER JOIN id6_metadata m ON m.id_full = TRIM(q.legacy_full_id)
-            SET q.id_status = 1
-            WHERE COALESCE(q.id_status, 0) = 0
-        `).catch(e => console.log('Migration notice (ID status reconciliation):', e.message));
-
-    } catch (err) { if (err.code !== 'ER_NO_SUCH_TABLE') console.error("[SEED ERROR]", err.message); }
+// --- DATABASE SCHEMA & SEED ---
+export async function seedDatabase(targetPool = pool) {
+    return runSeedDatabase(targetPool);
 }
 
 // --- BACKGROUND JOBS PROCESSOR ---
-export async function processBackgroundJobs() {
-    try {
-        if (!pool) return;
-        
-        try {
-            const conn = await pool.getConnection();
-            conn.release();
-        } catch (connErr) {
-            if (Math.random() < 0.1) { 
-                console.warn("[JOB] Skipping background jobs: Database unreachable.", connErr.message);
-            }
-            return;
-        }
-
-        const [jobs] = await pool.query("SELECT * FROM background_jobs WHERE status = 'PENDING' LIMIT 1");
-        if (jobs.length === 0) return;
-
-        const job = jobs[0];
-        await pool.query("UPDATE background_jobs SET status = 'PROCESSING', updated_at = NOW() WHERE id = ?", [job.id]);
-
-        console.log(`[JOB] Processing job ${job.id} (${job.job_type})...`);
-
-        try {
-            if (job.job_type === 'DUPLICATE_SCAN') {
-                const [{ total }] = await query(`SELECT COUNT(*) as total FROM questions WHERE ${pendingDuplicateSql}`);
-                const totalUnchecked = total || 0;
-                let processed = 0;
-                let hasMore = true;
-
-                if (totalUnchecked === 0) {
-                    await query("UPDATE background_jobs SET status = 'COMPLETED', progress = 100, result_data = ? WHERE id = ?", [
-                        JSON.stringify({ 
-                            message: `Dữ liệu đã được băm. Không có câu hỏi mới cần quét.`, 
-                            processed_new: 0
-                        }), 
-                        job.id
-                    ]);
-                    return;
-                }
-
-                while (hasMore) {
-                    const unchecked = await query(`SELECT id, content_latex, content_latex_original FROM questions WHERE ${pendingDuplicateSql} ORDER BY id LIMIT 200`);
-                    if (unchecked.length === 0) {
-                        hasMore = false;
-                        break;
-                    }
-
-                    for (const q of unchecked) {
-                        processed += await updateDuplicateFingerprint(query, q);
-                    }
-
-                    const progress = Math.min(99, Math.floor((processed / totalUnchecked) * 100));
-                    await query("UPDATE background_jobs SET progress = ? WHERE id = ?", [progress, job.id]);
-                }
-
-                await query("UPDATE background_jobs SET status = 'COMPLETED', progress = 100, result_data = ? WHERE id = ?", [
-                    JSON.stringify({ 
-                        message: `Hoàn tất kiểm tra băm. Đã quét ${processed} câu hỏi mới.`, 
-                        processed_new: processed
-                    }), 
-                    job.id
-                ]);
-            } else if (job.job_type === 'TIKZ_RENDER_DISABLED') {
-                const questions = await query("SELECT id, content_latex, content_latex_original FROM questions WHERE (content_latex LIKE '%tikzpicture%' OR content_latex LIKE '%tkz-tab%' OR content_latex LIKE '%tkz-euclide%') AND is_tikz_rendered = 0");
-                let processed = 0;
-                let rendered = 0;
-                let skipped = 0;
-                let failed = 0;
-
-                const tikzRegex = /(\\begin\s*\{\s*(tikzpicture|tkz-tab|tkz-euclide)\s*\}(?:\[[\s\S]*?\])?(?:\{[\s\S]*?\})?[\s\S]*?\\end\s*\{\s*(tikzpicture|tkz-tab|tkz-euclide)\s*\})/gi;
-                const HF_SERVER = 'https://leanhdung1983-tikz-renderer.hf.space/render';
-
-                if (HF_SERVER.includes('hf.space')) {
-                    const baseUrl = HF_SERVER.replace(/\/render\/?$/, '');
-                    fetch(baseUrl).catch(() => {});
-                }
-
-                for (const q of questions) {
-                    if (!q.content_latex_original) {
-                        await pool.query("UPDATE questions SET content_latex_original = ? WHERE id = ?", [q.content_latex, q.id]);
-                    }
-
-                    let updatedContent = q.content_latex;
-                    const matches = q.content_latex.match(tikzRegex);
-                    
-                    if (matches) {
-                        for (const tikzCode of matches) {
-                            const hash = crypto.createHash('sha256').update(tikzCode).digest('hex');
-                            const [existing] = await pool.query("SELECT id FROM question_images WHERE tikz_hash = ?", [hash]);
-                            
-                            let success = false;
-                            if (existing.length > 0) {
-                                skipped++;
-                                success = true;
-                            } else {
-                                let payload = tikzCode;
-                                if (!tikzCode.trim().startsWith('\\documentclass')) {
-                                    const isTextMode = tikzCode.includes('\\begin{ex}') || 
-                                                     tikzCode.includes('\\begin{bt}') || 
-                                                     tikzCode.includes('\\begin{vd}') ||
-                                                     tikzCode.includes('\\loigiai') ||
-                                                     tikzCode.includes('\\choice');
-                                    
-                                    const preamble = `\\usepackage[utf8]{vietnam}
-\\usepackage{amsmath,amssymb,mathrsfs,fancyhdr,enumerate,multirow,makecell,currfile,fontawesome,twemojis}
-\\usepackage{tikz,tkz-tab,tkz-euclide,tikz-3dplot}
-\\usetikzlibrary{arrows,calc,intersections,angles,snakes,quotes,backgrounds,shapes.geometric,patterns,shadings,positioning}
-\\usepackage{pgfplots}
-\\pgfplotsset{compat=1.9}
-\\usepgfplotslibrary{fillbetween}
-
-% Custom commands for VN Math
-\\providecommand{\\hoac}[1]{\\left[\\begin{aligned}#1\\end{aligned}\\right.}
-\\providecommand{\\heva}[1]{\\left\\{\\begin{aligned}#1\\end{aligned}\\right.}
-\\providecommand{\\shortans}[1]{\\textbf{Đáp số: }#1}
-\\providecommand{\\immini}[3][]{%
-  \\noindent\\begin{minipage}[t]{0.65\\linewidth}%
-    #2
-  \\end{minipage}%
-  \\hfill%
-  \\begin{minipage}[t]{0.30\\linewidth}%
-    \\centering
-    #3
-  \\end{minipage}%
-}
-`;
-                                    if (isTextMode) {
-                                        const fullPreamble = `${preamble}\\usepackage[dethi]{ex_test}\n`;
-                                        payload = `\\documentclass[14pt,border=5pt,varwidth=600pt]{standalone}\n${fullPreamble}\n\\begin{document}\n${tikzCode}\n\\end{document}`;
-                                    } else {
-                                        const adjustedCode = tikzCode.replace(/scale=\.8/g, 'scale=1');
-                                        payload = `\\documentclass[14pt,tikz,border=5pt]{standalone}\n${preamble}\n\\begin{document}\n${adjustedCode}\n\\end{document}`;
-                                    }
-                                }
-
-                                let attempts = 0;
-                                const maxAttempts = 3;
-                                
-                                while (!success && attempts < maxAttempts) {
-                                    try {
-                                        const response = await fetch(HF_SERVER, {
-                                            method: 'POST',
-                                            headers: { 'Content-Type': 'text/plain' },
-                                            body: payload
-                                        });
-
-                                        if (response.ok) {
-                                            let svg = await response.text();
-                                            if (svg && svg.includes('<svg')) {
-                                                svg = svg.replace(/width="[\d\.]+(pt|px|cm|in)"/i, 'width="100%"');
-                                                svg = svg.replace(/height="[\d\.]+(pt|px|cm|in)"/i, 'height="auto"');
-                                                const cleanSvg = sanitizeSvg(svg);
-                                                if (!cleanSvg) throw new Error('SVG renderer trả về nội dung không an toàn.');
-
-                                                await pool.query("INSERT IGNORE INTO question_images (tikz_hash, svg_content) VALUES (?, ?)", [hash, cleanSvg]);
-                                                rendered++;
-                                                success = true;
-                                            }
-                                        } else if (response.status === 503 || response.status === 504) {
-                                            await new Promise(r => setTimeout(r, 5000));
-                                        }
-                                    } catch (err) {
-                                        console.error(`[JOB] Render attempt ${attempts + 1} failed:`, err.message);
-                                    }
-                                    attempts++;
-                                    if (!success && attempts < maxAttempts) {
-                                        await new Promise(r => setTimeout(r, 2000));
-                                    }
-                                }
-                            }
-
-                            if (success) {
-                                updatedContent = updatedContent.split(tikzCode).join(`[TIKZ_HASH:${hash}]`);
-                            } else {
-                                failed++;
-                            }
-                            
-                            await new Promise(resolve => setTimeout(resolve, 500));
-                        }
-                        
-                        await pool.query("UPDATE questions SET content_latex = ?, is_tikz_rendered = 1 WHERE id = ?", [updatedContent, q.id]);
-                    } else {
-                        await pool.query("UPDATE questions SET is_tikz_rendered = 2 WHERE id = ?", [q.id]);
-                    }
-                    
-                    processed++;
-                    if (processed % 5 === 0 || processed === questions.length) {
-                        const progress = Math.floor((processed / questions.length) * 100);
-                        await query("UPDATE background_jobs SET progress = ? WHERE id = ?", [progress, job.id]);
-                    }
-                }
-
-                await query("UPDATE background_jobs SET status = 'COMPLETED', progress = 100, result_data = ? WHERE id = ?", [
-                    JSON.stringify({ 
-                        message: `Render hoàn tất. Đã xử lý ${processed} câu. Render mới: ${rendered}. Bỏ qua (đã có): ${skipped}. Lỗi: ${failed}.`,
-                        processed,
-                        rendered,
-                        skipped,
-                        failed
-                    }), 
-                    job.id
-                ]);
-            } else {
-                await pool.query("UPDATE background_jobs SET status = 'COMPLETED', progress = 100 WHERE id = ?", [job.id]);
-            }
-        } catch (err) {
-            await pool.query("UPDATE background_jobs SET status = 'FAILED', error_message = ? WHERE id = ?", [err.message, job.id]);
-        }
-    } catch (e) {
-        console.error("Job Processor Error:", e.message);
-    }
+export async function processBackgroundJobs(targetPool = pool, targetQuery = query) {
+    return runBackgroundJobs(targetPool, targetQuery, sanitizeSvg);
 }
 
 // Start Background Jobs interval
-setInterval(processBackgroundJobs, 10000);
+setInterval(() => processBackgroundJobs(pool, query), 10000);
+

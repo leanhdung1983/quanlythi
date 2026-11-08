@@ -6,48 +6,48 @@
 
 .home-page {
   /* --- Design Tokens --- */
-  --hp-bg: #f8fafc;
+  --hp-bg: #f8faff;
   --hp-surface: #ffffff;
-  --hp-surface-subtle: #f8fafc;
-  --hp-surface-hover: #f1f5f9;
-  --hp-surface-glass: rgba(255, 255, 255, 0.85);
+  --hp-surface-subtle: #f0f7ff;
+  --hp-surface-hover: #e0f2fe;
+  --hp-surface-glass: rgba(255, 255, 255, 0.94);
 
-  --hp-border: #e2e8f0;
-  --hp-border-subtle: #edf2f7;
-  --hp-border-hover: #cbd5e1;
-  --hp-border-focus: #6366f1;
+  --hp-border: #cbd5e1;
+  --hp-border-subtle: #e2e8f0;
+  --hp-border-hover: #94a3b8;
+  --hp-border-focus: #2563eb;
 
-  --hp-text-main: #0f172a;
-  --hp-text-secondary: #334155;
-  --hp-text-muted: #64748b;
-  --hp-text-dim: #94a3b8;
+  --hp-text-main: #090d16;
+  --hp-text-secondary: #1e293b;
+  --hp-text-muted: #334155;
+  --hp-text-dim: #64748b;
 
   /* Primary Brand Theme */
-  --hp-primary: #4f46e5;
-  --hp-primary-hover: #4338ca;
-  --hp-primary-light: #eef2ff;
-  --hp-primary-glow: rgba(79, 70, 229, 0.16);
+  --hp-primary: #2563eb;
+  --hp-primary-hover: #1d4ed8;
+  --hp-primary-light: #eff6ff;
+  --hp-primary-glow: rgba(37, 99, 235, 0.2);
 
   /* Semantic Palettes */
   --hp-emerald: #059669;
   --hp-emerald-light: #ecfdf5;
-  --hp-emerald-glow: rgba(16, 185, 129, 0.14);
+  --hp-emerald-glow: rgba(5, 150, 105, 0.16);
 
   --hp-sky: #0284c7;
   --hp-sky-light: #f0f9ff;
-  --hp-sky-glow: rgba(14, 165, 233, 0.14);
+  --hp-sky-glow: rgba(2, 132, 199, 0.16);
 
   --hp-amber: #d97706;
   --hp-amber-light: #fffbeb;
-  --hp-amber-glow: rgba(245, 158, 11, 0.14);
+  --hp-amber-glow: rgba(217, 119, 6, 0.16);
 
-  --hp-rose: #e11d48;
-  --hp-rose-light: #fff1f2;
-  --hp-rose-glow: rgba(244, 63, 94, 0.14);
+  --hp-rose: #dc2626;
+  --hp-rose-light: #fef2f2;
+  --hp-rose-glow: rgba(220, 38, 38, 0.16);
 
   --hp-purple: #7c3aed;
   --hp-purple-light: #f5f3ff;
-  --hp-purple-glow: rgba(124, 58, 237, 0.14);
+  --hp-purple-glow: rgba(124, 58, 237, 0.16);
 
   /* Elevation & Shadows */
   --hp-shadow-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
@@ -164,7 +164,7 @@
 }
 
 .home-page .home-page__title-name {
-  background: linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #7c3aed 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
 }
@@ -275,14 +275,14 @@
   font-weight: 800;
   letter-spacing: -0.04em;
   line-height: 1.2;
-  color: #1e1b4b;
+  color: #090d16;
   margin: 0 0 14px 0;
 }
 
 .home-page .home-page__hero-desc {
   font-size: 15px;
   line-height: 1.75;
-  color: #475569;
+  color: #334155;
   margin: 0 0 24px 0;
   max-width: 54ch;
 }
@@ -303,10 +303,10 @@
   font-weight: 700;
   padding: 12px 22px;
   border-radius: var(--hp-radius-md);
-  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 100%);
   color: #ffffff !important;
   text-decoration: none;
-  box-shadow: 0 4px 14px -3px rgba(79, 70, 229, 0.45);
+  box-shadow: 0 4px 14px -3px rgba(37, 99, 235, 0.45);
   transition: all var(--hp-duration-normal) var(--hp-ease);
   border: 1px solid rgba(255, 255, 255, 0.15);
   cursor: pointer;
@@ -314,8 +314,8 @@
 
 .home-page .home-page__btn-primary:hover {
   transform: translateY(-2px);
-  box-shadow: 0 8px 20px -4px rgba(79, 70, 229, 0.55);
-  background: linear-gradient(135deg, #4338ca 0%, #3730a3 100%);
+  box-shadow: 0 8px 20px -4px rgba(37, 99, 235, 0.55);
+  background: linear-gradient(135deg, #1d4ed8 0%, #1e40af 100%);
 }
 
 .home-page .home-page__btn-primary:active {
@@ -331,8 +331,8 @@
   font-weight: 600;
   padding: 11px 18px;
   border-radius: var(--hp-radius-md);
-  background: rgba(255, 255, 255, 0.85);
-  color: #334155 !important;
+  background: rgba(255, 255, 255, 0.95);
+  color: #0f172a !important;
   text-decoration: none;
   border: 1px solid var(--hp-border);
   box-shadow: var(--hp-shadow-xs);
@@ -342,7 +342,7 @@
 
 .home-page .home-page__btn-secondary:hover {
   background: #ffffff;
-  border-color: #cbd5e1;
+  border-color: #94a3b8;
   color: var(--hp-primary) !important;
   transform: translateY(-1px);
   box-shadow: var(--hp-shadow-sm);
@@ -368,7 +368,7 @@
   gap: 6px;
   font-size: 12px;
   font-weight: 600;
-  color: #4338ca;
+  color: #1d4ed8;
 }
 
 /* Workflow Step Cards */
@@ -385,7 +385,7 @@
   font-size: 11px;
   font-weight: 800;
   letter-spacing: 0.1em;
-  color: #64748b;
+  color: #475569;
   text-transform: uppercase;
   margin-bottom: 2px;
 }
@@ -395,9 +395,9 @@
   align-items: center;
   gap: 14px;
   padding: 15px 18px;
-  background: rgba(255, 255, 255, 0.88);
+  background: rgba(255, 255, 255, 0.92);
   backdrop-filter: blur(10px);
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid var(--hp-border);
   border-radius: var(--hp-radius-md);
   text-decoration: none;
   color: inherit !important;

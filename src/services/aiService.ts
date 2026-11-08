@@ -98,7 +98,7 @@ export interface BatchSuggestResult {
 }
 
 function isQuotaOrRateLimitError(err: unknown): boolean {
-    const msg = String((err as any)?.message || err || '').toLowerCase();
+    const msg = String((err as { message?: string })?.message || err || '').toLowerCase();
     return msg.includes('429') || msg.includes('quota') || msg.includes('resource_exhausted') || msg.includes('hạn mức') || msg.includes('vượt quá');
 }
 
@@ -203,8 +203,8 @@ export const batchSuggestIds = async (
                 allResults.push(...results);
                 onChunkResults?.(results);
                 chunkSuccess = true;
-            } catch (e: any) {
-                lastError = e instanceof Error ? e : new Error(String(e?.message || e));
+            } catch (e: unknown) {
+                lastError = e instanceof Error ? e : new Error(String((e as { message?: string })?.message || e));
                 const isQuota = isQuotaOrRateLimitError(e);
                 if (isQuota) {
                     if (attempt < MAX_RETRIES && !isCancelled?.()) {

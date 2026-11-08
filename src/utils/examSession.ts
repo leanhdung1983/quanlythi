@@ -11,7 +11,7 @@ export function remainingExamSeconds(saved: { timeLeft: number; isRealExam?: boo
     return Math.max(0, Number(saved.timeLeft) - elapsed);
 }
 
-export function examProgressSnapshot(input: any, userId: number) {
+export function examProgressSnapshot(input: Record<string, unknown>, userId: number) {
     return { ...input, userId, currentExamSessionId: input.currentExamSessionId ?? null };
 }
 
@@ -22,12 +22,12 @@ export async function resolveResumedSession(saved: { userId?: number; currentExa
     if (Number.isSafeInteger(id) && id > 0) {
         let session;
         try { session = await lookup(id); }
-        catch (error: any) {
+        catch (error: unknown) {
             // A 404 proves the referenced server session no longer exists. Legacy
             // local drafts did not store userId, so they may safely be rebound to
             // the currently authenticated user through the normal start endpoint.
             // Explicitly owned drafts from another account were rejected above.
-            if (error.status === 404) return ensureExamSessionId(null, start);
+            if ((error as { status?: number })?.status === 404) return ensureExamSessionId(null, start);
             throw error;
         }
         if (Number(session.user_id) !== userId) throw new Error('Phiên thi thuộc tài khoản khác. Hãy chọn làm mới.');

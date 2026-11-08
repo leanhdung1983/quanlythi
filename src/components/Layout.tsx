@@ -2,10 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate, useLocation } from 'react-router-dom';
 import { 
     LayoutDashboard, FileText, GraduationCap, FileCode, Tag, 
-    Wand2, MonitorPlay, ChevronDown, Menu, X, LogOut, 
+    Wand2, MonitorPlay, Menu, X, LogOut, 
     User, Shield, Copy, Flag, ChevronRight, Layers, Zap,
     MessageSquare, BookOpen, Users, Send, HelpCircle, BarChart3,
-    Sparkles, PlusCircle, ExternalLink,
+    PlusCircle,
     LucideIcon
 } from 'lucide-react';
 import { useLanguageStore } from '../services/languageStore';
@@ -34,8 +34,8 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, isCompact, badge, isNew }
       cn(
         'app-nav-item flex items-center gap-3 px-3.5 py-2.5 my-0.5 mx-2.5 rounded-xl transition-all duration-200 group relative select-none',
         isActive
-          ? 'bg-gradient-to-r from-indigo-600 to-indigo-700 text-white shadow-md shadow-indigo-500/25 font-semibold is-active'
-          : 'text-slate-600 hover:bg-slate-100/90 hover:text-slate-900 font-medium'
+          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-md shadow-blue-500/30 font-bold is-active'
+          : 'text-slate-700 hover:bg-blue-50/90 hover:text-blue-700 font-semibold'
       )
     }
     title={isCompact ? label : ''}
@@ -44,7 +44,7 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, isCompact, badge, isNew }
       <>
         <div className={cn(
           'w-8 h-8 rounded-lg flex items-center justify-center shrink-0 transition-transform duration-200 group-hover:scale-105',
-          isActive ? 'bg-white/15 text-white' : 'text-slate-500 group-hover:text-indigo-600',
+          isActive ? 'bg-white/20 text-white' : 'text-slate-600 group-hover:text-blue-600',
           isCompact && 'mx-auto'
         )}>
           <Icon size={18} />
@@ -55,22 +55,22 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, isCompact, badge, isNew }
             <span className="text-xs tracking-tight truncate">{label}</span>
             {badge && (
               <span className={cn(
-                'text-[10px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider',
-                isActive ? 'bg-white/20 text-white' : 'bg-indigo-50 text-indigo-600'
+                'text-[10px] font-extrabold px-1.5 py-0.5 rounded-full uppercase tracking-wider',
+                isActive ? 'bg-white/20 text-white' : 'bg-blue-100 text-blue-800'
               )}>
                 {badge}
               </span>
             )}
             {isNew && (
-              <span className="w-2 h-2 rounded-full bg-emerald-400 shadow-[0_0_8px_rgba(52,211,153,0.8)] animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.8)] animate-pulse" />
             )}
           </div>
         )}
 
         {isCompact && (
-          <div className="absolute left-full ml-3 px-3 py-1.5 bg-slate-900 text-white text-xs font-semibold rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70] whitespace-nowrap shadow-xl border border-slate-800">
+          <div className="absolute left-full ml-3 px-3 py-1.5 bg-slate-950 text-white text-xs font-bold rounded-lg opacity-0 group-hover:opacity-100 pointer-events-none transition-all duration-150 z-[70] whitespace-nowrap shadow-xl border border-slate-800">
             {label}
-            {badge && <span className="ml-1.5 text-[9px] text-indigo-300">({badge})</span>}
+            {badge && <span className="ml-1.5 text-[9px] text-blue-300">({badge})</span>}
           </div>
         )}
       </>
@@ -79,10 +79,10 @@ const SidebarItem = ({ to, icon: Icon, label, onClick, isCompact, badge, isNew }
 );
 
 const SidebarGroup = ({ title, children, isCompact }: { title: string; children: React.ReactNode; isCompact: boolean }) => {
-    if (isCompact) return <div className="space-y-1 my-2 border-t border-slate-100 pt-2">{children}</div>;
+    if (isCompact) return <div className="space-y-1 my-2 border-t border-slate-200 pt-2">{children}</div>;
     return (
         <div className="mb-3">
-            <h3 className="px-5 text-[10px] font-bold text-slate-400 uppercase tracking-wider mb-1.5 mt-3">{title}</h3>
+            <h3 className="px-5 text-[10px] font-extrabold text-slate-500 uppercase tracking-wider mb-1.5 mt-3">{title}</h3>
             <div className="space-y-0.5">{children}</div>
         </div>
     );
@@ -165,7 +165,7 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
   }
 
   return (
-    <div className="app-shell flex h-screen bg-[#f8fafc] overflow-hidden font-sans selection:bg-indigo-100 selection:text-indigo-800">
+    <div className="app-shell flex h-screen bg-[#f8faff] overflow-hidden font-sans selection:bg-blue-100 selection:text-blue-900">
         
         {/* Placeholder when collapsed & fixed on Desktop */}
         {isCollapsed && (
@@ -184,20 +184,20 @@ export const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) =>
                 )}
             >
                 {/* Brand Header */}
-                <div className="h-16 flex items-center px-4 border-b border-slate-100 relative shrink-0 overflow-hidden bg-gradient-to-b from-white to-slate-50/50">
+                <div className="h-16 flex items-center px-4 border-b border-slate-200/80 relative shrink-0 overflow-hidden bg-gradient-to-b from-white to-blue-50/30">
                     <div className={cn(
                         'flex items-center gap-3 transition-all duration-300',
                         isCompact ? 'scale-0 w-0 opacity-0 absolute' : 'scale-100 w-auto opacity-100 relative'
                     )}>
-                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-md shadow-indigo-500/25 ring-2 ring-indigo-50 shrink-0">
+                        <div className="w-10 h-10 rounded-xl bg-gradient-to-tr from-blue-600 via-indigo-600 to-violet-600 text-white flex items-center justify-center shadow-md shadow-blue-500/30 ring-2 ring-blue-50 shrink-0">
                             <GraduationCap size={22} className="stroke-[2.2]" />
                         </div>
                         <div className="whitespace-nowrap min-w-0">
                             <div className="flex items-center gap-1.5">
                                 <span className="font-extrabold text-slate-900 text-base tracking-tight leading-none">{APP_NAME}</span>
-                                <span className="text-[9px] font-bold px-1.5 py-0.5 bg-indigo-50 text-indigo-700 rounded-md border border-indigo-100/80">v2.1</span>
+                                <span className="text-[9px] font-extrabold px-1.5 py-0.5 bg-blue-50 text-blue-800 rounded-md border border-blue-200">v2.1</span>
                             </div>
-                            <span className="text-[11px] font-medium text-slate-400 block mt-0.5 truncate">Hệ thống khảo thí ID6</span>
+                            <span className="text-[11px] font-semibold text-slate-500 block mt-0.5 truncate">Hệ thống khảo thí ID6</span>
                         </div>
                     </div>
                     

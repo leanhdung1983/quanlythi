@@ -180,7 +180,7 @@ export interface SavedMatrix {
     id: number;
     name: string;
     grade_id?: number;
-    matrix_data: any; // JSON
+    matrix_data: Record<string, unknown> | string | null; // JSON
     created_at: string;
     open_time?: string | null;
     deadline?: string | null;
@@ -201,7 +201,7 @@ export interface ClassAssignment {
     allow_review?: boolean;
     completed_attempts?: number;
     status?: 'UPCOMING' | 'ACTIVE' | 'EXPIRED' | 'ATTEMPTS_EXHAUSTED';
-    matrix_data?: any;
+    matrix_data?: Record<string, unknown> | string | null;
 }
 
 export interface OnlineQuestion {
@@ -236,7 +236,7 @@ export interface ExamResult {
     full_name?: string;
     username?: string;
     school?: string;
-    result_detail?: any; // JSON
+    result_detail?: Record<string, unknown> | string | null; // JSON
 }
 
 export interface QuestionReport {
@@ -311,7 +311,7 @@ export interface BackgroundJob {
     job_type: 'DUPLICATE_SCAN' | 'LATEX_NORM' | 'AI_GEN';
     status: 'PENDING' | 'PROCESSING' | 'COMPLETED' | 'FAILED';
     progress: number;
-    result_data?: any;
+    result_data?: Record<string, unknown> | string | null;
     error_message?: string;
     created_at: string;
     updated_at: string;

@@ -23,16 +23,17 @@ export const extractTextFromPdf = async (file: File): Promise<string> => {
             
             // FIX: Luôn thêm ký tự xuống dòng giữa các item text để tránh dính chữ
             // PDF.js thường trả về các text block rời rạc, nếu nối bằng '' thì ID sẽ dính vào từ trước đó
-            const pageText = textContent.items.map((item: any) => {
-                // Thêm newline nếu item có cờ EOL hoặc chỉ đơn giản là nối bằng newline để an toàn cho Regex
-                return item.str + '\n'; 
+            const pageText = textContent.items.map((item: unknown) => {
+                const str = (item as { str?: string })?.str ?? '';
+                return str + '\n'; 
             }).join('');
             
             fullText += `% --- Page ${i} ---\n${pageText}\n\n`;
         }
         return fullText;
-    } catch (error: any) {
+    } catch (error: unknown) {
         console.error("PDF Extraction Error:", error);
-        throw new Error("Không thể đọc file PDF. Lỗi: " + (error.message || error));
+        const errorMsg = error instanceof Error ? error.message : String(error);
+        throw new Error("Không thể đọc file PDF. Lỗi: " + errorMsg);
     }
 };

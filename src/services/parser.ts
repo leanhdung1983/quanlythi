@@ -107,7 +107,7 @@ export const parseMetadataFile = (text: string): ParsedData => {
             const key = `${currentChapterId}-${currentUnitNum}`;
 
             if (!unitMap.has(key)) {
-                const newUnit: any = {
+                const newUnit: Unit & { id_unit?: number; unit_name?: string; id_class?: number; id_subject?: string; id_chapter?: number } = {
                     id: unitIdCounter++,
                     chapter_id: currentChapterId,
                     unit_number: currentUnitNum,
@@ -230,7 +230,7 @@ export const parseTexFile = (text: string): { questions: Partial<import('../type
     let match;
     
     while ((match = regex.exec(text)) !== null) {
-        const envType = match[1];
+        const _envType = match[1];
         const rawContent = match[2];
         let fullLatex = `\\begin{ex}${rawContent}\\end{ex}`;
 

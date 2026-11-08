@@ -1,15 +1,17 @@
 import { describe, it, expect } from 'vitest';
 import { generateDocxBlob, generateCombinedLatex, generateSpecMatrixData, generateMatrixData } from '../matrixExportUtils';
 import { prepareMatrixPayload } from '../matrixUtils';
+import { MatrixTreeNode } from '../../types';
 
 describe('Matrix Export Test', () => {
     it('preserves lesson wildcard through online payload and export', async () => {
         const matrix = { TN: { '2-D-1-1-*': { N: 2, H: 1, V: 0, C: 0 } }, TF: {}, KQ: {}, TL: {} };
-        expect(prepareMatrixPayload({ matrix }).TN[0].count).toBe('*');
+        const payload = prepareMatrixPayload({ matrix });
+        expect((payload.TN[0] as { count?: string | number })?.count).toBe('*');
         expect(generateCombinedLatex([], matrix)).toContain('ngẫu nhiên dạng');
         expect((await generateDocxBlob([], matrix, 'COMBINED')).size).toBeGreaterThan(1000);
     });
-    const mockTreeData: any = [
+    const mockTreeData: MatrixTreeNode[] = [
         {
             grade: 2,
             subjects: [
@@ -17,15 +19,17 @@ describe('Matrix Export Test', () => {
                     subject: 'D',
                     chapters: [
                         {
+                            id: 1,
                             num: 1,
                             name: 'Ứng dụng đạo hàm để khảo sát hàm số',
                             units: [
                                 {
+                                    id: 1,
                                     num: 1,
                                     name: 'Tính đơn điệu của hàm số',
                                     types: [
-                                        { count_id: 1, description: 'Xét tính đơn điệu bằng bảng biến thiên', competencies: ['Năng lực tư duy'] },
-                                        { count_id: 2, description: 'Tìm khoảng đơn điệu của hàm số cho bởi công thức', competencies: ['Năng lực giải quyết vấn đề'] }
+                                        { count_id: 1, description: 'Xét tính đơn điệu bằng bảng biến thiên', competencies: ['Năng lực tư duy'], stats: {} },
+                                        { count_id: 2, description: 'Tìm khoảng đơn điệu của hàm số cho bởi công thức', competencies: ['Năng lực giải quyết vấn đề'], stats: {} }
                                     ]
                                 }
                             ]

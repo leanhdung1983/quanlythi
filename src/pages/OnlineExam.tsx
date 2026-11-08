@@ -784,13 +784,15 @@ export const OnlineExam: React.FC = () => {
         startingSessionRef.current = true;
         setIsStartingExam(true);
         try {
-            let parsedData = m.matrix_data;
-            if (typeof parsedData === 'string') {
+            let parsedData: Record<string, any> = {};
+            if (typeof m.matrix_data === 'string') {
                 try {
-                    parsedData = JSON.parse(parsedData);
+                    parsedData = JSON.parse(m.matrix_data);
                 } catch {
                     throw new Error("Dữ liệu ma trận bị lỗi.");
                 }
+            } else if (m.matrix_data && typeof m.matrix_data === 'object') {
+                parsedData = m.matrix_data as Record<string, any>;
             }
             
             const matrixData = parsedData.matrix || parsedData;

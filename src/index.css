@@ -9,26 +9,26 @@ html {
 }
 
 body {
-  background-color: #f8fafc; 
+  background-color: #f8faff; 
   margin: 0; 
   overflow-x: hidden; 
-  color: #0f172a;
+  color: #090d16;
   font-feature-settings: "cv02", "cv03", "cv04", "cv11";
 }
 
 /* ExamHub: Modern Design System Tokens */
 :root {
-  --hub-ink: #0f172a;
-  --hub-muted: #64748b;
-  --hub-line: #e2e8f0;
-  --hub-line-light: rgba(226, 232, 240, 0.7);
-  --hub-accent: #4f46e5;
-  --hub-accent-hover: #4338ca;
-  --hub-accent-glow: rgba(79, 70, 229, 0.15);
-  --hub-canvas: #f8fafc;
-  --hub-card-bg: rgba(255, 255, 255, 0.92);
-  --hub-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.06), 0 2px 6px -2px rgba(15, 23, 42, 0.04);
-  --hub-shadow-lg: 0 12px 32px -8px rgba(15, 23, 42, 0.1), 0 4px 12px -2px rgba(15, 23, 42, 0.05);
+  --hub-ink: #090d16;
+  --hub-muted: #334155;
+  --hub-line: #cbd5e1;
+  --hub-line-light: rgba(203, 213, 225, 0.8);
+  --hub-accent: #2563eb;
+  --hub-accent-hover: #1d4ed8;
+  --hub-accent-glow: rgba(37, 99, 235, 0.18);
+  --hub-canvas: #f8faff;
+  --hub-card-bg: rgba(255, 255, 255, 0.96);
+  --hub-shadow: 0 4px 20px -4px rgba(15, 23, 42, 0.08), 0 2px 6px -2px rgba(15, 23, 42, 0.05);
+  --hub-shadow-lg: 0 12px 32px -8px rgba(15, 23, 42, 0.12), 0 4px 12px -2px rgba(15, 23, 42, 0.06);
 }
 
 .app-shell {
@@ -55,14 +55,14 @@ body {
 }
 
 .app-nav-item.is-active {
-  background: linear-gradient(135deg, #4f46e5 0%, #4338ca 100%);
+  background: linear-gradient(135deg, #2563eb 0%, #4f46e5 100%);
   color: #ffffff !important;
-  box-shadow: 0 4px 14px -3px rgba(79, 70, 229, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.2);
+  box-shadow: 0 4px 14px -3px rgba(37, 99, 235, 0.45), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
 .app-topbar {
-  background: rgba(255, 255, 255, 0.88);
-  border-bottom: 1px solid rgba(226, 232, 240, 0.85);
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid rgba(203, 213, 225, 0.9);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
 }
@@ -70,8 +70,8 @@ body {
 .app-workspace {
   padding: clamp(16px, 2.2vw, 34px);
   background-image: 
-    radial-gradient(ellipse 60% 40% at 90% 0%, rgba(99, 102, 241, 0.07), transparent 70%),
-    radial-gradient(circle at 10% 20%, rgba(14, 165, 233, 0.04), transparent 50%);
+    radial-gradient(ellipse 65% 45% at 90% 0%, rgba(37, 99, 235, 0.08), transparent 70%),
+    radial-gradient(circle at 10% 20%, rgba(6, 182, 212, 0.06), transparent 50%);
 }
 
 .app-workspace h1 { 
@@ -80,15 +80,16 @@ body {
 }
 
 .app-workspace :where(input:not([type="checkbox"]):not([type="radio"]):not([type="range"]), select, textarea) {
-  border-color: #cbd5e1;
+  border: 1.5px solid #cbd5e1;
   border-radius: 12px;
   transition: all 0.15s ease;
   background-color: #ffffff;
+  color: #090d16;
 }
 
 .app-workspace :where(input:not([type="checkbox"]):not([type="radio"]), select, textarea):focus {
-  border-color: #6366f1;
-  box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.12);
+  border-color: #2563eb;
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.18);
   outline: none;
 }
 
@@ -110,7 +111,7 @@ body {
 }
 
 .app-workspace :where(.bg-white.rounded-xl, .bg-white.rounded-2xl, .bg-white.rounded-3xl) {
-  border: 1px solid rgba(226, 232, 240, 0.9);
+  border: 1px solid rgba(203, 213, 225, 0.95);
   box-shadow: var(--hub-shadow);
 }
 
@@ -123,7 +124,7 @@ body {
 }
 
 .question-bank-heading { 
-  background: linear-gradient(135deg, #ffffff 0%, #f8faff 100%); 
+  background: linear-gradient(135deg, #ffffff 0%, #f0f7ff 100%); 
   border-radius: 20px 20px 0 0; 
 }
 
@@ -131,7 +132,7 @@ body {
   font-size: 11px; 
   font-weight: 700; 
   letter-spacing: 0.02em; 
-  color: #64748b;
+  color: #334155;
 }
 
 .question-bank-filters :where(input, select) { 
@@ -209,7 +210,7 @@ body {
 
 .dashboard-stat p { 
   font-weight: 600; 
-  color: #64748b; 
+  color: #334155; 
 }
 
 .dashboard-action { 
@@ -431,8 +432,8 @@ button:disabled {
   overflow-y: hidden;
   -webkit-overflow-scrolling: touch;
   padding: 0.75rem 1rem;
-  background: rgba(248, 250, 252, 0.7);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(248, 250, 255, 0.95);
+  border: 1px solid rgba(203, 213, 225, 0.9);
   border-radius: 0.75rem;
   max-width: 100%;
 }
@@ -446,8 +447,8 @@ button:disabled {
 
 /* Answer selection styles */
 .ans-circle {
-  @apply w-8 h-8 rounded-full border-2 flex items-center justify-center transition-all duration-150 cursor-pointer text-sm font-bold;
+  @apply w-8 h-8 rounded-full border-2 border-slate-300 flex items-center justify-center transition-all duration-150 cursor-pointer text-sm font-bold text-slate-800;
 }
 .ans-circle-selected {
-  @apply bg-indigo-600 border-indigo-600 text-white shadow-md transform scale-105;
+  @apply bg-blue-600 border-blue-600 text-white shadow-md shadow-blue-500/30 transform scale-105;
 }

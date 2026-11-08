@@ -16,7 +16,6 @@ export function PracticeCatalog({ onSelect, beginner = false }: { onSelect: (key
     const [revision, setRevision] = useState(0);
     useEffect(() => {
         let active = true;
-        setLoading(true); setError('');
         apiService.eduLoop('/practice-catalog').then(result => {
             if (!active) return;
             const data = result.data || [];
@@ -32,7 +31,7 @@ export function PracticeCatalog({ onSelect, beginner = false }: { onSelect: (key
     const filtered = inGrade.filter(form => (!unit || unitKey(form) === unit) && `${form.label} ${form.unit_name} ${form.key}`.toLowerCase().includes(search.toLowerCase()));
     return <section id="practice-catalog" className="rounded-2xl border border-indigo-100 bg-white p-5 sm:p-6 space-y-4">
         <div className="flex gap-3 items-start"><BookOpen className="text-indigo-600 shrink-0"/><div><h2 className="font-bold text-lg">{beginner ? 'Bắt đầu ôn từng dạng của bài' : 'Ôn tập theo bài và dạng'}</h2><p className="text-sm text-slate-500 mt-1">{beginner ? 'Chưa có lịch sử? Chọn bài học rồi ôn từng dạng, bắt đầu với câu cơ bản. Sau khi nộp bài, hệ thống sẽ dùng kết quả để gợi ý ôn tập phù hợp.' : 'Chọn đúng dạng muốn củng cố. Chỉ hiển thị các dạng hiện có câu hỏi trong ngân hàng.'}</p></div></div>
-        {loading ? <p role="status" className="flex gap-2 text-sm text-indigo-600"><Loader2 className="animate-spin" size={18}/>Đang tải các dạng có thể ôn…</p> : error ? <div role="alert" className="text-sm text-rose-600"><p>{error}</p><button onClick={() => setRevision(n => n + 1)} className="inline-flex items-center gap-2 mt-2 font-semibold"><RefreshCw size={15}/>Thử tải lại</button></div> : <>
+        {loading ? <p role="status" className="flex gap-2 text-sm text-indigo-600"><Loader2 className="animate-spin" size={18}/>Đang tải các dạng có thể ôn…</p> : error ? <div role="alert" className="text-sm text-rose-600"><p>{error}</p><button onClick={() => { setLoading(true); setError(''); setRevision(n => n + 1); }} className="inline-flex items-center gap-2 mt-2 font-semibold"><RefreshCw size={15}/>Thử tải lại</button></div> : <>
             <div className="grid gap-3 sm:grid-cols-[120px_1fr_1fr]">
                 <label className="text-xs text-slate-600">Khối lớp<select className="block mt-1 w-full rounded-xl border p-2.5 text-sm" value={grade} onChange={e => { setGrade(e.target.value); setUnit(''); setLimit(24); }}>{grades.map(g => <option key={g} value={g}>Lớp {g}</option>)}</select></label>
                 <label className="text-xs text-slate-600">Bài học<select className="block mt-1 w-full rounded-xl border p-2.5 text-sm" value={unit} onChange={e => { setUnit(e.target.value); setLimit(24); }}><option value="">Tất cả bài học</option>{units.map(u => <option key={unitKey(u)} value={unitKey(u)}>{u.chapter_name} · {u.unit_name}</option>)}</select></label>

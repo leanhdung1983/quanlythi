@@ -11,12 +11,13 @@ export const extractTextFromDocx = async (file: File): Promise<string> => {
     const arrayBuffer = await file.arrayBuffer();
     const result = await mammoth.extractRawText({ arrayBuffer });
     return result.value;
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error("Error reading docx file:", error);
+    const errorMsg = error instanceof Error ? error.message : String(error);
     // Provide user-friendly error message
-    if (error.message && error.message.includes("end of stream")) {
+    if (errorMsg.includes("end of stream")) {
         throw new Error("File DOCX bị lỗi hoặc không đúng định dạng XML (corrupted). Vui lòng thử 'Save As' lại file trong Word.");
     }
-    throw new Error("Không thể đọc file .docx. Đảm bảo đây là file Word hợp lệ. Chi tiết: " + (error.message || "Unknown Error"));
+    throw new Error("Không thể đọc file .docx. Đảm bảo đây là file Word hợp lệ. Chi tiết: " + (errorMsg || "Unknown Error"));
   }
 };

@@ -6,7 +6,7 @@ import {
 } from 'docx';
 
 const projectedNote = 'Các dòng “phân bổ dự kiến” mô tả cách chia số câu tổng quát theo dạng và số câu hiện có. Mỗi lượt tạo đề vẫn chọn dạng ngẫu nhiên; tổng số câu và mức độ được giữ nguyên. Dòng chưa đủ dữ liệu cần kiểm tra lại ngân hàng.';
-const hasLessonSelection = (input: any) => Object.values(ensureMatrixObject(input)).some(section => Object.keys(section).some(key => key.endsWith('-*')));
+const hasLessonSelection = (input: unknown) => Object.values(ensureMatrixObject(input)).some(section => Object.keys(section).some(key => key.endsWith('-*')));
 
 interface LevelCounts {
     N: number;
@@ -36,19 +36,44 @@ interface SpecRow {
     TL: { N: number, H: number, V: number, C: number };
 }
 
-export const ensureMatrixObject = (input: any): { TN: Record<string, any>, TF: Record<string, any>, KQ: Record<string, any>, TL: Record<string, any> } => {
+interface AggregatedUnitRow {
+    sortKey: string;
+    chapterName: string;
+    unitName: string;
+    hasProjected?: boolean;
+    TN: { N: number; H: number; V: number };
+    TF: { N: number; H: number; V: number };
+    KQ: { N: number; H: number; V: number };
+    TL: { N: number; H: number; V: number };
+    total: { N: number; H: number; V: number };
+    details: Map<string, SpecRow>;
+}
+
+export interface MatrixSectionData {
+    [key: string]: Record<string, number>;
+}
+
+export interface NormalizedMatrixObject {
+    TN: MatrixSectionData;
+    TF: MatrixSectionData;
+    KQ: MatrixSectionData;
+    TL: MatrixSectionData;
+}
+
+export const ensureMatrixObject = (input: unknown): NormalizedMatrixObject => {
     if (!input) return { TN: {}, TF: {}, KQ: {}, TL: {} };
-    let current = input;
+    let current: unknown = input;
 
     // Unpack if input is an object with matrix_data or matrix property
     if (typeof current === 'object' && current !== null) {
-        if (current.matrix_data) {
+        const record = current as Record<string, unknown>;
+        if (record.matrix_data) {
             try {
-                current = typeof current.matrix_data === 'string' ? JSON.parse(current.matrix_data) : current.matrix_data;
+                current = typeof record.matrix_data === 'string' ? JSON.parse(record.matrix_data) : record.matrix_data;
             } catch {}
         }
-        if (current && current.matrix) {
-            current = current.matrix;
+        if (current && typeof current === 'object' && (current as Record<string, unknown>).matrix) {
+            current = (current as Record<string, unknown>).matrix;
         }
     }
 
@@ -67,21 +92,24 @@ export const ensureMatrixObject = (input: any): { TN: Record<string, any>, TF: R
 
     // Re-check after string parsing
     if (current && typeof current === 'object') {
-        if (current.matrix_data) {
+        const record = current as Record<string, unknown>;
+        if (record.matrix_data) {
             try {
-                current = typeof current.matrix_data === 'string' ? JSON.parse(current.matrix_data) : current.matrix_data;
+                current = typeof record.matrix_data === 'string' ? JSON.parse(record.matrix_data) : record.matrix_data;
             } catch {}
         }
-        if (current && current.matrix) {
-            current = current.matrix;
+        if (current && typeof current === 'object' && (current as Record<string, unknown>).matrix) {
+            current = (current as Record<string, unknown>).matrix;
         }
     }
 
+    const res = (current && typeof current === 'object') ? (current as Record<string, unknown>) : {};
+
     return {
-        TN: (current && typeof current.TN === 'object' && !Array.isArray(current.TN)) ? current.TN : {},
-        TF: (current && typeof current.TF === 'object' && !Array.isArray(current.TF)) ? current.TF : {},
-        KQ: (current && typeof current.KQ === 'object' && !Array.isArray(current.KQ)) ? current.KQ : {},
-        TL: (current && typeof current.TL === 'object' && !Array.isArray(current.TL)) ? current.TL : {}
+        TN: (res.TN && typeof res.TN === 'object' && !Array.isArray(res.TN)) ? (res.TN as MatrixSectionData) : {},
+        TF: (res.TF && typeof res.TF === 'object' && !Array.isArray(res.TF)) ? (res.TF as MatrixSectionData) : {},
+        KQ: (res.KQ && typeof res.KQ === 'object' && !Array.isArray(res.KQ)) ? (res.KQ as MatrixSectionData) : {},
+        TL: (res.TL && typeof res.TL === 'object' && !Array.isArray(res.TL)) ? (res.TL as MatrixSectionData) : {}
     };
 };
 
@@ -156,9 +184,10 @@ const buildMetadataMap = (treeData: MatrixTreeNode[]) => {
 function exportEntries(tree: MatrixTreeNode[], matrix: ReturnType<typeof ensureMatrixObject>, type: 'TN' | 'TF' | 'KQ' | 'TL') {
     const section = matrix[type];
     const entries: { key: string; counts: LevelCounts; projected: boolean }[] = [];
+    const toLevelCounts = (v: Record<string, number> | undefined): LevelCounts => ({ N: Number(v?.N) || 0, H: Number(v?.H) || 0, V: Number(v?.V) || 0, C: Number(v?.C) || 0 });
     for (const [key, value] of Object.entries(section)) {
         const parsed = parseKey(key);
-        if (!parsed || parsed.count !== '*') { entries.push({ key, counts: value, projected: false }); continue; }
+        if (!parsed || parsed.count !== '*') { entries.push({ key, counts: toLevelCounts(value), projected: false }); continue; }
         const grade = tree.find(g => g.grade === parsed.cls || (g.grade < 3 ? g.grade + 10 : g.grade - 10) === parsed.cls);
         const unit = grade?.subjects.find(s => s.subject === parsed.sub)?.chapters.find(c => c.num === parsed.chap)?.units.find(u => u.num === parsed.unit);
         const forms = [...(unit?.types || [])].sort((a, b) => a.count_id - b.count_id);
@@ -192,9 +221,9 @@ function exportEntries(tree: MatrixTreeNode[], matrix: ReturnType<typeof ensureM
     return entries;
 }
 
-const aggregateData = (treeData: MatrixTreeNode[], matrixInput: any) => {
+const aggregateData = (treeData: MatrixTreeNode[], matrixInput: unknown) => {
     const metaMap = buildMetadataMap(treeData);
-    const rowMap = new Map<string, any>(); 
+    const rowMap = new Map<string, AggregatedUnitRow>(); 
     const matrix = ensureMatrixObject(matrixInput);
 
     (['TN', 'TF', 'KQ', 'TL'] as const).forEach(typeKey => {
@@ -270,20 +299,20 @@ const aggregateData = (treeData: MatrixTreeNode[], matrixInput: any) => {
     return Array.from(rowMap.values()).sort((a, b) => a.sortKey.localeCompare(b.sortKey));
 };
 
-export const generateMatrixData = (treeData: MatrixTreeNode[], matrix: any): MatrixRow[] => {
+export const generateMatrixData = (treeData: MatrixTreeNode[], matrix: unknown): MatrixRow[] => {
     const rawRows = aggregateData(treeData, matrix);
     let lastChap = "";
     return rawRows.map(r => {
         const showChap = r.chapterName !== lastChap;
         lastChap = r.chapterName;
         return {
-            chapterName: showChap ? r.chapterName : "", unitName: r.hasProjected ? `${r.unitName}. Dạng bài: ${Array.from(r.details.values()).map((d: any) => d.description).join('; ')}` : r.unitName,
+            chapterName: showChap ? r.chapterName : "", unitName: r.hasProjected ? `${r.unitName}. Dạng bài: ${Array.from(r.details.values()).map((d: SpecRow) => d.description).join('; ')}` : r.unitName,
             TN: r.TN, TF: r.TF, KQ: r.KQ, TL: r.TL, total: r.total
         };
     });
 };
 
-export const generateSpecMatrixData = (treeData: MatrixTreeNode[], matrix: any): SpecRow[] => {
+export const generateSpecMatrixData = (treeData: MatrixTreeNode[], matrix: unknown): SpecRow[] => {
     const rawRows = aggregateData(treeData, matrix);
     const specRows: SpecRow[] = [];
     let lastChap = "";
@@ -307,7 +336,7 @@ export const generateSpecMatrixData = (treeData: MatrixTreeNode[], matrix: any):
 };
 
 // --- MAIN EXPORT FUNCTION ---
-export const generateDocxBlob = async (treeData: MatrixTreeNode[], matrix: any, type: 'MATRIX' | 'SPEC' | 'COMBINED'): Promise<Blob> => {
+export const generateDocxBlob = async (treeData: MatrixTreeNode[], matrix: unknown, type: 'MATRIX' | 'SPEC' | 'COMBINED'): Promise<Blob> => {
     const borderStyle = {
         top: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
         bottom: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
@@ -315,7 +344,7 @@ export const generateDocxBlob = async (treeData: MatrixTreeNode[], matrix: any, 
         right: { style: BorderStyle.SINGLE, size: 1, color: "000000" },
     };
 
-    const cellCenter = (text: string | number, bold = false, merge?: any, shading?: string) => new TableCell({
+    const cellCenter = (text: string | number, bold = false, merge?: Record<string, unknown>, shading?: string) => new TableCell({
         children: [new Paragraph({ children: [new TextRun({ text: String(text), bold })], alignment: AlignmentType.CENTER })],
         verticalAlign: VerticalAlign.CENTER,
         borders: borderStyle,
@@ -490,7 +519,7 @@ ${body}
 `;
 };
 
-export const generateCombinedLatex = (treeData: MatrixTreeNode[], matrix: any): string => {
+export const generateCombinedLatex = (treeData: MatrixTreeNode[], matrix: unknown): string => {
     const matrixRows = generateMatrixData(treeData, matrix);
     const specRows = generateSpecMatrixData(treeData, matrix);
 

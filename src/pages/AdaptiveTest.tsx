@@ -5,14 +5,14 @@ import { useSearchParams, Link } from 'react-router-dom';
 import { useAuthStore } from '../services/authStore';
 import { 
     Zap, Brain, Target, ArrowRight, Loader2, 
-    CheckCircle2, RefreshCw, BookOpen, Timer, Award, ChevronRight, ChevronLeft,
-    AlertTriangle, Info, Sparkles, ArrowLeft, Clock, Play, List, Expand, LayoutList, X, User, Flag, ShieldCheck, Minus, Plus, Layout, Layers
+    CheckCircle2, RefreshCw, BookOpen, Award, ChevronRight,
+    AlertTriangle, Info, Sparkles, ArrowLeft, Clock, X, Flag, ShieldCheck, Minus, Plus, Layout
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
 import { OnlineQuestion, QuestionType } from '../types';
 import { MathRenderer } from '../components/MathRenderer';
 import { checkKQAnswer } from '../utils/gradeHelper';
-import { parseQuestionContent, shuffleArray } from '../utils/latexParser';
+import { parseQuestionContent } from '../utils/latexParser';
 import { PracticeCatalog } from '../components/PracticeCatalog';
 
 export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: string; onReturn?: () => void }> = ({ recommendationId: selectedRecommendation, skillKey: initialSkillKey, onReturn }) => {

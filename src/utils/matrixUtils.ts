@@ -1,7 +1,7 @@
-import { SavedMatrix } from '../types';
+import { SavedMatrix, MatrixTreeNode } from '../types';
 import { describeMatrix, parseMatrixData } from '../../shared/matrixCatalog';
 
-export const extractMatrixHierarchy = (m: SavedMatrix, t?: any, treeData?: any[]) => {
+export const extractMatrixHierarchy = (m: SavedMatrix, t?: (key: string) => string, treeData?: MatrixTreeNode[]) => {
     let grade = 'OT';
     let subject = 'Khác';
     let chapter = 'Chung';
@@ -81,10 +81,20 @@ export const extractMatrixHierarchy = (m: SavedMatrix, t?: any, treeData?: any[]
     return { grade, subject, chapter, lesson };
 };
 
-export const prepareMatrixPayload = (matrixDataRaw: any) => {
-    const payload: any = {};
+interface ParsedMatrixItem {
+    cls: number;
+    sub: string;
+    chap: number;
+    unit: number;
+    count: number | '*';
+    levels: unknown;
+}
+
+export const prepareMatrixPayload = (matrixDataRaw: unknown) => {
+    const payload: Record<string, unknown[]> = {};
     const types = ['TN', 'TF', 'KQ', 'TL'];
-    const matrixData = matrixDataRaw?.matrix || matrixDataRaw || {};
+    const rawRecord = matrixDataRaw && typeof matrixDataRaw === 'object' ? (matrixDataRaw as Record<string, unknown>) : {};
+    const matrixData = (rawRecord.matrix && typeof rawRecord.matrix === 'object' ? rawRecord.matrix : rawRecord) as Record<string, unknown>;
     
     types.forEach(type => {
         payload[type] = [];
@@ -92,11 +102,11 @@ export const prepareMatrixPayload = (matrixDataRaw: any) => {
         if (Array.isArray(rawData)) {
             payload[type] = rawData;
         } else if (rawData && typeof rawData === 'object') {
-            const items = Object.entries(rawData).map(([key, levels]) => {
+            const items = Object.entries(rawData as Record<string, unknown>).map(([key, levels]): ParsedMatrixItem | null => {
                 const parts = key.split('-');
                 if (parts.length < 5) return null;
-                return { cls: parseInt(parts[0]), sub: parts[1], chap: parseInt(parts[2]), unit: parseInt(parts[3]), count: parts[4] === '*' ? '*' : parseInt(parts[4]), levels: levels };
-            }).filter((item: any) => {
+                return { cls: parseInt(parts[0]), sub: parts[1], chap: parseInt(parts[2]), unit: parseInt(parts[3]), count: parts[4] === '*' ? '*' : parseInt(parts[4]), levels };
+            }).filter((item): item is ParsedMatrixItem => {
                 if (!item || !item.levels) return false;
                 const l = item.levels as Record<string, number>;
                 return (l.N||0) + (l.H||0) + (l.V||0) + (l.C||0) > 0;
