@@ -18,7 +18,8 @@ import {
     X, Timer, Book, Layers, Layout, Plus, Minus,
     Download, FileSpreadsheet, Flag, ChevronDown, FileText,
     Target, Lock, ShieldCheck, Database, Folder, FolderOpen, Calendar, Award, Zap, Users,
-    PieChart as PieChartIcon, Info, Maximize2, Minimize2, Cloud, AlertCircle, CheckCircle2
+    PieChart as PieChartIcon, Info, Maximize2, Minimize2, Cloud, AlertCircle, CheckCircle2,
+    TrendingUp, Search, FileQuestion
 } from 'lucide-react';
 import { 
     BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer
@@ -208,6 +209,9 @@ export const OnlineExam: React.FC = () => {
     const [selectedMatrixId, setSelectedMatrixId] = useState<string>('');
     const [matrixResults, setMatrixResults] = useState<unknown[]>([]);
     const [loadingMatrixStats, setLoadingMatrixStats] = useState(false);
+    const [statsSearchTerm, setStatsSearchTerm] = useState('');
+    const [statsScoreFilter, setStatsScoreFilter] = useState<'ALL' | 'EXCELLENT' | 'GOOD' | 'PASS' | 'FAIL'>('ALL');
+    const [statsSortBy, setStatsSortBy] = useState<'NEWEST' | 'SCORE_DESC' | 'SCORE_ASC' | 'DURATION_ASC'>('NEWEST');
 
     const [currentQIdx, setCurrentQIdx] = useState(0);
     const [currentExamSessionId, setCurrentExamSessionId] = useState<number | null>(null);
@@ -755,6 +759,173 @@ export const OnlineExam: React.FC = () => {
         const mName = savedMatrices.find(m => m.id.toString() === selectedMatrixId)?.name || "Unknown";
         generateResultsDocx(matrixResults, "BẢNG ĐIỂM CHI TIẾT", `Đề thi: ${mName}`);
     };
+
+    const handleExportMatrixCSV = () => {
+        if (!selectedMatrixId || matrixResults.length === 0) return showAlert("Thông báo", "Chưa có dữ liệu để xuất.");
+        const mName = savedMatrices.find(m => m.id.toString() === selectedMatrixId)?.name || "De_thi";
+        let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
+        csvContent += "STT,Họ và tên,Tên đăng nhập,Trường/Đơn vị,Điểm số,Thời lượng (giây),Thời gian nộp\n";
+        (matrixResults as any[]).forEach((r, idx) => {
+            const dateStr = r.created_at ? new Date(r.created_at).toLocaleString('vi-VN') : '';
+            const name = (r.full_name || '').replace(/"/g, '""');
+            const username = (r.username || '').replace(/"/g, '""');
+            const school = (r.school || '').replace(/"/g, '""');
+            const scoreVal = r.score !== null ? Number(r.score).toFixed(2) : '';
+            csvContent += `${idx + 1},"${name}","${username}","${school}",${scoreVal},${r.duration_seconds || 0},"${dateStr}"\n`;
+        });
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement("a");
+        link.setAttribute("href", encodedUri);
+        link.setAttribute("download", `Bang_diem_${mName.replace(/[^a-zA-Z0-9_\u00C0-\u024F\u1EA0-\u1EF9]/g, '_')}_${new Date().toISOString().slice(0,10)}.csv`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
+
+    const selectedMatrixObj = useMemo(() => {
+        if (!selectedMatrixId) return null;
+        return savedMatrices.find(m => String(m.id) === String(selectedMatrixId)) || null;
+    }, [savedMatrices, selectedMatrixId]);
+
+    const getScoreBadge = (scoreNum: number) => {
+        if (scoreNum >= 8.0) {
+            return {
+                bg: 'bg-emerald-50 text-emerald-700 border-emerald-300',
+                label: 'Giỏi',
+                badgeBg: 'bg-emerald-600 text-white',
+            };
+        }
+        if (scoreNum >= 6.5) {
+            return {
+                bg: 'bg-blue-50 text-blue-700 border-blue-300',
+                label: 'Khá',
+                badgeBg: 'bg-blue-600 text-white',
+            };
+        }
+        if (scoreNum >= 5.0) {
+            return {
+                bg: 'bg-amber-50 text-amber-700 border-amber-300',
+                label: 'Đạt',
+                badgeBg: 'bg-amber-600 text-white',
+            };
+        }
+        return {
+            bg: 'bg-rose-50 text-rose-700 border-rose-300',
+            label: 'Cần ôn lại',
+            badgeBg: 'bg-rose-600 text-white',
+        };
+    };
+
+    const filteredMatrixResults = useMemo(() => {
+        let list = [...(matrixResults as any[])];
+        if (statsSearchTerm.trim()) {
+            const q = statsSearchTerm.toLowerCase();
+            list = list.filter(r => 
+                (r.full_name || '').toLowerCase().includes(q) ||
+                (r.username || '').toLowerCase().includes(q) ||
+                (r.school || '').toLowerCase().includes(q)
+            );
+        }
+        if (statsScoreFilter === 'EXCELLENT') {
+            list = list.filter(r => Number(r.score) >= 8.0);
+        } else if (statsScoreFilter === 'GOOD') {
+            list = list.filter(r => Number(r.score) >= 6.5 && Number(r.score) < 8.0);
+        } else if (statsScoreFilter === 'PASS') {
+            list = list.filter(r => Number(r.score) >= 5.0 && Number(r.score) < 6.5);
+        } else if (statsScoreFilter === 'FAIL') {
+            list = list.filter(r => Number(r.score) < 5.0);
+        }
+
+        if (statsSortBy === 'SCORE_DESC') {
+            list.sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+        } else if (statsSortBy === 'SCORE_ASC') {
+            list.sort((a, b) => Number(a.score || 0) - Number(b.score || 0));
+        } else if (statsSortBy === 'DURATION_ASC') {
+            list.sort((a, b) => Number(a.duration_seconds || 0) - Number(b.duration_seconds || 0));
+        } else {
+            list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        }
+        return list;
+    }, [matrixResults, statsSearchTerm, statsScoreFilter, statsSortBy]);
+
+    const matrixStatsKPI = useMemo(() => {
+        const list = matrixResults as any[];
+        if (list.length === 0) return null;
+        const total = list.length;
+        const scores = list.map(r => Number(r.score || 0));
+        const avg = scores.reduce((sum, s) => sum + s, 0) / total;
+        const max = Math.max(...scores);
+        const min = Math.min(...scores);
+        const passed = list.filter(r => Number(r.score) >= 5.0).length;
+        const passRate = Math.round((passed / total) * 100);
+        const durations = list.map(r => Number(r.duration_seconds || 0));
+        const avgDuration = Math.round(durations.reduce((sum, d) => sum + d, 0) / total);
+        return { total, avg: avg.toFixed(2), max: max.toFixed(2), min: min.toFixed(2), passRate, avgDuration };
+    }, [matrixResults]);
+
+    const filteredHistory = useMemo(() => {
+        let list = [...(history as any[])];
+        if (statsSearchTerm.trim()) {
+            const q = statsSearchTerm.toLowerCase();
+            list = list.filter(h => 
+                (h.exam_title || '').toLowerCase().includes(q)
+            );
+        }
+        if (statsScoreFilter === 'EXCELLENT') {
+            list = list.filter(h => Number(h.score) >= 8.0);
+        } else if (statsScoreFilter === 'GOOD') {
+            list = list.filter(h => Number(h.score) >= 6.5 && Number(h.score) < 8.0);
+        } else if (statsScoreFilter === 'PASS') {
+            list = list.filter(h => Number(h.score) >= 5.0 && Number(h.score) < 6.5);
+        } else if (statsScoreFilter === 'FAIL') {
+            list = list.filter(h => Number(h.score) < 5.0);
+        }
+
+        if (statsSortBy === 'SCORE_DESC') {
+            list.sort((a, b) => Number(b.score || 0) - Number(a.score || 0));
+        } else if (statsSortBy === 'SCORE_ASC') {
+            list.sort((a, b) => Number(a.score || 0) - Number(b.score || 0));
+        } else if (statsSortBy === 'DURATION_ASC') {
+            list.sort((a, b) => Number(a.duration_seconds || 0) - Number(b.duration_seconds || 0));
+        } else {
+            list.sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+        }
+        return list;
+    }, [history, statsSearchTerm, statsScoreFilter, statsSortBy]);
+
+    const historyStatsKPI = useMemo(() => {
+        const list = history as any[];
+        if (list.length === 0) return null;
+        const total = list.length;
+        const scores = list.map(h => Number(h.score || 0));
+        const avg = scores.reduce((sum, s) => sum + s, 0) / total;
+        const max = Math.max(...scores);
+        const passed = list.filter(h => Number(h.score) >= 5.0).length;
+        const passRate = Math.round((passed / total) * 100);
+        return { total, avg: avg.toFixed(2), max: max.toFixed(2), passRate };
+    }, [history]);
+
+    const correctQuestionsCount = useMemo(() => {
+        return questions.filter(q => {
+            const userAns = answers[q.id];
+            if (!userAns) return false;
+            if (q.type === 'TN') return userAns === q.options?.find(o => o.isCorrect)?.id;
+            if (q.type === 'TF') {
+                let cnt = 0;
+                q.options?.forEach((o, idx) => {
+                    const val = (userAns as any)?.[o.id] ?? (userAns as any)?.[String(idx + 1)] ?? (userAns as any)?.[String.fromCharCode(97 + idx)];
+                    const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
+                    const boolVal = val === true || val === 'true' || val === 1;
+                    if (isValid && boolVal === Boolean(o.isCorrect)) cnt++;
+                });
+                return cnt === (q.options?.length || 4);
+            }
+            if (q.type === 'KQ') {
+                return checkKQAnswer(userAns, q.correctAnswer);
+            }
+            return false;
+        }).length;
+    }, [questions, answers]);
 
     const handleStartExam = async (m: SavedMatrix, forceNew: boolean = false) => {
         // Check for saved progress for THIS specific matrix
@@ -1716,7 +1887,7 @@ export const OnlineExam: React.FC = () => {
                                     onClick={() => setDashTab('STATS')} 
                                     className={`flex items-center gap-1 md:gap-1.5 px-2.5 py-1 md:px-3.5 md:py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all ${dashTab === 'STATS' ? 'bg-white text-blue-600 shadow-sm' : 'text-slate-500 hover:text-slate-800'}`}
                                 >
-                                    <BarChart3 size={13} className="md:w-3.5 md:h-3.5" /> <span className="hidden sm:inline">Lịch sử</span>
+                                    <BarChart3 size={13} className="md:w-3.5 md:h-3.5" /> <span className="hidden sm:inline">Thống kê bài làm</span>
                                 </button>
                             </nav>
                             
@@ -1791,25 +1962,42 @@ export const OnlineExam: React.FC = () => {
                                 </main>
                             </div>
                         ) : (
-                            <div className="flex-1 flex flex-col min-h-0 bg-[#f8fafc] p-4 md:p-6 overflow-y-auto custom-scrollbar">
-                               <div className="max-w-6xl mx-auto w-full space-y-6">
-                                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
+                            <div className="flex-1 flex flex-col min-h-0 bg-[#f8fafc] p-3 sm:p-5 md:p-6 overflow-y-auto custom-scrollbar">
+                               <div className="max-w-6xl mx-auto w-full space-y-4 sm:space-y-5">
+                                    {/* Header & Controls */}
+                                    <div className="bg-white p-4 sm:p-5 rounded-2xl border border-slate-200/90 shadow-sm flex flex-col lg:flex-row lg:items-center justify-between gap-4">
                                         <div>
-                                            <h2 className="text-2xl font-black text-slate-800 tracking-tight uppercase">Thống kê Năng lực</h2>
-                                            <p className="text-slate-500 text-xs font-bold mt-0.5 uppercase tracking-wider">Xem lại tiến trình & kết quả học tập</p>
+                                            <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-blue-50 border border-blue-200 text-blue-700 text-[10px] font-black uppercase tracking-wider mb-1">
+                                                <BarChart3 size={12} className="text-blue-600" />
+                                                <span>{selectedMatrixId ? "Báo cáo bài làm theo đề thi" : "Báo cáo học tập & kết quả"}</span>
+                                            </div>
+                                            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+                                                {selectedMatrixId ? `Thống kê bài làm: ${selectedMatrixObj?.name || 'Đề thi'}` : "Thống kê bài làm học sinh"}
+                                            </h2>
+                                            <p className="text-slate-500 text-xs font-medium mt-0.5">
+                                                {selectedMatrixId 
+                                                    ? "Danh sách học sinh nộp bài, phân bố điểm số và chi tiết bài làm từng em."
+                                                    : "Xem lại tiến trình, điểm số tích lũy và bài làm các đợt thi cá nhân."
+                                                }
+                                            </p>
                                         </div>
                                         
-                                        <div className="flex items-center gap-2">
-                                            <div className="bg-white p-1 rounded-xl shadow-2xs border border-slate-200 flex items-center gap-2 pr-3">
-                                                <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg"><Layers size={16}/></div>
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            {/* Selector for Exam / Personal */}
+                                            <div className="bg-slate-50 p-1 rounded-xl border border-slate-200 flex items-center gap-2 pr-3">
+                                                <div className="p-1.5 bg-blue-600 text-white rounded-lg shadow-2xs">
+                                                    <Layers size={14}/>
+                                                </div>
                                                 <div>
-                                                    <div className="text-[9px] font-bold text-slate-500 uppercase tracking-wider leading-none mb-0.5">Số liệu của</div>
+                                                    <div className="text-[9px] font-black text-slate-500 uppercase tracking-wider leading-none mb-0.5">
+                                                        Phạm vi xem
+                                                    </div>
                                                     <select 
-                                                        className="bg-transparent border-none p-0 text-xs font-bold text-slate-700 outline-none cursor-pointer focus:ring-0"
+                                                        className="bg-transparent border-none p-0 text-xs font-bold text-slate-800 outline-none cursor-pointer focus:ring-0 max-w-[200px] truncate"
                                                         value={selectedMatrixId}
                                                         onChange={(e) => handleMatrixSelect(e.target.value)}
                                                     >
-                                                        <option value="">Cá nhân (Của tôi)</option>
+                                                        <option value="">Lịch sử cá nhân (Của tôi)</option>
                                                         {(user?.role === 'TEACHER' || user?.role === 'ADMIN') && (
                                                             <>
                                                                 {Object.entries(groupedExams).map(([grade, subjects]) => (
@@ -1833,13 +2021,26 @@ export const OnlineExam: React.FC = () => {
                                             </div>
 
                                             {selectedMatrixId ? (
-                                                <button 
-                                                    onClick={handleExportMatrixStats}
-                                                    disabled={matrixResults.length === 0}
-                                                    className="h-8.5 bg-blue-600 hover:bg-blue-700 text-white px-3.5 rounded-lg font-bold text-xs uppercase tracking-wider shadow-sm flex items-center gap-2 transition-all active:scale-95 disabled:opacity-40"
-                                                >
-                                                    <FileText size={15}/> Xuất Kết Quả (Word)
-                                                </button>
+                                                <div className="flex items-center gap-2">
+                                                    <button 
+                                                        onClick={handleExportMatrixStats}
+                                                        disabled={matrixResults.length === 0}
+                                                        className="h-8.5 bg-blue-600 hover:bg-blue-700 text-white px-3 rounded-lg font-bold text-xs uppercase tracking-wider shadow-sm flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-40"
+                                                        title="Xuất bảng điểm chi tiết định dạng Word"
+                                                    >
+                                                        <FileText size={14}/>
+                                                        <span className="hidden sm:inline">Xuất Word</span>
+                                                    </button>
+                                                    <button 
+                                                        onClick={handleExportMatrixCSV}
+                                                        disabled={matrixResults.length === 0}
+                                                        className="h-8.5 bg-emerald-600 hover:bg-emerald-700 text-white px-3 rounded-lg font-bold text-xs uppercase tracking-wider shadow-sm flex items-center gap-1.5 transition-all active:scale-95 disabled:opacity-40"
+                                                        title="Xuất bảng điểm dạng bảng tính Excel/CSV"
+                                                    >
+                                                        <Download size={14}/>
+                                                        <span className="hidden sm:inline">Xuất Excel</span>
+                                                    </button>
+                                                </div>
                                             ) : (
                                                 <div className="flex items-center gap-2">
                                                     {history.length > 0 && (
@@ -1847,24 +2048,35 @@ export const OnlineExam: React.FC = () => {
                                                             type="button"
                                                             onClick={handleDeleteAllHistory}
                                                             className="h-8.5 bg-rose-50 text-rose-700 border border-rose-200 px-3 rounded-lg font-bold text-xs uppercase tracking-wider flex items-center gap-1.5 hover:bg-rose-100 transition-all shadow-2xs"
-                                                            title="Xoá toàn bộ lịch sử"
+                                                            title="Xoá toàn bộ lịch sử thi"
                                                         >
-                                                            <Trash2 size={15}/> Xoá hết
+                                                            <Trash2 size={14}/>
+                                                            <span>Xoá hết</span>
                                                         </button>
                                                     )}
                                                     <div className="relative group/export">
                                                         <button 
                                                             onClick={() => setShowExportMenu(!showExportMenu)}
-                                                            className="h-8.5 bg-white border border-slate-200 text-slate-700 px-3.5 rounded-lg font-bold text-xs uppercase tracking-wider shadow-2xs flex items-center gap-1.5 hover:bg-slate-50 transition-all"
+                                                            className="h-8.5 bg-white border border-slate-300 text-slate-700 px-3.5 rounded-lg font-bold text-xs uppercase tracking-wider shadow-2xs flex items-center gap-1.5 hover:bg-slate-50 transition-all"
                                                         >
-                                                            <Download size={15}/> Tải Bảng Điểm <ChevronDown size={13}/>
+                                                            <Download size={14}/>
+                                                            <span>Tải Báo Cáo</span>
+                                                            <ChevronDown size={12}/>
                                                         </button>
                                                         {showExportMenu && (
                                                             <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-slate-200 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200 ring-1 ring-slate-200/50">
-                                                                <div className="p-2.5 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">Tải về theo định dạng Excel</div>
-                                                                <button onClick={() => { handleExport('LATEST'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2 border-b border-slate-50"><div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div> Lần thi mới nhất</button>
-                                                                <button onClick={() => { handleExport('BEST'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2 border-b border-slate-50"><div className="w-1.5 h-1.5 rounded-full bg-emerald-600"></div> Điểm cao nhất</button>
-                                                                <button onClick={() => { handleExport('ALL'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2"><div className="w-1.5 h-1.5 rounded-full bg-orange-500"></div> Tất cả lịch sử</button>
+                                                                <div className="p-2.5 bg-slate-50 border-b border-slate-100 text-[10px] font-bold text-slate-500 uppercase tracking-wider">
+                                                                    Xuất báo cáo cá nhân
+                                                                </div>
+                                                                <button onClick={() => { handleExport('LATEST'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2 border-b border-slate-50">
+                                                                    <div className="w-1.5 h-1.5 rounded-full bg-blue-600"></div> Lần thi mới nhất
+                                                                </button>
+                                                                <button onClick={() => { handleExport('BEST'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2 border-b border-slate-50">
+                                                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-600"></div> Điểm cao nhất
+                                                                </button>
+                                                                <button onClick={() => { handleExport('ALL'); setShowExportMenu(false); }} className="w-full text-left px-3.5 py-2 text-xs font-bold text-slate-700 hover:bg-blue-50 hover:text-blue-600 transition-all flex items-center gap-2">
+                                                                    <div className="w-1.5 h-1.5 rounded-full bg-amber-500"></div> Toàn bộ lịch sử
+                                                                </button>
                                                             </div>
                                                         )}
                                                     </div>
@@ -1873,68 +2085,259 @@ export const OnlineExam: React.FC = () => {
                                         </div>
                                     </div>
 
+                                    {/* KPI Summary Cards */}
+                                    {selectedMatrixId ? (
+                                        <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3">
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                                                <div className="flex items-center gap-2 text-blue-600 mb-1">
+                                                    <Users size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Bài nộp</span>
+                                                </div>
+                                                <p className="text-xl font-black text-slate-900">{matrixStatsKPI?.total || 0}</p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Học sinh đã làm</p>
+                                            </div>
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                                                <div className="flex items-center gap-2 text-indigo-600 mb-1">
+                                                    <Award size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Điểm TB</span>
+                                                </div>
+                                                <p className="text-xl font-black text-indigo-700">{matrixStatsKPI?.avg || '0.00'}</p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Thang điểm 10</p>
+                                            </div>
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                                                <div className="flex items-center gap-2 text-emerald-600 mb-1">
+                                                    <TrendingUp size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Cao / Thấp</span>
+                                                </div>
+                                                <p className="text-xl font-black text-slate-900">
+                                                    <span className="text-emerald-600">{matrixStatsKPI?.max || '0'}</span>
+                                                    <span className="text-slate-300 font-normal mx-1">/</span>
+                                                    <span className="text-slate-500 text-base">{matrixStatsKPI?.min || '0'}</span>
+                                                </p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Phổ điểm bài thi</p>
+                                            </div>
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                                                <div className="flex items-center gap-2 text-teal-600 mb-1">
+                                                    <CheckCircle2 size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Tỷ lệ đạt</span>
+                                                </div>
+                                                <p className="text-xl font-black text-teal-700">{matrixStatsKPI?.passRate || 0}%</p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Điểm ≥ 5.0</p>
+                                            </div>
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs col-span-2 sm:col-span-1">
+                                                <div className="flex items-center gap-2 text-amber-600 mb-1">
+                                                    <Timer size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Thời gian TB</span>
+                                                </div>
+                                                <p className="text-xl font-black text-slate-900 font-mono">
+                                                    {Math.floor((matrixStatsKPI?.avgDuration || 0) / 60)}p {(matrixStatsKPI?.avgDuration || 0) % 60}s
+                                                </p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Thời lượng hoàn thành</p>
+                                            </div>
+                                        </div>
+                                    ) : (
+                                        <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                                                <div className="flex items-center gap-2 text-blue-600 mb-1">
+                                                    <BookOpen size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Đề đã làm</span>
+                                                </div>
+                                                <p className="text-xl font-black text-slate-900">{historyStatsKPI?.total || 0}</p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Lượt thi hoàn thành</p>
+                                            </div>
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                                                <div className="flex items-center gap-2 text-indigo-600 mb-1">
+                                                    <Award size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Điểm TB</span>
+                                                </div>
+                                                <p className="text-xl font-black text-indigo-700">{historyStatsKPI?.avg || '0.00'}</p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Tích lũy toàn bộ</p>
+                                            </div>
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                                                <div className="flex items-center gap-2 text-emerald-600 mb-1">
+                                                    <TrendingUp size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Điểm cao nhất</span>
+                                                </div>
+                                                <p className="text-xl font-black text-emerald-600">{historyStatsKPI?.max || '0.00'}</p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Kỷ lục đạt được</p>
+                                            </div>
+                                            <div className="bg-white p-3.5 rounded-xl border border-slate-200 shadow-2xs">
+                                                <div className="flex items-center gap-2 text-teal-600 mb-1">
+                                                    <ShieldCheck size={16} />
+                                                    <span className="text-[10px] font-black text-slate-500 uppercase tracking-wider">Tỷ lệ đạt</span>
+                                                </div>
+                                                <p className="text-xl font-black text-teal-700">{historyStatsKPI?.passRate || 0}%</p>
+                                                <p className="text-[10px] text-slate-400 mt-0.5 font-medium">Bài thi ≥ 5.0</p>
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    {/* Search & Filters Toolbar */}
+                                    <div className="bg-white p-2.5 sm:p-3 rounded-2xl border border-slate-200 shadow-sm flex flex-wrap gap-2.5 items-center justify-between">
+                                        <div className="flex-1 min-w-[220px] flex items-center gap-2 bg-slate-50 border border-slate-200 rounded-lg px-3 h-8.5 focus-within:ring-2 focus-within:ring-blue-500/20 focus-within:border-blue-500 transition-all">
+                                            <Search size={15} className="text-slate-400 shrink-0" />
+                                            <input 
+                                                type="text"
+                                                value={statsSearchTerm}
+                                                onChange={(e) => setStatsSearchTerm(e.target.value)}
+                                                placeholder={selectedMatrixId ? "Tìm theo tên học sinh, trường, lớp..." : "Tìm theo tên đề thi đã làm..."}
+                                                className="w-full bg-transparent text-xs font-medium text-slate-800 outline-none placeholder:text-slate-400"
+                                            />
+                                            {statsSearchTerm && (
+                                                <button onClick={() => setStatsSearchTerm("")} className="text-slate-400 hover:text-slate-600 p-0.5">
+                                                    <X size={13} />
+                                                </button>
+                                            )}
+                                        </div>
+
+                                        <div className="flex items-center gap-2 flex-wrap">
+                                            {/* Score Filter */}
+                                            <select
+                                                aria-label="Lọc mức điểm"
+                                                value={statsScoreFilter}
+                                                onChange={(e) => setStatsScoreFilter(e.target.value as any)}
+                                                className="h-8.5 px-3 rounded-lg border border-slate-300 bg-white text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                                            >
+                                                <option value="ALL">Tất cả mức điểm</option>
+                                                <option value="EXCELLENT">Giỏi (≥ 8.0)</option>
+                                                <option value="GOOD">Khá (6.5 - 7.9)</option>
+                                                <option value="PASS">Đạt (5.0 - 6.4)</option>
+                                                <option value="FAIL">Cần ôn lại (&lt; 5.0)</option>
+                                            </select>
+
+                                            {/* Sort Filter */}
+                                            <select
+                                                aria-label="Sắp xếp danh sách"
+                                                value={statsSortBy}
+                                                onChange={(e) => setStatsSortBy(e.target.value as any)}
+                                                className="h-8.5 px-3 rounded-lg border border-slate-300 bg-white text-xs font-bold text-slate-700 outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
+                                            >
+                                                <option value="NEWEST">Thời gian: Mới nhất</option>
+                                                <option value="SCORE_DESC">Điểm: Cao xuống thấp</option>
+                                                <option value="SCORE_ASC">Điểm: Thấp lên cao</option>
+                                                <option value="DURATION_ASC">Thời gian: Nhanh nhất</option>
+                                            </select>
+
+                                            <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2.5 py-1.5 rounded-lg border border-slate-200">
+                                                {selectedMatrixId 
+                                                    ? `${filteredMatrixResults.length}/${matrixResults.length} bài nộp`
+                                                    : `${filteredHistory.length}/${history.length} bài thi`
+                                                }
+                                            </span>
+                                        </div>
+                                    </div>
+
+                                    {/* Submissions Table */}
                                     <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden transition-all">
                                         {selectedMatrixId ? (
                                             <div className="overflow-x-auto custom-scrollbar">
                                                 <table className="w-full text-left border-collapse">
                                                     <thead>
-                                                        <tr className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200">
-                                                            <th className="px-4 py-3">Thí Sinh</th>
-                                                            <th className="px-4 py-3">Đơn vị / Lớp</th>
-                                                            <th className="px-4 py-3 text-center">Điểm số</th>
-                                                            <th className="px-4 py-3 text-center">Thời lượng</th>
-                                                            <th className="px-4 py-3 text-right">Ngày thực hiện</th>
-                                                            <th className="px-4 py-3 text-right">Hành động</th>
+                                                        <tr className="bg-slate-50 text-[11px] font-black text-slate-600 uppercase tracking-wider border-b border-slate-200">
+                                                            <th className="px-3.5 py-2.5 text-center w-12">STT</th>
+                                                            <th className="px-4 py-2.5">Học sinh / Thí sinh</th>
+                                                            <th className="px-4 py-2.5">Trường / Đơn vị</th>
+                                                            <th className="px-4 py-2.5 text-center">Điểm số</th>
+                                                            <th className="px-4 py-2.5 text-center">Thời lượng</th>
+                                                            <th className="px-4 py-2.5 text-right">Thời gian nộp</th>
+                                                            <th className="px-4 py-2.5 text-right">Thao tác</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-slate-100">
                                                         {loadingMatrixStats ? (
-                                                            <tr><td colSpan={6} className="p-12 text-center"><Loader2 className="animate-spin inline text-blue-600" size={24}/></td></tr>
-                                                        ) : matrixResults.map((r: any) => (
-                                                            <tr key={r.id || Math.random()} className="group hover:bg-slate-50/80 transition-all">
-                                                                <td className="px-4 py-3">
-                                                                    <div className="flex items-center gap-2.5">
-                                                                        <div className="w-8 h-8 rounded-lg bg-blue-50 text-blue-700 flex items-center justify-center font-bold text-xs uppercase">
-                                                                            {r.full_name?.charAt(0)}
-                                                                        </div>
-                                                                        <div className="font-bold text-slate-800 text-xs">{r.full_name || 'Học viên ẩn danh'}</div>
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-4 py-3 text-slate-500 text-xs font-semibold font-sans tracking-normal">{r.school || 'Chưa cập nhật'}</td>
-                                                                <td className="px-4 py-3 text-center">
-                                                                    <div className={`text-base font-black ${Number(r.score) >= 8 ? 'text-emerald-600' : Number(r.score) >= 5 ? 'text-blue-600' : 'text-rose-600'}`}>
-                                                                        {Number(r.score).toFixed(2)}
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-4 py-3 text-center">
-                                                                    <div className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md inline-flex items-center gap-1 font-mono">
-                                                                        <Timer size={11}/> {Math.floor(r.duration_seconds/60)}p {r.duration_seconds%60}s
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-4 py-3 text-right font-mono text-[10px] text-slate-500">{new Date(r.created_at).toLocaleString('vi-VN')}</td>
-                                                                <td className="px-4 py-3 text-right">
-                                                                    <div className="flex justify-end gap-1.5">
-                                                                        <button 
-                                                                            onClick={() => handleViewHistory(r)} 
-                                                                            className="w-8 h-8 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-300 hover:bg-blue-50/50 rounded-lg shadow-2xs transition-all flex items-center justify-center group/btn"
-                                                                        >
-                                                                            <Eye size={15} className="group-hover/btn:scale-110 transition-transform"/>
-                                                                        </button>
-                                                                        {(user?.role === 'ADMIN' || user?.role === 'TEACHER') && (
-                                                                            <button 
-                                                                                onClick={() => handleDeleteHistory(r.id)} 
-                                                                                className="w-8 h-8 bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-300 rounded-lg font-bold shadow-2xs transition-all flex items-center justify-center group/btn"
-                                                                                title="Xoá kết quả của học sinh"
-                                                                            >
-                                                                                <Trash2 size={14}/>
-                                                                            </button>
-                                                                        )}
+                                                            <tr>
+                                                                <td colSpan={7} className="p-14 text-center">
+                                                                    <div className="flex flex-col items-center gap-2">
+                                                                        <Loader2 className="animate-spin text-blue-600" size={28} />
+                                                                        <span className="text-xs font-semibold text-slate-500">Đang tải danh sách bài làm của học sinh...</span>
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                        ))}
-                                                        {matrixResults.length === 0 && !loadingMatrixStats && (
-                                                            <tr><td colSpan={6} className="p-16 text-center text-slate-400 font-bold uppercase text-xs tracking-wider italic">Chưa có bản ghi kết quả nào</td></tr>
+                                                        ) : filteredMatrixResults.length === 0 ? (
+                                                            <tr>
+                                                                <td colSpan={7} className="p-14 text-center text-slate-400">
+                                                                    <div className="flex flex-col items-center gap-2">
+                                                                        <FileQuestion size={32} className="text-slate-300" />
+                                                                        <span className="text-xs font-bold text-slate-700">
+                                                                            {matrixResults.length === 0 ? "Chưa có học sinh nào nộp bài thi này" : "Không có kết quả nào phù hợp với bộ lọc"}
+                                                                        </span>
+                                                                        <span className="text-[11px] text-slate-400">Hãy thử đổi từ khóa tìm kiếm hoặc mức điểm.</span>
+                                                                    </div>
+                                                                </td>
+                                                            </tr>
+                                                        ) : (
+                                                            filteredMatrixResults.map((r: any, idx: number) => {
+                                                                const scoreNum = Number(r.score || 0);
+                                                                const badgeInfo = getScoreBadge(scoreNum);
+                                                                const initialLetter = (r.full_name || r.username || 'H').charAt(0).toUpperCase();
+                                                                return (
+                                                                    <tr key={r.id || idx} className="hover:bg-slate-50/80 transition-all">
+                                                                        <td className="px-3.5 py-2.5 text-center font-mono text-xs text-slate-400 font-semibold">
+                                                                            {idx + 1}
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5">
+                                                                            <div className="flex items-center gap-2.5">
+                                                                                <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-blue-500 to-indigo-600 text-white flex items-center justify-center font-black text-xs shadow-xs shrink-0">
+                                                                                    {initialLetter}
+                                                                                </div>
+                                                                                <div>
+                                                                                    <div className="font-bold text-slate-900 text-xs">
+                                                                                        {r.full_name || 'Học viên ẩn danh'}
+                                                                                    </div>
+                                                                                    {r.username && (
+                                                                                        <div className="text-[10px] font-mono text-slate-400">
+                                                                                            @{r.username}
+                                                                                        </div>
+                                                                                    )}
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-slate-600 text-xs font-medium">
+                                                                            {r.school || 'Chưa cập nhật'}
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-center">
+                                                                            <div className="inline-flex items-center gap-1.5">
+                                                                                <span className={`px-2 py-0.5 rounded-md font-mono font-black text-xs border ${badgeInfo.bg}`}>
+                                                                                    {scoreNum.toFixed(2)}
+                                                                                </span>
+                                                                                <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${badgeInfo.badgeBg}`}>
+                                                                                    {badgeInfo.label}
+                                                                                </span>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-center">
+                                                                            <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md inline-flex items-center gap-1 font-mono">
+                                                                                <Timer size={11} className="text-slate-400"/>
+                                                                                {Math.floor(r.duration_seconds / 60)}p {r.duration_seconds % 60}s
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-right font-mono text-[11px] text-slate-500">
+                                                                            {new Date(r.created_at).toLocaleString('vi-VN')}
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-right">
+                                                                            <div className="flex justify-end gap-1.5">
+                                                                                <button 
+                                                                                    onClick={() => handleViewHistory(r)} 
+                                                                                    className="h-8 px-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg font-bold text-xs shadow-2xs transition-all inline-flex items-center gap-1.5 active:scale-95"
+                                                                                    title="Xem toàn bộ bài làm và lời giải của học sinh"
+                                                                                >
+                                                                                    <Eye size={13} />
+                                                                                    <span>Xem bài làm</span>
+                                                                                </button>
+                                                                                {(user?.role === 'ADMIN' || user?.role === 'TEACHER') && (
+                                                                                    <button 
+                                                                                        onClick={() => handleDeleteHistory(r.id)} 
+                                                                                        className="w-8 h-8 bg-white hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 hover:border-rose-200 rounded-lg font-bold shadow-2xs transition-all inline-flex items-center justify-center active:scale-95"
+                                                                                        title="Xoá kết quả này"
+                                                                                    >
+                                                                                        <Trash2 size={13}/>
+                                                                                    </button>
+                                                                                )}
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                );
+                                                            })
                                                         )}
                                                     </tbody>
                                                 </table>
@@ -1943,55 +2346,87 @@ export const OnlineExam: React.FC = () => {
                                             <div className="overflow-x-auto custom-scrollbar">
                                                 <table className="w-full text-left border-collapse">
                                                     <thead>
-                                                        <tr className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200">
-                                                            <th className="px-4 py-3 font-mono">TÊN BÀI THI</th>
-                                                            <th className="px-4 py-3 text-center">ĐIỂM</th>
-                                                            <th className="px-4 py-3 text-center">THỜI GIAN</th>
-                                                            <th className="px-4 py-3 text-right">NGÀY THỰC HIỆN</th>
-                                                            <th className="px-4 py-3 text-right">CHI TIẾT</th>
+                                                        <tr className="bg-slate-50 text-[11px] font-black text-slate-600 uppercase tracking-wider border-b border-slate-200">
+                                                            <th className="px-3.5 py-2.5 text-center w-12">STT</th>
+                                                            <th className="px-4 py-2.5 font-mono">TÊN ĐỀ THI</th>
+                                                            <th className="px-4 py-2.5 text-center">ĐIỂM SỐ</th>
+                                                            <th className="px-4 py-2.5 text-center">THỜI GIAN LÀM</th>
+                                                            <th className="px-4 py-2.5 text-right">NGÀY THỰC HIỆN</th>
+                                                            <th className="px-4 py-2.5 text-right">CHI TIẾT</th>
                                                         </tr>
                                                     </thead>
                                                     <tbody className="divide-y divide-slate-100">
-                                                        {history.map((h: any) => (
-                                                            <tr key={h.id} className="group hover:bg-slate-50/80 transition-all">
-                                                                <td className="px-4 py-3">
-                                                                    <div className="flex items-center gap-2.5">
-                                                                        <div className="p-2 bg-blue-50 text-blue-600 rounded-lg group-hover:bg-blue-600 group-hover:text-white transition-all"><Book size={15}/></div>
-                                                                        <div className="font-bold text-slate-800 text-xs tracking-tight">{h.exam_title}</div>
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-4 py-3 text-center">
-                                                                    <div className={`text-base font-black ${Number(h.score) >= 8 ? 'text-emerald-600' : Number(h.score) >= 5 ? 'text-blue-600' : 'text-rose-600'}`}>
-                                                                        {Number(h.score).toFixed(2)}
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-4 py-3 text-center">
-                                                                    <div className="text-[10px] font-bold text-slate-600 bg-slate-100 px-2 py-1 rounded-md inline-flex items-center gap-1 font-mono tracking-wider">
-                                                                        <Timer size={11}/> {Math.floor(h.duration_seconds/60)}p {h.duration_seconds%60}s
-                                                                    </div>
-                                                                </td>
-                                                                <td className="px-4 py-3 text-right font-mono text-[10px] text-slate-500">{new Date(h.created_at).toLocaleString('vi-VN')}</td>
-                                                                <td className="px-4 py-3 text-right">
-                                                                    <div className="flex justify-end gap-1.5">
-                                                                        <button 
-                                                                            onClick={() => handleViewHistory(h)} 
-                                                                            className="h-8 bg-white border border-slate-200 text-slate-600 hover:text-blue-600 hover:border-blue-300 rounded-lg px-2.5 font-bold text-xs shadow-2xs transition-all inline-flex items-center gap-1.5 group/btn"
-                                                                        >
-                                                                            <Eye size={14}/> Xem lại
-                                                                        </button>
-                                                                        <button 
-                                                                            onClick={() => handleDeleteHistory(h.id)} 
-                                                                            className="w-8 h-8 bg-white border border-slate-200 text-slate-600 hover:text-rose-600 hover:border-rose-300 rounded-lg font-bold shadow-2xs transition-all inline-flex items-center justify-center group/btn"
-                                                                            title="Xoá lịch sử"
-                                                                        >
-                                                                            <Trash2 size={14}/>
-                                                                        </button>
+                                                        {filteredHistory.length === 0 ? (
+                                                            <tr>
+                                                                <td colSpan={6} className="p-14 text-center text-slate-400">
+                                                                    <div className="flex flex-col items-center gap-2">
+                                                                        <BookOpen size={32} className="text-slate-300" />
+                                                                        <span className="text-xs font-bold text-slate-700">
+                                                                            {history.length === 0 ? "Bạn chưa thực hiện bài thi nào" : "Không có bài thi nào phù hợp với bộ lọc"}
+                                                                        </span>
                                                                     </div>
                                                                 </td>
                                                             </tr>
-                                                        ))}
-                                                        {history.length === 0 && (
-                                                            <tr><td colSpan={5} className="p-32 text-center text-slate-300 font-black uppercase text-xs tracking-[0.2em] italic">Bạn chưa thực hiện bài thi nào</td></tr>
+                                                        ) : (
+                                                            filteredHistory.map((h: any, idx: number) => {
+                                                                const scoreNum = Number(h.score || 0);
+                                                                const badgeInfo = getScoreBadge(scoreNum);
+                                                                return (
+                                                                    <tr key={h.id || idx} className="hover:bg-slate-50/80 transition-all">
+                                                                        <td className="px-3.5 py-2.5 text-center font-mono text-xs text-slate-400 font-semibold">
+                                                                            {idx + 1}
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5">
+                                                                            <div className="flex items-center gap-2.5">
+                                                                                <div className="p-1.5 bg-blue-50 text-blue-600 rounded-lg shrink-0">
+                                                                                    <Book size={15}/>
+                                                                                </div>
+                                                                                <div className="font-bold text-slate-900 text-xs tracking-tight">
+                                                                                    {h.exam_title}
+                                                                                </div>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-center">
+                                                                            <div className="inline-flex items-center gap-1.5">
+                                                                                <span className={`px-2 py-0.5 rounded-md font-mono font-black text-xs border ${badgeInfo.bg}`}>
+                                                                                    {scoreNum.toFixed(2)}
+                                                                                </span>
+                                                                                <span className={`text-[10px] font-bold px-1.5 py-0.2 rounded ${badgeInfo.badgeBg}`}>
+                                                                                    {badgeInfo.label}
+                                                                                </span>
+                                                                            </div>
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-center">
+                                                                            <span className="text-[11px] font-bold text-slate-600 bg-slate-100 px-2 py-0.5 rounded-md inline-flex items-center gap-1 font-mono">
+                                                                                <Timer size={11} className="text-slate-400"/>
+                                                                                {Math.floor(h.duration_seconds / 60)}p {h.duration_seconds % 60}s
+                                                                            </span>
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-right font-mono text-[11px] text-slate-500">
+                                                                            {new Date(h.created_at).toLocaleString('vi-VN')}
+                                                                        </td>
+                                                                        <td className="px-4 py-2.5 text-right">
+                                                                            <div className="flex justify-end gap-1.5">
+                                                                                <button 
+                                                                                    onClick={() => handleViewHistory(h)} 
+                                                                                    className="h-8 px-2.5 bg-blue-50 hover:bg-blue-100 text-blue-700 border border-blue-200 rounded-lg font-bold text-xs shadow-2xs transition-all inline-flex items-center gap-1.5 active:scale-95"
+                                                                                    title="Xem lại bài làm và lời giải chi tiết"
+                                                                                >
+                                                                                    <Eye size={13}/>
+                                                                                    <span>Xem lại</span>
+                                                                                </button>
+                                                                                <button 
+                                                                                    onClick={() => handleDeleteHistory(h.id)} 
+                                                                                    className="w-8 h-8 bg-white hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 hover:border-rose-200 rounded-lg font-bold shadow-2xs transition-all inline-flex items-center justify-center active:scale-95"
+                                                                                    title="Xoá lịch sử bài này"
+                                                                                >
+                                                                                    <Trash2 size={13}/>
+                                                                                </button>
+                                                                            </div>
+                                                                        </td>
+                                                                    </tr>
+                                                                );
+                                                            })
                                                         )}
                                                     </tbody>
                                                 </table>
@@ -2021,11 +2456,17 @@ export const OnlineExam: React.FC = () => {
                 <div className="flex items-center gap-2 md:gap-3 min-w-0">
                     <button 
                         type="button"
-                        aria-label="Thoát bài thi"
+                        aria-label={isReviewMode ? "Quay lại danh sách" : "Thoát bài thi"}
                         onClick={() => { 
+                            if (isReviewMode) {
+                                setMode('DASHBOARD');
+                                clearSvgCache();
+                                return;
+                            }
                             showConfirm("Thoát bài thi?", "Tiến trình của bạn sẽ được lưu lại (nếu là bài tự luyện). Bạn có chắc chắn muốn quay lại?", () => { setMode('DASHBOARD'); clearSvgCache(); });
                         }} 
                         className="w-8 h-8 flex items-center justify-center bg-slate-50 hover:bg-slate-100 rounded-lg text-slate-700 transition-all border border-slate-200 active:scale-95 touch-manipulation cursor-pointer focus-visible:ring-2 focus-visible:ring-blue-500"
+                        title={isReviewMode ? "Quay lại danh sách bài làm" : "Thoát bài thi"}
                     >
                         <ArrowLeft size={16}/>
                     </button>
@@ -2478,122 +2919,100 @@ export const OnlineExam: React.FC = () => {
             )}
 
             {mode === 'RESULT' && (
-                <div className="fixed inset-0 z-50 bg-[#f8fafc] flex flex-col items-center overflow-y-auto custom-scrollbar animate-in fade-in duration-700">
-                    <div className="max-w-6xl w-full px-4 py-12">
+                <div className="fixed inset-0 z-50 bg-[#f8fafc] flex flex-col items-center overflow-y-auto custom-scrollbar animate-in fade-in duration-500">
+                    <div className="max-w-5xl w-full px-4 py-8">
                         {/* Summary Card */}
-                        <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/50 border border-slate-100 overflow-hidden mb-12 animate-in zoom-in-95 duration-500">
-                            <div className="bg-exam-dark p-12 text-white relative overflow-hidden text-center">
-                                <div className="absolute top-0 right-0 w-96 h-96 bg-exam-green/10 rounded-full -mr-32 -mt-32 blur-3xl"></div>
-                                <div className="absolute bottom-0 left-0 w-64 h-64 bg-exam-orange/10 rounded-full -ml-32 -mb-32 blur-3xl"></div>
-                                
+                        <div className="bg-white rounded-3xl shadow-xl shadow-slate-200/50 border border-slate-200/80 overflow-hidden mb-6 animate-in zoom-in-95 duration-400">
+                            <div className="bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-900 p-6 md:p-8 text-white relative overflow-hidden text-center">
                                 <div className="relative z-10 flex flex-col items-center">
-                                    <div className="w-24 h-24 bg-exam-green rounded-[2rem] flex items-center justify-center text-white shadow-2xl shadow-exam-green/40 mb-8 animate-bounce">
-                                        <Award size={48}/>
+                                    <div className="w-14 h-14 bg-emerald-500 rounded-2xl flex items-center justify-center text-white shadow-lg shadow-emerald-500/30 mb-3 animate-bounce">
+                                        <Award size={28}/>
                                     </div>
-                                    <h2 className="text-4xl font-black mb-3 tracking-tight uppercase">Chúc mừng bạn đã hoàn thành!</h2>
-                                    <p className="text-slate-400 text-sm font-medium opacity-80 uppercase tracking-[0.2em]">Hệ thống đã ghi nhận kết quả và phân tích chi tiết</p>
+                                    <h2 className="text-2xl md:text-3xl font-black mb-1.5 tracking-tight uppercase">Chúc mừng bạn đã hoàn thành bài thi!</h2>
+                                    <p className="text-slate-300 text-xs font-semibold uppercase tracking-wider">Hệ thống đã ghi nhận kết quả và phân tích chi tiết</p>
                                 </div>
                             </div>
 
-                            <div className="p-12">
-                                {resultReviewLocked && <div className="mb-6 rounded-2xl border border-amber-200 bg-amber-50 p-4 text-center text-sm font-semibold text-amber-800">Điểm hiển thị trên màn hình đã được máy chủ chấm và lưu chính xác. Phần phân tích đúng/sai đang ẩn vì giáo viên chưa cho phép xem lời giải hoặc chưa tải được dữ liệu xác nhận.</div>}
-                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                            <div className="p-5 md:p-6">
+                                {resultReviewLocked && (
+                                    <div className="mb-5 rounded-xl border border-amber-200 bg-amber-50 p-3.5 text-center text-xs font-semibold text-amber-800">
+                                        Điểm hiển thị trên màn hình đã được máy chủ chấm và lưu chính xác. Phần phân tích đúng/sai đang ẩn vì giáo viên chưa cho phép xem lời giải hoặc chưa tải được dữ liệu xác nhận.
+                                    </div>
+                                )}
+                                <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
                                     {/* Score Display */}
-                                    <div className="flex-1 flex flex-col items-center justify-center p-12 bg-indigo-50/30 rounded-[3rem] border border-indigo-100/50 text-center group">
-                                        <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4">Tổng điểm đạt được</div>
-                                        <div className="relative">
-                                            <div className="absolute inset-0 bg-indigo-400/20 blur-3xl rounded-full scale-150 opacity-0 group-hover:opacity-100 transition-all duration-700"></div>
-                                            <div className={`text-9xl font-black leading-none mb-4 relative z-10 ${Number(score) >= 8 ? 'text-green-500' : Number(score) >= 5 ? 'text-indigo-600' : 'text-red-500'}`}>
-                                                {Number(score || 0).toFixed(1)}
-                                            </div>
+                                    <div className="flex flex-col items-center justify-center p-6 bg-gradient-to-b from-indigo-50/70 to-blue-50/30 rounded-2xl border border-indigo-100 text-center">
+                                        <div className="text-[10px] font-black text-slate-500 uppercase tracking-wider mb-2">Tổng điểm đạt được</div>
+                                        <div className={`text-6xl font-black leading-none mb-2 ${Number(score) >= 8 ? 'text-emerald-600' : Number(score) >= 5 ? 'text-indigo-600' : 'text-rose-600'}`}>
+                                            {Number(score || 0).toFixed(1)}
                                         </div>
-                                        <div className="flex items-center gap-2 px-6 py-2 bg-white rounded-full border border-slate-200 text-[11px] font-black text-slate-400 uppercase tracking-widest shadow-md">
+                                        <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-white rounded-full border border-slate-200 text-[10px] font-bold text-slate-500 uppercase tracking-wider shadow-2xs">
                                             Hệ điểm 10 tối đa
                                         </div>
                                     </div>
 
                                     {/* Stats Grid */}
-                                    {!resultReviewLocked && <div className="lg:col-span-2 grid grid-cols-1 md:grid-cols-2 gap-4">
-                                        <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5 hover:border-exam-orange/30 transition-all">
-                                            <div className="w-14 h-14 bg-exam-orange/10 rounded-2xl flex items-center justify-center text-exam-orange"><Target size={28}/></div>
-                                            <div>
-                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Số câu đúng</div>
-                                                <div className="text-2xl font-black text-slate-800">{questions.filter(q => {
-                                                    const userAns = answers[q.id];
-                                                    if (!userAns) return false;
-                                                    if (q.type === 'TN') return userAns === q.options.find(o => o.isCorrect)?.id;
-                                                    if (q.type === 'TF') {
-                                                        let cnt = 0;
-                                                        q.options?.forEach((o, idx) => {
-                                                            const val = (userAns as any)?.[o.id] ?? (userAns as any)?.[String(idx + 1)] ?? (userAns as any)?.[String.fromCharCode(97 + idx)];
-                                                            const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
-                                                            const boolVal = val === true || val === 'true' || val === 1;
-                                                            if (isValid && boolVal === Boolean(o.isCorrect)) cnt++;
-                                                        });
-                                                        return cnt === (q.options?.length || 4);
-                                                    }
-                                                    if (q.type === 'KQ') {
-                                                        return checkKQAnswer(userAns, q.correctAnswer);
-                                                    }
-                                                    return false;
-                                                }).length} <span className="text-sm font-bold text-slate-300">/ {questions.length}</span></div>
+                                    {!resultReviewLocked && (
+                                        <div className="lg:col-span-2 grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3.5">
+                                                <div className="w-10 h-10 bg-amber-100 text-amber-700 rounded-xl flex items-center justify-center shrink-0">
+                                                    <Target size={20}/>
+                                                </div>
+                                                <div>
+                                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Số câu đúng</div>
+                                                    <div className="text-xl font-black text-slate-800 mt-0.5">
+                                                        {correctQuestionsCount} <span className="text-xs font-bold text-slate-400">/ {questions.length}</span>
+                                                    </div>
+                                                </div>
                                             </div>
-                                        </div>
-                                        <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5 hover:border-exam-blue/30 transition-all">
-                                            <div className="w-14 h-14 bg-exam-blue/10 rounded-2xl flex items-center justify-center text-exam-blue"><Clock size={28}/></div>
-                                            <div>
-                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Thời gian làm</div>
-                                                <div className="text-2xl font-black text-slate-800">
-                                                    {Math.floor((examSettings.duration * 60 - timeLeft) / 60)}p {(examSettings.duration * 60 - timeLeft) % 60}s
+                                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3.5">
+                                                <div className="w-10 h-10 bg-blue-100 text-blue-700 rounded-xl flex items-center justify-center shrink-0">
+                                                    <Clock size={20}/>
+                                                </div>
+                                                <div>
+                                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Thời gian làm</div>
+                                                    <div className="text-xl font-black text-slate-800 mt-0.5 font-mono">
+                                                        {Math.floor((examSettings.duration * 60 - timeLeft) / 60)}p {(examSettings.duration * 60 - timeLeft) % 60}s
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3.5">
+                                                <div className="w-10 h-10 bg-indigo-100 text-indigo-700 rounded-xl flex items-center justify-center shrink-0">
+                                                    <Layers size={20}/>
+                                                </div>
+                                                <div>
+                                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Độ chính xác</div>
+                                                    <div className="text-xl font-black text-slate-800 mt-0.5">
+                                                        {Math.round((correctQuestionsCount / (questions.length || 1)) * 100)}%
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <div className="p-4 bg-slate-50 rounded-xl border border-slate-200 flex items-center gap-3.5">
+                                                <div className="w-10 h-10 bg-emerald-100 text-emerald-700 rounded-xl flex items-center justify-center shrink-0">
+                                                    <ShieldCheck size={20}/>
+                                                </div>
+                                                <div className="min-w-0">
+                                                    <div className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Đề thi</div>
+                                                    <div className="text-xs font-bold text-slate-800 truncate mt-0.5" title={selectedExam?.name}>
+                                                        {selectedExam?.name}
+                                                    </div>
                                                 </div>
                                             </div>
                                         </div>
-                                        <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5 hover:border-exam-indigo/30 transition-all">
-                                            <div className="w-14 h-14 bg-exam-indigo/10 rounded-2xl flex items-center justify-center text-exam-indigo"><Layers size={28}/></div>
-                                            <div>
-                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Độ chính xác</div>
-                                                <div className="text-2xl font-black text-slate-800">{Math.round((questions.filter(q => {
-                                                    const userAns = answers[q.id];
-                                                    if (!userAns) return false;
-                                                    if (q.type === 'TN') return userAns === q.options.find(o => o.isCorrect)?.id;
-                                                    if (q.type === 'TF') {
-                                                        let cnt = 0;
-                                                        q.options?.forEach((o, idx) => {
-                                                            const val = (userAns as any)?.[o.id] ?? (userAns as any)?.[String(idx + 1)] ?? (userAns as any)?.[String.fromCharCode(97 + idx)];
-                                                            const isValid = val === true || val === false || val === 'true' || val === 'false' || val === 1 || val === 0;
-                                                            const boolVal = val === true || val === 'true' || val === 1;
-                                                            if (isValid && boolVal === Boolean(o.isCorrect)) cnt++;
-                                                        });
-                                                        return cnt === (q.options?.length || 4);
-                                                    }
-                                                    if (q.type === 'KQ') {
-                                                        return checkKQAnswer(userAns, q.correctAnswer);
-                                                    }
-                                                    return false;
-                                                }).length / questions.length) * 100)}%</div>
-                                            </div>
-                                        </div>
-                                        <div className="p-6 bg-white rounded-3xl border border-slate-100 shadow-sm flex items-center gap-5 hover:border-exam-green/30 transition-all">
-                                            <div className="w-14 h-14 bg-exam-green/10 rounded-2xl flex items-center justify-center text-exam-green"><ShieldCheck size={28}/></div>
-                                            <div>
-                                                <div className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">Bài thi</div>
-                                                <div className="text-sm font-black text-slate-800 truncate max-w-[200px]">{selectedExam?.name}</div>
-                                            </div>
-                                        </div>
-                                    </div>}
+                                    )}
                                 </div>
                             </div>
                         </div>
 
                         {!resultReviewLocked && <>
                         {/* Analysis Section */}
-                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-12">
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-5 mb-6">
                             {/* Performance by Level */}
-                            <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl">
-                                <h3 className="text-xl font-black text-slate-800 flex items-center gap-3 mb-8 uppercase tracking-tight">
-                                    <BarChart3 size={24} className="text-exam-orange"/> Phân phối điểm theo mức độ
+                            <div className="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm">
+                                <h3 className="text-base font-black text-slate-900 flex items-center gap-2 mb-4 uppercase tracking-tight">
+                                    <BarChart3 size={18} className="text-amber-500"/> Phân phối điểm theo mức độ
                                 </h3>
-                                <div className="h-80 w-full">
+                                <div className="h-64 w-full">
                                     {(() => {
                                         const getLevel = (id_full: string) => {
                                             if (id_full.includes('N')) return 'Nhận biết';
@@ -2614,9 +3033,9 @@ export const OnlineExam: React.FC = () => {
                                                 levelStats[lvl].total++;
                                                 const userAns = answers[q.id];
                                                 if (userAns) {
-                                                    if (q.type === 'TN' && userAns === q.options.find(o => o.isCorrect)?.id) levelStats[lvl].correct++;
+                                                    if (q.type === 'TN' && userAns === q.options?.find(o => o.isCorrect)?.id) levelStats[lvl].correct++;
                                                     else if (q.type === 'TF') {
-                                                        let cnt = 0; q.options.forEach(o => { if ((userAns as any)[o.id] === o.isCorrect) cnt++; });
+                                                        let cnt = 0; q.options?.forEach(o => { if ((userAns as any)[o.id] === o.isCorrect) cnt++; });
                                                         if (cnt === 4) levelStats[lvl].correct++;
                                                     } else if (q.type === 'KQ') {
                                                         if (checkKQAnswer(userAns, q.correctAnswer)) levelStats[lvl].correct++;
@@ -2633,13 +3052,13 @@ export const OnlineExam: React.FC = () => {
                                             <ResponsiveContainer width="100%" height="100%">
                                                 <BarChart data={data}>
                                                     <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f1f5f9" />
-                                                    <XAxis dataKey="name" fontSize={10} fontWeight="black" axisLine={false} tickLine={false} tick={{fill: '#94a3b8'}} />
-                                                    <YAxis fontSize={10} axisLine={false} tickLine={false} tick={{fill: '#94a3b8'}} tickFormatter={(v) => `${v}%`} />
+                                                    <XAxis dataKey="name" fontSize={11} fontWeight="bold" axisLine={false} tickLine={false} tick={{fill: '#64748b'}} />
+                                                    <YAxis fontSize={11} axisLine={false} tickLine={false} tick={{fill: '#64748b'}} tickFormatter={(v) => `${v}%`} />
                                                     <Tooltip 
-                                                        contentStyle={{ borderRadius: '24px', border: 'none', boxShadow: '0 25px 50px -12px rgb(0 0 0 / 0.25)', padding: '16px' }}
+                                                        contentStyle={{ borderRadius: '16px', border: '1px solid #e2e8f0', boxShadow: '0 10px 15px -3px rgb(0 0 0 / 0.1)', padding: '12px' }}
                                                         cursor={{ fill: '#f8fafc' }}
                                                     />
-                                                    <Bar dataKey="percent" fill="#f97316" radius={[12, 12, 12, 12]} name="Tỷ lệ đúng (%)" barSize={40} />
+                                                    <Bar dataKey="percent" fill="#f97316" radius={[8, 8, 0, 0]} name="Tỷ lệ đúng (%)" barSize={36} />
                                                 </BarChart>
                                             </ResponsiveContainer>
                                         );
@@ -2648,21 +3067,20 @@ export const OnlineExam: React.FC = () => {
                             </div>
 
                             {/* Competency Analysis */}
-                            <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-xl overflow-hidden relative">
-                                <div className="absolute top-0 right-0 p-8 text-exam-blue/10 rotate-12"><Target size={120}/></div>
-                                <h3 className="text-xl font-black text-slate-800 flex items-center gap-3 mb-8 uppercase tracking-tight relative z-10">
-                                    <PieChartIcon size={24} className="text-exam-blue"/> Phân tích năng lực chuyên sâu
+                            <div className="bg-white p-5 md:p-6 rounded-2xl border border-slate-200 shadow-sm overflow-hidden relative">
+                                <h3 className="text-base font-black text-slate-900 flex items-center gap-2 mb-4 uppercase tracking-tight">
+                                    <PieChartIcon size={18} className="text-blue-600"/> Phân tích năng lực chuyên sâu
                                 </h3>
-                                <div className="space-y-6 relative z-10">
+                                <div className="space-y-4">
                                     {(() => {
                                         const compStats: Record<string, { total: number, correct: number }> = {};
                                         questions.forEach(q => {
                                             const comps = q.competencies || [];
                                             const userAns = answers[q.id];
                                             let isCorrect = false;
-                                            if (q.type === 'TN') isCorrect = userAns === q.options.find(o => o.isCorrect)?.id;
+                                            if (q.type === 'TN') isCorrect = userAns === q.options?.find(o => o.isCorrect)?.id;
                                             else if (q.type === 'TF' && userAns) {
-                                                let cnt = 0; q.options.forEach(o => { if ((userAns as any)[o.id] === o.isCorrect) cnt++; });
+                                                let cnt = 0; q.options?.forEach(o => { if ((userAns as any)[o.id] === o.isCorrect) cnt++; });
                                                 isCorrect = cnt === 4;
                                             } else if (q.type === 'KQ') {
                                                 isCorrect = checkKQAnswer(userAns, q.correctAnswer);
@@ -2674,23 +3092,23 @@ export const OnlineExam: React.FC = () => {
                                             });
                                         });
                                         const sortedComps = Object.entries(compStats).sort((a, b) => (b[1].correct / b[1].total) - (a[1].correct / a[1].total));
-                                        if (sortedComps.length === 0) return <div className="h-40 flex items-center justify-center text-slate-300 font-black uppercase text-xs tracking-widest italic">Dữ liệu đang được cập nhật...</div>;
+                                        if (sortedComps.length === 0) return <div className="h-40 flex items-center justify-center text-slate-400 font-bold uppercase text-xs italic">Dữ liệu năng lực đang cập nhật...</div>;
                                         return sortedComps.slice(0, 4).map(([name, stats]) => {
                                             const percent = Math.round((stats.correct / stats.total) * 100);
                                             return (
-                                                <div key={name} className="space-y-2">
-                                                    <div className="flex justify-between items-center px-1">
-                                                        <span className="text-xs font-black text-slate-600 uppercase tracking-tight truncate max-w-[200px]">{name}</span>
-                                                        <span className={`text-[10px] font-black px-2 py-1 rounded-lg ${percent >= 80 ? 'bg-exam-green/10 text-exam-green' : percent >= 50 ? 'bg-exam-blue/10 text-exam-blue' : 'bg-exam-red/10 text-exam-red'}`}>
+                                                <div key={name} className="space-y-1.5">
+                                                    <div className="flex justify-between items-center px-0.5">
+                                                        <span className="text-xs font-bold text-slate-700 truncate max-w-[200px]">{name}</span>
+                                                        <span className={`text-[10px] font-black px-2 py-0.5 rounded-md ${percent >= 80 ? 'bg-emerald-50 text-emerald-700 border border-emerald-200' : percent >= 50 ? 'bg-blue-50 text-blue-700 border border-blue-200' : 'bg-rose-50 text-rose-700 border border-rose-200'}`}>
                                                             {percent}% SẴN SÀNG
                                                         </span>
                                                     </div>
-                                                    <div className="h-3 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/50">
+                                                    <div className="h-2.5 bg-slate-100 rounded-full overflow-hidden p-0.5 border border-slate-200/60">
                                                         <motion.div 
                                                             initial={{ width: 0 }}
                                                             animate={{ width: `${percent}%` }}
-                                                            transition={{ duration: 1.5, ease: "easeOut" }}
-                                                            className={`h-full rounded-full ${percent >= 80 ? 'bg-exam-green' : percent >= 50 ? 'bg-exam-blue' : 'bg-exam-red'}`}
+                                                            transition={{ duration: 1.2, ease: "easeOut" }}
+                                                            className={`h-full rounded-full ${percent >= 80 ? 'bg-emerald-500' : percent >= 50 ? 'bg-blue-500' : 'bg-rose-500'}`}
                                                         ></motion.div>
                                                     </div>
                                                 </div>
@@ -2699,33 +3117,33 @@ export const OnlineExam: React.FC = () => {
                                     })()}
                                     <button 
                                         onClick={() => navigate('/adaptive')}
-                                        className="w-full mt-4 py-4 bg-exam-indigo text-white font-black text-[10px] uppercase tracking-[0.2em] rounded-2xl hover:bg-indigo-700 shadow-xl shadow-indigo-100 transition-all flex items-center justify-center gap-3 group"
+                                        className="w-full mt-3 h-8.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-700 border border-indigo-200 font-bold text-xs uppercase tracking-wider rounded-lg transition-all flex items-center justify-center gap-2 group"
                                     >
-                                        <Zap size={16} className="group-hover:animate-pulse"/> Thiết kế lộ trình Adaptive riêng
+                                        <Zap size={14} className="text-indigo-600 group-hover:animate-pulse"/> Thiết kế lộ trình Adaptive riêng
                                     </button>
                                 </div>
                             </div>
                         </div>
 
                         {/* Detailed Section Summary */}
-                        <div className="bg-white rounded-[3rem] shadow-2xl shadow-slate-200/40 border border-slate-100 overflow-hidden mb-12 animate-in slide-in-from-bottom-8 duration-700">
-                            <div className="p-8 border-b border-slate-50 bg-slate-50/30 flex items-center justify-between">
-                                <h3 className="text-xl font-black text-slate-800 flex items-center gap-3 uppercase tracking-tight">
-                                    <Layout size={24} className="text-exam-indigo"/> Tổng quan hiệu suất theo phần thi
+                        <div className="bg-white rounded-2xl shadow-sm border border-slate-200 overflow-hidden mb-6 animate-in slide-in-from-bottom-4 duration-500">
+                            <div className="p-4 border-b border-slate-100 bg-slate-50/50 flex items-center justify-between">
+                                <h3 className="text-sm font-black text-slate-900 flex items-center gap-2 uppercase tracking-tight">
+                                    <Layout size={16} className="text-indigo-600"/> Tổng quan hiệu suất theo phần thi
                                 </h3>
                             </div>
                             <div className="overflow-x-auto custom-scrollbar">
                                 <table className="w-full text-left">
                                     <thead>
-                                        <tr className="bg-slate-50/50 text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] border-b border-slate-100">
-                                            <th className="px-10 py-6">Phần thi / Dạng câu hỏi</th>
-                                            <th className="px-8 py-6 text-center">Số lượng</th>
-                                            <th className="px-8 py-6 text-center">Đúng</th>
-                                            <th className="px-8 py-6 text-center">Hiệu suất</th>
-                                            <th className="px-10 py-6 text-right">Đánh giá chung</th>
+                                        <tr className="bg-slate-50 text-[10px] font-black text-slate-500 uppercase tracking-wider border-b border-slate-200">
+                                            <th className="px-4 py-2.5">Phần thi / Dạng câu hỏi</th>
+                                            <th className="px-4 py-2.5 text-center">Số lượng</th>
+                                            <th className="px-4 py-2.5 text-center">Đúng</th>
+                                            <th className="px-4 py-2.5 text-center">Hiệu suất</th>
+                                            <th className="px-4 py-2.5 text-right">Đánh giá chung</th>
                                         </tr>
                                     </thead>
-                                    <tbody className="divide-y divide-slate-50">
+                                    <tbody className="divide-y divide-slate-100">
                                         {['TN', 'TF', 'KQ'].map((type, idx) => {
                                             const sectionQs = questions.filter(q => q.type === type);
                                             if (sectionQs.length === 0) return null;
@@ -2746,37 +3164,37 @@ export const OnlineExam: React.FC = () => {
                                             
                                             let label = '';
                                             let color = '';
-                                            if (percent >= 80) { label = 'Xuất sắc'; color = 'text-exam-green bg-exam-green/10'; }
-                                            else if (percent >= 50) { label = 'Đạt yêu cầu'; color = 'text-exam-blue bg-exam-blue/10'; }
-                                            else { label = 'Cần cải thiện'; color = 'text-exam-red bg-exam-red/10'; }
+                                            if (percent >= 80) { label = 'Xuất sắc'; color = 'text-emerald-700 bg-emerald-50 border border-emerald-200'; }
+                                            else if (percent >= 50) { label = 'Đạt yêu cầu'; color = 'text-blue-700 bg-blue-50 border border-blue-200'; }
+                                            else { label = 'Cần cải thiện'; color = 'text-rose-700 bg-rose-50 border border-rose-200'; }
 
                                             return (
                                                 <tr key={type} className="group hover:bg-slate-50/50 transition-all">
-                                                    <td className="px-10 py-6">
-                                                        <div className="flex items-center gap-4">
-                                                            <div className="w-10 h-10 rounded-xl bg-slate-100 flex items-center justify-center font-black text-slate-400 group-hover:bg-exam-indigo group-hover:text-white transition-all">{idx + 1}</div>
+                                                    <td className="px-4 py-3">
+                                                        <div className="flex items-center gap-3">
+                                                            <div className="w-7 h-7 rounded-lg bg-slate-100 flex items-center justify-center font-black text-xs text-slate-500 group-hover:bg-indigo-600 group-hover:text-white transition-all">{idx + 1}</div>
                                                             <div>
-                                                                <div className="text-sm font-extrabold text-slate-800">{type === 'TN' ? 'Trắc nghiệm nhiều lựa chọn' : type === 'TF' ? 'Trắc nghiệm đúng sai' : 'Trắc nghiệm trả lời ngắn'}</div>
-                                                                <div className="text-[10px] font-bold text-slate-400 uppercase tracking-widest mt-0.5">Dạng {type}</div>
+                                                                <div className="text-xs font-bold text-slate-800">{type === 'TN' ? 'Trắc nghiệm nhiều lựa chọn' : type === 'TF' ? 'Trắc nghiệm đúng sai' : 'Trắc nghiệm trả lời ngắn'}</div>
+                                                                <div className="text-[10px] font-semibold text-slate-400 uppercase tracking-wider">Dạng {type}</div>
                                                             </div>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-6 text-center font-bold text-slate-500">{sectionQs.length} câu</td>
-                                                    <td className="px-8 py-6 text-center">
-                                                        <div className="inline-flex items-center gap-1.5 font-black text-exam-green">
-                                                            {correctCount} <span className="text-[10px] text-slate-300">/ {sectionQs.length}</span>
+                                                    <td className="px-4 py-3 text-center font-bold text-xs text-slate-600">{sectionQs.length} câu</td>
+                                                    <td className="px-4 py-3 text-center">
+                                                        <div className="inline-flex items-center gap-1 font-black text-xs text-emerald-600">
+                                                            {correctCount} <span className="text-[10px] text-slate-400 font-normal">/ {sectionQs.length}</span>
                                                         </div>
                                                     </td>
-                                                    <td className="px-8 py-6">
-                                                        <div className="flex flex-col items-center gap-1.5">
-                                                            <div className="w-32 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
-                                                                <div className="h-full bg-exam-indigo transition-all duration-1000" style={{ width: `${percent}%` }}></div>
+                                                    <td className="px-4 py-3">
+                                                        <div className="flex flex-col items-center gap-1">
+                                                            <div className="w-28 h-2 bg-slate-100 rounded-full overflow-hidden border border-slate-200/50">
+                                                                <div className="h-full bg-indigo-600 transition-all duration-1000" style={{ width: `${percent}%` }}></div>
                                                             </div>
-                                                            <span className="text-[10px] font-black text-slate-400 tracking-tighter">{percent}% hoàn thành</span>
+                                                            <span className="text-[10px] font-bold text-slate-500">{percent}%</span>
                                                         </div>
                                                     </td>
-                                                    <td className="px-10 py-6 text-right">
-                                                        <span className={`px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest ${color}`}>
+                                                    <td className="px-4 py-3 text-right">
+                                                        <span className={`px-2.5 py-0.5 rounded-full text-[10px] font-black uppercase tracking-wider ${color}`}>
                                                             {label}
                                                         </span>
                                                     </td>
@@ -2790,20 +3208,22 @@ export const OnlineExam: React.FC = () => {
 
                         </>}
                         {/* Action Buttons */}
-                            <div className="flex flex-col sm:flex-row items-center justify-center gap-6 animate-in slide-in-from-bottom-8 duration-700 delay-300">
-                                {!resultReviewLocked && <button
+                        <div className="flex flex-wrap items-center justify-center gap-3 animate-in slide-in-from-bottom-4 duration-500">
+                            {!resultReviewLocked && (
+                                <button
                                     onClick={() => { if (submittedResultId) void handleViewHistory({ id: submittedResultId }); }}
-                                    className="w-full sm:w-auto min-w-[240px] px-10 py-6 bg-white border-2 border-indigo-600 text-indigo-600 rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-indigo-600 hover:text-white transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-3 active:scale-95"
+                                    className="h-10 px-5 bg-white border border-indigo-300 text-indigo-700 hover:bg-indigo-50 rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-xs flex items-center justify-center gap-2 active:scale-95"
                                 >
-                                    <Eye size={20}/> Xem giải chi tiết
-                                </button>}
-                                <button 
-                                    onClick={() => { setMode('DASHBOARD'); clearSvgCache(); }}
-                                    className="w-full sm:w-auto min-w-[240px] px-10 py-6 bg-indigo-600 text-white rounded-[2.5rem] font-black text-xs uppercase tracking-[0.3em] hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200 flex items-center justify-center gap-3 active:scale-95"
-                                >
-                                    <ArrowLeft size={20}/> Quay lại trang chủ
+                                    <Eye size={16}/> Xem bài làm chi tiết
                                 </button>
-                            </div>
+                            )}
+                            <button 
+                                onClick={() => { setMode('DASHBOARD'); clearSvgCache(); }}
+                                className="h-10 px-5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-xl font-bold text-xs uppercase tracking-wider transition-all shadow-sm flex items-center justify-center gap-2 active:scale-95"
+                            >
+                                <ArrowLeft size={16}/> Quay lại danh sách đề thi
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
