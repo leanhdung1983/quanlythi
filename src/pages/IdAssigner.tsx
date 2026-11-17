@@ -1,14 +1,14 @@
 
-// ... existing imports ...
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { apiService } from '../services/api';
-import { ID6Metadata, Chapter, Unit, Question } from '../types';
-import { UploadCloud, Tag, CheckCircle2, Save, FileText, Database, Loader2, AlertTriangle, PenTool, Layers, FolderOpen, CopyCheck, X, ClipboardPaste, ArrowLeft, ArrowRight as ArrowRightIcon, FileCheck, Settings2, RefreshCw, Filter, Info, Sparkles } from 'lucide-react';
+import { ID6Metadata, Chapter, Unit, Question, QuestionQualityCheck7Steps } from '../types';
+import { UploadCloud, Tag, CheckCircle2, Save, FileText, Database, Loader2, AlertTriangle, PenTool, Layers, FolderOpen, CopyCheck, X, ClipboardPaste, ArrowLeft, ArrowRight as ArrowRightIcon, FileCheck, Settings2, RefreshCw, Filter, Info, Sparkles, ShieldCheck } from 'lucide-react';
 import { isValidID6, normalizeID } from '../utils/id6Helper';
 import { detectQuestionTypeFromLatex } from '../services/parser';
 import { useLanguageStore } from '../services/languageStore';
 import { useAuthStore } from '../services/authStore';
-import { validateAndTagQuestion, batchSuggestIds } from '../services/aiService';
+import { validateAndTagQuestion, batchSuggestIds, qualityCheckQuestion7Steps, fetchQualityCheckByQuestionId } from '../services/aiService';
+import { SmartQualityAuditModal } from '../components/SmartQualityAuditModal';
 
 // --- TYPES ---
 interface WorkItem {
@@ -29,6 +29,7 @@ interface WorkItem {
     aiSuggested?: boolean;
     aiConfidence?: number;
     aiReason?: string;
+    qualityCheck?: QuestionQualityCheck7Steps;
 }
 
 interface LoadedFile {
@@ -90,6 +91,10 @@ export const IdAssigner: React.FC = () => {
     // --- STATE: AI VALIDATION ---
     const [aiResult, setAiResult] = useState<{ isValid: boolean, reason: string, reasonCodes?: string[], suggestedId?: string, confidence?: number, alternatives?: string[], competencies?: string[] } | null>(null);
     const [isValidating, setIsValidating] = useState(false);
+    
+    // --- STATE: 7-STEP QUALITY CHECK ---
+    const [showQualityModal, setShowQualityModal] = useState(false);
+    const [isQualityCheckingCurrent, setIsQualityCheckingCurrent] = useState(false);
     
     const fileInputRef = useRef(null);
 
@@ -204,6 +209,27 @@ export const IdAssigner: React.FC = () => {
             }
         }
     }, [currentItem?.id, currentItem?.assignedId, currentItem?.originalId]); 
+
+    // --- EFFECT: AUTO-LOAD QUALITY CHECK CACHE ---
+    useEffect(() => {
+        if (currentItem?.dbId && !currentItem.qualityCheck) {
+            fetchQualityCheckByQuestionId(currentItem.dbId)
+                .then(check => {
+                    if (check && activeFileId) {
+                        setFiles(prev => prev.map(f => {
+                            if (f.uniqueId !== activeFileId) return f;
+                            return {
+                                ...f,
+                                workItems: f.workItems.map(item =>
+                                    item.id === currentItem.id ? { ...item, qualityCheck: check } : item
+                                )
+                            };
+                        }));
+                    }
+                })
+                .catch(() => {});
+        }
+    }, [currentItem?.id, currentItem?.dbId, activeFileId]); 
 
     // --- EFFECT: AUTO-VALIDATE SELECTIONS WHEN METADATA LOADS ---
     // This solves the issue where users had to select another item then back to trigger loading
@@ -1026,6 +1052,39 @@ export const IdAssigner: React.FC = () => {
         }
     };
 
+    const handleQuickQualityCheck = async () => {
+        if (!currentItem) return;
+        setIsQualityCheckingCurrent(true);
+        try {
+            const res = await qualityCheckQuestion7Steps({
+                latex: currentItem.content,
+                currentId: currentItem.assignedId || currentItem.originalId,
+                questionId: currentItem.dbId
+            });
+            if (activeFileId) {
+                setFiles(prev => prev.map(f => {
+                    if (f.uniqueId !== activeFileId) return f;
+                    return {
+                        ...f,
+                        workItems: f.workItems.map(item =>
+                            item.id === currentItem.id ? { 
+                                ...item, 
+                                qualityCheck: res,
+                                suggestedId: res.suggested_id || item.suggestedId 
+                            } : item
+                        )
+                    };
+                }));
+            }
+            setShowQualityModal(true);
+        } catch (e: any) {
+            console.error("Quick quality check error", e);
+            alert(`Lỗi kiểm định câu hỏi: ${e?.message || 'Không thể kết nối AI.'}`);
+        } finally {
+            setIsQualityCheckingCurrent(false);
+        }
+    };
+
     // --- DERIVED UI DATA ---
     const availableChapters = useMemo(() => {
         return chapters.filter(c => c.id_class === selClass && c.id_subject === selSubject);
@@ -1137,6 +1196,16 @@ export const IdAssigner: React.FC = () => {
                             <span>AI Đề xuất ID {unassignedCount > 0 ? `(${unassignedCount})` : ''}</span>
                         </button>
                     )}
+
+                    {/* Nút Kiểm tra Đề Thông minh 7 bước */}
+                    <button 
+                        onClick={() => setShowQualityModal(true)} 
+                        className="bg-emerald-50 border border-emerald-300 text-emerald-700 hover:bg-emerald-100 px-3 py-1.5 rounded-md text-xs font-bold shadow-2xs flex items-center gap-1.5 transition-all active:scale-95"
+                        title="Kiểm tra chất lượng câu hỏi thông minh theo quy trình 7 bước khảo thí bằng AI"
+                    >
+                        <ShieldCheck size={14} className="text-emerald-600"/>
+                        <span>Kiểm định 7 bước AI</span>
+                    </button>
                     
                     {files.length > 0 && activeFile && !activeFile.isDbSource && (
                         <>
@@ -1279,6 +1348,13 @@ export const IdAssigner: React.FC = () => {
                                                             {item.aiSuggested && (
                                                                 <span className="flex items-center gap-0.5 text-[9px] font-bold text-purple-700 bg-purple-50 px-1.5 py-0.2 rounded border border-purple-200" title="Mã ID do AI đề xuất">
                                                                     <Sparkles size={9} className="text-purple-600"/> AI
+                                                                </span>
+                                                            )}
+                                                            {item.qualityCheck && (
+                                                                <span className={`flex items-center gap-0.5 text-[9px] font-bold px-1.5 py-0.2 rounded border ${
+                                                                    item.qualityCheck.is_standard ? 'bg-emerald-50 text-emerald-700 border-emerald-200' : 'bg-amber-50 text-amber-700 border-amber-200'
+                                                                }`} title={`Quy trình 7 bước: ${item.qualityCheck.score}/7 (${item.qualityCheck.is_standard ? 'Đạt chuẩn' : 'Cần sửa'})`}>
+                                                                    <ShieldCheck size={9}/> {item.qualityCheck.score}/7
                                                                 </span>
                                                             )}
                                                             <span className={`font-mono text-[10px] px-1.5 py-0.5 rounded border ${isPending ? 'bg-amber-50 border-amber-100 text-amber-700' : 'bg-green-50 border-green-100 text-green-700'}`}>
@@ -1559,6 +1635,76 @@ export const IdAssigner: React.FC = () => {
                                                 )}
                                             </div>
                                         )}
+
+                                        {/* 7-Step Quality Check Card */}
+                                        <div className="mt-3 p-3 rounded-xl border border-emerald-200 bg-gradient-to-br from-emerald-50/70 to-teal-50/50">
+                                            <div className="flex items-center justify-between mb-2">
+                                                <div className="flex items-center gap-1.5 text-xs font-black text-emerald-900">
+                                                    <ShieldCheck size={16} className="text-emerald-600" />
+                                                    <span>Kiểm Định 7 Bước (Sư Phạm AI)</span>
+                                                </div>
+                                                {currentItem?.qualityCheck && (
+                                                    <span className={`text-[10px] font-extrabold px-2 py-0.5 rounded-full border ${
+                                                        currentItem.qualityCheck.is_standard 
+                                                            ? 'bg-emerald-100 text-emerald-800 border-emerald-300' 
+                                                            : 'bg-amber-100 text-amber-800 border-amber-300'
+                                                    }`}>
+                                                        {currentItem.qualityCheck.is_standard ? '✓ Đạt chuẩn' : '⚠ Cần sửa'} ({currentItem.qualityCheck.score}/7)
+                                                    </span>
+                                                )}
+                                            </div>
+
+                                            {currentItem?.qualityCheck ? (
+                                                <div className="space-y-2 text-xs">
+                                                    <p className="text-slate-600 line-clamp-2 italic text-[11px]">
+                                                        "{currentItem.qualityCheck.overall_comment}"
+                                                    </p>
+                                                    {currentItem.qualityCheck.suggested_id && currentItem.qualityCheck.suggested_id !== currentItem.assignedId && (
+                                                        <div className="p-2 bg-white/80 rounded-lg border border-emerald-200 flex items-center justify-between">
+                                                            <span className="text-[11px] text-slate-700">
+                                                                Mã nên gắn: <code className="font-bold text-indigo-700">{currentItem.qualityCheck.suggested_id}</code>
+                                                            </span>
+                                                            <button
+                                                                onClick={() => updateAssignedId(currentItem.qualityCheck!.suggested_id)}
+                                                                className="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded text-[10px]"
+                                                            >
+                                                                Gán mã này
+                                                            </button>
+                                                        </div>
+                                                    )}
+                                                    <div className="flex items-center gap-2 pt-1">
+                                                        <button
+                                                            onClick={() => setShowQualityModal(true)}
+                                                            className="flex-1 py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-center text-xs shadow-2xs transition-all active:scale-95"
+                                                        >
+                                                            Xem bảng phân tích 7 bước
+                                                        </button>
+                                                        <button
+                                                            onClick={handleQuickQualityCheck}
+                                                            disabled={isQualityCheckingCurrent}
+                                                            className="p-1.5 bg-white hover:bg-slate-100 border border-emerald-200 text-emerald-700 rounded-lg transition-colors"
+                                                            title="Kiểm tra lại câu này"
+                                                        >
+                                                            <RefreshCw size={13} className={isQualityCheckingCurrent ? 'animate-spin' : ''} />
+                                                        </button>
+                                                    </div>
+                                                </div>
+                                            ) : (
+                                                <div className="space-y-2">
+                                                    <p className="text-[11px] text-slate-500">
+                                                        Kiểm tra câu hỏi có đạt chuẩn: mục đích rõ, đủ bối cảnh, chỉ hỏi 1 việc, trung lập, trả lời được.
+                                                    </p>
+                                                    <button
+                                                        onClick={handleQuickQualityCheck}
+                                                        disabled={isQualityCheckingCurrent}
+                                                        className="w-full py-1.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold text-xs shadow-2xs flex items-center justify-center gap-1.5 transition-all active:scale-95 disabled:opacity-50"
+                                                    >
+                                                        {isQualityCheckingCurrent ? <Loader2 size={13} className="animate-spin" /> : <ShieldCheck size={13} />}
+                                                        <span>Kiểm tra chất lượng 7 bước ngay</span>
+                                                    </button>
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 )}
                             </div>
@@ -1871,6 +2017,43 @@ export const IdAssigner: React.FC = () => {
                     </div>
                 </div>
             )}
+
+            {/* Modal Kiểm định Đề thông minh 7 bước */}
+            <SmartQualityAuditModal
+                isOpen={showQualityModal}
+                onClose={() => setShowQualityModal(false)}
+                currentQuestion={currentItem ? {
+                    id: currentItem.id,
+                    content: currentItem.content,
+                    assignedId: currentItem.assignedId,
+                    originalId: currentItem.originalId,
+                    dbId: currentItem.dbId,
+                    qualityCheck: currentItem.qualityCheck
+                } : null}
+                onApplySuggestedId={(newId) => {
+                    updateAssignedId(newId);
+                }}
+                onApplyRewrittenContent={(newContent) => {
+                    if (!currentItem || !activeFile) return;
+                    const newItems: WorkItem[] = activeFile.workItems.map(item =>
+                        item.id === currentItem.id ? { ...item, content: newContent, hasChanged: true } : item
+                    );
+                    updateActiveFileItems(newItems);
+                    alert('Đã cập nhật nội dung câu hỏi theo bản viết lại chuẩn hóa!');
+                }}
+                onQuestionQualityUpdated={(res) => {
+                    if (!currentItem || !activeFile) return;
+                    const newItems: WorkItem[] = activeFile.workItems.map(item =>
+                        item.id === currentItem.id ? { 
+                            ...item, 
+                            qualityCheck: res,
+                            suggestedId: res.suggested_id || item.suggestedId 
+                        } : item
+                    );
+                    updateActiveFileItems(newItems);
+                }}
+                isAdminOrTeacher={isAdminOrTeacher}
+            />
         </div>
     );
 };

@@ -252,6 +252,31 @@ CREATE TABLE IF NOT EXISTS duplicate_pairs (
     CONSTRAINT fk_dup_q2 FOREIGN KEY (question_id_2) REFERENCES questions(id) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+-- Bảng kiểm định chất lượng câu hỏi 7 bước thông minh bằng AI
+CREATE TABLE IF NOT EXISTS question_quality_checks (
+    id BIGINT AUTO_INCREMENT PRIMARY KEY,
+    question_id INT NULL,
+    content_hash VARCHAR(64) NOT NULL,
+    assigned_id VARCHAR(50) NULL,
+    suggested_id VARCHAR(50) NULL,
+    is_standard BOOLEAN DEFAULT FALSE,
+    score INT DEFAULT 0,
+    step1_purpose TEXT,
+    step2_clarity TEXT,
+    step3_scope TEXT,
+    step4_answerability TEXT,
+    step5_neutrality TEXT,
+    step6_structure TEXT,
+    step7_rewrite LONGTEXT,
+    step_details JSON,
+    overall_comment TEXT,
+    checked_by INT NULL,
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+    INDEX idx_qqc_qid (question_id),
+    INDEX idx_qqc_hash (content_hash)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
 -- Bảng phản hồi người dùng
 CREATE TABLE IF NOT EXISTS user_feedback (
     id INT AUTO_INCREMENT PRIMARY KEY,

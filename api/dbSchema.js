@@ -207,6 +207,32 @@ export async function seedDatabase(pool) {
         try { await pool.query("CREATE INDEX idx_suggestion_fingerprint ON question_id_suggestions(question_id, content_hash, current_id, status)"); } catch {}
 
         await pool.query(`
+            CREATE TABLE IF NOT EXISTS question_quality_checks (
+                id BIGINT AUTO_INCREMENT PRIMARY KEY,
+                question_id INT NULL,
+                content_hash VARCHAR(64) NOT NULL,
+                assigned_id VARCHAR(50) NULL,
+                suggested_id VARCHAR(50) NULL,
+                is_standard BOOLEAN DEFAULT FALSE,
+                score INT DEFAULT 0,
+                step1_purpose TEXT,
+                step2_clarity TEXT,
+                step3_scope TEXT,
+                step4_answerability TEXT,
+                step5_neutrality TEXT,
+                step6_structure TEXT,
+                step7_rewrite LONGTEXT,
+                step_details JSON,
+                overall_comment TEXT,
+                checked_by INT NULL,
+                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+                updated_at DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+                INDEX idx_qqc_qid (question_id),
+                INDEX idx_qqc_hash (content_hash)
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+        `);
+
+        await pool.query(`
             CREATE TABLE IF NOT EXISTS matrix_templates (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 name VARCHAR(255) NOT NULL,

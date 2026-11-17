@@ -1,4 +1,4 @@
-import { UploadedFile } from '../types';
+import { UploadedFile, QuestionQualityCheck7Steps, QuestionQualitySummary } from '../types';
 import { handleSessionExpired } from './authStore';
 
 async function readApiResponse(response: Response) {
@@ -251,4 +251,55 @@ export const batchSuggestIds = async (
     }
 
     return allResults;
+};
+
+export const qualityCheckQuestion7Steps = async (params: {
+    latex: string;
+    currentId?: string;
+    questionId?: number;
+    forceRefresh?: boolean;
+}): Promise<QuestionQualityCheck7Steps> => {
+    const response = await fetch('/api/ai/quality-check-7steps', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            latex: params.latex,
+            current_id: params.currentId || '',
+            question_id: params.questionId,
+            force_refresh: Boolean(params.forceRefresh)
+        })
+    });
+    const payload = await readApiResponse(response);
+    return payload.data;
+};
+
+export const batchQualityCheckBank = async (params: {
+    limit?: number;
+    forceRefresh?: boolean;
+}): Promise<{
+    processed: number;
+    remaining: number;
+    results: (QuestionQualityCheck7Steps & { id: number; legacy_full_id: string; content_latex: string })[];
+}> => {
+    const response = await fetch('/api/ai/batch-quality-check-bank', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+            limit: params.limit || 4,
+            force_refresh: Boolean(params.forceRefresh)
+        })
+    });
+    return await readApiResponse(response);
+};
+
+export const fetchQualitySummary = async (): Promise<QuestionQualitySummary> => {
+    const response = await fetch('/api/ai/quality-summary');
+    const payload = await readApiResponse(response);
+    return payload.data;
+};
+
+export const fetchQualityCheckByQuestionId = async (questionId: number): Promise<QuestionQualityCheck7Steps | null> => {
+    const response = await fetch(`/api/ai/quality-check/${questionId}`);
+    const payload = await readApiResponse(response);
+    return payload.data;
 };

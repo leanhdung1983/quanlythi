@@ -802,5 +802,40 @@ export const apiService = {
         const res = await fetch(`${API_URL}/students/${studentId}/classes`);
         const r = await handleResponse(res, `/students/${studentId}/classes`);
         return r.data;
+    },
+    async qualityCheckQuestion7Steps(params: { latex: string; currentId?: string; questionId?: number; forceRefresh?: boolean }) {
+        const res = await fetch(`${API_URL}/ai/quality-check-7steps`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                latex: params.latex,
+                current_id: params.currentId || '',
+                question_id: params.questionId,
+                force_refresh: Boolean(params.forceRefresh)
+            })
+        });
+        const r = await handleResponse(res, '/ai/quality-check-7steps');
+        return r.data;
+    },
+    async batchQualityCheckBank(params?: { limit?: number; forceRefresh?: boolean }) {
+        const res = await fetch(`${API_URL}/ai/batch-quality-check-bank`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                limit: params?.limit || 4,
+                force_refresh: Boolean(params?.forceRefresh)
+            })
+        });
+        return await handleResponse(res, '/ai/batch-quality-check-bank');
+    },
+    async fetchQualitySummary() {
+        const res = await fetch(`${API_URL}/ai/quality-summary`);
+        const r = await handleResponse(res, '/ai/quality-summary');
+        return r.data;
+    },
+    async fetchQualityCheckByQuestionId(questionId: number) {
+        const res = await fetch(`${API_URL}/ai/quality-check/${questionId}`);
+        const r = await handleResponse(res, `/ai/quality-check/${questionId}`);
+        return r.data;
     }
 };

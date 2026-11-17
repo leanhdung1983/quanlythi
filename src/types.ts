@@ -316,3 +316,47 @@ export interface BackgroundJob {
     created_at: string;
     updated_at: string;
 }
+
+export interface QualityCheckStepDetail {
+    name: string;
+    question: string;
+    passed: boolean;
+    evaluation: string;
+    advice?: string;
+    rewritten_latex?: string;
+    trial_reading_feedback?: string;
+}
+
+export interface QuestionQualityCheck7Steps {
+    id?: number;
+    question_id?: number | null;
+    content_hash?: string;
+    is_standard: boolean;
+    score: number;
+    steps: {
+        step1_purpose: QualityCheckStepDetail;
+        step2_clarity: QualityCheckStepDetail;
+        step3_scope: QualityCheckStepDetail;
+        step4_answerability: QualityCheckStepDetail;
+        step5_neutrality: QualityCheckStepDetail;
+        step6_structure: QualityCheckStepDetail;
+        step7_rewrite: QualityCheckStepDetail;
+        [key: string]: QualityCheckStepDetail;
+    };
+    current_id: string;
+    suggested_id: string;
+    id_assessment: string;
+    overall_comment: string;
+    checked_at?: string;
+    cached?: boolean;
+}
+
+export interface QuestionQualitySummary {
+    total_questions: number;
+    checked_count: number;
+    standard_count: number;
+    substandard_count: number;
+    unchecked_count: number;
+    standard_rate: number;
+}
+

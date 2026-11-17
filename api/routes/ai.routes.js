@@ -5,7 +5,8 @@ import {
     requireTeacherOrAdmin, 
     getGeminiApiKeys,
     generateWithFallback, 
-    parseGeminiError 
+    parseGeminiError,
+    generateHash 
 } from '../core.js';
 import { normalizeId6, extractSourceId, injectCanonicalId, requiresAiIdReview, validateId6Candidate } from '../id6.js';
 import { normalizeExTestOutput } from '../exTest.js';
@@ -542,6 +543,503 @@ Nếu đề bài là dạng ${type}, hãy sinh câu hỏi theo đúng định d�
         latex = latex.replace(/```latex\n?/g, '').replace(/```\n?/g, '').trim();
         
         res.json({ success: true, latex });
+    } catch (e) {
+        res.status(500).json({ error: parseGeminiError(e) });
+    }
+});
+
+// ==========================================
+// 7-STEP QUESTION QUALITY ASSURANCE & AUDIT
+// ==========================================
+
+export async function runSingleQualityCheck({ latex, currentId, questionId, forceRefresh, userId, catalogData, apiKeys }) {
+    const rawLatex = typeof latex === 'string' ? latex : '';
+    if (!rawLatex.trim()) {
+        throw new Error('Nội dung câu hỏi không được để trống.');
+    }
+    const contentHash = generateHash(rawLatex);
+    const normCurrentId = normalizeId6(currentId || '') || (currentId || '');
+
+    // 1. Kiểm tra cache / CSDL đã kiểm tra chưa (nếu không forceRefresh)
+    if (!forceRefresh) {
+        let cached = null;
+        if (questionId) {
+            const rows = await query(`
+                SELECT * FROM question_quality_checks
+                WHERE question_id = ? AND content_hash = ?
+                ORDER BY id DESC LIMIT 1
+            `, [questionId, contentHash]);
+            if (rows.length > 0) cached = rows[0];
+        }
+        if (!cached && contentHash) {
+            const rows = await query(`
+                SELECT * FROM question_quality_checks
+                WHERE content_hash = ?
+                ORDER BY id DESC LIMIT 1
+            `, [contentHash]);
+            if (rows.length > 0) cached = rows[0];
+        }
+
+        if (cached) {
+            let stepDetails = {};
+            try {
+                stepDetails = typeof cached.step_details === 'string' 
+                    ? JSON.parse(cached.step_details) 
+                    : (cached.step_details || {});
+            } catch {}
+
+            return {
+                id: cached.id,
+                question_id: cached.question_id || questionId || null,
+                content_hash: contentHash,
+                is_standard: Boolean(cached.is_standard),
+                score: cached.score || 0,
+                steps: stepDetails.steps || {
+                    step1_purpose: { passed: true, name: 'Xác định mục đích', evaluation: cached.step1_purpose },
+                    step2_clarity: { passed: true, name: 'Kiểm tra độ rõ', evaluation: cached.step2_clarity },
+                    step3_scope: { passed: true, name: 'Kiểm tra phạm vi', evaluation: cached.step3_scope },
+                    step4_answerability: { passed: true, name: 'Kiểm tra tính trả lời được', evaluation: cached.step4_answerability },
+                    step5_neutrality: { passed: true, name: 'Kiểm tra tính trung lập', evaluation: cached.step5_neutrality },
+                    step6_structure: { passed: true, name: 'Kiểm tra cấu trúc', evaluation: cached.step6_structure },
+                    step7_rewrite: { passed: true, name: 'Viết lại và thử đọc', rewritten_latex: cached.step7_rewrite }
+                },
+                current_id: cached.assigned_id || normCurrentId,
+                suggested_id: cached.suggested_id || normCurrentId,
+                id_assessment: stepDetails.id_assessment || 'Kết quả kiểm tra lấy từ bản lưu CSDL.',
+                overall_comment: cached.overall_comment,
+                checked_at: cached.updated_at || cached.created_at,
+                cached: true
+            };
+        }
+    }
+
+    // 2. Chưa có kết quả hoặc forceRefresh -> Gọi Gemini AI phân tích 7 bước
+    const { validIds } = catalogData;
+    const detectedGrades = detectGradesFromQuestions([{ latex: rawLatex, current_id: normCurrentId }]);
+    const promptCatalog = getFilteredCatalog(catalogData, detectedGrades).slice(0, MAX_ID_PROMPT_CHARS);
+
+    const systemInstruction = `Bạn là Chuyên gia Khảo thí và Kiểm định chất lượng câu hỏi, đề thi chuẩn quốc gia môn Toán.
+Nhiệm vụ của bạn là thẩm định câu hỏi nghiêm ngặt theo QUY TRÌNH 7 BƯỚC:
+1. Xác định mục đích: Câu hỏi cần giúp người học tìm hiểu, quyết định hoặc làm rõ điều gì? Đo lường kiến thức, năng lực nào?
+2. Kiểm tra độ rõ: Người đọc có hiểu câu hỏi đang hỏi về điều gì không? Có từ ngữ mơ hồ hoặc nhiều cách hiểu không? Ký hiệu toán học và thuật ngữ chuẩn xác chưa?
+3. Kiểm tra phạm vi: Câu hỏi có quá rộng hoặc quá hẹp không? Đã nêu rõ đối tượng, thời gian, điều kiện xác định, miền tham số chưa?
+4. Kiểm tra tính trả lời được: Người trả lời có đủ thông tin để trả lời không? Câu hỏi có đòi hỏi dữ liệu hoặc kiến thức ngoài tầm tiếp cận không? Có đáp án xác định duy nhất không?
+5. Kiểm tra tính trung lập: Câu hỏi có vô tình gợi ý câu trả lời, áp đặt giả định hoặc mang tính dẫn dắt không?
+6. Kiểm tra cấu trúc: Câu hỏi có đang hỏi nhiều việc cùng lúc không? Nếu có, hãy tách thành các câu riêng hoặc hướng dẫn tập trung một việc chính.
+7. Viết lại và thử đọc: Viết câu hỏi ngắn gọn hơn, chuẩn cú pháp LaTeX, rồi thử xem một người không biết bối cảnh có hiểu đúng ý bạn không.
+
+ĐẠT CHUẨN KHI: Câu hỏi có mục đích rõ, đủ bối cảnh, chỉ hỏi một việc chính, trung lập và có thể trả lời được (is_standard = true).
+MÃ ID ĐỀ XUẤT:
+- Dựa vào danh mục ID6 chuẩn.
+- Nếu câu hỏi đã gắn ID và phù hợp, giữ nguyên.
+- Nếu câu hỏi CHƯA GẮN ID hoặc ID hiện tại sai (sai chương/dạng/mức độ N-H-V-C), hãy đề xuất mã ID6 chuẩn đầy đủ phù hợp nhất (ví dụ: 12D1H1-1).`;
+
+    const userPrompt = `ĐỀ BÀI CÂU HỎI (Mã LaTeX):
+${rawLatex}
+
+MÃ ID HIỆN TẠI: "${normCurrentId || 'CHƯA GẮN ID'}"
+
+DANH MỤC ID6 THAM CHIẾU:
+${promptCatalog}
+
+HÃY ĐÁNH GIÁ ĐỦ 7 BƯỚC VÀ TRẢ VỀ DUY NHẤT ĐỐI TƯỢNG JSON THEO ĐỊNH DẠNG:
+{
+  "is_standard": boolean,
+  "score": number,
+  "steps": {
+    "step1_purpose": {
+      "name": "Xác định mục đích",
+      "question": "Câu hỏi cần giúp bạn tìm hiểu, quyết định hoặc làm rõ điều gì?",
+      "passed": boolean,
+      "evaluation": string,
+      "advice": string
+    },
+    "step2_clarity": {
+      "name": "Kiểm tra độ rõ",
+      "question": "Người đọc có hiểu câu hỏi đang hỏi về điều gì không? Có từ ngữ mơ hồ hoặc nhiều cách hiểu không?",
+      "passed": boolean,
+      "evaluation": string,
+      "advice": string
+    },
+    "step3_scope": {
+      "name": "Kiểm tra phạm vi",
+      "question": "Câu hỏi có quá rộng hoặc quá hẹp không? Đã nêu rõ đối tượng, thời gian, bối cảnh cần thiết chưa?",
+      "passed": boolean,
+      "evaluation": string,
+      "advice": string
+    },
+    "step4_answerability": {
+      "name": "Kiểm tra tính trả lời được",
+      "question": "Người trả lời có đủ thông tin để trả lời không? Câu hỏi có đòi hỏi dữ liệu hoặc kiến thức không thể tiếp cận không?",
+      "passed": boolean,
+      "evaluation": string,
+      "advice": string
+    },
+    "step5_neutrality": {
+      "name": "Kiểm tra tính trung lập",
+      "question": "Câu hỏi có vô tình gợi ý câu trả lời, áp đặt giả định hoặc mang tính dẫn dắt không?",
+      "passed": boolean,
+      "evaluation": string,
+      "advice": string
+    },
+    "step6_structure": {
+      "name": "Kiểm tra cấu trúc",
+      "question": "Câu hỏi có đang hỏi nhiều việc cùng lúc không? Nếu có, hãy tách thành các câu riêng.",
+      "passed": boolean,
+      "evaluation": string,
+      "advice": string
+    },
+    "step7_rewrite": {
+      "name": "Viết lại và thử đọc",
+      "question": "Viết câu hỏi ngắn gọn hơn, rồi thử xem một người không biết bối cảnh có hiểu đúng ý bạn không.",
+      "passed": boolean,
+      "rewritten_latex": string,
+      "evaluation": string,
+      "trial_reading_feedback": string
+    }
+  },
+  "current_id": string,
+  "suggested_id": string,
+  "id_assessment": string,
+  "overall_comment": string
+}`;
+
+    const response = await generateWithFallback(apiKeys, userPrompt, {
+        systemInstruction,
+        responseMimeType: 'application/json',
+        maxOutputTokens: 3072
+    });
+
+    const parsed = JSON.parse((response.text || '{}').replace(/^```json\s*|\s*```$/g, ''));
+    
+    // Chuẩn hóa và kiểm tra mã ID đề xuất
+    let rawSuggestedId = normalizeId6(parsed.suggested_id || '');
+    if (!rawSuggestedId && parsed.suggested_id) {
+        rawSuggestedId = parsed.suggested_id;
+    }
+    if (!rawSuggestedId && normCurrentId && validIds.has(normCurrentId)) {
+        rawSuggestedId = normCurrentId;
+    }
+
+    const steps = parsed.steps || {};
+    const step1 = steps.step1_purpose || {};
+    const step2 = steps.step2_clarity || {};
+    const step3 = steps.step3_scope || {};
+    const step4 = steps.step4_answerability || {};
+    const step5 = steps.step5_neutrality || {};
+    const step6 = steps.step6_structure || {};
+    const step7 = steps.step7_rewrite || {};
+
+    const passCount = [
+        step1.passed, step2.passed, step3.passed, 
+        step4.passed, step5.passed, step6.passed, step7.passed
+    ].filter(Boolean).length;
+
+    const isStandard = Boolean(parsed.is_standard ?? (passCount >= 6 && step1.passed && step3.passed && step4.passed && step5.passed && step6.passed));
+
+    const result = {
+        question_id: questionId || null,
+        content_hash: contentHash,
+        is_standard: isStandard,
+        score: typeof parsed.score === 'number' ? parsed.score : passCount,
+        steps,
+        current_id: normCurrentId,
+        suggested_id: rawSuggestedId || normCurrentId || '',
+        id_assessment: parsed.id_assessment || 'Đã đối chiếu với danh mục ID6.',
+        overall_comment: parsed.overall_comment || (isStandard ? 'Câu hỏi đạt tiêu chuẩn chất lượng.' : 'Câu hỏi cần cải thiện theo các tiêu chí chưa đạt.'),
+        cached: false
+    };
+
+    // 3. Lưu hoặc cập nhật vào bảng question_quality_checks
+    try {
+        let existingId = null;
+        if (questionId) {
+            const ex = await query('SELECT id FROM question_quality_checks WHERE question_id = ? AND content_hash = ? ORDER BY id DESC LIMIT 1', [questionId, contentHash]);
+            if (ex.length > 0) existingId = ex[0].id;
+        }
+        if (!existingId && contentHash) {
+            const ex = await query('SELECT id FROM question_quality_checks WHERE content_hash = ? ORDER BY id DESC LIMIT 1', [contentHash]);
+            if (ex.length > 0) existingId = ex[0].id;
+        }
+
+        const stepDetailsJson = JSON.stringify({ steps, id_assessment: result.id_assessment });
+
+        if (existingId) {
+            await query(`
+                UPDATE question_quality_checks SET
+                    question_id = COALESCE(?, question_id),
+                    assigned_id = ?,
+                    suggested_id = ?,
+                    is_standard = ?,
+                    score = ?,
+                    step1_purpose = ?,
+                    step2_clarity = ?,
+                    step3_scope = ?,
+                    step4_answerability = ?,
+                    step5_neutrality = ?,
+                    step6_structure = ?,
+                    step7_rewrite = ?,
+                    step_details = ?,
+                    overall_comment = ?,
+                    checked_by = COALESCE(?, checked_by),
+                    updated_at = NOW()
+                WHERE id = ?
+            `, [
+                questionId || null,
+                normCurrentId || null,
+                result.suggested_id || null,
+                result.is_standard ? 1 : 0,
+                result.score,
+                step1.evaluation || '',
+                step2.evaluation || '',
+                step3.evaluation || '',
+                step4.evaluation || '',
+                step5.evaluation || '',
+                step6.evaluation || '',
+                step7.rewritten_latex || '',
+                stepDetailsJson,
+                result.overall_comment,
+                userId || null,
+                existingId
+            ]);
+            result.id = existingId;
+        } else {
+            const insertRes = await query(`
+                INSERT INTO question_quality_checks 
+                (question_id, content_hash, assigned_id, suggested_id, is_standard, score, 
+                 step1_purpose, step2_clarity, step3_scope, step4_answerability, 
+                 step5_neutrality, step6_structure, step7_rewrite, step_details, 
+                 overall_comment, checked_by)
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+            `, [
+                questionId || null,
+                contentHash,
+                normCurrentId || null,
+                result.suggested_id || null,
+                result.is_standard ? 1 : 0,
+                result.score,
+                step1.evaluation || '',
+                step2.evaluation || '',
+                step3.evaluation || '',
+                step4.evaluation || '',
+                step5.evaluation || '',
+                step6.evaluation || '',
+                step7.rewritten_latex || '',
+                stepDetailsJson,
+                result.overall_comment,
+                userId || null
+            ]);
+            result.id = insertRes?.insertId || null;
+        }
+    } catch (saveErr) {
+        console.error('Error saving question_quality_checks:', saveErr.message);
+    }
+
+    return result;
+}
+
+// Endpoint: Kiểm tra chất lượng 7 bước cho 1 câu hỏi
+router.post('/ai/quality-check-7steps', async (req, res) => {
+    try {
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const { latex, current_id, question_id, force_refresh } = req.body;
+        if (typeof latex !== 'string' || !latex.trim()) {
+            return res.status(400).json({ error: 'Nội dung câu hỏi không hợp lệ.' });
+        }
+        const apiKeys = await getGeminiApiKeys(req.user.id);
+        if (!apiKeys || apiKeys.length === 0) {
+            return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
+        }
+
+        const catalogData = await getCachedId6Catalog();
+        const result = await runSingleQualityCheck({
+            latex,
+            currentId: current_id,
+            questionId: question_id ? Number(question_id) : null,
+            forceRefresh: Boolean(force_refresh),
+            userId: req.user.id,
+            catalogData,
+            apiKeys
+        });
+
+        res.json({ success: true, data: result });
+    } catch (e) {
+        res.status(500).json({ error: parseGeminiError(e) });
+    }
+});
+
+// Endpoint: Kiểm tra toàn diện hàng loạt ngân hàng câu hỏi (Tự động bỏ qua các câu đã kiểm tra)
+router.post('/ai/batch-quality-check-bank', async (req, res) => {
+    try {
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const limit = Math.min(Math.max(Number(req.body?.limit) || 4, 1), 6);
+        const forceRefresh = Boolean(req.body?.force_refresh);
+        const ownershipSql = req.user.role === 'ADMIN' ? '' : 'AND q.created_by = ?';
+        const params = req.user.role === 'ADMIN' ? [limit] : [req.user.id, limit];
+
+        let questions = [];
+        if (forceRefresh) {
+            questions = await query(`
+                SELECT q.id, q.legacy_full_id, q.content_latex, q.unit_id, q.level_id, q.content_hash
+                FROM questions q
+                WHERE 1=1 ${ownershipSql}
+                ORDER BY q.id ASC LIMIT ?
+            `, params);
+        } else {
+            questions = await query(`
+                SELECT q.id, q.legacy_full_id, q.content_latex, q.unit_id, q.level_id, q.content_hash
+                FROM questions q
+                WHERE NOT EXISTS (
+                    SELECT 1 FROM question_quality_checks qc
+                    WHERE qc.question_id = q.id
+                      AND COALESCE(qc.content_hash, '') = COALESCE(q.content_hash, '')
+                ) ${ownershipSql}
+                ORDER BY q.id ASC LIMIT ?
+            `, params);
+        }
+
+        if (!questions.length) {
+            return res.json({ success: true, processed: 0, remaining: 0, results: [] });
+        }
+
+        const apiKeys = await getGeminiApiKeys(req.user.id);
+        if (!apiKeys || apiKeys.length === 0) {
+            return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key.' });
+        }
+
+        const catalogData = await getCachedId6Catalog();
+        const results = [];
+
+        for (const q of questions) {
+            try {
+                const checkRes = await runSingleQualityCheck({
+                    latex: q.content_latex,
+                    currentId: q.legacy_full_id,
+                    questionId: q.id,
+                    forceRefresh,
+                    userId: req.user.id,
+                    catalogData,
+                    apiKeys
+                });
+                results.push({
+                    id: q.id,
+                    legacy_full_id: q.legacy_full_id,
+                    content_latex: q.content_latex,
+                    ...checkRes
+                });
+            } catch (err) {
+                console.error(`Error checking question ${q.id}:`, err.message);
+                results.push({
+                    id: q.id,
+                    legacy_full_id: q.legacy_full_id,
+                    error: err.message,
+                    is_standard: false,
+                    score: 0
+                });
+            }
+        }
+
+        // Đếm số câu còn lại chưa kiểm tra
+        const remainingRows = await query(`
+            SELECT COUNT(*) AS total FROM questions q
+            WHERE NOT EXISTS (
+                SELECT 1 FROM question_quality_checks qc
+                WHERE qc.question_id = q.id
+                  AND COALESCE(qc.content_hash, '') = COALESCE(q.content_hash, '')
+            ) ${ownershipSql}
+        `, req.user.role === 'ADMIN' ? [] : [req.user.id]);
+
+        const remaining = Number(remainingRows[0]?.total || 0);
+
+        res.json({
+            success: true,
+            processed: results.length,
+            remaining,
+            results
+        });
+    } catch (e) {
+        res.status(e?.status === 429 ? 429 : 500).json({ error: parseGeminiError(e) });
+    }
+});
+
+// Endpoint: Thống kê tổng hợp kiểm định chất lượng ngân hàng
+router.get('/ai/quality-summary', async (req, res) => {
+    try {
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const ownershipSql = req.user.role === 'ADMIN' ? '' : 'AND q.created_by = ?';
+        const params = req.user.role === 'ADMIN' ? [] : [req.user.id];
+
+        const [totRow] = await query(`SELECT COUNT(*) AS total FROM questions q WHERE 1=1 ${ownershipSql}`, params);
+        const total = Number(totRow?.total || 0);
+
+        const [checkedRow] = await query(`
+            SELECT 
+                COUNT(DISTINCT q.id) AS checked,
+                SUM(CASE WHEN qc.is_standard = 1 THEN 1 ELSE 0 END) AS standard,
+                SUM(CASE WHEN qc.is_standard = 0 THEN 1 ELSE 0 END) AS substandard
+            FROM questions q
+            INNER JOIN question_quality_checks qc ON q.id = qc.question_id AND COALESCE(q.content_hash, '') = COALESCE(qc.content_hash, '')
+            WHERE 1=1 ${ownershipSql}
+        `, params);
+
+        const checked = Number(checkedRow?.checked || 0);
+        const standard = Number(checkedRow?.standard || 0);
+        const substandard = Number(checkedRow?.substandard || 0);
+        const unchecked = Math.max(0, total - checked);
+
+        res.json({
+            success: true,
+            data: {
+                total_questions: total,
+                checked_count: checked,
+                standard_count: standard,
+                substandard_count: substandard,
+                unchecked_count: unchecked,
+                standard_rate: checked > 0 ? Math.round((standard / checked) * 100) : 0
+            }
+        });
+    } catch (e) {
+        res.status(500).json({ error: parseGeminiError(e) });
+    }
+});
+
+// Endpoint: Lấy chi tiết lịch sử kiểm định của 1 câu hỏi
+router.get('/ai/quality-check/:questionId', async (req, res) => {
+    try {
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const questionId = Number(req.params.questionId);
+        const rows = await query(`
+            SELECT * FROM question_quality_checks
+            WHERE question_id = ?
+            ORDER BY id DESC LIMIT 1
+        `, [questionId]);
+
+        if (rows.length === 0) {
+            return res.json({ success: true, data: null });
+        }
+
+        const cached = rows[0];
+        let stepDetails = {};
+        try {
+            stepDetails = typeof cached.step_details === 'string' ? JSON.parse(cached.step_details) : (cached.step_details || {});
+        } catch {}
+
+        res.json({
+            success: true,
+            data: {
+                id: cached.id,
+                question_id: cached.question_id,
+                content_hash: cached.content_hash,
+                is_standard: Boolean(cached.is_standard),
+                score: cached.score || 0,
+                steps: stepDetails.steps || {},
+                current_id: cached.assigned_id,
+                suggested_id: cached.suggested_id,
+                id_assessment: stepDetails.id_assessment || '',
+                overall_comment: cached.overall_comment,
+                checked_at: cached.updated_at || cached.created_at
+            }
+        });
     } catch (e) {
         res.status(500).json({ error: parseGeminiError(e) });
     }
