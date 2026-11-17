@@ -921,16 +921,21 @@ router.post('/ai/batch-quality-check-bank', async (req, res) => {
                     apiKeys
                 });
                 return {
+                    ...checkRes,
                     id: q.id,
+                    question_id: q.id,
                     legacy_full_id: q.legacy_full_id,
+                    current_id: q.legacy_full_id || checkRes.current_id || '',
                     content_latex: q.content_latex,
-                    ...checkRes
+                    quality_check_id: checkRes.id
                 };
             } catch (err) {
                 console.error(`Error checking question ${q.id}:`, err.message);
                 return {
                     id: q.id,
+                    question_id: q.id,
                     legacy_full_id: q.legacy_full_id,
+                    current_id: q.legacy_full_id || '',
                     content_latex: q.content_latex,
                     error: err.message,
                     is_standard: false,

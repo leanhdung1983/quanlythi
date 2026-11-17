@@ -39,8 +39,8 @@ interface SmartQualityAuditModalProps {
         dbId?: number;
         qualityCheck?: QuestionQualityCheck7Steps;
     } | null;
-    onApplySuggestedId: (newId: string, questionDbId?: number) => void;
-    onApplyRewrittenContent: (newContent: string) => void;
+    onApplySuggestedId: (newId: string, questionDbId?: number) => Promise<void> | void;
+    onApplyRewrittenContent: (newContent: string, questionDbId?: number, questionWorkItemId?: number) => Promise<void> | void;
     onQuestionQualityUpdated?: (result: QuestionQualityCheck7Steps) => void;
     isAdminOrTeacher: boolean;
 }
@@ -157,17 +157,31 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
         }
     };
 
+    // Helper computed properties for active question (either from workspace or bank inspection)
+    const activeDbId = singleResult?.question_id || (singleResult as any)?.id || currentQuestion?.dbId;
+    const activeContent = singleResult?.content_latex || currentQuestion?.content || '';
+    const activeCurrentId = singleResult?.current_id || (singleResult as any)?.legacy_full_id || currentQuestion?.assignedId || 'Chưa gắn mã ID';
+    const activeLabel = activeDbId ? `DB #${activeDbId}` : (currentQuestion ? `#${currentQuestion.id + 1}` : '—');
+    const isViewingBankItem = Boolean(singleResult?.content_latex && singleResult.content_latex !== currentQuestion?.content);
+
     const handleRunSingleCheck = async (force = false) => {
-        if (!currentQuestion) return;
+        if (!activeContent) return;
         setIsLoadingSingle(true);
         try {
             const res = await qualityCheckQuestion7Steps({
-                latex: currentQuestion.content,
-                currentId: currentQuestion.assignedId || currentQuestion.originalId,
-                questionId: currentQuestion.dbId,
+                latex: activeContent,
+                currentId: activeCurrentId !== 'Chưa gắn mã ID' ? activeCurrentId : undefined,
+                questionId: activeDbId,
                 forceRefresh: force || forceRefreshSingle
             });
-            setSingleResult(res);
+            setSingleResult({
+                ...res,
+                id: activeDbId,
+                question_id: activeDbId,
+                content_latex: activeContent,
+                current_id: activeCurrentId,
+                legacy_full_id: activeCurrentId
+            });
             onQuestionQualityUpdated?.(res);
         } catch (e: any) {
             console.error('Quality check failed:', e);
@@ -342,14 +356,19 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                             <div className="bg-white p-4 rounded-2xl border border-slate-200 shadow-xs flex flex-wrap items-center justify-between gap-3">
                                 <div className="flex items-center gap-3">
                                     <span className="font-mono text-xs bg-slate-100 text-slate-700 px-2.5 py-1 rounded-lg font-bold border border-slate-200">
-                                        #{currentQuestion ? currentQuestion.id + 1 : '—'}
+                                        {activeLabel}
                                     </span>
+                                    {isViewingBankItem && (
+                                        <span className="text-[10px] bg-indigo-50 text-indigo-700 font-bold px-2 py-0.5 rounded-md border border-indigo-200">
+                                            Từ Ngân hàng CSDL
+                                        </span>
+                                    )}
                                     <div>
                                         <div className="text-xs text-slate-400 font-medium">Mã ID đang gắn:</div>
                                         <div className="font-mono text-sm font-black text-indigo-700 flex items-center gap-1.5">
-                                            {currentQuestion?.assignedId || 'Chưa gắn mã ID'}
-                                            {currentQuestion?.dbId && (
-                                                <span className="text-[10px] text-slate-400 font-normal font-sans">(DB ID: #{currentQuestion.dbId})</span>
+                                            {activeCurrentId}
+                                            {activeDbId && (
+                                                <span className="text-[10px] text-slate-400 font-normal font-sans">(DB ID: #{activeDbId})</span>
                                             )}
                                         </div>
                                     </div>
@@ -368,16 +387,16 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
 
                                     <button
                                         onClick={() => setShowLatexPreview(!showLatexPreview)}
-                                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors"
+                                        className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold rounded-xl flex items-center gap-1.5 transition-colors cursor-pointer"
                                     >
                                         <Eye size={14} />
-                                        <span>{showLatexPreview ? 'Ẩn xem trước' : 'Xem đề bài'}</span>
+                                        <span>{showLatexPreview ? 'Thu gọn đề' : 'Mở rộng đề'}</span>
                                     </button>
 
                                     <button
                                         onClick={() => handleRunSingleCheck(false)}
-                                        disabled={isLoadingSingle || !currentQuestion}
-                                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-200 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50"
+                                        disabled={isLoadingSingle || !activeContent}
+                                        className="px-4 py-2 bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-bold rounded-xl shadow-md shadow-emerald-200 flex items-center gap-2 transition-all active:scale-95 disabled:opacity-50 cursor-pointer"
                                     >
                                         {isLoadingSingle ? (
                                             <>
@@ -394,14 +413,31 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                                 </div>
                             </div>
 
-                            {/* LaTeX Preview Collapsible */}
-                            {showLatexPreview && currentQuestion && (
+                            {/* LaTeX Preview Collapsible - Always visible when content exists */}
+                            {activeContent && (
                                 <div className="bg-white p-4 rounded-2xl border border-indigo-100 shadow-xs animate-in slide-in-from-top-2">
-                                    <div className="text-xs font-bold text-indigo-700 uppercase mb-2 flex items-center gap-1.5">
-                                        <BookOpen size={14} /> Nội dung câu hỏi LaTeX
+                                    <div className="flex items-center justify-between mb-2">
+                                        <div className="text-xs font-bold text-indigo-700 uppercase flex items-center gap-1.5">
+                                            <BookOpen size={14} /> Nội dung câu hỏi (LaTeX)
+                                        </div>
+                                        {isViewingBankItem && (
+                                            <button
+                                                type="button"
+                                                onClick={() => {
+                                                    if (currentQuestion?.qualityCheck) {
+                                                        setSingleResult(currentQuestion.qualityCheck);
+                                                    } else {
+                                                        setSingleResult(null);
+                                                    }
+                                                }}
+                                                className="text-[11px] text-indigo-600 hover:text-indigo-800 font-semibold cursor-pointer underline"
+                                            >
+                                                ← Quay lại câu đang mở trong file
+                                            </button>
+                                        )}
                                     </div>
-                                    <div className="bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm overflow-x-auto max-h-52 custom-scrollbar">
-                                        <MathRenderer content={currentQuestion.content} />
+                                    <div className={`bg-slate-50 p-3 rounded-xl border border-slate-200 text-sm overflow-x-auto ${showLatexPreview ? 'max-h-96' : 'max-h-48'} custom-scrollbar`}>
+                                        <MathRenderer content={activeContent} />
                                     </div>
                                 </div>
                             )}
@@ -522,7 +558,7 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                                             <div className="flex items-center gap-2">
                                                 <span className="font-bold text-slate-600">Đối chiếu mã ID:</span>
                                                 <span className="bg-white px-2 py-0.5 rounded border border-slate-200 font-mono font-bold text-slate-700">
-                                                    {singleResult.current_id || 'Chưa gắn'}
+                                                    {singleResult.current_id || activeCurrentId}
                                                 </span>
                                                 <ArrowRight size={14} className="text-slate-400" />
                                                 <span className="bg-indigo-50 border border-indigo-200 px-2 py-0.5 rounded font-mono font-bold text-indigo-700">
@@ -530,16 +566,18 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                                                 </span>
                                             </div>
 
-                                            {singleResult.suggested_id && singleResult.suggested_id !== singleResult.current_id ? (
+                                            {singleResult.suggested_id && singleResult.suggested_id !== (singleResult.current_id || activeCurrentId) ? (
                                                 <button
                                                     onClick={async () => {
                                                         const newId = singleResult.suggested_id;
-                                                        const targetDbId = singleResult.question_id || currentQuestion?.dbId;
+                                                        const targetDbId = activeDbId;
                                                         await onApplySuggestedId(newId, targetDbId);
                                                         setSingleResult(prev => prev ? { ...prev, current_id: newId, suggested_id: newId } : null);
                                                         if (targetDbId) {
                                                             setBankResults(prev => prev.map(item => 
-                                                                (item.id === targetDbId) ? { ...item, legacy_full_id: newId, suggested_id: newId } : item
+                                                                (item.id === targetDbId || item.question_id === targetDbId) 
+                                                                    ? { ...item, legacy_full_id: newId, current_id: newId, suggested_id: newId } 
+                                                                    : item
                                                             ));
                                                         }
                                                     }}
@@ -548,7 +586,7 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                                                     <Check size={14} />
                                                     <span>Áp dụng mã ID đề xuất này</span>
                                                 </button>
-                                            ) : singleResult.suggested_id && singleResult.suggested_id === singleResult.current_id ? (
+                                            ) : singleResult.suggested_id && singleResult.suggested_id === (singleResult.current_id || activeCurrentId) ? (
                                                 <div className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-xs flex items-center gap-1.5">
                                                     <CheckCircle2 size={14} className="text-emerald-600" />
                                                     <span>Đã áp dụng mã ID ({singleResult.suggested_id})</span>
@@ -669,8 +707,18 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                                                                                             <span>{copiedRewrite ? 'Đã sao chép' : 'Sao chép LaTeX'}</span>
                                                                                         </button>
                                                                                         <button
-                                                                                            onClick={() => onApplyRewrittenContent(stepData.rewritten_latex!)}
-                                                                                            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-xs transition-all active:scale-95"
+                                                                                            onClick={async () => {
+                                                                                                const rewritten = stepData.rewritten_latex!;
+                                                                                                const targetDbId = activeDbId;
+                                                                                                await onApplyRewrittenContent(rewritten, targetDbId, currentQuestion?.id);
+                                                                                                setSingleResult(prev => prev ? { ...prev, content_latex: rewritten } : null);
+                                                                                                if (targetDbId) {
+                                                                                                    setBankResults(prev => prev.map(b => 
+                                                                                                        (b.id === targetDbId || b.question_id === targetDbId) ? { ...b, content_latex: rewritten } : b
+                                                                                                    ));
+                                                                                                }
+                                                                                            }}
+                                                                                            className="px-2.5 py-1 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-[11px] font-bold flex items-center gap-1 shadow-xs transition-all active:scale-95 cursor-pointer"
                                                                                         >
                                                                                             <Check size={12} />
                                                                                             <span>Áp dụng vào câu hỏi</span>
@@ -878,66 +926,87 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                                     </div>
 
                                     <div className="divide-y divide-slate-100 max-h-96 overflow-y-auto custom-scrollbar">
-                                        {filteredBankResults.map((item, idx) => (
-                                            <div
-                                                key={item.id || idx}
-                                                className="p-3.5 hover:bg-slate-50 transition-colors flex items-center justify-between gap-3 text-xs"
-                                            >
-                                                <div className="flex items-center gap-3 min-w-0">
-                                                    <span className={`p-1.5 rounded-lg shrink-0 ${
-                                                        item.is_standard ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
-                                                    }`}>
-                                                        {item.is_standard ? <CheckCircle2 size={16}/> : <AlertTriangle size={16}/>}
-                                                    </span>
-                                                    <div className="min-w-0">
-                                                        <div className="flex items-center gap-2">
-                                                            <span className="font-bold text-slate-800">Câu #{item.id}</span>
-                                                            <span className="font-mono text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
-                                                                {item.legacy_full_id || 'Chưa có ID'}
-                                                            </span>
-                                                            {item.suggested_id && item.suggested_id !== item.legacy_full_id && (
-                                                                <span className="font-mono text-[10px] bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-bold border border-indigo-200">
-                                                                    → {item.suggested_id}
+                                        {filteredBankResults.map((item, idx) => {
+                                            const itemDbId = item.question_id || item.id;
+                                            const isSelected = activeDbId === itemDbId;
+                                            const currentDisplayId = item.current_id || item.legacy_full_id || 'Chưa có ID';
+                                            return (
+                                                <div
+                                                    key={itemDbId || idx}
+                                                    onClick={() => {
+                                                        setSingleResult(item);
+                                                        setActiveTab('CURRENT');
+                                                    }}
+                                                    className={`p-3.5 transition-colors flex items-center justify-between gap-3 text-xs cursor-pointer ${
+                                                        isSelected ? 'bg-indigo-50/80 border-l-4 border-indigo-600' : 'hover:bg-slate-50'
+                                                    }`}
+                                                    title="Bấm để xem chi tiết nội dung câu hỏi và phân tích 7 bước"
+                                                >
+                                                    <div className="flex items-center gap-3 min-w-0">
+                                                        <span className={`p-1.5 rounded-lg shrink-0 ${
+                                                            item.is_standard ? 'bg-emerald-100 text-emerald-700' : 'bg-amber-100 text-amber-700'
+                                                        }`}>
+                                                            {item.is_standard ? <CheckCircle2 size={16}/> : <AlertTriangle size={16}/>}
+                                                        </span>
+                                                        <div className="min-w-0">
+                                                            <div className="flex items-center gap-2">
+                                                                <span className="font-bold text-slate-800">Câu #{itemDbId}</span>
+                                                                <span className="font-mono text-[10px] bg-slate-100 px-1.5 py-0.5 rounded text-slate-600">
+                                                                    {currentDisplayId}
                                                                 </span>
-                                                            )}
-                                                            <span className={`text-[10px] font-extrabold px-1.5 py-0.2 rounded ${
-                                                                item.is_standard ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
-                                                            }`}>
-                                                                {item.score}/7 tiêu chí
-                                                            </span>
+                                                                {item.suggested_id && item.suggested_id !== currentDisplayId && (
+                                                                    <span className="font-mono text-[10px] bg-indigo-50 text-indigo-700 px-1.5 py-0.5 rounded font-bold border border-indigo-200">
+                                                                        → {item.suggested_id}
+                                                                    </span>
+                                                                )}
+                                                                <span className={`text-[10px] font-extrabold px-1.5 py-0.2 rounded ${
+                                                                    item.is_standard ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'
+                                                                }`}>
+                                                                    {item.score}/7 tiêu chí
+                                                                </span>
+                                                            </div>
+                                                            <p className="text-slate-500 text-[11px] truncate mt-0.5 max-w-xl">
+                                                                {item.overall_comment || item.content_latex?.substring(0, 80) || ''}
+                                                            </p>
                                                         </div>
-                                                        <p className="text-slate-500 text-[11px] truncate mt-0.5 max-w-xl">
-                                                            {item.overall_comment || item.content_latex?.substring(0, 80) || ''}
-                                                        </p>
+                                                    </div>
+
+                                                    <div className="flex items-center gap-1.5 shrink-0" onClick={e => e.stopPropagation()}>
+                                                        {item.suggested_id && item.suggested_id !== currentDisplayId && (
+                                                            <button
+                                                                onClick={async (e) => {
+                                                                    e.stopPropagation();
+                                                                    await onApplySuggestedId(item.suggested_id, itemDbId);
+                                                                    setBankResults(prev => prev.map(b => 
+                                                                        (b.id === item.id || b.question_id === itemDbId) 
+                                                                            ? { ...b, legacy_full_id: item.suggested_id, current_id: item.suggested_id, suggested_id: item.suggested_id } 
+                                                                            : b
+                                                                    ));
+                                                                    if (singleResult && (singleResult.question_id === itemDbId || (singleResult as any).id === itemDbId)) {
+                                                                        setSingleResult(prev => prev ? { ...prev, current_id: item.suggested_id, suggested_id: item.suggested_id } : null);
+                                                                    }
+                                                                }}
+                                                                className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white font-bold rounded-lg text-[11px] transition-colors flex items-center gap-1 border border-indigo-200 cursor-pointer"
+                                                                title="Áp dụng mã ID đề xuất vào CSDL"
+                                                            >
+                                                                <Check size={12} />
+                                                                <span>Áp dụng ID</span>
+                                                            </button>
+                                                        )}
+                                                        <button
+                                                            onClick={(e) => {
+                                                                e.stopPropagation();
+                                                                setSingleResult(item);
+                                                                setActiveTab('CURRENT');
+                                                            }}
+                                                            className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition-colors cursor-pointer"
+                                                        >
+                                                            Xem chi tiết 7 bước
+                                                        </button>
                                                     </div>
                                                 </div>
-
-                                                <div className="flex items-center gap-1.5 shrink-0">
-                                                    {item.suggested_id && item.suggested_id !== item.legacy_full_id && (
-                                                        <button
-                                                            onClick={async () => {
-                                                                await onApplySuggestedId(item.suggested_id, item.id);
-                                                                setBankResults(prev => prev.map(b => b.id === item.id ? { ...b, legacy_full_id: item.suggested_id, suggested_id: item.suggested_id } : b));
-                                                            }}
-                                                            className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white font-bold rounded-lg text-[11px] transition-colors flex items-center gap-1 border border-indigo-200 cursor-pointer"
-                                                            title="Áp dụng mã ID đề xuất vào CSDL"
-                                                        >
-                                                            <Check size={12} />
-                                                            <span>Áp dụng ID</span>
-                                                        </button>
-                                                    )}
-                                                    <button
-                                                        onClick={() => {
-                                                            setSingleResult(item);
-                                                            setActiveTab('CURRENT');
-                                                        }}
-                                                        className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition-colors cursor-pointer"
-                                                    >
-                                                        Xem chi tiết 7 bước
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             )}

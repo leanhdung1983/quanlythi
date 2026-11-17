@@ -349,6 +349,8 @@ export interface QuestionQualityCheck7Steps {
     overall_comment: string;
     checked_at?: string;
     cached?: boolean;
+    content_latex?: string;
+    legacy_full_id?: string;
 }
 
 export interface QuestionQualitySummary {

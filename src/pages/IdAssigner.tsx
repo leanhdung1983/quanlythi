@@ -901,32 +901,30 @@ export const IdAssigner: React.FC = () => {
 
     const handleApplySuggestedId = async (newId: string, targetQuestionId?: number, targetDbIdParam?: number) => {
         const normalized = normalizeID(newId);
-        if (!normalized || !activeFile) return;
+        if (!normalized) {
+            alert('Mã ID không hợp lệ.');
+            return;
+        }
 
-        const targetItem = targetQuestionId !== undefined 
-            ? activeFile.workItems.find(i => i.id === targetQuestionId)
-            : currentItem;
-        if (!targetItem) return;
+        let targetItem: WorkItem | undefined;
+        if (activeFile) {
+            if (targetQuestionId !== undefined) {
+                targetItem = activeFile.workItems.find(i => i.id === targetQuestionId);
+            } else if (targetDbIdParam !== undefined) {
+                targetItem = activeFile.workItems.find(i => i.dbId === targetDbIdParam);
+            } else {
+                targetItem = currentItem || undefined;
+            }
+        }
 
-        const targetDbId = targetDbIdParam || targetItem.dbId;
-        const injectedContent = injectId(targetItem.content, normalized);
-
-        const meta = metadata.find(m => m.id_full === normalized);
-        const isIdValid = Boolean(meta) || metadata.length === 0;
-
+        const targetDbId = targetDbIdParam || targetItem?.dbId;
         let dbSaveSuccess = false;
         let dbErrorMessage = '';
 
-        if (activeFile.isDbSource && targetDbId && isAdminOrTeacher) {
+        if (targetDbId && isAdminOrTeacher) {
             try {
                 setIsSavingDb(true);
-                await apiService.confirmQuestionReview([{
-                    id: targetDbId,
-                    id_full: normalized,
-                    content_latex: injectedContent,
-                    expected_updated_at: targetItem.updatedAt,
-                    change_type: 'ID_REVIEW'
-                }]);
+                await apiService.updateQuestion(targetDbId, { id_full: normalized });
                 dbSaveSuccess = true;
             } catch (err: any) {
                 console.error('Lỗi lưu CSDL khi áp dụng ID:', err);
@@ -936,58 +934,64 @@ export const IdAssigner: React.FC = () => {
             }
         }
 
-        const updatedItems = activeFile.workItems.map(item => {
-            if (item.id !== targetItem.id) return item;
+        if (activeFile && targetItem) {
+            const injectedContent = injectId(targetItem.content, normalized);
+            const meta = metadata.find(m => m.id_full === normalized);
+            const isIdValid = Boolean(meta) || metadata.length === 0;
 
-            const updatedIssueCodes = isIdValid
-                ? (item.issueCodes || []).filter(c => !['ID_MISSING', 'ID_MALFORMED', 'ID_LEGACY', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH', 'ID_NOT_IN_SOURCE', 'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH', 'ID_CONTENT_MISMATCH'].includes(c))
-                : item.issueCodes;
+            const updatedItems = activeFile.workItems.map(item => {
+                if (item.id !== targetItem!.id) return item;
 
-            return {
-                ...item,
-                assignedId: normalized,
-                content: injectedContent,
-                originalId: dbSaveSuccess ? normalized : item.originalId,
-                hasChanged: !dbSaveSuccess,
-                issueCodes: updatedIssueCodes,
-                suggestedId: normalized,
-                aiSuggested: true,
-                unitId: meta?.unit_id || item.unitId,
-                levelId: meta?.level_id || item.levelId,
-                qualityCheck: item.qualityCheck ? {
-                    ...item.qualityCheck,
-                    current_id: normalized,
-                    suggested_id: normalized
-                } : item.qualityCheck
-            };
-        });
+                const updatedIssueCodes = isIdValid
+                    ? (item.issueCodes || []).filter(c => !['ID_MISSING', 'ID_MALFORMED', 'ID_LEGACY', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH', 'ID_NOT_IN_SOURCE', 'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH', 'ID_CONTENT_MISMATCH'].includes(c))
+                    : item.issueCodes;
 
-        updateActiveFileItems(updatedItems);
+                return {
+                    ...item,
+                    assignedId: normalized,
+                    content: injectedContent,
+                    originalId: dbSaveSuccess ? normalized : item.originalId,
+                    hasChanged: !dbSaveSuccess,
+                    issueCodes: updatedIssueCodes,
+                    suggestedId: normalized,
+                    aiSuggested: true,
+                    unitId: meta?.unit_id || item.unitId,
+                    levelId: meta?.level_id || item.levelId,
+                    qualityCheck: item.qualityCheck ? {
+                        ...item.qualityCheck,
+                        current_id: normalized,
+                        suggested_id: normalized
+                    } : item.qualityCheck
+                };
+            });
 
-        if (targetItem.id === currentItem?.id) {
-            const regex = /\[?(\d+)([A-Za-z])(\d+)([A-Za-z])(\d+)-(\d+)\]?/i;
-            const match = normalized.match(regex);
-            if (match) {
-                let rawClass = parseInt(match[1]);
-                if (rawClass === 10) rawClass = 0;
-                else if (rawClass === 11) rawClass = 1;
-                else if (rawClass === 12) rawClass = 2;
+            updateActiveFileItems(updatedItems);
 
-                setSelClass(rawClass);
-                setSelSubject(match[2].toUpperCase());
-                setSelChapter(parseInt(match[3]));
-                setSelLevel(match[4].toUpperCase()); 
-                setSelUnit(parseInt(match[5]));
-                setSelCount(parseInt(match[6]));
+            if (targetItem.id === currentItem?.id) {
+                const regex = /\[?(\d+)([A-Za-z])(\d+)([A-Za-z])(\d+)-(\d+)\]?/i;
+                const match = normalized.match(regex);
+                if (match) {
+                    let rawClass = parseInt(match[1]);
+                    if (rawClass === 10) rawClass = 0;
+                    else if (rawClass === 11) rawClass = 1;
+                    else if (rawClass === 12) rawClass = 2;
+
+                    setSelClass(rawClass);
+                    setSelSubject(match[2].toUpperCase());
+                    setSelChapter(parseInt(match[3]));
+                    setSelLevel(match[4].toUpperCase()); 
+                    setSelUnit(parseInt(match[5]));
+                    setSelCount(parseInt(match[6]));
+                }
+                setAiResult(null);
             }
-            setAiResult(null);
         }
 
         if (dbSaveSuccess) {
             alert(`✓ Đã áp dụng mã ID "${normalized}" và cập nhật vào CSDL thành công!`);
         } else if (dbErrorMessage) {
             alert(`⚠️ Đã cập nhật mã ID "${normalized}" trên giao diện, nhưng lưu CSDL chưa thành công: ${dbErrorMessage}\nBạn có thể thử bấm "Lưu vào CSDL" ở thanh công cụ.`);
-        } else {
+        } else if (targetItem) {
             alert(`✓ Đã áp dụng mã ID đề xuất "${normalized}" cho câu hỏi! Hãy nhấn "Lưu File" hoặc "Lưu DB" khi hoàn tất.`);
         }
     };
@@ -2162,13 +2166,33 @@ export const IdAssigner: React.FC = () => {
                 onApplySuggestedId={async (newId, questionDbId) => {
                     await handleApplySuggestedId(newId, undefined, questionDbId);
                 }}
-                onApplyRewrittenContent={(newContent) => {
-                    if (!currentItem || !activeFile) return;
-                    const newItems: WorkItem[] = activeFile.workItems.map(item =>
-                        item.id === currentItem.id ? { ...item, content: newContent, hasChanged: true } : item
-                    );
-                    updateActiveFileItems(newItems);
-                    alert('Đã cập nhật nội dung câu hỏi theo bản viết lại chuẩn hóa!');
+                onApplyRewrittenContent={async (newContent, targetDbId, questionWorkItemId) => {
+                    try {
+                        let updatedInDb = false;
+                        if (targetDbId && isAdminOrTeacher) {
+                            await apiService.updateQuestion(targetDbId, { raw_latex: newContent });
+                            updatedInDb = true;
+                        }
+
+                        if (activeFile) {
+                            const targetItem = activeFile.workItems.find(i => 
+                                (questionWorkItemId !== undefined && i.id === questionWorkItemId) ||
+                                (targetDbId && i.dbId === targetDbId) ||
+                                (currentItem && i.id === currentItem.id)
+                            );
+                            if (targetItem) {
+                                const newItems: WorkItem[] = activeFile.workItems.map(item =>
+                                    item.id === targetItem.id ? { ...item, content: newContent, hasChanged: !updatedInDb } : item
+                                );
+                                updateActiveFileItems(newItems);
+                            }
+                        }
+
+                        alert(updatedInDb ? '✓ Đã cập nhật và lưu nội dung câu hỏi chuẩn hóa vào CSDL thành công!' : '✓ Đã cập nhật nội dung câu hỏi theo bản viết lại chuẩn hóa!');
+                    } catch (err: any) {
+                        console.error('Lỗi khi áp dụng nội dung viết lại:', err);
+                        alert(`Lỗi khi áp dụng nội dung: ${err?.message || 'Không thể cập nhật'}`);
+                    }
                 }}
                 onQuestionQualityUpdated={(res) => {
                     if (!currentItem || !activeFile) return;
