@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useMemo, useRef, useCallback } from 'react';
 import { apiService } from '../services/api';
 import { ID6Metadata, Chapter, Unit, Question, QuestionQualityCheck7Steps } from '../types';
-import { UploadCloud, Tag, CheckCircle2, Save, FileText, Database, Loader2, AlertTriangle, PenTool, Layers, FolderOpen, CopyCheck, X, ClipboardPaste, ArrowLeft, ArrowRight as ArrowRightIcon, FileCheck, Settings2, RefreshCw, Filter, Info, Sparkles, ShieldCheck } from 'lucide-react';
+import { UploadCloud, Tag, CheckCircle2, Check, Save, FileText, Database, Loader2, AlertTriangle, PenTool, Layers, FolderOpen, CopyCheck, X, ClipboardPaste, ArrowLeft, ArrowRight as ArrowRightIcon, FileCheck, Settings2, RefreshCw, Filter, Info, Sparkles, ShieldCheck } from 'lucide-react';
 import { isValidID6, normalizeID } from '../utils/id6Helper';
 import { detectQuestionTypeFromLatex } from '../services/parser';
 import { useLanguageStore } from '../services/languageStore';
@@ -877,15 +877,120 @@ export const IdAssigner: React.FC = () => {
     const updateAssignedId = useCallback((newId: string) => {
         if (!currentItem || !activeFile) return;
         const normalized = normalizeID(newId);
+        const meta = metadata.find(m => m.id_full === normalized);
+        const isIdValid = Boolean(meta);
         
         const newItems: WorkItem[] = activeFile.workItems.map(item => 
             item.id === currentItem.id 
-                ? { ...item, assignedId: normalized, hasChanged: true } 
+                ? { 
+                    ...item, 
+                    assignedId: normalized, 
+                    content: injectId(item.content, normalized), 
+                    hasChanged: true,
+                    issueCodes: isIdValid 
+                        ? (item.issueCodes || []).filter(c => !['ID_MISSING', 'ID_MALFORMED', 'ID_LEGACY', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH', 'ID_NOT_IN_SOURCE', 'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH', 'ID_CONTENT_MISMATCH'].includes(c))
+                        : item.issueCodes,
+                    unitId: meta?.unit_id || item.unitId,
+                    levelId: meta?.level_id || item.levelId
+                } 
                 : item
         );
         
         updateActiveFileItems(newItems);
-    }, [currentItem, activeFile, updateActiveFileItems]);
+    }, [currentItem, activeFile, updateActiveFileItems, injectId, metadata]);
+
+    const handleApplySuggestedId = async (newId: string, targetQuestionId?: number, targetDbIdParam?: number) => {
+        const normalized = normalizeID(newId);
+        if (!normalized || !activeFile) return;
+
+        const targetItem = targetQuestionId !== undefined 
+            ? activeFile.workItems.find(i => i.id === targetQuestionId)
+            : currentItem;
+        if (!targetItem) return;
+
+        const targetDbId = targetDbIdParam || targetItem.dbId;
+        const injectedContent = injectId(targetItem.content, normalized);
+
+        const meta = metadata.find(m => m.id_full === normalized);
+        const isIdValid = Boolean(meta) || metadata.length === 0;
+
+        let dbSaveSuccess = false;
+        let dbErrorMessage = '';
+
+        if (activeFile.isDbSource && targetDbId && isAdminOrTeacher) {
+            try {
+                setIsSavingDb(true);
+                await apiService.confirmQuestionReview([{
+                    id: targetDbId,
+                    id_full: normalized,
+                    content_latex: injectedContent,
+                    expected_updated_at: targetItem.updatedAt,
+                    change_type: 'ID_REVIEW'
+                }]);
+                dbSaveSuccess = true;
+            } catch (err: any) {
+                console.error('Lỗi lưu CSDL khi áp dụng ID:', err);
+                dbErrorMessage = err?.message || 'Không thể lưu vào CSDL.';
+            } finally {
+                setIsSavingDb(false);
+            }
+        }
+
+        const updatedItems = activeFile.workItems.map(item => {
+            if (item.id !== targetItem.id) return item;
+
+            const updatedIssueCodes = isIdValid
+                ? (item.issueCodes || []).filter(c => !['ID_MISSING', 'ID_MALFORMED', 'ID_LEGACY', 'ID_UNKNOWN', 'ID_SOURCE_MISMATCH', 'ID_NOT_IN_SOURCE', 'ID_UNIT_MISMATCH', 'ID_LEVEL_MISMATCH', 'ID_CONTENT_MISMATCH'].includes(c))
+                : item.issueCodes;
+
+            return {
+                ...item,
+                assignedId: normalized,
+                content: injectedContent,
+                originalId: dbSaveSuccess ? normalized : item.originalId,
+                hasChanged: !dbSaveSuccess,
+                issueCodes: updatedIssueCodes,
+                suggestedId: normalized,
+                aiSuggested: true,
+                unitId: meta?.unit_id || item.unitId,
+                levelId: meta?.level_id || item.levelId,
+                qualityCheck: item.qualityCheck ? {
+                    ...item.qualityCheck,
+                    current_id: normalized,
+                    suggested_id: normalized
+                } : item.qualityCheck
+            };
+        });
+
+        updateActiveFileItems(updatedItems);
+
+        if (targetItem.id === currentItem?.id) {
+            const regex = /\[?(\d+)([A-Za-z])(\d+)([A-Za-z])(\d+)-(\d+)\]?/i;
+            const match = normalized.match(regex);
+            if (match) {
+                let rawClass = parseInt(match[1]);
+                if (rawClass === 10) rawClass = 0;
+                else if (rawClass === 11) rawClass = 1;
+                else if (rawClass === 12) rawClass = 2;
+
+                setSelClass(rawClass);
+                setSelSubject(match[2].toUpperCase());
+                setSelChapter(parseInt(match[3]));
+                setSelLevel(match[4].toUpperCase()); 
+                setSelUnit(parseInt(match[5]));
+                setSelCount(parseInt(match[6]));
+            }
+            setAiResult(null);
+        }
+
+        if (dbSaveSuccess) {
+            alert(`✓ Đã áp dụng mã ID "${normalized}" và cập nhật vào CSDL thành công!`);
+        } else if (dbErrorMessage) {
+            alert(`⚠️ Đã cập nhật mã ID "${normalized}" trên giao diện, nhưng lưu CSDL chưa thành công: ${dbErrorMessage}\nBạn có thể thử bấm "Lưu vào CSDL" ở thanh công cụ.`);
+        } else {
+            alert(`✓ Đã áp dụng mã ID đề xuất "${normalized}" cho câu hỏi! Hãy nhấn "Lưu File" hoặc "Lưu DB" khi hoàn tất.`);
+        }
+    };
 
     // --- NEW ACTION: BATCH APPLY BY ORIGINAL ID ---
     const handleBatchApply = () => {
@@ -1045,10 +1150,9 @@ export const IdAssigner: React.FC = () => {
         }
     };
 
-    const applyAISuggestion = () => {
+    const applyAISuggestion = async () => {
         if (aiResult && aiResult.suggestedId) {
-            updateAssignedId(aiResult.suggestedId);
-            setAiResult(null);
+            await handleApplySuggestedId(aiResult.suggestedId);
         }
     };
 
@@ -1436,23 +1540,47 @@ export const IdAssigner: React.FC = () => {
                                         </div>
                                     )}
 
-                                    {currentItem.aiSuggested && (
-                                        <div className="flex items-center justify-between p-2 bg-purple-50/90 border border-purple-200 rounded-lg text-xs">
-                                            <div className="flex items-center gap-2">
+                                    {(currentItem.aiSuggested || (currentItem.suggestedId && currentItem.suggestedId !== currentItem.assignedId)) && (
+                                        <div className="flex items-center justify-between p-2 bg-purple-50/90 border border-purple-200 rounded-lg text-xs gap-2">
+                                            <div className="flex items-center gap-2 flex-wrap min-w-0">
                                                 <Sparkles size={14} className="text-purple-600 shrink-0"/>
-                                                <span className="text-purple-900">
-                                                    AI đề xuất: <code className="font-bold text-indigo-700 bg-white px-1.5 py-0.5 rounded border border-purple-200">{currentItem.assignedId}</code>
+                                                <span className="text-purple-900 flex items-center gap-1.5 flex-wrap">
+                                                    AI đề xuất: 
+                                                    <code 
+                                                        onClick={() => handleApplySuggestedId(currentItem.suggestedId || currentItem.assignedId)}
+                                                        className="font-bold text-indigo-700 bg-white px-1.5 py-0.5 rounded border border-purple-200 cursor-pointer hover:bg-indigo-50 hover:border-indigo-400 transition-colors"
+                                                        title="Bấm để áp dụng mã ID đề xuất này"
+                                                    >
+                                                        {currentItem.suggestedId || currentItem.assignedId}
+                                                    </code>
                                                     {currentItem.aiConfidence !== undefined && (
-                                                        <span className="text-purple-700 font-normal ml-1.5">({Math.round(currentItem.aiConfidence * 100)}% tin cậy)</span>
+                                                        <span className="text-purple-700 font-normal">({Math.round(currentItem.aiConfidence * 100)}% tin cậy)</span>
                                                     )}
-                                                    {currentItem.aiReason && <span className="text-slate-500 font-normal ml-2 italic">- {currentItem.aiReason}</span>}
+                                                    {currentItem.aiReason && <span className="text-slate-500 font-normal italic">- {currentItem.aiReason}</span>}
                                                 </span>
                                             </div>
-                                            {currentItem.hasChanged && activeFile?.isDbSource && (
-                                                <span className="text-[10px] font-bold text-amber-700 bg-amber-100/80 px-2 py-0.5 rounded-full border border-amber-200">
-                                                    Chờ lưu CSDL
-                                                </span>
-                                            )}
+                                            <div className="flex items-center gap-1.5 shrink-0">
+                                                {(currentItem.suggestedId && currentItem.suggestedId !== currentItem.assignedId) || (currentItem.issueCodes && currentItem.issueCodes.length > 0) ? (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleApplySuggestedId(currentItem.suggestedId || currentItem.assignedId)}
+                                                        className="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-700 text-white rounded font-bold text-[11px] shadow-xs cursor-pointer flex items-center gap-1 transition-all active:scale-95"
+                                                    >
+                                                        <Check size={12}/>
+                                                        <span>Áp dụng mã này</span>
+                                                    </button>
+                                                ) : null}
+                                                {currentItem.hasChanged && activeFile?.isDbSource && (
+                                                    <button
+                                                        type="button"
+                                                        onClick={() => handleSaveDbChanges(activeFile.uniqueId)}
+                                                        className="text-[10px] font-bold text-amber-700 bg-amber-100/90 hover:bg-amber-200 px-2 py-0.5 rounded-full border border-amber-300 cursor-pointer transition-colors"
+                                                        title="Bấm để lưu thay đổi vào CSDL ngay"
+                                                    >
+                                                        Chờ lưu CSDL (Lưu ngay)
+                                                    </button>
+                                                )}
+                                            </div>
                                         </div>
                                     )}
                                     
@@ -1665,8 +1793,9 @@ export const IdAssigner: React.FC = () => {
                                                                 Mã nên gắn: <code className="font-bold text-indigo-700">{currentItem.qualityCheck.suggested_id}</code>
                                                             </span>
                                                             <button
-                                                                onClick={() => updateAssignedId(currentItem.qualityCheck!.suggested_id)}
-                                                                className="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded text-[10px]"
+                                                                type="button"
+                                                                onClick={() => handleApplySuggestedId(currentItem.qualityCheck!.suggested_id)}
+                                                                className="px-2 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded text-[10px] cursor-pointer transition-all active:scale-95"
                                                             >
                                                                 Gán mã này
                                                             </button>
@@ -2030,8 +2159,8 @@ export const IdAssigner: React.FC = () => {
                     dbId: currentItem.dbId,
                     qualityCheck: currentItem.qualityCheck
                 } : null}
-                onApplySuggestedId={(newId) => {
-                    updateAssignedId(newId);
+                onApplySuggestedId={async (newId, questionDbId) => {
+                    await handleApplySuggestedId(newId, undefined, questionDbId);
                 }}
                 onApplyRewrittenContent={(newContent) => {
                     if (!currentItem || !activeFile) return;

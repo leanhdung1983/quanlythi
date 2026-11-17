@@ -9,10 +9,10 @@ vi.mock('./core.js', () => ({
     query: async (sql, params = []) => {
         if (sql.includes('SELECT * FROM question_quality_checks')) {
             return checks.filter(c => {
-                if (params.length === 2 && sql.includes('question_id = ? AND content_hash = ?')) {
-                    return c.question_id === params[0] && c.content_hash === params[1];
+                if (sql.includes('question_id = ?')) {
+                    return c.question_id === params[0];
                 }
-                if (params.length === 1 && sql.includes('content_hash = ?')) {
+                if (sql.includes('content_hash = ?')) {
                     return c.content_hash === params[0];
                 }
                 return true;
@@ -20,8 +20,8 @@ vi.mock('./core.js', () => ({
         }
         if (sql.includes('SELECT id FROM question_quality_checks')) {
             const found = checks.find(c => {
-                if (sql.includes('question_id = ? AND content_hash = ?')) {
-                    return c.question_id === params[0] && c.content_hash === params[1];
+                if (sql.includes('question_id = ?')) {
+                    return c.question_id === params[0];
                 }
                 if (sql.includes('content_hash = ?')) {
                     return c.content_hash === params[0];

@@ -407,6 +407,9 @@ export const QuestionBank: React.FC = () => {
         
         newArr[index] = { ...newArr[index], id_full: normalizedId, raw_latex: newLatex };
         setReviewQuestions(newArr);
+        if (selectedQ && ((selectedQ as any).id === newArr[index].id || reviewQuestions.indexOf(selectedQ as any) === index)) {
+            setSelectedQ(newArr[index] as any);
+        }
     };
 
     const handleConfirmImport = async () => {
@@ -514,7 +517,7 @@ export const QuestionBank: React.FC = () => {
         
         // If we are in review mode, just update the local state
         if (isReviewing) {
-            const index = reviewQuestions.indexOf(selectedQ as any);
+            const index = reviewQuestions.findIndex(q => (q as any) === selectedQ || (q as any).id === selectedQ.id);
             if (index !== -1) {
                 handleUpdateReviewId(index, newId);
                 setShowQuickAssign(false);

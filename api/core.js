@@ -327,9 +327,22 @@ export async function generateWithFallback(aiOrKeys, prompt, config, additionalP
         if (requestConfig.abortSignal?.aborted) throw Object.assign(new Error('ÄÃ£ dá»«ng yÃªu cáº§u AI.'), { status: 504 });
         if (disabledKeys.has(attempt.keyIndex) || disabledModels.has(attempt.model)) continue;
         const client = aiInstances[attempt.keyIndex];
+        let timeoutId = null;
         try {
-            return await client.models.generateContent({ model: attempt.model, contents, config: requestConfig });
+            const timeoutMs = requestConfig.timeoutMs || 25000;
+            const timeoutPromise = new Promise((_, reject) => {
+                timeoutId = setTimeout(() => {
+                    reject(Object.assign(new Error(`Timeout calling model ${attempt.model} after ${timeoutMs}ms`), { status: 504 }));
+                }, timeoutMs);
+            });
+            const result = await Promise.race([
+                client.models.generateContent({ model: attempt.model, contents, config: requestConfig }),
+                timeoutPromise
+            ]);
+            if (timeoutId) clearTimeout(timeoutId);
+            return result;
         } catch (error) {
+            if (timeoutId) clearTimeout(timeoutId);
             if (requestConfig.abortSignal?.aborted) throw Object.assign(new Error('ÄÃ£ dá»«ng yÃªu cáº§u AI.'), { status: 504 });
             lastError = error;
             const failure = classifyGeminiFailure(error);

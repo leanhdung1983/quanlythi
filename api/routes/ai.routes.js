@@ -181,6 +181,7 @@ function detectGradesFromQuestions(questions) {
 
 // Return only the relevant catalog lines instead of all 1,150 lines (Saves ~80% prompt tokens)
 function getFilteredCatalog(catalogData, grades) {
+    if (!catalogData) return '';
     if (!grades || grades.length === 0) {
         // High school grades (0, 1, 2) cover the vast majority of questions
         const hsGrades = ['0', '1', '2'];
@@ -189,7 +190,7 @@ function getFilteredCatalog(catalogData, grades) {
             const items = catalogData.byGradeMap?.get(g) || [];
             lines.push(...items);
         }
-        return lines.length > 0 ? lines.join('\n') : catalogData.compactCatalog;
+        return lines.length > 0 ? lines.join('\n') : (catalogData.compactCatalog || '');
     }
 
     const lines = [];
@@ -197,7 +198,7 @@ function getFilteredCatalog(catalogData, grades) {
         const items = catalogData.byGradeMap?.get(g) || [];
         lines.push(...items);
     }
-    return lines.length > 0 ? lines.join('\n') : catalogData.compactCatalog;
+    return lines.length > 0 ? lines.join('\n') : (catalogData.compactCatalog || '');
 }
 
 const MAX_ID_BATCH_SIZE = 6;
@@ -337,7 +338,7 @@ router.post('/ai/batch-suggest-ids', async (req, res) => {
 
         // 2. SMART FILTERED CATALOG & CLEANED QUESTIONS (Saves 80-85% tokens!)
         const detectedGrades = detectGradesFromQuestions(needAiQuestions);
-        const promptCatalog = getFilteredCatalog(catalogData, detectedGrades).slice(0, MAX_ID_PROMPT_CHARS);
+        const promptCatalog = (getFilteredCatalog(catalogData, detectedGrades) || '').slice(0, MAX_ID_PROMPT_CHARS);
 
         const questionsText = needAiQuestions.map((q, idx) => {
             const clean = stripSolutionAndClean(q.latex);
@@ -440,7 +441,7 @@ router.post('/ai/audit-question-ids', async (req, res) => {
         if (!apiKeys.length) return res.status(400).json({ error: 'Chưa cấu hình Gemini API Key để rà soát nội dung.' });
         const catalogData = await getCachedId6Catalog();
         const detectedGrades = detectGradesFromQuestions(questions.map(q => ({ latex: q.content_latex, current_id: q.legacy_full_id })));
-        const promptCatalog = getFilteredCatalog(catalogData, detectedGrades).slice(0, MAX_ID_PROMPT_CHARS);
+        const promptCatalog = (getFilteredCatalog(catalogData, detectedGrades) || '').slice(0, MAX_ID_PROMPT_CHARS);
         const questionText = questions.map(q => `--- CÂU REF_ID ${q.id} ---\nID hiện tại: ${q.legacy_full_id || 'chưa có'}\n${stripSolutionAndClean(q.content_latex)}`).join('\n\n');
         const response = await generateWithFallback(apiKeys, `${questionText}\n\nDanh mục ID6:\n${promptCatalog}\n\nHãy rà soát độc lập từng câu. Kiểm tra nội dung có thực sự khớp chương, bài, dạng và mức độ N/H/V/C của ID hiện tại hay không. Nếu không khớp, đề xuất ID phù hợp nhất. Trả về JSON Array gồm id, suggestedId, confidence, reason.`, {
             systemInstruction: 'Bạn là chuyên gia kiểm định phân loại câu hỏi Toán theo ID6. Không mặc định ID hiện tại đúng chỉ vì nó tồn tại. Đọc nội dung, đối chiếu danh mục và trả về JSON Array duy nhất.',
@@ -552,12 +553,12 @@ Nếu đề bài là dạng ${type}, hãy sinh câu hỏi theo đúng định d�
 // 7-STEP QUESTION QUALITY ASSURANCE & AUDIT
 // ==========================================
 
-export async function runSingleQualityCheck({ latex, currentId, questionId, forceRefresh, userId, catalogData, apiKeys }) {
+export async function runSingleQualityCheck({ latex, currentId, questionId, forceRefresh, userId, catalogData, apiKeys, contentHash: explicitHash }) {
     const rawLatex = typeof latex === 'string' ? latex : '';
     if (!rawLatex.trim()) {
         throw new Error('Nội dung câu hỏi không được để trống.');
     }
-    const contentHash = generateHash(rawLatex);
+    const contentHash = explicitHash || generateHash(rawLatex);
     const normCurrentId = normalizeId6(currentId || '') || (currentId || '');
 
     // 1. Kiểm tra cache / CSDL đã kiểm tra chưa (nếu không forceRefresh)
@@ -566,9 +567,9 @@ export async function runSingleQualityCheck({ latex, currentId, questionId, forc
         if (questionId) {
             const rows = await query(`
                 SELECT * FROM question_quality_checks
-                WHERE question_id = ? AND content_hash = ?
+                WHERE question_id = ?
                 ORDER BY id DESC LIMIT 1
-            `, [questionId, contentHash]);
+            `, [questionId]);
             if (rows.length > 0) cached = rows[0];
         }
         if (!cached && contentHash) {
@@ -616,7 +617,7 @@ export async function runSingleQualityCheck({ latex, currentId, questionId, forc
     // 2. Chưa có kết quả hoặc forceRefresh -> Gọi Gemini AI phân tích 7 bước
     const { validIds } = catalogData;
     const detectedGrades = detectGradesFromQuestions([{ latex: rawLatex, current_id: normCurrentId }]);
-    const promptCatalog = getFilteredCatalog(catalogData, detectedGrades).slice(0, MAX_ID_PROMPT_CHARS);
+    const promptCatalog = (getFilteredCatalog(catalogData, detectedGrades) || '').slice(0, MAX_ID_PROMPT_CHARS);
 
     const systemInstruction = `Bạn là Chuyên gia Khảo thí và Kiểm định chất lượng câu hỏi, đề thi chuẩn quốc gia môn Toán.
 Nhiệm vụ của bạn là thẩm định câu hỏi nghiêm ngặt theo QUY TRÌNH 7 BƯỚC:
@@ -754,7 +755,7 @@ HÃY ĐÁNH GIÁ ĐỦ 7 BƯỚC VÀ TRẢ VỀ DUY NHẤT ĐỐI TƯỢNG JSON 
     try {
         let existingId = null;
         if (questionId) {
-            const ex = await query('SELECT id FROM question_quality_checks WHERE question_id = ? AND content_hash = ? ORDER BY id DESC LIMIT 1', [questionId, contentHash]);
+            const ex = await query('SELECT id FROM question_quality_checks WHERE question_id = ? ORDER BY id DESC LIMIT 1', [questionId]);
             if (ex.length > 0) existingId = ex[0].id;
         }
         if (!existingId && contentHash) {
@@ -872,7 +873,7 @@ router.post('/ai/quality-check-7steps', async (req, res) => {
 router.post('/ai/batch-quality-check-bank', async (req, res) => {
     try {
         if (!requireTeacherOrAdmin(req, res)) return;
-        const limit = Math.min(Math.max(Number(req.body?.limit) || 4, 1), 6);
+        const limit = Math.min(Math.max(Number(req.body?.limit) || 2, 1), 6);
         const forceRefresh = Boolean(req.body?.force_refresh);
         const ownershipSql = req.user.role === 'ADMIN' ? '' : 'AND q.created_by = ?';
         const params = req.user.role === 'ADMIN' ? [limit] : [req.user.id, limit];
@@ -892,7 +893,6 @@ router.post('/ai/batch-quality-check-bank', async (req, res) => {
                 WHERE NOT EXISTS (
                     SELECT 1 FROM question_quality_checks qc
                     WHERE qc.question_id = q.id
-                      AND COALESCE(qc.content_hash, '') = COALESCE(q.content_hash, '')
                 ) ${ownershipSql}
                 ORDER BY q.id ASC LIMIT ?
             `, params);
@@ -908,36 +908,36 @@ router.post('/ai/batch-quality-check-bank', async (req, res) => {
         }
 
         const catalogData = await getCachedId6Catalog();
-        const results = [];
-
-        for (const q of questions) {
+        const results = await Promise.all(questions.map(async (q) => {
             try {
                 const checkRes = await runSingleQualityCheck({
                     latex: q.content_latex,
                     currentId: q.legacy_full_id,
                     questionId: q.id,
+                    contentHash: q.content_hash,
                     forceRefresh,
                     userId: req.user.id,
                     catalogData,
                     apiKeys
                 });
-                results.push({
+                return {
                     id: q.id,
                     legacy_full_id: q.legacy_full_id,
                     content_latex: q.content_latex,
                     ...checkRes
-                });
+                };
             } catch (err) {
                 console.error(`Error checking question ${q.id}:`, err.message);
-                results.push({
+                return {
                     id: q.id,
                     legacy_full_id: q.legacy_full_id,
+                    content_latex: q.content_latex,
                     error: err.message,
                     is_standard: false,
                     score: 0
-                });
+                };
             }
-        }
+        }));
 
         // Đếm số câu còn lại chưa kiểm tra
         const remainingRows = await query(`
@@ -945,7 +945,6 @@ router.post('/ai/batch-quality-check-bank', async (req, res) => {
             WHERE NOT EXISTS (
                 SELECT 1 FROM question_quality_checks qc
                 WHERE qc.question_id = q.id
-                  AND COALESCE(qc.content_hash, '') = COALESCE(q.content_hash, '')
             ) ${ownershipSql}
         `, req.user.role === 'ADMIN' ? [] : [req.user.id]);
 
@@ -978,7 +977,7 @@ router.get('/ai/quality-summary', async (req, res) => {
                 SUM(CASE WHEN qc.is_standard = 1 THEN 1 ELSE 0 END) AS standard,
                 SUM(CASE WHEN qc.is_standard = 0 THEN 1 ELSE 0 END) AS substandard
             FROM questions q
-            INNER JOIN question_quality_checks qc ON q.id = qc.question_id AND COALESCE(q.content_hash, '') = COALESCE(qc.content_hash, '')
+            INNER JOIN question_quality_checks qc ON q.id = qc.question_id
             WHERE 1=1 ${ownershipSql}
         `, params);
 

@@ -821,8 +821,9 @@ export const apiService = {
         const res = await fetch(`${API_URL}/ai/batch-quality-check-bank`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
             body: JSON.stringify({
-                limit: params?.limit || 4,
+                limit: params?.limit || 2,
                 force_refresh: Boolean(params?.forceRefresh)
             })
         });

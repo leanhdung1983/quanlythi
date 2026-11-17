@@ -39,7 +39,7 @@ interface SmartQualityAuditModalProps {
         dbId?: number;
         qualityCheck?: QuestionQualityCheck7Steps;
     } | null;
-    onApplySuggestedId: (newId: string) => void;
+    onApplySuggestedId: (newId: string, questionDbId?: number) => void;
     onApplyRewrittenContent: (newContent: string) => void;
     onQuestionQualityUpdated?: (result: QuestionQualityCheck7Steps) => void;
     isAdminOrTeacher: boolean;
@@ -221,7 +221,7 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                 });
 
                 const res = await batchQualityCheckBank({
-                    limit: 4,
+                    limit: 2,
                     forceRefresh: !onlyUntested
                 });
 
@@ -244,7 +244,11 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
         } catch (e: any) {
             if (!cancelBankAuditRef.current) {
                 console.error('Bank audit error:', e);
-                alert(`Lỗi kiểm định hàng loạt: ${e?.message || 'Có lỗi xảy ra.'}`);
+                const isNetworkError = e?.message?.includes('Failed to fetch') || e?.name === 'TypeError';
+                const msg = isNetworkError
+                    ? 'Không thể kết nối đến máy chủ backend (Failed to fetch). Vui lòng kiểm tra server ứng dụng đang chạy (npm run dev).'
+                    : (e?.message || 'Có lỗi xảy ra.');
+                alert(`Lỗi kiểm định hàng loạt: ${msg}`);
             }
         } finally {
             setIsBankAuditing(false);
@@ -526,15 +530,30 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                                                 </span>
                                             </div>
 
-                                            {singleResult.suggested_id && singleResult.suggested_id !== singleResult.current_id && (
+                                            {singleResult.suggested_id && singleResult.suggested_id !== singleResult.current_id ? (
                                                 <button
-                                                    onClick={() => onApplySuggestedId(singleResult.suggested_id)}
-                                                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-xs flex items-center gap-1.5 transition-all active:scale-95"
+                                                    onClick={async () => {
+                                                        const newId = singleResult.suggested_id;
+                                                        const targetDbId = singleResult.question_id || currentQuestion?.dbId;
+                                                        await onApplySuggestedId(newId, targetDbId);
+                                                        setSingleResult(prev => prev ? { ...prev, current_id: newId, suggested_id: newId } : null);
+                                                        if (targetDbId) {
+                                                            setBankResults(prev => prev.map(item => 
+                                                                (item.id === targetDbId) ? { ...item, legacy_full_id: newId, suggested_id: newId } : item
+                                                            ));
+                                                        }
+                                                    }}
+                                                    className="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-700 text-white rounded-lg font-bold shadow-xs flex items-center gap-1.5 transition-all active:scale-95 cursor-pointer"
                                                 >
                                                     <Check size={14} />
                                                     <span>Áp dụng mã ID đề xuất này</span>
                                                 </button>
-                                            )}
+                                            ) : singleResult.suggested_id && singleResult.suggested_id === singleResult.current_id ? (
+                                                <div className="px-3 py-1.5 bg-emerald-50 text-emerald-700 border border-emerald-200 rounded-lg font-bold text-xs flex items-center gap-1.5">
+                                                    <CheckCircle2 size={14} className="text-emerald-600" />
+                                                    <span>Đã áp dụng mã ID ({singleResult.suggested_id})</span>
+                                                </div>
+                                            ) : null}
                                         </div>
                                         {singleResult.id_assessment && (
                                             <div className="mt-2 text-[11px] text-slate-600 italic bg-white/50 p-2 rounded-lg border border-slate-100">
@@ -893,15 +912,30 @@ export const SmartQualityAuditModal: React.FC<SmartQualityAuditModalProps> = ({
                                                     </div>
                                                 </div>
 
-                                                <button
-                                                    onClick={() => {
-                                                        setSingleResult(item);
-                                                        setActiveTab('CURRENT');
-                                                    }}
-                                                    className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] shrink-0 transition-colors"
-                                                >
-                                                    Xem chi tiết 7 bước
-                                                </button>
+                                                <div className="flex items-center gap-1.5 shrink-0">
+                                                    {item.suggested_id && item.suggested_id !== item.legacy_full_id && (
+                                                        <button
+                                                            onClick={async () => {
+                                                                await onApplySuggestedId(item.suggested_id, item.id);
+                                                                setBankResults(prev => prev.map(b => b.id === item.id ? { ...b, legacy_full_id: item.suggested_id, suggested_id: item.suggested_id } : b));
+                                                            }}
+                                                            className="px-2.5 py-1.5 bg-indigo-50 hover:bg-indigo-600 text-indigo-700 hover:text-white font-bold rounded-lg text-[11px] transition-colors flex items-center gap-1 border border-indigo-200 cursor-pointer"
+                                                            title="Áp dụng mã ID đề xuất vào CSDL"
+                                                        >
+                                                            <Check size={12} />
+                                                            <span>Áp dụng ID</span>
+                                                        </button>
+                                                    )}
+                                                    <button
+                                                        onClick={() => {
+                                                            setSingleResult(item);
+                                                            setActiveTab('CURRENT');
+                                                        }}
+                                                        className="px-2.5 py-1.5 bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold rounded-lg text-[11px] transition-colors cursor-pointer"
+                                                    >
+                                                        Xem chi tiết 7 bước
+                                                    </button>
+                                                </div>
                                             </div>
                                         ))}
                                     </div>
