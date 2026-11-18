@@ -1049,6 +1049,225 @@ router.get('/ai/quality-check/:questionId', async (req, res) => {
     }
 });
 
+// Endpoint: Lấy danh sách câu hỏi theo trạng thái kiểm định 7 bước (Cần cải thiện, Đạt chuẩn, Chưa kiểm tra)
+router.get('/ai/quality-check-questions', async (req, res) => {
+    try {
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const ownershipSql = req.user.role === 'ADMIN' ? '' : 'AND q.created_by = ?';
+        const params = req.user.role === 'ADMIN' ? [] : [req.user.id];
+
+        const status = (req.query.status || 'substandard').toString().toLowerCase(); // substandard | standard | unchecked | all
+        const page = Math.max(1, parseInt(req.query.page) || 1);
+        const limit = Math.min(100, Math.max(1, parseInt(req.query.limit) || 30));
+        const offset = (page - 1) * limit;
+
+        let items = [];
+        let total = 0;
+
+        if (status === 'unchecked') {
+            const countRows = await query(`
+                SELECT COUNT(*) AS total
+                FROM questions q
+                WHERE 1=1 ${ownershipSql}
+                AND NOT EXISTS (
+                    SELECT 1 FROM question_quality_checks qc WHERE qc.question_id = q.id
+                )
+            `, params);
+            total = Number(countRows[0]?.total || 0);
+
+            const rows = await query(`
+                SELECT 
+                    q.id,
+                    q.legacy_full_id,
+                    q.content_latex,
+                    q.created_at
+                FROM questions q
+                WHERE 1=1 ${ownershipSql}
+                AND NOT EXISTS (
+                    SELECT 1 FROM question_quality_checks qc WHERE qc.question_id = q.id
+                )
+                ORDER BY q.id DESC
+                LIMIT ? OFFSET ?
+            `, [...params, limit, offset]);
+
+            items = rows.map(r => ({
+                id: r.id,
+                question_id: r.id,
+                current_id: r.legacy_full_id || 'Chưa gắn mã',
+                legacy_full_id: r.legacy_full_id || 'Chưa gắn mã',
+                content_latex: r.content_latex || '',
+                is_standard: false,
+                score: 0,
+                suggested_id: null,
+                overall_comment: 'Chưa chạy kiểm tra 7 bước',
+                steps: {},
+                checked_at: null
+            }));
+        } else {
+            // substandard / standard / all
+            let filterSql = '';
+            if (status === 'substandard') {
+                filterSql = 'AND qc.is_standard = 0';
+            } else if (status === 'standard') {
+                filterSql = 'AND qc.is_standard = 1';
+            }
+
+            const countRows = await query(`
+                SELECT COUNT(DISTINCT q.id) AS total
+                FROM questions q
+                INNER JOIN question_quality_checks qc ON q.id = qc.question_id
+                WHERE 1=1 ${ownershipSql} ${filterSql}
+            `, params);
+            total = Number(countRows[0]?.total || 0);
+
+            const rows = await query(`
+                SELECT 
+                    q.id,
+                    q.legacy_full_id,
+                    q.content_latex,
+                    qc.id AS quality_check_id,
+                    qc.assigned_id,
+                    qc.suggested_id,
+                    qc.is_standard,
+                    qc.score,
+                    qc.step1_purpose,
+                    qc.step2_clarity,
+                    qc.step3_scope,
+                    qc.step4_answerability,
+                    qc.step5_neutrality,
+                    qc.step6_structure,
+                    qc.step7_rewrite,
+                    qc.step_details,
+                    qc.overall_comment,
+                    qc.updated_at,
+                    qc.created_at
+                FROM questions q
+                INNER JOIN question_quality_checks qc ON q.id = qc.question_id
+                WHERE 1=1 ${ownershipSql} ${filterSql}
+                ORDER BY qc.updated_at DESC, qc.id DESC
+                LIMIT ? OFFSET ?
+            `, [...params, limit, offset]);
+
+            items = rows.map(r => {
+                let stepDetails = {};
+                try {
+                    stepDetails = typeof r.step_details === 'string' ? JSON.parse(r.step_details) : (r.step_details || {});
+                } catch {}
+
+                return {
+                    id: r.id,
+                    question_id: r.id,
+                    quality_check_id: r.quality_check_id,
+                    current_id: r.assigned_id || r.legacy_full_id || 'Chưa gắn mã',
+                    legacy_full_id: r.legacy_full_id || r.assigned_id || 'Chưa gắn mã',
+                    content_latex: r.content_latex || '',
+                    suggested_id: r.suggested_id || null,
+                    is_standard: Boolean(r.is_standard),
+                    score: r.score ?? 0,
+                    overall_comment: r.overall_comment || '',
+                    id_assessment: stepDetails.id_assessment || '',
+                    steps: stepDetails.steps || {
+                        step1_purpose: { passed: true, evaluation: r.step1_purpose || '' },
+                        step2_clarity: { passed: true, evaluation: r.step2_clarity || '' },
+                        step3_scope: { passed: true, evaluation: r.step3_scope || '' },
+                        step4_answerability: { passed: true, evaluation: r.step4_answerability || '' },
+                        step5_neutrality: { passed: true, evaluation: r.step5_neutrality || '' },
+                        step6_structure: { passed: true, evaluation: r.step6_structure || '' },
+                        step7_rewrite: { passed: true, rewritten_latex: r.step7_rewrite || '' }
+                    },
+                    checked_at: r.updated_at || r.created_at
+                };
+            });
+        }
+
+        res.json({
+            success: true,
+            data: {
+                items,
+                total,
+                page,
+                limit,
+                totalPages: Math.ceil(total / limit) || 1,
+                status
+            }
+        });
+    } catch (e) {
+        res.status(500).json({ error: parseGeminiError(e) });
+    }
+});
+
+// Endpoint: Xác nhận đã chỉnh sửa / Đánh dấu câu hỏi đạt chuẩn 7 bước
+router.post('/ai/quality-check/confirm-resolved', async (req, res) => {
+    try {
+        if (!requireTeacherOrAdmin(req, res)) return;
+        const { questionId, note } = req.body;
+        const qId = Number(questionId);
+        if (!qId) {
+            return res.status(400).json({ error: 'questionId là bắt buộc' });
+        }
+
+        const resolveComment = note || 'Đã được giáo viên kiểm tra, chỉnh sửa hoàn thiện và xác nhận đạt chuẩn 7 bước.';
+
+        // Kiểm tra xem đã có bản ghi trong question_quality_checks chưa
+        const existing = await query('SELECT id, step_details FROM question_quality_checks WHERE question_id = ? ORDER BY id DESC LIMIT 1', [qId]);
+
+        let qualityCheckId;
+        if (existing.length > 0) {
+            qualityCheckId = existing[0].id;
+            let stepDetails = {};
+            try {
+                stepDetails = typeof existing[0].step_details === 'string' ? JSON.parse(existing[0].step_details) : (existing[0].step_details || {});
+            } catch {}
+
+            // Đánh dấu tất cả 7 bước thành passed
+            if (stepDetails.steps && typeof stepDetails.steps === 'object') {
+                Object.keys(stepDetails.steps).forEach(k => {
+                    stepDetails.steps[k].passed = true;
+                    if (!stepDetails.steps[k].evaluation) {
+                        stepDetails.steps[k].evaluation = 'Đã đạt chuẩn sau khi chỉnh sửa';
+                    }
+                });
+            }
+
+            await query(`
+                UPDATE question_quality_checks SET
+                    is_standard = 1,
+                    score = 7,
+                    overall_comment = ?,
+                    step_details = ?,
+                    checked_by = COALESCE(?, checked_by),
+                    updated_at = NOW()
+                WHERE id = ?
+            `, [resolveComment, JSON.stringify(stepDetails), req.user?.id || null, qualityCheckId]);
+        } else {
+            const qRows = await query('SELECT legacy_full_id, content_latex, content_hash FROM questions WHERE id = ?', [qId]);
+            const qRow = qRows[0] || {};
+            const contentHash = qRow.content_hash || generateHash(qRow.content_latex || `${qId}`);
+
+            const insertRes = await query(`
+                INSERT INTO question_quality_checks 
+                (question_id, content_hash, assigned_id, suggested_id, is_standard, score, overall_comment, checked_by, created_at, updated_at)
+                VALUES (?, ?, ?, ?, 1, 7, ?, ?, NOW(), NOW())
+            `, [qId, contentHash, qRow.legacy_full_id || null, qRow.legacy_full_id || null, resolveComment, req.user?.id || null]);
+            qualityCheckId = insertRes?.insertId;
+        }
+
+        res.json({
+            success: true,
+            message: 'Đã xác nhận câu hỏi hoàn thành chỉnh sửa và đạt chuẩn 7 bước.',
+            data: {
+                question_id: qId,
+                quality_check_id: qualityCheckId,
+                is_standard: true,
+                score: 7,
+                overall_comment: resolveComment
+            }
+        });
+    } catch (e) {
+        res.status(500).json({ error: parseGeminiError(e) });
+    }
+});
+
 router.use(adaptivePracticeRoutes);
 
 export default router;

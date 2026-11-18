@@ -1,4 +1,4 @@
-import { UploadedFile, QuestionQualityCheck7Steps, QuestionQualitySummary } from '../types';
+import { UploadedFile, QuestionQualityCheck7Steps, QuestionQualitySummary, QualityQuestionsResponse } from '../types';
 import { handleSessionExpired } from './authStore';
 
 async function readApiResponse(response: Response) {
@@ -301,6 +301,37 @@ export const fetchQualitySummary = async (): Promise<QuestionQualitySummary> => 
 
 export const fetchQualityCheckByQuestionId = async (questionId: number): Promise<QuestionQualityCheck7Steps | null> => {
     const response = await fetch(`/api/ai/quality-check/${questionId}`);
+    const payload = await readApiResponse(response);
+    return payload.data;
+};
+
+export const fetchQualityQuestions = async (params?: {
+    status?: 'substandard' | 'standard' | 'unchecked' | 'all';
+    page?: number;
+    limit?: number;
+}): Promise<QualityQuestionsResponse> => {
+    const q = new URLSearchParams();
+    if (params?.status) q.set('status', params.status);
+    if (params?.page) q.set('page', String(params.page));
+    if (params?.limit) q.set('limit', String(params.limit));
+    const response = await fetch(`/api/ai/quality-check-questions?${q.toString()}`);
+    const payload = await readApiResponse(response);
+    return payload.data;
+};
+
+export const confirmQualityCheckResolved = async (questionId: number, note?: string): Promise<{
+    question_id: number;
+    quality_check_id: number;
+    is_standard: boolean;
+    score: number;
+    overall_comment: string;
+}> => {
+    const response = await fetch('/api/ai/quality-check/confirm-resolved', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        credentials: 'same-origin',
+        body: JSON.stringify({ questionId, note })
+    });
     const payload = await readApiResponse(response);
     return payload.data;
 };

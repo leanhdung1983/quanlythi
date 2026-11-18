@@ -307,11 +307,11 @@ export const Login: React.FC = () => {
 
                         {/* View Switcher Tabs (Login / Register) */}
                         {view !== 'FORGOT' && (
-                            <div className="flex p-1 bg-slate-100 rounded-xl mb-6">
+                            <div className="flex p-1.5 bg-slate-100 rounded-2xl mb-6">
                                 <button 
                                     type="button"
                                     onClick={() => { setView('LOGIN'); setError(''); setSuccess(''); }}
-                                    className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+                                    className={`flex-1 py-2.5 px-4 text-xs sm:text-sm font-bold rounded-xl transition-all ${
                                         view === 'LOGIN' 
                                             ? 'bg-white text-indigo-700 shadow-sm' 
                                             : 'text-slate-500 hover:text-slate-800'
@@ -322,7 +322,7 @@ export const Login: React.FC = () => {
                                 <button 
                                     type="button"
                                     onClick={() => { setView('REGISTER'); setError(''); setSuccess(''); }}
-                                    className={`flex-1 py-2 text-xs font-bold rounded-lg transition-all ${
+                                    className={`flex-1 py-2.5 px-4 text-xs sm:text-sm font-bold rounded-xl transition-all ${
                                         view === 'REGISTER' 
                                             ? 'bg-white text-indigo-700 shadow-sm' 
                                             : 'text-slate-500 hover:text-slate-800'
@@ -408,10 +408,10 @@ export const Login: React.FC = () => {
                                     variant="primary" 
                                     size="lg" 
                                     loading={loading}
-                                    className="w-full font-bold shadow-md shadow-indigo-500/20 mt-2"
+                                    className="w-full min-h-[48px] py-3 px-6 text-sm sm:text-base font-bold shadow-md shadow-indigo-500/25 mt-3 rounded-xl flex items-center justify-center gap-2"
                                 >
-                                    Đăng nhập ngay
-                                    <ArrowRight size={16} className="ml-1" />
+                                    <span>Đăng nhập ngay</span>
+                                    <ArrowRight size={18} className="ml-1 shrink-0" />
                                 </Button>
                             </form>
                         )}
@@ -424,30 +424,30 @@ export const Login: React.FC = () => {
                                     <label className="text-[11px] font-bold text-slate-600 uppercase tracking-wider mb-1.5 block">
                                         Bạn là:
                                     </label>
-                                    <div className="grid grid-cols-2 gap-2">
+                                    <div className="grid grid-cols-2 gap-2.5">
                                         <button 
                                             type="button" 
                                             onClick={() => setRegData({...regData, role: 'STUDENT'})} 
-                                            className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                                            className={`min-h-[42px] py-2.5 px-4 rounded-xl border text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
                                                 regData.role === 'STUDENT' 
                                                     ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-xs' 
                                                     : 'border-slate-200 text-slate-500 bg-white hover:bg-slate-50'
                                             }`}
                                         >
-                                            <GraduationCap size={15} />
+                                            <GraduationCap size={16} />
                                             <span>Học sinh</span>
                                             {regData.role === 'STUDENT' && <Check size={14} className="text-indigo-600 ml-auto" />}
                                         </button>
                                         <button 
                                             type="button" 
                                             onClick={() => setRegData({...regData, role: 'TEACHER'})} 
-                                            className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all flex items-center justify-center gap-1.5 ${
+                                            className={`min-h-[42px] py-2.5 px-4 rounded-xl border text-xs sm:text-sm font-bold transition-all flex items-center justify-center gap-2 ${
                                                 regData.role === 'TEACHER' 
                                                     ? 'bg-indigo-50 border-indigo-500 text-indigo-700 shadow-xs' 
                                                     : 'border-slate-200 text-slate-500 bg-white hover:bg-slate-50'
                                             }`}
                                         >
-                                            <Users size={15} />
+                                            <Users size={16} />
                                             <span>Giáo viên</span>
                                             {regData.role === 'TEACHER' && <Check size={14} className="text-indigo-600 ml-auto" />}
                                         </button>
@@ -660,11 +660,12 @@ export const Login: React.FC = () => {
                                 <Button 
                                     type="submit" 
                                     variant="primary" 
-                                    size="md" 
+                                    size="lg" 
                                     loading={loading}
-                                    className="w-full font-bold shadow-md shadow-indigo-500/20 mt-3"
+                                    className="w-full min-h-[48px] py-3 px-6 text-sm sm:text-base font-bold shadow-md shadow-indigo-500/25 mt-4 rounded-xl flex items-center justify-center gap-2"
                                 >
-                                    Đăng ký tài khoản ngay
+                                    <span>Đăng ký tài khoản ngay</span>
+                                    <ArrowRight size={18} className="ml-1 shrink-0" />
                                 </Button>
                             </form>
                         )}
@@ -699,10 +700,10 @@ export const Login: React.FC = () => {
                                             variant="primary" 
                                             size="lg" 
                                             loading={loading}
-                                            className="w-full font-bold shadow-md shadow-indigo-500/20"
+                                            className="w-full min-h-[48px] py-3 px-6 text-sm sm:text-base font-bold shadow-md shadow-indigo-500/25 mt-2 rounded-xl flex items-center justify-center gap-2"
                                         >
-                                            Gửi mã xác nhận qua Email
-                                            <ArrowRight size={16} className="ml-1" />
+                                            <span>Gửi mã xác nhận qua Email</span>
+                                            <ArrowRight size={18} className="ml-1 shrink-0" />
                                         </Button>
 
                                         <div className="pt-2 text-center">
@@ -794,9 +795,10 @@ export const Login: React.FC = () => {
                                             variant="primary" 
                                             size="lg" 
                                             loading={loading}
-                                            className="w-full font-bold shadow-md shadow-indigo-500/20"
+                                            className="w-full min-h-[48px] py-3 px-6 text-sm sm:text-base font-bold shadow-md shadow-indigo-500/25 mt-2 rounded-xl flex items-center justify-center gap-2"
                                         >
-                                            Kích hoạt & Đặt lại mật khẩu
+                                            <span>Kích hoạt & Đặt lại mật khẩu</span>
+                                            <Check size={18} className="ml-1 shrink-0" />
                                         </Button>
 
                                         <div className="flex items-center justify-between pt-2">

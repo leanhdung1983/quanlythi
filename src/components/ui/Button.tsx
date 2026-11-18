@@ -10,7 +10,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
   ({ className, variant = 'default', size = 'md', loading = false, disabled, children, ...props }, ref) => {
-    const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 disabled:pointer-events-none disabled:opacity-50 select-none active:scale-[0.98]';
+    const baseStyles = 'inline-flex items-center justify-center font-semibold rounded-xl transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/40 disabled:pointer-events-none disabled:opacity-50 select-none active:scale-[0.98] leading-tight';
 
     const variants = {
       default: 'bg-white text-slate-800 border border-slate-300 shadow-2xs hover:bg-slate-50 hover:border-slate-400',
@@ -24,10 +24,10 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
     };
 
     const sizes = {
-      sm: 'h-7.5 px-2.5 text-xs gap-1',
-      md: 'h-8.5 px-3 py-1 text-xs font-semibold gap-1.5',
-      lg: 'h-9.5 px-4 text-xs font-bold gap-2',
-      icon: 'h-8 w-8 p-0',
+      sm: 'min-h-[34px] px-3.5 py-1.5 text-xs gap-1.5',
+      md: 'min-h-[40px] px-4.5 py-2 text-sm font-semibold gap-2',
+      lg: 'min-h-[46px] px-5 sm:px-6 py-2.5 text-sm sm:text-base font-bold gap-2.5',
+      icon: 'h-9 w-9 p-1.5 shrink-0',
     };
 
     return (

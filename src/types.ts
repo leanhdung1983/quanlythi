@@ -362,3 +362,12 @@ export interface QuestionQualitySummary {
     standard_rate: number;
 }
 
+export interface QualityQuestionsResponse {
+    items: (QuestionQualityCheck7Steps & { id: number; question_id: number; content_latex: string; legacy_full_id: string })[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+    status: string;
+}
+

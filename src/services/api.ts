@@ -838,5 +838,24 @@ export const apiService = {
         const res = await fetch(`${API_URL}/ai/quality-check/${questionId}`);
         const r = await handleResponse(res, `/ai/quality-check/${questionId}`);
         return r.data;
+    },
+    async fetchQualityQuestions(params?: { status?: string; page?: number; limit?: number }) {
+        const q = new URLSearchParams();
+        if (params?.status) q.set('status', params.status);
+        if (params?.page) q.set('page', String(params.page));
+        if (params?.limit) q.set('limit', String(params.limit));
+        const res = await fetch(`${API_URL}/ai/quality-check-questions?${q.toString()}`);
+        const r = await handleResponse(res, '/ai/quality-check-questions');
+        return r.data;
+    },
+    async confirmQualityCheckResolved(questionId: number, note?: string) {
+        const res = await fetch(`${API_URL}/ai/quality-check/confirm-resolved`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            credentials: 'same-origin',
+            body: JSON.stringify({ questionId, note })
+        });
+        const r = await handleResponse(res, '/ai/quality-check/confirm-resolved');
+        return r.data;
     }
 };
