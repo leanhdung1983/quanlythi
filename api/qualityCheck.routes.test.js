@@ -4,6 +4,7 @@ import { afterAll, beforeAll, beforeEach, describe, expect, it, vi } from 'vites
 let checks = [];
 let questions = [];
 let aiCalls = [];
+let customAiResponse = null;
 
 vi.mock('./core.js', () => ({
     query: async (sql, params = []) => {
@@ -122,6 +123,11 @@ vi.mock('./core.js', () => ({
     getGeminiApiKeys: async () => ['fake-api-key'],
     generateWithFallback: async (keys, prompt, options) => {
         aiCalls.push({ prompt, options });
+        if (customAiResponse) {
+            const resp = customAiResponse;
+            customAiResponse = null;
+            return resp;
+        }
         return {
             text: JSON.stringify({
                 is_standard: true,
@@ -274,5 +280,29 @@ describe('7-Step Question Quality Check & Bank Audit API', () => {
         expect(data.data.is_standard).toBe(true);
         expect(data.data.score).toBe(7);
         expect(checks.find(c => c.question_id === 2)?.is_standard).toBe(1);
+    });
+
+    it('resiliently handles AI returning bad escaped LaTeX characters in JSON', async () => {
+        // String with unescaped LaTeX backslashes that normally cause "Bad escaped character in JSON"
+        const badEscapedJson = '{"is_standard": true, "score": 7, "steps": {"step1_purpose": {"passed": true}, "step2_clarity": {"passed": true}, "step3_scope": {"passed": true}, "step4_answerability": {"passed": true}, "step5_neutrality": {"passed": true}, "step6_structure": {"passed": true}, "step7_rewrite": {"passed": true, "rewritten_latex": "\\begin{ex}\\n$y=\\frac{1}{2}\\sqrt{x^2+1}$\\n\\alpha\\beta\\left(\\right)\\loigiai{OK}\\end{ex}"}}, "suggested_id": "12D1H1-1", "id_assessment": "Khớp", "overall_comment": "Tốt"}';
+        
+        customAiResponse = { text: badEscapedJson };
+
+        const res = await fetch(`${base}/ai/quality-check-7steps`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                latex: 'Tính đạo hàm của $y=\\sqrt{x^2+1}$',
+                current_id: '12D1H1-1',
+                question_id: 9999,
+                force_refresh: true
+            })
+        });
+
+        expect(res.status).toBe(200);
+        const data = await res.json();
+        expect(data.success).toBe(true);
+        expect(data.data.is_standard).toBe(true);
+        expect(data.data.steps.step7_rewrite.rewritten_latex).toContain('\\sqrt{x^2+1}');
     });
 });

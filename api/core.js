@@ -7,9 +7,10 @@ import { sanitizeCompiledSvg } from './svgImage.js';
 import { classifyGeminiFailure, cooldownForFailure, orderAvailableAttempts } from './geminiResilience.js';
 import { resolveGeminiModels } from './geminiModels.js';
 import { cacheMiddleware, clearCache } from '../redis.js';
+import { repairJsonString, parseAiJson } from './aiJson.js';
 
 // Re-export cache helpers
-export { cacheMiddleware, clearCache };
+export { cacheMiddleware, clearCache, repairJsonString, parseAiJson };
 
 // --- DATABASE CONFIGURATION ---
 const isCloudDB = process.env.DB_HOST && !process.env.DB_HOST.includes('localhost') && !process.env.DB_HOST.includes('127.0.0.1');
@@ -255,27 +256,27 @@ export async function getGeminiApiKey(userId) {
 
 export function parseGeminiError(e) {
     const msg = String(e?.message || e || '');
-    if (e?.status === 503 || msg.includes("503") || msg.includes("high demand") || msg.includes("spikes in demand")) {
-        return "MÃ¡y chá»§ AI cá»§a Google Ä‘ang cÃ³ lÆ°á»£ng truy cáº­p Ä‘á»™t biáº¿n (503 High Demand). Há»‡ thá»‘ng Ä‘Ã£ tá»± Ä‘á»™ng thá»­ cÃ¡c key vÃ  model dá»± phÃ²ng; vui lÃ²ng thá»­ láº¡i sau giÃ¢y lÃ¡t.";
+    if (e?.status === 503 || msg.includes('503') || msg.includes('high demand') || msg.includes('spikes in demand')) {
+        return 'Máy chủ AI của Google đang có lượng truy cập đột biến (503 High Demand). Hệ thống đã tự động thử các key và model dự phòng; vui lòng thử lại sau giây lát.';
     }
-    if (e?.status === 429 || msg.includes("429") || msg.toLowerCase().includes("quota") || msg.includes("RESOURCE_EXHAUSTED")) {
-        return "Gemini Ä‘ang giá»›i háº¡n lÆ°á»£t dÃ¹ng cá»§a project. Há»‡ thá»‘ng Ä‘Ã£ tá»± chuyá»ƒn model/key vÃ  lÃ m nguá»™i lá»±a chá»n bá»‹ 429; vui lÃ²ng giá»¯ cá»­a sá»• má»Ÿ Ä‘á»ƒ tá»± thá»­ láº¡i. Nhiá»u key chá»‰ tÄƒng quota khi chÃºng thuá»™c cÃ¡c Google Cloud project khÃ¡c nhau.";
+    if (e?.status === 429 || msg.includes('429') || msg.toLowerCase().includes('quota') || msg.includes('RESOURCE_EXHAUSTED')) {
+        return 'Gemini đang giới hạn lượt dùng của project. Hệ thống đã tự chuyển model/key và làm nguội lựa chọn bị 429; vui lòng giữ cửa sổ mở để tự thử lại. Nhiều key chỉ tăng quota khi chúng thuộc các Google Cloud project khác nhau.';
     }
-    if (msg.includes("API key not valid") || msg.includes("API_KEY_INVALID")) {
-        return "Lá»—i: API Key khÃ´ng há»£p lá»‡. Vui lÃ²ng thiáº¿t láº­p API Key Ä‘Ãºng tá»« Google AI Studio.";
+    if (msg.includes('API key not valid') || msg.includes('API_KEY_INVALID')) {
+        return 'Lỗi: API Key không hợp lệ. Vui lòng thiết lập API Key đúng từ Google AI Studio.';
     }
     try {
         if (typeof e.message === 'string' && e.message.startsWith('{')) {
             const parsed = JSON.parse(e.message);
             if (parsed.error && parsed.error.message) {
                 if (parsed.error.code === 429) {
-                    return "Gemini Ä‘Ã£ háº¿t quota cá»§a project. Há»‡ thá»‘ng sáº½ tá»± thá»­ láº¡i sau thá»i gian lÃ m nguá»™i; key dá»± phÃ²ng chá»‰ há»¯u Ã­ch náº¿u thuá»™c project khÃ¡c.";
+                    return 'Gemini đã hết quota của project. Hệ thống sẽ tự thử lại sau thời gian làm nguội; key dự phòng chỉ hữu ích nếu thuộc project khác.';
                 }
-                return "Lá»—i tá»« Gemini: " + parsed.error.message;
+                return 'Lỗi từ Gemini: ' + parsed.error.message;
             }
         }
     } catch {}
-    return "Lá»—i trong quÃ¡ trÃ¬nh táº¡o: " + (e.message || String(e));
+    return 'Lỗi trong quá trình tạo: ' + (e.message || String(e));
 }
 
 const geminiCooldowns = new Map();

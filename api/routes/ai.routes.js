@@ -6,8 +6,9 @@ import {
     getGeminiApiKeys,
     generateWithFallback, 
     parseGeminiError,
-    generateHash 
+    generateHash
 } from '../core.js';
+import { parseAiJson } from '../aiJson.js';
 import { normalizeId6, extractSourceId, injectCanonicalId, requiresAiIdReview, validateId6Candidate } from '../id6.js';
 import { normalizeExTestOutput } from '../exTest.js';
 import { convertPdfToExTest } from '../pdfToExTest.js';
@@ -266,7 +267,7 @@ router.post('/ai/validate-question', async (req, res) => {
             systemInstruction: 'Trả về JSON gồm isValid, reason, suggestedId, confidence từ 0 đến 1, alternatives (tối đa 3 ID), competencies, chapter, unit và detectedQuestionType. Không thêm markdown. Thay thế * bằng N, H, V hoặc C để tạo mã ID6 chuẩn.',
             responseMimeType: 'application/json'
         });
-        const data = JSON.parse((response.text || '{}').replace(/^```json\s*|\s*```$/g, ''));
+        const data = parseAiJson(response.text || '{}', {});
         const suggestedId = normalizeId6(data.suggestedId || '');
         const validated = toValidatedSuggestion({ id: 0, latex, unit_id, level_id }, suggestedId, catalogData, data);
         data.suggestedId = validated.suggestedId;
@@ -384,7 +385,7 @@ YÊU CẦU:
 
         let parsedResults = [];
         try {
-            parsedResults = JSON.parse((response.text || '[]').replace(/^```json\s*|\s*```$/g, ''));
+            parsedResults = parseAiJson(response.text || '[]', []);
         } catch {
             parsedResults = [];
         }
@@ -447,7 +448,7 @@ router.post('/ai/audit-question-ids', async (req, res) => {
             systemInstruction: 'Bạn là chuyên gia kiểm định phân loại câu hỏi Toán theo ID6. Không mặc định ID hiện tại đúng chỉ vì nó tồn tại. Đọc nội dung, đối chiếu danh mục và trả về JSON Array duy nhất.',
             responseMimeType: 'application/json', maxOutputTokens: 2048, modelPreference: 'lite'
         });
-        let parsed = JSON.parse((response.text || '[]').replace(/^```json\s*|\s*```$/g, ''));
+        let parsed = parseAiJson(response.text || '[]', []);
         if (!Array.isArray(parsed)) parsed = [];
         const results = [];
         for (let index = 0; index < questions.length; index++) {
@@ -703,7 +704,11 @@ HÃY ĐÁNH GIÁ ĐỦ 7 BƯỚC VÀ TRẢ VỀ DUY NHẤT ĐỐI TƯỢNG JSON 
   "suggested_id": string,
   "id_assessment": string,
   "overall_comment": string
-}`;
+}
+
+LƯU Ý ĐẶC BIỆT VỀ ĐỊNH DẠNG JSON:
+- Các công thức hoặc ký hiệu LaTeX có chứa dấu gạch chéo ngược (\\) PHẢI ĐƯỢC ESCAPE thành hai dấu gạch chéo (\\\\) trong chuỗi JSON (ví dụ: \\\\frac, \\\\sqrt, \\\\alpha, \\\\begin, \\\\end).
+- Đảm bảo trả về duy nhất chuỗi JSON hoàn chỉnh, không thêm bất kỳ văn bản nào ngoài khối JSON.`;
 
     const response = await generateWithFallback(apiKeys, userPrompt, {
         systemInstruction,
@@ -711,7 +716,7 @@ HÃY ĐÁNH GIÁ ĐỦ 7 BƯỚC VÀ TRẢ VỀ DUY NHẤT ĐỐI TƯỢNG JSON 
         maxOutputTokens: 3072
     });
 
-    const parsed = JSON.parse((response.text || '{}').replace(/^```json\s*|\s*```$/g, ''));
+    const parsed = parseAiJson(response.text || '{}', {});
     
     // Chuẩn hóa và kiểm tra mã ID đề xuất
     let rawSuggestedId = normalizeId6(parsed.suggested_id || '');
