@@ -53,6 +53,32 @@ Tập nghiệm $\{x \\in \\mathbb{R} \\mid x \\ge 1\}$.
         expect(tfMap['4']).toBe(false);
     });
 
+    it('strips \\dung and \\sai from \\choiceTF while recording the True/False map to prevent leaking answers', () => {
+        const latex = 'Câu 2: \\choiceTF {\\dung Mệnh đề 1} {\\sai Mệnh đề 2} {\\dung Mệnh đề 3} {\\sai Mệnh đề 4}';
+        const { cleaned, tfMap } = stripTrueMarkers(latex);
+        expect(cleaned).not.toContain('\\dung');
+        expect(cleaned).not.toContain('\\sai');
+        expect(cleaned).toContain('Mệnh đề 1');
+        expect(cleaned).toContain('Mệnh đề 2');
+        expect(tfMap['1']).toBe(true);
+        expect(tfMap['2']).toBe(false);
+        expect(tfMap['3']).toBe(true);
+        expect(tfMap['4']).toBe(false);
+    });
+
+    it('handles wrapped markers {\\dung} and \\dung{...} without leaking in \\choiceTF', () => {
+        const latex = '\\choiceTF {{\\dung} Mệnh đề 1} {\\sai{Mệnh đề 2}} {\\dung Mệnh đề 3} {Mệnh đề 4}';
+        const { cleaned, tfMap } = stripTrueMarkers(latex);
+        expect(cleaned).not.toContain('\\dung');
+        expect(cleaned).not.toContain('\\sai');
+        expect(cleaned).toContain('{Mệnh đề 1}');
+        expect(cleaned).toContain('{Mệnh đề 2}');
+        expect(tfMap['1']).toBe(true);
+        expect(tfMap['2']).toBe(false);
+        expect(tfMap['3']).toBe(true);
+        expect(tfMap['4']).toBe(false);
+    });
+
     it('strips \\True from \\choiceTF[t] with optional bracket parameter while recording tfMap', () => {
         const latex = '\\begin{ex} Cho phương trình... \\choiceTF[t]\n{Mệnh đề 1 sai}\n{\\True Mệnh đề 2 đúng}\n{\\True Mệnh đề 3 đúng}\n{Mệnh đề 4 sai}\n\\loigiai{} \\end{ex}';
         const { cleaned, tfMap } = stripTrueMarkers(latex);

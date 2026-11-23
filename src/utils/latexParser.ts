@@ -2,6 +2,47 @@ import { OnlineQuestion, QuestionType } from '../types';
 import { unwrapImmini, stripComments, findClosingBrace } from './fileUtils';
 
 /**
+ * Unwraps balanced outermost braces, e.g. "{Mệnh đề 1}" -> "Mệnh đề 1"
+ */
+export const unwrapOuterBraces = (text: string): string => {
+    if (typeof text !== 'string') return '';
+    let s = text.trim();
+    while (s.startsWith('{') && s.endsWith('}')) {
+        let depth = 0;
+        let canUnwrap = true;
+        for (let i = 0; i < s.length - 1; i++) {
+            if (s[i] === '\\') { i++; continue; }
+            if (s[i] === '{') depth++;
+            else if (s[i] === '}') depth--;
+            if (depth === 0) { canUnwrap = false; break; }
+        }
+        if (canUnwrap) {
+            s = s.slice(1, -1).trim();
+        } else {
+            break;
+        }
+    }
+    return s;
+};
+
+/**
+ * Strips answer markers (\True, \False, \dung, \sai, \đúng) from choice text.
+ */
+export const cleanChoiceMarkers = (text: string): string => {
+    if (typeof text !== 'string') return '';
+    let res = text.trim();
+    // Strip standalone wrapped markers like {\dung}, {\sai}, {\True}, {\False}
+    res = res.replace(/\{\s*\\(?:True|False|dung|sai|đúng)\b\s*\}/gi, '');
+    // Strip leading marker like \dung{...} or \dung ...
+    res = res.replace(/^\\(?:True|False|dung|sai|đúng)\b\s*/gi, '');
+    // Strip any remaining markers
+    res = res.replace(/\\(?:True|False|dung|sai|đúng)\b\s*/gi, '');
+    // Remove empty braces
+    res = res.replace(/^\{\s*\}\s*/g, '');
+    return unwrapOuterBraces(res);
+};
+
+/**
  * Fisher-Yates array shuffle.
  * Clones the array to prevent unexpected mutations.
  */
@@ -193,11 +234,11 @@ export const parseQuestionContent = (q: OnlineQuestion, skipShuffle: boolean = f
                         if (depth === 0) {
                             let content = currentOption;
                             let isCorrect = false;
-                            if (/\\True/i.test(content)) { 
+                            if (/\\(?:True|dung|đúng)\b/i.test(content)) { 
                                 isCorrect = true; 
-                                content = content.replace(/\\True\s*/gi, ''); 
                             }
-                            options.push({ content: content.trim(), isCorrect, originalIndex: optIndex++ });
+                            content = cleanChoiceMarkers(content);
+                            options.push({ content, isCorrect, originalIndex: optIndex++ });
                             lastParsedIndex = i + 1;
                             if (options.length >= 4) break;
                         } else { 
@@ -259,9 +300,11 @@ export const parseQuestionContent = (q: OnlineQuestion, skipShuffle: boolean = f
                 }
                 
                 for (let i = 0; i < blocks.length; i++) {
-                    const content = blocks[i];
-                    const isTrue = /\\True/i.test(content);
-                    options.push({ id: String(i + 1), content: content.replace(/\\True\s*/gi, '').trim(), isCorrect: isTrue });
+                    const block = blocks[i];
+                    const hasTrueMarker = /\\(?:True|dung|đúng)\b/i.test(block);
+                    const hasFalseMarker = /\\(?:False|sai)\b/i.test(block);
+                    const isTrue = hasTrueMarker && !hasFalseMarker;
+                    options.push({ id: String(i + 1), content: cleanChoiceMarkers(block), isCorrect: isTrue });
                 }
                 
                 const remaining = afterChoice.substring(lastParsedIndex).trim();
@@ -271,5 +314,12 @@ export const parseQuestionContent = (q: OnlineQuestion, skipShuffle: boolean = f
         if (options.length > 0) return { ...q, type, content: stem, options, solution, correctAnswer };
     }
 
-    return { ...q, type, content: text, solution, correctAnswer, options: q.options || [] };
+    return { 
+        ...q, 
+        type, 
+        content: text, 
+        solution, 
+        correctAnswer, 
+        options: (q.options || []).map(opt => ({ ...opt, content: cleanChoiceMarkers(opt.content) })) 
+    };
 };

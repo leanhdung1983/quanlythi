@@ -14,7 +14,7 @@ export function extractChoiceAnswer(content) {
     const choiceMatch = content.match(/\\choice\s*\{([\s\S]*?)\}\s*\{([\s\S]*?)\}\s*\{([\s\S]*?)\}\s*\{([\s\S]*?)\}/);
     if (choiceMatch) {
         for (let i = 1; i <= 4; i++) {
-            if (choiceMatch[i].includes('\\True')) {
+            if (/\\(?:True|dung|đúng)\b/i.test(choiceMatch[i])) {
                 return ['A', 'B', 'C', 'D'][i - 1];
             }
         }
@@ -24,8 +24,9 @@ export function extractChoiceAnswer(content) {
     const choiceIdx = content.indexOf('\\choice');
     if (choiceIdx !== -1) {
         const afterChoice = content.slice(choiceIdx);
-        const trueIdx = afterChoice.indexOf('\\True');
-        if (trueIdx !== -1) {
+        const trueMatch = afterChoice.match(/\\(?:True|dung|đúng)\b/i);
+        if (trueMatch) {
+            const trueIdx = trueMatch.index;
             // Count open braces before \True
             const beforeTrue = afterChoice.slice(0, trueIdx);
             const openBraces = (beforeTrue.match(/\{/g) || []).length;
@@ -49,10 +50,10 @@ export function extractTFAnswer(content) {
     const labels = ['a', 'b', 'c', 'd'];
     
     for (const l of labels) {
-        const reg = new RegExp(`\\\\item\\s*\\(?${l}\\)?[\\s\\S]*?(\\\\True|\\\\False)`, 'i');
+        const reg = new RegExp(`\\\\item\\s*\\(?${l}\\)?[\\s\\S]*?(\\\\True|\\\\False|\\\\dung|\\\\sai|\\\\đúng)`, 'i');
         const m = content.match(reg);
         if (m) {
-            res.push(`${l}: ${m[1].includes('\\True') ? 'Đ' : 'S'}`);
+            res.push(`${l}: ${/\\(?:True|dung|đúng)/i.test(m[1]) ? 'Đ' : 'S'}`);
         }
     }
     return res.length > 0 ? res.join(' | ') : '';

@@ -4,7 +4,8 @@ import {
     stripExTestChoices, 
     extractExTestSolution, 
     shuffleArray, 
-    parseQuestionContent 
+    parseQuestionContent,
+    cleanChoiceMarkers
 } from '../latexParser';
 import { OnlineQuestion, QuestionType } from '../../types';
 
@@ -108,6 +109,44 @@ describe('latexParser', () => {
             expect(parsed.options?.[1].isCorrect).toBe(false);
             expect(parsed.options?.[2].isCorrect).toBe(true);
             expect(parsed.options?.[3].isCorrect).toBe(false);
+        });
+
+        it('should parse True/False (TF) question with \\dung and \\sai without leaking answers in option content', () => {
+            const q: OnlineQuestion = {
+                id: 202,
+                id_full: 'TEST_TF_DUNG_SAI',
+                content: 'Xét tính đúng sai.\\choiceTF{\\dung Phương án A}{\\sai Phương án B}{\\dung Phương án C}{\\sai Phương án D}',
+                type: QuestionType.TF,
+                options: []
+            };
+
+            const parsed = parseQuestionContent(q);
+            expect(parsed.options).toHaveLength(4);
+            expect(parsed.options?.[0].isCorrect).toBe(true);
+            expect(parsed.options?.[0].content).toBe('Phương án A');
+            expect(parsed.options?.[1].isCorrect).toBe(false);
+            expect(parsed.options?.[1].content).toBe('Phương án B');
+            expect(parsed.options?.[2].isCorrect).toBe(true);
+            expect(parsed.options?.[2].content).toBe('Phương án C');
+            expect(parsed.options?.[3].isCorrect).toBe(false);
+            expect(parsed.options?.[3].content).toBe('Phương án D');
+
+            // Ensure no option contains \\dung or \\sai
+            parsed.options?.forEach(opt => {
+                expect(opt.content).not.toContain('\\dung');
+                expect(opt.content).not.toContain('\\sai');
+            });
+        });
+
+        it('cleanChoiceMarkers should clean various marker formats', () => {
+            expect(cleanChoiceMarkers('\\dung Mệnh đề 1')).toBe('Mệnh đề 1');
+            expect(cleanChoiceMarkers('\\sai Mệnh đề 2')).toBe('Mệnh đề 2');
+            expect(cleanChoiceMarkers('{\\dung} Mệnh đề 3')).toBe('Mệnh đề 3');
+            expect(cleanChoiceMarkers('\\dung{Mệnh đề 4}')).toBe('Mệnh đề 4');
+            expect(cleanChoiceMarkers('{\\dung Mệnh đề 5}')).toBe('Mệnh đề 5');
+            expect(cleanChoiceMarkers('{\\sai Mệnh đề 6}')).toBe('Mệnh đề 6');
+            expect(cleanChoiceMarkers('\\True Mệnh đề 7')).toBe('Mệnh đề 7');
+            expect(cleanChoiceMarkers('\\False Mệnh đề 8')).toBe('Mệnh đề 8');
         });
 
         it('should parse Short Answer (KQ) with \\shortans', () => {

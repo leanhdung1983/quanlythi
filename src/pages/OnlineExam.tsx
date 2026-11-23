@@ -9,7 +9,7 @@ import { MathRenderer } from '../components/MathRenderer';
 import { clearSvgCache } from '../components/TikZRenderer';
 import { extractMatrixHierarchy, prepareMatrixPayload } from '../utils/matrixUtils';
 import { checkKQAnswer, calculateExamScore } from '../utils/gradeHelper';
-import { parseQuestionContent, shuffleArray } from '../utils/latexParser';
+import { parseQuestionContent, shuffleArray, cleanChoiceMarkers } from '../utils/latexParser';
 import { ensureExamSessionId, resolveResumedSession, remainingExamSeconds, examProgressSnapshot } from '../utils/examSession';
 import { 
     Clock, PlayCircle, ChevronRight, BookOpen, 
@@ -1506,7 +1506,7 @@ export const OnlineExam: React.FC = () => {
                                             {label})
                                         </div>
                                         <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar text-slate-800 leading-relaxed font-sans font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
-                                            <MathRenderer content={opt.content} mode="question" hideToolbar={true} />
+                                            <MathRenderer content={cleanChoiceMarkers(opt.content)} mode="question" hideToolbar={true} />
                                         </div>
                                     </div>
                                     <div className="flex gap-1.5 shrink-0 self-end sm:self-center pt-1.5 sm:pt-0">
@@ -1576,9 +1576,12 @@ export const OnlineExam: React.FC = () => {
                                 </div>
                                 <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar font-medium leading-relaxed font-sans" style={{ fontSize: `${fontSize - 1}px` }}>
                                     <MathRenderer 
-                                        content={opt.content && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(opt.content.toLowerCase()) 
-                                            ? opt.content.charAt(0).toUpperCase() + opt.content.slice(1) 
-                                            : opt.content} 
+                                        content={(() => {
+                                            const cleaned = cleanChoiceMarkers(opt.content);
+                                            return cleaned && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(cleaned.toLowerCase())
+                                                ? cleaned.charAt(0).toUpperCase() + cleaned.slice(1)
+                                                : cleaned;
+                                        })()} 
                                         mode="question" 
                                         hideToolbar={true} 
                                     />

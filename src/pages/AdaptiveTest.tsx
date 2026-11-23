@@ -12,7 +12,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { OnlineQuestion, QuestionType } from '../types';
 import { MathRenderer } from '../components/MathRenderer';
 import { checkKQAnswer } from '../utils/gradeHelper';
-import { parseQuestionContent } from '../utils/latexParser';
+import { parseQuestionContent, cleanChoiceMarkers } from '../utils/latexParser';
 import { PracticeCatalog } from '../components/PracticeCatalog';
 
 export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: string; onReturn?: () => void }> = ({ recommendationId: selectedRecommendation, skillKey: initialSkillKey, onReturn }) => {
@@ -429,7 +429,7 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                             {label})
                                         </div>
                                         <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar text-slate-700 leading-relaxed font-sans font-medium" style={{ fontSize: `${fontSize - 1}px` }}>
-                                            <MathRenderer content={opt.content} mode="question" hideToolbar={true} />
+                                            <MathRenderer content={cleanChoiceMarkers(opt.content)} mode="question" hideToolbar={true} />
                                         </div>
                                     </div>
                                     <div className="flex gap-1 shrink-0">
@@ -489,9 +489,9 @@ export const AdaptiveTest: React.FC<{ recommendationId?: string; skillKey?: stri
                                 </div>
                                 <div className="flex-1 min-w-0 overflow-x-auto custom-scrollbar font-bold leading-relaxed font-sans" style={{ fontSize: `${fontSize - 1}px` }}>
                                     <MathRenderer 
-                                        content={opt.content && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(opt.content.toLowerCase()) 
-                                            ? opt.content.charAt(0).toUpperCase() + opt.content.slice(1) 
-                                            : opt.content} 
+                                        content={cleanChoiceMarkers(opt.content) && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(cleanChoiceMarkers(opt.content).toLowerCase()) 
+                                            ? cleanChoiceMarkers(opt.content).charAt(0).toUpperCase() + cleanChoiceMarkers(opt.content).slice(1) 
+                                            : cleanChoiceMarkers(opt.content)} 
                                         mode="question" 
                                         hideToolbar={true} 
                                     />

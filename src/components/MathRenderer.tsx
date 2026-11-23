@@ -4,7 +4,7 @@ import DOMPurify from 'dompurify';
 import katex from 'katex';
 import 'katex/dist/katex.min.css';
 import { unwrapImmini, stripComments, findClosingBrace } from '../utils/fileUtils';
-import { stripExTestSolution, stripExTestChoices } from '../utils/latexParser';
+import { stripExTestSolution, stripExTestChoices, cleanChoiceMarkers } from '../utils/latexParser';
 import { TikZRenderer } from './TikZRenderer';
 import { KATEX_MACROS, prepareLatexForRendering, splitLatexSegments } from '../utils/mathLatex';
 
@@ -216,7 +216,7 @@ const formatExTestChoices = (text: string): string => {
         const { fullMatch, choices } = choiceData;
         const htmlChoices = choices.map((content, idx) => {
             const label = String.fromCharCode(65 + idx); // A, B, C, D
-            let cleanContent = content.replace(/\\True\s*/g, '').trim();
+            let cleanContent = cleanChoiceMarkers(content);
             
             // Capitalize first letter if it's an alphabetic character
             if (cleanContent.length > 0 && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(cleanContent.toLowerCase())) {
@@ -240,7 +240,7 @@ const formatExTestChoices = (text: string): string => {
     while (choiceTFData) {
         const { fullMatch, choices } = choiceTFData;
         const htmlChoices = choices.map((content, idx) => {
-            let cleanContent = content.replace(/\\True\s*/g, '').trim();
+            let cleanContent = cleanChoiceMarkers(content);
             
             // Capitalize first letter
             if (cleanContent.length > 0 && /^[a-zâêôưăđơàảãáạèẻẽéẹìỉĩíịòỏõóọùủũúụỳỷỹýỵ]/.test(cleanContent.toLowerCase())) {
@@ -471,7 +471,7 @@ export const MathRenderer: React.FC<MathRendererProps> = ({
         if (mode === 'question') {
             localContent = stripExTestSolution(localContent);
             if (!renderChoices) localContent = stripExTestChoices(localContent);
-            localContent = localContent.replace(/\\True/g, '');
+            localContent = cleanChoiceMarkers(localContent);
         }
 
         localContent = localContent

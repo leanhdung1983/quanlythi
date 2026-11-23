@@ -85,6 +85,47 @@ export function stripShortans(latex) {
 }
 
 /**
+ * Unwraps balanced outermost braces, e.g. "{Mệnh đề 1}" -> "Mệnh đề 1"
+ */
+export function unwrapOuterBraces(text) {
+    if (typeof text !== 'string') return '';
+    let s = text.trim();
+    while (s.startsWith('{') && s.endsWith('}')) {
+        let depth = 0;
+        let canUnwrap = true;
+        for (let i = 0; i < s.length - 1; i++) {
+            if (s[i] === '\\') { i++; continue; }
+            if (s[i] === '{') depth++;
+            else if (s[i] === '}') depth--;
+            if (depth === 0) { canUnwrap = false; break; }
+        }
+        if (canUnwrap) {
+            s = s.slice(1, -1).trim();
+        } else {
+            break;
+        }
+    }
+    return s;
+}
+
+/**
+ * Strips answer markers (\True, \False, \dung, \sai, \đúng) from choice text.
+ */
+export function cleanChoiceMarkers(text) {
+    if (typeof text !== 'string') return '';
+    let res = text.trim();
+    // Strip standalone wrapped markers like {\dung}, {\sai}, {\True}, {\False}
+    res = res.replace(/\{\s*\\(?:True|False|dung|sai|đúng)\b\s*\}/gi, '');
+    // Strip leading marker like \dung{...} or \dung ...
+    res = res.replace(/^\\(?:True|False|dung|sai|đúng)\b\s*/gi, '');
+    // Strip any remaining markers
+    res = res.replace(/\\(?:True|False|dung|sai|đúng)\b\s*/gi, '');
+    // Remove empty braces
+    res = res.replace(/^\{\s*\}\s*/g, '');
+    return unwrapOuterBraces(res);
+}
+
+/**
  * Extracts \True positions and strips \True markers from \choice or \choiceTF.
  */
 export function stripTrueMarkers(latex) {
@@ -110,12 +151,16 @@ export function stripTrueMarkers(latex) {
         for (let i = 0; i < afterChoice.length; i++) {
             const char = afterChoice[i];
             if (char === '\\') {
-                // Check if this is \True
                 const rest = afterChoice.substring(i);
-                const trueMatch = rest.match(/^\\True\b/i);
-                if (trueMatch && depth === 1) {
+                const trueMatch = rest.match(/^\\(?:True|dung|đúng)\b/i);
+                if (trueMatch && (depth === 1 || depth === 2)) {
                     correctIndices.push(optIndex);
                     i += trueMatch[0].length - 1;
+                    continue;
+                }
+                const falseMatch = rest.match(/^\\(?:False|sai)\b/i);
+                if (falseMatch && (depth === 1 || depth === 2)) {
+                    i += falseMatch[0].length - 1;
                     continue;
                 }
                 currentOption += char;
@@ -132,7 +177,7 @@ export function stripTrueMarkers(latex) {
             } else if (char === '}') {
                 depth--;
                 if (depth === 0) {
-                    newChoicePart += '{' + currentOption.replace(/\\True\s*/gi, '').trim() + '}';
+                    newChoicePart += '{' + cleanChoiceMarkers(currentOption) + '}';
                     optIndex++;
                     if (optIndex >= 4) {
                         newChoicePart += afterChoice.substring(i + 1);
@@ -166,10 +211,16 @@ export function stripTrueMarkers(latex) {
             const char = afterChoice[i];
             if (char === '\\') {
                 const rest = afterChoice.substring(i);
-                const trueMatch = rest.match(/^\\True\b/i);
-                if (trueMatch && depth === 1) {
+                const trueMatch = rest.match(/^\\(?:True|dung|đúng)\b/i);
+                if (trueMatch && (depth === 1 || depth === 2)) {
                     tfMap[String(optIndex + 1)] = true;
                     i += trueMatch[0].length - 1;
+                    continue;
+                }
+                const falseMatch = rest.match(/^\\(?:False|sai)\b/i);
+                if (falseMatch && (depth === 1 || depth === 2)) {
+                    tfMap[String(optIndex + 1)] = false;
+                    i += falseMatch[0].length - 1;
                     continue;
                 }
                 currentOption += char;
@@ -189,7 +240,7 @@ export function stripTrueMarkers(latex) {
                     if (tfMap[String(optIndex + 1)] === undefined) {
                         tfMap[String(optIndex + 1)] = false;
                     }
-                    newChoicePart += '{' + currentOption.replace(/\\True\s*/gi, '').trim() + '}';
+                    newChoicePart += '{' + cleanChoiceMarkers(currentOption) + '}';
                     optIndex++;
                     if (optIndex >= 4) {
                         newChoicePart += afterChoice.substring(i + 1);
@@ -205,8 +256,9 @@ export function stripTrueMarkers(latex) {
         text = beforeChoice + newChoicePart;
     }
 
-    // Secondary pass: ensure any remaining \True tokens are sanitized
-    text = text.replace(/\\True\s*/gi, '');
+    // Secondary pass: ensure any remaining markers are sanitized
+    text = text.replace(/\{\s*\\(?:True|False|dung|sai|đúng)\b\s*\}/gi, '');
+    text = text.replace(/\\(?:True|False|dung|sai|đúng)\b\s*/gi, '');
 
     return { cleaned: text, correctIndices, tfMap };
 }
@@ -245,7 +297,11 @@ export function sanitizeQuestionForStudent(q) {
         solution: undefined,
         correctAnswer: undefined,
         options: Array.isArray(q.options) 
-            ? q.options.map(opt => ({ ...opt, isCorrect: false }))
+            ? q.options.map(opt => ({
+                ...opt,
+                content: cleanChoiceMarkers(opt.content),
+                isCorrect: false
+              }))
             : []
     };
 
@@ -289,7 +345,7 @@ export function rehydrateTrustedQuestions(clientQuestions, dbQuestionsMap) {
                 const isCorrect = typeof opt.originalIndex === 'number'
                     ? correctIndices.includes(opt.originalIndex)
                     : false;
-                return { ...opt, isCorrect };
+                return { ...opt, content: cleanChoiceMarkers(opt.content), isCorrect };
             });
         } else if (type === 'TF') {
             options = options.map((opt, idx) => {
@@ -300,7 +356,7 @@ export function rehydrateTrustedQuestions(clientQuestions, dbQuestionsMap) {
                     tfMap[String.fromCharCode(97 + idx)] ?? 
                     tfMap[String.fromCharCode(65 + idx)]
                 );
-                return { ...opt, isCorrect };
+                return { ...opt, content: cleanChoiceMarkers(opt.content), isCorrect };
             });
         }
 

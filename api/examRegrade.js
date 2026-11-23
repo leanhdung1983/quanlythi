@@ -1,7 +1,7 @@
-import { stripLoigiai, stripShortans } from './examSecurity.js';
+import { stripLoigiai, stripShortans, cleanChoiceMarkers } from './examSecurity.js';
 import { regradeStoredExamDetail } from './scoring.js';
 
-const normalize = text => String(text || '').replace(/\\True\b/g, '').replace(/\s+/g, '').trim();
+const normalize = text => String(text || '').replace(/\\(?:True|False|dung|sai|đúng)\b/gi, '').replace(/\s+/g, '').trim();
 
 // Extract the original option identities, independently of shuffled A/B/C/D labels.
 function choices(source, type) {
@@ -23,7 +23,10 @@ function choices(source, type) {
         }
         if (depth) return [];
         const content = text.slice(start, i - 1);
-        options.push({ content, isCorrect: /\\True\b/.test(content) });
+        const hasTrue = /\\(?:True|dung|đúng)\b/i.test(content);
+        const hasFalse = /\\(?:False|sai)\b/i.test(content);
+        const isCorrect = type === 'TF' ? (hasTrue && !hasFalse) : hasTrue;
+        options.push({ content: cleanChoiceMarkers(content), isCorrect });
     }
     return options;
 }
