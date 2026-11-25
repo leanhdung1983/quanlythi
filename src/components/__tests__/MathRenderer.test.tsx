@@ -24,11 +24,12 @@ describe('MathRenderer delimiter rendering', () => {
         expect(html).toContain('<path');
     });
 
-    it('does not force height: 100% on generic .katex svg elements in index.css', () => {
+    it('does not force height: 100% on .katex svg or width: 400em on .hide-tail svg in index.css', () => {
         const css = readFileSync(resolve(process.cwd(), 'src/index.css'), 'utf8');
         const katexSvgBlock = css.match(/\.katex\s+svg\s*\{[\s\S]*?\}/);
         expect(katexSvgBlock).not.toBeNull();
         expect(katexSvgBlock![0]).toContain('height: inherit');
         expect(katexSvgBlock![0]).not.toContain('height: 100%');
+        expect(css).not.toMatch(/\.katex\s+\.hide-tail\s+svg[\s\S]*?400em/);
     });
 });

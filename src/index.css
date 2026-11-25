@@ -384,7 +384,7 @@ button:disabled {
   text-size-adjust: 100%;
 }
 
-/* Fix mobile Safari & Android Chrome SVG radical rendering for \sqrt and stretchy symbols */
+/* KaTeX SVG defaults: preserve KaTeX's inherit height and 100% width so stretchy delimiters and \overrightarrow render properly */
 .katex svg {
   display: block;
   position: absolute;
@@ -398,11 +398,6 @@ button:disabled {
   width: 100%;
   position: relative;
   overflow: hidden;
-}
-
-.katex .hide-tail svg {
-  height: 100% !important;
-  width: 400em !important;
 }
 
 /* Prevent fractional sub-pixel gap between radical hook and overline bar on high-DPI/Retina screens */
